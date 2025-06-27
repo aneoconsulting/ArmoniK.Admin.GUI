@@ -1,6 +1,7 @@
 import { GetResultResponse, ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { StatusService } from '@app/types/status';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -9,7 +10,6 @@ import { ShareUrlService } from '@services/share-url.service';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsInspectionService } from './services/results-inspection.service';
-import { ResultsStatusesService } from './services/results-statuses.service';
 import { ShowComponent } from './show.component';
 import { ResultRaw } from './types';
 
@@ -43,13 +43,26 @@ describe('ShowComponent', () => {
     get$: jest.fn((): Observable<unknown> => of({result: returnedResult} as GetResultResponse)),
   };
 
+  const mockStatusService = {
+    statuses: {
+      [ResultStatus.RESULT_STATUS_ABORTED]: {
+        label: 'Cancelled',
+        color: 'red',
+      },
+      [ResultStatus.RESULT_STATUS_CREATED]: {
+        label: 'Created',
+        color: 'green',
+      },
+    }
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         ShowComponent,
         IconsService,
         FiltersService,
-        ResultsStatusesService,
+        { provide: StatusService, useValue: mockStatusService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
@@ -81,11 +94,7 @@ describe('ShowComponent', () => {
   describe('get status', () => {
     it('should return the status label if there is data', () => {
       component.refresh.next();
-      expect(component.status).toEqual({
-        label: 'Created',
-        color: '#008B8B',
-        icon: 'add',
-      });
+      expect(component.status).toEqual(mockStatusService.statuses[ResultStatus.RESULT_STATUS_CREATED]);
     });
 
     it('should return undefined if there is no data', () => {
@@ -161,6 +170,6 @@ describe('ShowComponent', () => {
   });
 
   it('should get statuses', () => {
-    expect(component.statuses).toEqual((new ResultsStatusesService).statuses);
+    expect(component.statuses).toEqual(mockStatusService.statuses);
   });
 });

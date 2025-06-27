@@ -1,11 +1,11 @@
-import { FilterDateOperator, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterDateOperator, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { FiltersAnd, FiltersOr } from '@app/types/filters';
+import { StatusService } from '@app/types/status';
 import { DefaultConfigService } from '@services/default-config.service';
 import { FiltersCacheService } from '@services/filters-cache.service';
 import { TableService } from '@services/table.service';
 import { TasksFiltersService } from './tasks-filters.service';
-import { TasksStatusesService } from './tasks-statuses.service';
 import { TaskFilterField, TaskSummaryFilters } from '../types';
 
 
@@ -42,12 +42,23 @@ describe('TasksFilterService', () => {
     get: jest.fn(() => cachedFilters),
   };
 
+  const mockStatusService = {
+    statuses: {
+      [TaskStatus.TASK_STATUS_CANCELLED]: {
+        label: 'Cancelled',
+      },
+      [TaskStatus.TASK_STATUS_COMPLETED]: {
+        label: 'Completed'
+      },
+    },
+  };
+
   beforeEach(() => {
     service = TestBed.configureTestingModule({
       providers: [
         TasksFiltersService,
         DefaultConfigService,
-        TasksStatusesService, 
+        { provide: StatusService, useValue: mockStatusService }, 
         { provide: TableService, useValue: mockTableService },
         { provide: FiltersCacheService, useValue: mockFiltersCacheService },
       ]

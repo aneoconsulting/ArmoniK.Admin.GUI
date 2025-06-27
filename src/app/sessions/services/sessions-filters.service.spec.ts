@@ -1,11 +1,11 @@
-import { FilterDateOperator, SessionRawEnumField, SessionTaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterDateOperator, SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { FiltersOr } from '@app/types/filters';
+import { StatusService } from '@app/types/status';
 import { DefaultConfigService } from '@services/default-config.service';
 import { FiltersCacheService } from '@services/filters-cache.service';
 import { TableService } from '@services/table.service';
 import { SessionsFiltersService } from './sessions-filters.service';
-import { SessionsStatusesService } from './sessions-statuses.service';
 import { SessionFilterDefinition, SessionFilterField, SessionRawFilters } from '../types';
 
 describe('SessionsFilterService', () => {
@@ -39,12 +39,23 @@ describe('SessionsFilterService', () => {
     get: jest.fn(() => cachedFilters),
   };
 
+  const mockStatusService = {
+    statuses: {
+      [SessionStatus.SESSION_STATUS_CANCELLED]: {
+        label: 'Cancelled',
+      },
+      [SessionStatus.SESSION_STATUS_CLOSED]: {
+        label: 'Closed'
+      },
+    },
+  };
+
   beforeEach(() => {
     service = TestBed.configureTestingModule({
       providers: [
         SessionsFiltersService,
         DefaultConfigService,
-        SessionsStatusesService,
+        { provide: StatusService, useValue: mockStatusService },
         { provide: TableService, useValue: mockTableService },
         { provide: FiltersCacheService, useValue: mockFiltersCacheService },
       ]

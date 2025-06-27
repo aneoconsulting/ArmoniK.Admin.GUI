@@ -1,5 +1,8 @@
-@if (type !== 'count' && type !== 'select') {
+@if (type !== 'count' && type !== 'select' && type !== 'status') {
   {{ name }}
+} @else if (type === 'status') {
+  {{ name }}
+  <app-status-color-picker />
 } @else if(type === 'count') {
   <!-- Header for count columns -->
   {{ name }}

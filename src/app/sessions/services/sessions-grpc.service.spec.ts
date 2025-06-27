@@ -10,13 +10,10 @@ import { UtilsService } from '@services/utils.service';
 import { lastValueFrom, of } from 'rxjs';
 import { SessionsFiltersService } from './sessions-filters.service';
 import { SessionsGrpcService } from './sessions-grpc.service';
-import { SessionsStatusesService } from './sessions-statuses.service';
 import { SessionFilterDefinition, SessionRaw } from '../types';
 
 describe('SessionsGrpcService', () => {
   let service: SessionsGrpcService;
-
-  const statusesService = new SessionsStatusesService();
 
   const mocksessionsFilterService = {
     filtersDefinitions: [
@@ -29,12 +26,16 @@ describe('SessionsGrpcService', () => {
         for: 'root',
         field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_STATUS,
         type: 'status',
-        statuses: Object.keys(statusesService.statuses).map(status => {
-          return {
-            key: status,
-            value: statusesService.statusToLabel(Number(status)),
-          };
-        }),
+        statuses: [
+          {
+            key: SessionStatus.SESSION_STATUS_RUNNING,
+            value: 'Running',
+          },
+          {
+            key: SessionStatus.SESSION_STATUS_PURGED,
+            value: 'Purged',
+          },
+        ],
       },
       {
         for: 'root',

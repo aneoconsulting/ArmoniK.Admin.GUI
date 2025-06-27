@@ -7,6 +7,7 @@ import { ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/typ
 import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, SessionData } from '@app/types/data';
+import { StatusService } from '@app/types/status';
 import { ActionTable } from '@app/types/table';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
@@ -15,7 +16,6 @@ import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { of } from 'rxjs';
 import { SessionsTableComponent } from './table.component';
 import { SessionsDataService } from '../services/sessions-data.service';
-import { SessionsStatusesService } from '../services/sessions-statuses.service';
 import { SessionRaw } from '../types';
 
 function getAction(actions: ActionTable<SessionRaw, TaskOptions>[], label: string) {
@@ -130,13 +130,30 @@ describe('SessionsTableComponent', () => {
     save: jest.fn()
   };
 
+  const mockStatusService = {
+    statuses: {
+      [SessionStatus.SESSION_STATUS_CANCELLED]: {
+        label: 'Cancelled',
+      },
+      [SessionStatus.SESSION_STATUS_CLOSED]: {
+        label: 'Closed'
+      },
+    },
+    canPause: jest.fn((s: SessionStatus) => s !== SessionStatus.SESSION_STATUS_PAUSED),
+    canResume: jest.fn((s: SessionStatus) => s !== SessionStatus.SESSION_STATUS_RUNNING),
+    canCancel: jest.fn((s: SessionStatus) => s !== SessionStatus.SESSION_STATUS_CANCELLED),
+    canPurge: jest.fn((s: SessionStatus) => s !== SessionStatus.SESSION_STATUS_RUNNING),
+    canClose: jest.fn((s: SessionStatus) => s !== SessionStatus.SESSION_STATUS_CLOSED),
+    canDelete: jest.fn((s: SessionStatus) => s !== SessionStatus.SESSION_STATUS_DELETED),
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         SessionsTableComponent,
         { provide: SessionsDataService, useValue: mockSessionsDataService },
         { provide: NotificationService, useValue: mockNotificationService },
-        SessionsStatusesService,
+        { provide: StatusService, useValue: mockStatusService },
         FiltersService,
         { provide: CacheService, useValue: mockCacheService },
         { provide: Clipboard, useValue: mockClipBoard },

@@ -4,7 +4,6 @@ import { ListOptionsSort } from '@app/types/options';
 import { UtilsService } from '@services/utils.service';
 import { ResultsFiltersService } from './results-filters.service';
 import { ResultsGrpcService } from './results-grpc.service';
-import { ResultsStatusesService } from './results-statuses.service';
 import { ResultRaw, ResultRawFilters, ResultRawListOptions } from '../types';
 
 describe('ResultsGrpcService', () => {
@@ -56,7 +55,6 @@ describe('ResultsGrpcService', () => {
     }
   };
 
-  const resultStatusesService = new ResultsStatusesService();
   const mockResultsFiltersService = {
     filtersDefinitions: [
       {
@@ -68,12 +66,16 @@ describe('ResultsGrpcService', () => {
         for: 'root',
         field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_STATUS,
         type: 'status',
-        statuses: Object.keys(resultStatusesService.statuses).map(status => {
-          return {
-            key: status,
-            value: resultStatusesService.statuses[Number(status) as ResultStatus],
-          };
-        }),
+        statuses: [
+          {
+            key: ResultStatus.RESULT_STATUS_COMPLETED,
+            value: 'Completed',
+          },
+          {
+            key: ResultStatus.RESULT_STATUS_CREATED,
+            value: 'Created',
+          }
+        ]
       },
       {
         for: 'root',

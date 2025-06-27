@@ -13,7 +13,8 @@ export type ScopeConfig<T extends DataRaw, F extends FiltersEnums, O extends Tas
 };
 
 export type CustomScope = 'sessions' | 'tasks';
-export type Scope = 'applications' | 'partitions' | 'sessions' | 'results' | 'tasks';
+export type StatusScope = 'sessions' | 'results' | 'tasks';
+export type Scope = 'applications' | 'partitions' | StatusScope;
 export type Element = 'columns' | 'options' | 'filters' | 'interval' | 'lock-columns';
 
 export type Key =
@@ -30,7 +31,8 @@ export type Key =
   'tasks-view-in-logs' |
   `${CustomScope}-custom-columns` |
   `${Scope}-${Element}` |
-  `${Scope}-show-filters`;
+  `${Scope}-show-filters` |
+  `${StatusScope}-statuses`;
 
 export type ExportedDefaultConfig = {
   [key in Key]: unknown;
