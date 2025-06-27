@@ -153,6 +153,6 @@ describe('StatusColorPickerDialogComponent', () => {
 
   it('should close with data on submit', () => {
     component.submit();
-    expect(mockDialogRef.close).toHaveBeenCalledWith(mockDialogData.current); // We havent changed anything, so we should get what we gibed to the component
+    expect(mockDialogRef.close).toHaveBeenCalledWith(mockDialogData.current); // We havent changed anything, so we should get what we gived to the component
   });
 });
