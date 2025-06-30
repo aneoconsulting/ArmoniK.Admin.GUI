@@ -1,0 +1,24 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Session: {{ sessionId }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-actions>
+    <section>
+      <a mat-flat-button color="primary" routerLink="/">
+        <mat-icon>{{getIcon('back')}}</mat-icon>
+        Back to Sessions List 
+      </a>
+      <button mat-flat-button color="primary" (click)="refresh()">
+        <mat-icon>{{getIcon('refresh')}}</mat-icon>
+        Refresh
+      </button>
+    </section>
+    <section>
+      <app-autocomplete [options]="getTaskKeys()" (valueChange)="highlightNodes($event)" [label]="'Highlight a task'" />
+      <mat-checkbox (change)="setParticles($event.checked)">
+        Display Particles
+      </mat-checkbox>
+    </section>
+  </mat-card-actions>
+</mat-card>
+<div #graph (window:resize)="onResize($event)"></div>
