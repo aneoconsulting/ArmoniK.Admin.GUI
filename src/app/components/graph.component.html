@@ -6,16 +6,19 @@
     <section>
       <a mat-flat-button color="primary" routerLink="/">
         <mat-icon>{{getIcon('back')}}</mat-icon>
-        Back to Sessions List 
+        <span i18n>Back to Sessions List</span> 
       </a>
       <button mat-flat-button color="primary" (click)="refresh()">
         <mat-icon>{{getIcon('refresh')}}</mat-icon>
-        Refresh
+        <span i18n>Refresh</span>
       </button>
     </section>
     <section>
-      <app-autocomplete [options]="getTaskKeys()" (valueChange)="highlightNodes($event)" [label]="'Highlight a task'" />
-      <mat-checkbox (change)="setParticles($event.checked)">
+      <mat-form-field>
+              <label for="id-input" i18n>Highlight a task</label>
+      <input type="text" (change)="highlightNodes($event)" />
+      </mat-form-field>
+      <mat-checkbox (change)="setParticles($event.checked)" i18n>
         Display Particles
       </mat-checkbox>
     </section>

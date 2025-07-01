@@ -1,13 +1,13 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { ArmoniKGraphNode, GraphLink } from '@app/types/graph.types';
+import { ArmoniKGraphNode, GraphData, GraphLink } from '@app/types/graph.types';
 import { IconsService } from '@services/icons.service';
 import { forceLink, forceManyBody } from 'd3';
 import ForceGraph from 'force-graph';
 import { Observable, Subject, switchMap } from 'rxjs';
-import { AutoCompleteComponent } from './auto-complete.component';
 
 @Component({
   selector: 'app-graph',
@@ -16,13 +16,14 @@ import { AutoCompleteComponent } from './auto-complete.component';
   imports: [
     MatCardModule,
     MatIconModule,
-    AutoCompleteComponent,
+    MatFormFieldModule,
     MatCheckboxModule,
   ],
   providers: [],
 })
 export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> implements AfterViewInit {
-  @Input({ required: true }) grpcObservable: Observable<{nodes: N[], links: L[]}>;
+  @Input({ required: true }) grpcObservable: Observable<GraphData<N, L>>;
+  @Input({ required: true }) readonly sessionId: string;
 
   @ViewChild('graph', { static: false }) readonly graphRef: ElementRef | null = null;
 
@@ -41,6 +42,8 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
 
   private readonly iconsService = inject(IconsService);
   private readonly refreshGraph$ = new Subject<void>();
+
+  private nodes: N[];
 
   ngAfterViewInit(): void {
     if (this.graphRef) {
@@ -65,10 +68,17 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
           this.graph.zoom(4, 2000);
         });
 
+      this.grpcObservable.subscribe((result) => this.subscribeToData(result));
+
       this.refreshGraph$
         .pipe(switchMap(() => this.grpcObservable))
-        .subscribe((result) => this.graph.graphData({ nodes: result.nodes, links: result.links }));
+        .subscribe((result) => this.subscribeToData(result));
     }
+  }
+
+  subscribeToData(result: GraphData<N, L>) {
+    this.nodes = result.nodes;
+    this.graph.graphData({ nodes: result.nodes, links: result.links });
   }
 
   refresh() {
@@ -106,13 +116,12 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
    * Hightlight nodes with names included the searched value
    * @param searchedValue 
    */
-  highlightNodes(searchedValue: string) {
-    this.taskToFind = searchedValue;
+  highlightNodes(searchedValue: Event) {
+    this.taskToFind = (searchedValue.target as HTMLInputElement).value;
     this.nodesToHighlight.clear();
-    this.graphdataService.nodes.forEach((node: TaskResultNode) => {
-      if (
-        searchedValue !== '' &&
-        node.id.includes(searchedValue)
+    this.nodes.forEach((node: N) => {
+      if (this.taskToFind !== '' &&
+        node.id.includes(this.taskToFind)
       ) {
         this.nodesToHighlight.add(node.id);
       }
