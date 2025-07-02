@@ -67,6 +67,9 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   deleteSession$ = new Subject<ArmonikData<SessionRaw, TaskOptions>>();
   deleteSessionSubscription = this.deleteSession$.subscribe(data => this.onDelete(data.raw.sessionId));
 
+  seeGraph$ = new Subject<ArmonikData<SessionRaw, TaskOptions>>();
+  seeGraphSubscription = this.seeGraph$.subscribe(data => this.router.navigate(['/sessions', 'graph', data.raw.sessionId]));
+
   actions: ActionTable<SessionRaw, TaskOptions>[] = [
     {
       label: 'Copy session ID',
@@ -82,6 +85,11 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
       label: 'See results',
       icon: 'results',
       action$: this.seeResults$,
+    },
+    {
+      label: $localize`See Graph`,
+      icon: 'graph',
+      action$: this.seeGraph$,
     },
     {
       label: 'Pause session',
