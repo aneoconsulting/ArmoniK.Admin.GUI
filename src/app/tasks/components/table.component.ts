@@ -5,6 +5,7 @@ import { Router} from '@angular/router';
 import { AbstractTableComponent } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
 import { ArmonikData, TaskData } from '@app/types/data';
+import { StatusService } from '@app/types/status';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { Subject } from 'rxjs';
@@ -52,7 +53,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   readonly tableDataService = inject(TasksDataService);
   readonly router = inject(Router);
   readonly clipboard = inject(Clipboard);
-  readonly tasksStatusesService = inject(TasksStatusesService);
+  readonly tasksStatusesService = inject(StatusService) as TasksStatusesService;
 
   private _serviceIcon: string = '';
   private _serviceName: string = '';

@@ -2,6 +2,7 @@ import { Line, LineType } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
 import { ColumnKey, CustomColumn, DataRaw } from './data';
 import { FiltersOr } from './filters';
+import { Status, StatusLabelColor } from './status';
 
 export interface ColumnsModifyDialogData<T extends DataRaw, O extends TaskOptions | null = null> {
   currentColumns: ColumnKey<T, O>[]
@@ -77,3 +78,9 @@ export type ManageViewInLogsDialogResult = {
   serviceName: string;
   urlTemplate: string;
 };
+
+export type StatusColorPickerDialogData<S extends Status> = {
+  current: Record<S, StatusLabelColor>,
+  default: Record<S, StatusLabelColor>,
+  keys: S[],
+}
