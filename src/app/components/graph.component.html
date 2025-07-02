@@ -4,9 +4,9 @@
   </mat-card-header>
   <mat-card-actions>
     <section>
-      <a mat-flat-button color="primary" routerLink="/">
-        <mat-icon>{{getIcon('back')}}</mat-icon>
-        <span i18n>Back to Sessions List</span> 
+      <a mat-flat-button color="primary" routerLink="/sessions">
+        <mat-icon>{{ getIcon('back') }}</mat-icon>
+        Back to Sessions List 
       </a>
       <button mat-flat-button color="primary" (click)="refresh()">
         <mat-icon>{{getIcon('refresh')}}</mat-icon>
@@ -14,9 +14,9 @@
       </button>
     </section>
     <section>
-      <mat-form-field>
-              <label for="id-input" i18n>Highlight a task</label>
-      <input type="text" (change)="highlightNodes($event)" />
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label for="id-input" i18n>Highlight a task</mat-label>
+        <input matInput type="text" (change)="highlightNodes($event)" />
       </mat-form-field>
       <mat-checkbox (change)="setParticles($event.checked)" i18n>
         Display Particles
@@ -24,4 +24,5 @@
     </section>
   </mat-card-actions>
 </mat-card>
-<div #graph (window:resize)="onResize($event)"></div>
+<app-graph-legend />
+<div class="graph" #graph (window:resize)="onResize($event)"></div>

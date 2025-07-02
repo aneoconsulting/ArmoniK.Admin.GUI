@@ -1,0 +1,36 @@
+mat-card {
+  position: absolute;
+  z-index: 2;
+  top: 1rem;
+  left: 3rem;
+  width: fit-content;
+}
+
+mat-card-title {
+  width: fit-content !important;
+}
+
+mat-card-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: start;
+}
+
+mat-card-actions > section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+app-graph-legend {
+  position: absolute;
+  z-index: 2;
+  bottom: 0;
+  left:0;
+}
+
+.graph {
+  overflow: hidden;
+  height: 80vh;
+}
