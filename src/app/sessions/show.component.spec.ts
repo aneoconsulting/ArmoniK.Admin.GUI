@@ -2,6 +2,7 @@ import { GetSessionResponse, SessionStatus } from '@aneoconsultingfr/armonik.api
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TasksInspectionService } from '@app/tasks/services/tasks-inspection.service';
+import { StatusService } from '@app/types/status';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { FiltersService } from '@services/filters.service';
@@ -11,7 +12,6 @@ import { ShareUrlService } from '@services/share-url.service';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsInspectionService } from './services/sessions-inspection.service';
-import { SessionsStatusesService } from './services/sessions-statuses.service';
 import { ShowComponent } from './show.component';
 import { SessionRaw } from './types';
 
@@ -72,13 +72,28 @@ describe('AppShowComponent', () => {
     navigate: jest.fn(),
   };
 
+  const mockStatusService = {
+    statuses: {
+      [SessionStatus.SESSION_STATUS_RUNNING]: {
+        label: 'Running',
+        color: 'green'
+      },
+    },
+    canPause: jest.fn((s: SessionStatus) => s !== SessionStatus.SESSION_STATUS_PAUSED),
+    canResume: jest.fn((s: SessionStatus) => s !== SessionStatus.SESSION_STATUS_RUNNING),
+    canCancel: jest.fn((s: SessionStatus) => s !== SessionStatus.SESSION_STATUS_CANCELLED),
+    canPurge: jest.fn((s: SessionStatus) => s !== SessionStatus.SESSION_STATUS_RUNNING),
+    canClose: jest.fn((s: SessionStatus) => s !== SessionStatus.SESSION_STATUS_CLOSED),
+    canDelete: jest.fn((s: SessionStatus) => s !== SessionStatus.SESSION_STATUS_DELETED),
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         ShowComponent,
         IconsService,
         FiltersService,
-        SessionsStatusesService,
+        { provide: StatusService, useValue: mockStatusService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
@@ -229,11 +244,7 @@ describe('AppShowComponent', () => {
   describe('get status', () => {
     it('should return the status label if there is data', () => {
       component.refresh.next();
-      expect(component.status).toEqual({
-        color: '#008000',
-        icon: 'play',
-        label: 'Running'
-      });
+      expect(component.status).toEqual(mockStatusService.statuses[SessionStatus.SESSION_STATUS_RUNNING]);
     });
 
     it('should return undefined if there is no data', () => {

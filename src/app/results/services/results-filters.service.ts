@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Scope } from '@app/types/config';
 import { FilterFor } from '@app/types/filter-definition';
 import { DataFilterService, FiltersServiceStatusesInterface } from '@app/types/services/data-filter.service';
+import { StatusService } from '@app/types/status';
 import { ResultsStatusesService } from './results-statuses.service';
 import { ResultFilterField, ResultRawFilters, ResultsFiltersDefinition } from '../types';
 
@@ -11,7 +12,7 @@ import { ResultFilterField, ResultRawFilters, ResultsFiltersDefinition } from '.
 })
 export class ResultsFiltersService extends DataFilterService<ResultRawEnumField> implements FiltersServiceStatusesInterface<ResultStatus> {
   protected readonly scope: Scope = 'results';
-  readonly statusService = inject(ResultsStatusesService);
+  readonly statusService: ResultsStatusesService = inject(StatusService);
 
   readonly rootField: Record<ResultRawEnumField, string> = {
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_COMPLETED_AT]: $localize`Completed at`,
