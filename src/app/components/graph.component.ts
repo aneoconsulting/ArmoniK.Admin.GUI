@@ -59,6 +59,7 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
     ['taskResultLink', '#f7b657'],
     ['parentLink', '#8A427AAA'],
     ['dependencyLink', '#878adeDD'],
+    ['payloadLink', 'red'],
   ]);
 
   private readonly iconsService = inject(IconsService);
@@ -212,6 +213,8 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
       return this.colorMap.get('parentLink')!;
     case 'dependency':
       return this.colorMap.get('dependencyLink')!;
+    case 'payload':
+      return this.colorMap.get('payloadLink')!;
     default:
       return this.colorMap.get('taskResultLink')!;
     }

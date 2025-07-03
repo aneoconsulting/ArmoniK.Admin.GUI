@@ -2,7 +2,7 @@ import { LinkObject, NodeObject } from 'force-graph';
 import { Status } from '../types/status';
 
 export type NodeEventType = 'task' | 'session' | 'result';
-export type LinkType = 'parent' | 'dependency' | 'output';
+export type LinkType = 'parent' | 'dependency' | 'output' | 'payload';
 
 
 export interface ArmoniKGraphNode extends NodeObject {
