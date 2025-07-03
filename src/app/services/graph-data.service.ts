@@ -15,8 +15,6 @@ export class GraphDataService {
   readonly nodes: ArmoniKGraphNode[] = [];
   readonly links: GraphLink<ArmoniKGraphNode>[] = [];
 
-  private missingSources: GraphLink<ArmoniKGraphNode>[] = [];
-
   readonly updateGraphSubject = new Subject<GraphData>();
 
   /**
@@ -93,7 +91,6 @@ export class GraphDataService {
     if (!node) {
       const node: ArmoniKGraphNode = { id, status, type };
       this.nodes.push(node);
-      this.checkForMissingSource(node);
     } else if (node.status !== status) {
       node.status = status;
     }
@@ -108,16 +105,21 @@ export class GraphDataService {
     if (newTask) {
       this.createNode(newTask.taskId, newTask.status, 'task');
       if (newTask.dataDependencies.length === 0) {
-        this.addParentTask(
-          newTask.taskId,
-          newTask.parentTaskIds.at(-1) as string
-        );
+        this.addPayload(newTask);
       } else {
         newTask.dataDependencies.forEach(dependencyId => {
           this.addDependency(newTask.taskId, dependencyId);
         });
       }
     }
+  }
+
+  private addPayload(task: EventSubscriptionResponse.NewTask) {
+    if (!this.getNodeById(task.payloadId)) {
+      this.createNode(task.payloadId, ResultStatus.RESULT_STATUS_UNSPECIFIED, 'result');
+    }
+    this.addLink(task.taskId, task.payloadId, 'payload');
+    this.addParentTask(task.payloadId, task.parentTaskIds.at(-1) as string);
   }
 
   /**
@@ -156,11 +158,7 @@ export class GraphDataService {
    */
   private addLink(target: string, source: string, type: LinkType) {
     if (!this.links.find(link => link.source === source && link.target === target)) {
-      if (this.getNodeById(source)) {
-        this.links.push({source, target, type});
-      } else {
-        this.missingSources.push({ target, source, type });
-      }
+      this.links.push({source, target, type});
     }
   }
 
@@ -185,6 +183,9 @@ export class GraphDataService {
    */
   private addTaskOwner(resultId: string, taskOwnerId: string) {
     if (taskOwnerId !== '') {
+      if (!this.getNodeById(taskOwnerId)) {
+        this.createNode(taskOwnerId, TaskStatus.TASK_STATUS_UNSPECIFIED, 'task');
+      }
       this.addLink(resultId, taskOwnerId, 'output');
     }
   }
@@ -198,14 +199,6 @@ export class GraphDataService {
       link.source = newTaskOwnerId;
     } else {
       this.addTaskOwner(resultId, newTaskOwnerId);
-    }
-  }
-
-  private checkForMissingSource(node: ArmoniKGraphNode) {
-    const result = this.missingSources.find((link) => link.source === node.id);
-    if (result) {
-      this.links.push(result);
-      this.missingSources = this.missingSources.filter((link) => link.source !== node.id);
     }
   }
 }
