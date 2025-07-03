@@ -97,7 +97,9 @@ const config: Config = {
     '@components/(.*)': '<rootDir>/src/app/components/$1',
     '@services/(.*)': '<rootDir>/src/app/services/$1',
     '@pipes/(.*)': '<rootDir>/src/app/pipes/$1',
-    '@app/(.*)': '<rootDir>/src/app/$1'
+    '@app/(.*)': '<rootDir>/src/app/$1',
+    '^d3$': '<rootDir>/test/d3.js',
+    '^force-graph$': '<rootDir>/test/force-graph.js',
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
