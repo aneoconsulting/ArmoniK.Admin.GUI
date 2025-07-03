@@ -16,7 +16,7 @@ import { StatusLabelColor } from '@app/types/status';
 import { IconsService } from '@services/icons.service';
 import { forceLink, forceManyBody } from 'd3';
 import ForceGraph from 'force-graph';
-import { Observable, Subject, switchMap } from 'rxjs';
+import { Observable, Subject, Subscription, switchMap } from 'rxjs';
 import { GraphLegendComponent } from './graph-legend.component';
 
 @Component({
@@ -46,16 +46,16 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
   @Input({ required: true }) grpcObservable: Observable<GraphData<N, L>>;
   @Input({ required: true }) sessionId: string;
 
-  @ViewChild('graph', { static: false }) readonly graphRef: ElementRef | null = null;
+  @ViewChild('graph', { static: false }) private graphRef: ElementRef | null = null;
 
-  graph!: ForceGraph<N, L>;
-  canvasWidth: number = window.innerWidth;
-  canvasHeight: number = window.innerHeight;
+  private graph: ForceGraph<N, L>;
+  private canvasWidth: number = window.innerWidth;
+  private canvasHeight: number = window.innerHeight;
 
-  @Input() taskToFind: string = '';
-  nodesToHighlight: Set<string> = new Set();
+  private taskToFind: string = '';
+  private readonly nodesToHighlight: Set<string> = new Set();
   
-  colorMap: Map<string, string> = new Map<string, string>([
+  private readonly colorMap: Map<string, string> = new Map<string, string>([
     ['taskResultLink', '#f7b657'],
     ['parentLink', '#8A427AAA'],
     ['dependencyLink', '#878adeDD'],
@@ -66,7 +66,9 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
   private readonly tasksStatusesService = inject(TasksStatusesService);
   private readonly resultsStatusesService = inject(ResultsStatusesService);
 
-  private readonly refreshGraph$ = new Subject<void>();
+  private readonly redrawGraph$ = new Subject<void>();
+
+  private readonly subscription = new Subscription();
 
   private nodes: N[];
 
@@ -92,25 +94,85 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
           this.graph.zoom(4, 2000);
         });
 
-      this.grpcObservable.subscribe((result) => this.subscribeToData(result));
+      this.subscription.add(this.grpcObservable.subscribe((result) => this.subscribeToData(result)));
 
-      this.refreshGraph$
+      this.subscription.add(this.redrawGraph$
         .pipe(switchMap(() => this.grpcObservable))
-        .subscribe((result) => this.subscribeToData(result));
+        .subscribe((result) => this.subscribeToData(result)));
     }
   }
 
-  subscribeToData(result: GraphData<N, L>) {
+  /**
+   * Redraw the graph by refreshing the graph data.
+   */
+  redraw(): void {
+    this.redrawGraph$.next();
+  }
+
+  /**
+   * Returns the associated icon
+   * @param name string | undefined, icon to search 
+   * @returns string
+   */
+  getIcon(name: string | undefined): string {
+    return this.iconsService.getIcon(name);
+  }
+
+  /**
+   * Hightlight nodes with names included the searched value
+   * @param searchedValue 
+   */
+  highlightNodes(searchedValue: Event): void {
+    this.taskToFind = (searchedValue.target as HTMLInputElement).value;
+    this.nodesToHighlight.clear();
+    this.nodes.forEach((node: N) => {
+      if (this.taskToFind !== '' &&
+        node.id.includes(this.taskToFind)
+      ) {
+        this.nodesToHighlight.add(node.id);
+      }
+    });
+    this.graph.nodeCanvasObject((node: N, ctx: CanvasRenderingContext2D) =>
+      this.drawNode(node, ctx)
+    );
+  }
+
+  /**
+   * Handles the resize event (zoom in or out)
+   */
+  onResize(event: UIEvent): void {
+    const newCanvasDimension = event.target as Window;
+    this.canvasWidth = newCanvasDimension.innerWidth;
+    this.canvasHeight = newCanvasDimension.innerHeight;
+    this.graph.width(this.canvasWidth);
+    this.graph.height(this.canvasHeight);
+  }
+  
+  /**
+   * Displays particles on the graph
+   * @param checked boolean
+   */
+  setParticles(checked: boolean): void {
+    this.graph.linkDirectionalParticles(checked ? 1 : 0);
+  }
+
+  /**
+   * Subscription of the data observable.
+   * Draws the graph and refreshes the nodes array.
+   * @param result 
+   */
+  private subscribeToData(result: GraphData<N, L>) {
     this.nodes = result.nodes;
     this.graph.graphData({ nodes: result.nodes, links: result.links });
   }
 
-  refresh() {
-    this.refreshGraph$.next();
-  }
-
-  drawNode(node: N, ctx: CanvasRenderingContext2D) {
-    if (node.x && node.y) {
+  /**
+   * Draws a node in the canvas
+   * @param node N, must have valid x and y coordinates.
+   * @param ctx CanvasRenderingContext2D
+   */
+  private drawNode(node: N, ctx: CanvasRenderingContext2D) {
+    if (node.x !== undefined && node.y !== undefined) {
       const label = this.getNodeStatusData(node);
       ctx.font = '50px Material Icons';
       ctx.fillStyle = label.color;
@@ -118,10 +180,11 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
     }
   }
 
-  setParticles(checked: boolean) {
-    this.graph.linkDirectionalParticles(checked ? 1 : 0);
-  }
-
+  /**
+   * Get the data associated to the node status.
+   * @param node N
+   * @returns StatusLabelColor, contains label, color and icon.
+   */
   private getNodeStatusData(node: N): StatusLabelColor {
     switch (node.type) {
     case 'session':
@@ -138,7 +201,12 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
     }
   }
 
-  getLinkColor(link: L): string {
+  /**
+   * Returns the associated link color.
+   * @param link L
+   * @returns string
+   */
+  private getLinkColor(link: L): string {
     switch (link.type) {
     case 'parent':
       return this.colorMap.get('parentLink')!;
@@ -147,36 +215,5 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
     default:
       return this.colorMap.get('taskResultLink')!;
     }
-  }
-
-  getIcon(name: string | undefined) {
-    return this.iconsService.getIcon(name);
-  }
-
-  /**
-   * Hightlight nodes with names included the searched value
-   * @param searchedValue 
-   */
-  highlightNodes(searchedValue: Event) {
-    this.taskToFind = (searchedValue.target as HTMLInputElement).value;
-    this.nodesToHighlight.clear();
-    this.nodes.forEach((node: N) => {
-      if (this.taskToFind !== '' &&
-        node.id.includes(this.taskToFind)
-      ) {
-        this.nodesToHighlight.add(node.id);
-      }
-    });
-    this.graph.nodeCanvasObject((node: N, ctx: CanvasRenderingContext2D) =>
-      this.drawNode(node, ctx)
-    );
-  }
-
-  onResize(event: UIEvent) {
-    const w = event.target as Window;
-    this.canvasWidth = w.innerWidth;
-    this.canvasHeight = w.innerHeight;
-    this.graph.width(this.canvasWidth);
-    this.graph.height(this.canvasHeight);
   }
 }
