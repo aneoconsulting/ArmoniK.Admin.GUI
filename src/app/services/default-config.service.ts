@@ -163,7 +163,7 @@ export class DefaultConfigService {
     },
     [SessionStatus.SESSION_STATUS_RUNNING]: {
       label: $localize`Running`,
-      color: '#008000',
+      color: '#339220',
       icon: 'play',
     },
     [SessionStatus.SESSION_STATUS_CANCELLED]: {
@@ -173,7 +173,7 @@ export class DefaultConfigService {
     },
     [SessionStatus.SESSION_STATUS_CLOSED]: {
       label: $localize`Closed`,
-      color: '#FF0000',
+      color: '#F20707',
       icon: 'close',
     },
     [SessionStatus.SESSION_STATUS_DELETED]: {
@@ -226,7 +226,7 @@ export class DefaultConfigService {
     },
     [ResultStatus.RESULT_STATUS_COMPLETED]: {
       label: $localize`Completed`,
-      color: '#006400',
+      color: '#339220',
       icon: 'success',
     },
     [ResultStatus.RESULT_STATUS_ABORTED]: {
@@ -278,7 +278,7 @@ export class DefaultConfigService {
   readonly #defaultTaskStatuses: Record<string, StatusLabelColor> = {
     [TaskStatus.TASK_STATUS_COMPLETED]: {
       label: 'Completed',
-      color: '#006400',
+      color: '#339220',
       icon: 'success'
     },
     [TaskStatus.TASK_STATUS_CREATING]: {
@@ -288,7 +288,7 @@ export class DefaultConfigService {
     },
     [TaskStatus.TASK_STATUS_PROCESSING]: {
       label: 'Processing',
-      color: '#008000',
+      color: '#320DE7',
       icon: 'play'
     },
     [TaskStatus.TASK_STATUS_PROCESSED]: {
@@ -328,17 +328,17 @@ export class DefaultConfigService {
     },
     [TaskStatus.TASK_STATUS_ERROR]: {
       label: 'Error',
-      color: '#FF0000',
+      color: '#F20707',
       icon: 'error',
     },
     [TaskStatus.TASK_STATUS_TIMEOUT]: {
       label: 'Timeout',
-      color: '#FF0000',
+      color: '#F20707',
       icon: 'timeout',
     },
     [TaskStatus.TASK_STATUS_RETRIED]: {
       label: 'Retried',
-      color: '#FF0000',
+      color: '#F6AB09',
       icon: 'retry',
     },
     [TaskStatus.TASK_STATUS_UNSPECIFIED]: {
