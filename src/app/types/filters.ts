@@ -14,20 +14,22 @@ export type FilterOperators = FilterStringOperator | FilterNumberOperator | Filt
 /**
  * Used to define the filter FOR (a group of AND).
  */
-export type FiltersOr<T extends FiltersEnums, U extends FiltersOptionsEnums | null = null> = FiltersAnd<T, U>[];
+export type FiltersOr<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> = FiltersAnd<F, O>[];
 /**
  * Used to define the filter AND (a group of filters).
  */
-export type FiltersAnd<T extends FiltersEnums, U extends FiltersOptionsEnums | null> = Filter<T, U>[];
+export type FiltersAnd<F extends FiltersEnums, O extends FiltersOptionsEnums | null> = Filter<F, O>[];
+
+export type FilterFieldValue<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> = string | F | O | null;
 
 /**
  * Filters used to filter the data.
  *
  * `for` and `field` are used to identify the filter.
  */
-export type Filter<T extends FiltersEnums, U extends FiltersOptionsEnums | null = null> = {
-  for: FilterFor<T, U> | null
-  field: T | U | string | null
+export type Filter<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> = {
+  for: FilterFor<F, O> | null
+  field: FilterFieldValue<F, O>
   value: MaybeNull<FilterInputValue>
   operator: MaybeNull<number>
 };
