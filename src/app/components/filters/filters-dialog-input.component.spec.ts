@@ -40,7 +40,7 @@ describe('FiltersDialogInputComponent', () => {
   });
 
   describe('on date change', () => {
-    it('should emit the value (with timeZone offset)', () => {
+    it('should emit the value', () => {
       const milliseconds = 19043234000;
       const event = {
         value: new Date(milliseconds) // Date takes milliseconds, not seconds.
