@@ -5,13 +5,11 @@ import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './tasks-filters.service';
 import { TasksGrpcService } from './tasks-grpc.service';
-import { TasksStatusesService } from './tasks-statuses.service';
 import { TaskFilterDefinition, TaskOptions, TaskSummary, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
 
 describe('TasksGrpcService', () => {
   let service: TasksGrpcService;
 
-  const statusesService = new TasksStatusesService();
 
   const mocktasksFilterService = {
     filtersDefinitions: [
@@ -24,12 +22,16 @@ describe('TasksGrpcService', () => {
         for: 'root',
         field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS,
         type: 'status',
-        statuses: Object.keys(statusesService.statuses).map(status => {
-          return {
-            key: status,
-            value: statusesService.statuses[Number(status) as TaskStatus],
-          };
-        }),
+        statuses: [
+          {
+            key: TaskStatus.TASK_STATUS_PROCESSING,
+            value: 'Processing',
+          },
+          {
+            key: TaskStatus.TASK_STATUS_COMPLETED,
+            value: 'Completed'
+          }
+        ]
       },
       {
         for: 'root',

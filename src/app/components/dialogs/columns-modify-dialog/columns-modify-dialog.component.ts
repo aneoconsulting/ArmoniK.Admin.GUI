@@ -13,7 +13,6 @@ import { CheckedColumn } from './type';
   selector: 'app-add-columns-dialog',
   templateUrl:'./columns-modify-dialog.component.html',
   styleUrl: './columns-modify-dialog.component.css',
-  standalone: true,
   imports: [
     MatGridListModule,
     MatDialogModule,

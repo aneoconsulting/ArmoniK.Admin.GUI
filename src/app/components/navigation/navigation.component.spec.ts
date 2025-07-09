@@ -1,7 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { TestBed, fakeAsync } from '@angular/core/testing';
-import { MatDialog } from '@angular/material/dialog';
-import { ExternalService } from '@app/types/external-service';
+import { TestBed } from '@angular/core/testing';
 import { DefaultConfigService } from '@services/default-config.service';
 import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
@@ -9,7 +7,7 @@ import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
 import { UserService } from '@services/user.service';
 import { VersionsService } from '@services/versions.service';
-import { BehaviorSubject, Subject, lastValueFrom, of } from 'rxjs';
+import { Subject, lastValueFrom, of } from 'rxjs';
 import { NavigationComponent } from './navigation.component';
 
 
@@ -23,17 +21,7 @@ jest.mock('rxjs', () => ({
 describe('NavigationComponent', () => {
   let component: NavigationComponent;
 
-  let dialogRefSubject: BehaviorSubject<ExternalService[] | null>;
   const currentSidebar = ['item-1', 'item-2'];
-  const mockMatDialog = {
-    open: jest.fn(() => {
-      return {
-        afterClosed() {
-          return dialogRefSubject;
-        }
-      };
-    })
-  };
   const mockNavigationService = {
     currentSidebar: currentSidebar,
     restoreSideBarOpened: jest.fn(),
@@ -58,7 +46,6 @@ describe('NavigationComponent', () => {
         NavigationComponent,
         { provide: BreakpointObserver, useValue: mockBreakpointObserver },
         { provide: NavigationService, useValue: mockNavigationService },
-        { provide: MatDialog, useValue: mockMatDialog },
         IconsService,
         { provide: UserService, useValue: mockUserService },
         VersionsService,
@@ -106,7 +93,7 @@ describe('NavigationComponent', () => {
     expect(component.sidebar).toEqual(currentSidebar);
   });
   
-  it('should greet correctly', fakeAsync(() => {
+  it('should greet correctly', () => {
     jest.useFakeTimers().setSystemTime(new Date('2020-01-01T10:00:00'));
     fakeIntervalSubject.next();
     expect(component.greetings).toEqual('Good morning');
@@ -132,7 +119,7 @@ describe('NavigationComponent', () => {
     jest.useFakeTimers().setSystemTime(new Date('2020-01-01T13:00:00'));
     fakeIntervalSubject.next();
     expect(component.greetings).toEqual('Good afternoon, user');
-  }));
+  });
 
   describe('toggle sidebar', () => {
     it('should toggle sidebar', () => {

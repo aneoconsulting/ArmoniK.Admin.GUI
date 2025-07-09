@@ -10,7 +10,6 @@ import { TableActionsToolbarComponent } from './table-actions-toolbar.component'
 @Component({
   selector: 'app-table-index-actions-toolbar',
   templateUrl: './table-index-actions-toolbar.component.html',
-  standalone: true,
   imports: [
     TableActionsToolbarComponent,
     MatMenuModule,

@@ -9,7 +9,6 @@ import { CheckedColumn } from '../type';
   selector: 'app-columns-modify-area',
   templateUrl: 'columns-modify-area.component.html',
   styleUrl: '../columns-modify-dialog.component.css',
-  standalone: true,
   imports: [
     MatCheckboxModule,
     CustomColumnPipe,

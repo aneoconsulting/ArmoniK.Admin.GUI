@@ -7,7 +7,6 @@ import { IconsService } from '@services/icons.service';
 @Component({
   selector: 'app-inspection-toolbar',
   templateUrl: 'inspection-toolbar.component.html',
-  standalone: true,
   imports: [
     MatToolbarModule,
     MatIconModule,

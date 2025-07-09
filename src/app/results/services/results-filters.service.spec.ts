@@ -1,11 +1,11 @@
-import { FilterDateOperator, FilterStringOperator, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterDateOperator, FilterStringOperator, ResultRawEnumField, ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { FiltersOr } from '@app/types/filters';
+import { StatusService } from '@app/types/status';
 import { DefaultConfigService } from '@services/default-config.service';
 import { FiltersCacheService } from '@services/filters-cache.service';
 import { TableService } from '@services/table.service';
 import { ResultsFiltersService } from './results-filters.service';
-import { ResultsStatusesService } from './results-statuses.service';
 import { ResultRawFilters } from '../types';
 
 describe('ResultsFilterService', () => {
@@ -41,12 +41,23 @@ describe('ResultsFilterService', () => {
     get: jest.fn(() => cachedFilters),
   };
 
+  const mockStatusService = {
+    statuses: {
+      [ResultStatus.RESULT_STATUS_ABORTED]: {
+        label: 'Aborted',
+      },
+      [ResultStatus.RESULT_STATUS_COMPLETED]: {
+        label: 'Completed'
+      },
+    },
+  };
+
   beforeEach(() => {
     service = TestBed.configureTestingModule({
       providers: [
         ResultsFiltersService,
-        ResultsStatusesService,
         DefaultConfigService,
+        { provide: StatusService, useValue: mockStatusService },
         { provide: TableService, useValue: mockTableService },
         { provide: FiltersCacheService, useValue: mockFiltersCacheService }
       ]

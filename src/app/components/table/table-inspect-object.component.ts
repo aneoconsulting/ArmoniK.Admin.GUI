@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -12,15 +12,13 @@ import { TableInspectObjectDialogComponent, TableInspectObjectDialogData } from 
   templateUrl: './table-inspect-object.component.html',
   styles: [`
   `],
-  standalone: true,
   imports: [
     MatTooltipModule,
     MatDialogModule,
     MatButtonModule,
-    MatIconModule,
-    CommonModule
+    MatIconModule
   ],
-  providers: [],
+  providers: []
 })
 export class TableInspectObjectComponent
 {

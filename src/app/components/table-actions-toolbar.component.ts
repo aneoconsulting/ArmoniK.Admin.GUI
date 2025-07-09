@@ -19,7 +19,6 @@ import { SpinnerComponent } from './spinner.component';
   templateUrl: './table-actions-toolbar.component.html',
   styles: [`
   `],
-  standalone: true,
   providers: [],
   imports: [
     RefreshButtonComponent,
