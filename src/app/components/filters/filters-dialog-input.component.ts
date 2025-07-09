@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FilterInput } from '@app/types/filters';
 import { AutoCompleteComponent } from '@components/auto-complete.component';
 import { NgxMatDatepickerActions, NgxMatDatepickerApply, NgxMatDatepickerCancel, NgxMatDatepickerInput, NgxMatDatepickerInputEvent, NgxMatDatepickerToggle, NgxMatDatetimepicker } from '@ngxmc/datetime-picker';
+import { Moment } from 'moment';
 
 @Component({
   selector: 'app-filters-dialog-input',
@@ -41,7 +42,7 @@ export class FiltersDialogInputComponent {
     this.emit((event.target as HTMLInputElement).value);
   }
 
-  onDateChange(event: NgxMatDatepickerInputEvent<moment.Moment>): void {
+  onDateChange(event: NgxMatDatepickerInputEvent<Moment>): void {
     if (event.value) {
       this.emit(`${event.value.toDate().getTime() / 1000}`);
     } else {
