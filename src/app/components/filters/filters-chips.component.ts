@@ -58,7 +58,7 @@ export class FiltersChipsComponent<F extends FiltersEnums, O extends FiltersOpti
           return `${label} ${operator} ${status?.value}`;
         }
         case 'date': {
-          return `${label} ${operator} ${new Date(Number(filter.value) * 1000).toUTCString()}`;
+          return `${label} ${operator} ${new Date(Number(filter.value) * 1000).toLocaleString()}`;
         }
         case 'duration': {
           return `${label} ${operator} ${this.durationToString(Number(filter.value))}`;

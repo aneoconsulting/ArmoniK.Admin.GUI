@@ -76,13 +76,14 @@ export class IconsService {
     'success': 'check',
     'fail': 'close',
     'error': 'error',
-    'submitting': 'trending_up',
-    'dispatched': 'trending_down',
+    'submitting': 'double_arrow',
+    'dispatched': 'inbox',
     'timeout': 'running_with_errors',
     'cancelling': 'close',
     'processed': 'offline_pin',
     'retry': 'repeat_on',
     'pending': 'pending',
+    'creating': 'create',
   };
 
   getIcon(name: string | null | undefined): string {

@@ -41,9 +41,9 @@ export class FiltersDialogInputComponent {
     this.emit((event.target as HTMLInputElement).value);
   }
 
-  onDateChange(event: NgxMatDatepickerInputEvent<Date>): void {
+  onDateChange(event: NgxMatDatepickerInputEvent<moment.Moment>): void {
     if (event.value) {
-      this.emit(`${event.value.getTime() / 1000}`);
+      this.emit(`${event.value.toDate().getTime() / 1000}`);
     } else {
       this.emit('');
     }

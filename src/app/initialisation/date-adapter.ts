@@ -18,7 +18,7 @@ const ARMONIK_DATE_FORMAT: MatDateFormats = {
 };
 
 /**
- * Provides services and date format to display to the DateTime picker component.
+ * Provides services and date format to display for the DateTime picker component.
  */
 export function provideArmonikDateAdapter() {
   return makeEnvironmentProviders([

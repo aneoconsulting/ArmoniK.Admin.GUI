@@ -1,16 +1,30 @@
+import { FilterInput } from '@app/types/filters';
 import { NgxMatDatepickerInputEvent } from '@ngxmc/datetime-picker';
+import { Moment } from 'moment';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 
 describe('FiltersDialogInputComponent', () => {
   const component = new FiltersDialogInputComponent();
-  component.input = {
+  const input: FilterInput = {
     type: 'string',
     value: 'someValue'
   };
   const valueChangeSpy = jest.spyOn(component.valueChange, 'emit');
+  const dateTimeOffsetSpy = jest.spyOn(Date.prototype, 'getTimezoneOffset');
+
+  beforeEach(() => {
+    component.input = input;
+    dateTimeOffsetSpy.mockReturnValue(0);
+  });
 
   it('should run', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('On initialisation', () => {
+    it('should set the filter object', () => {
+      expect(component.input).toBe(input);
+    });
   });
 
   it('should emit on string change', () => {
@@ -29,8 +43,10 @@ describe('FiltersDialogInputComponent', () => {
     it('should emit the value', () => {
       const milliseconds = 19043234000;
       const event = {
-        value: new Date(milliseconds) // Date takes milliseconds, not seconds.
-      } as unknown as NgxMatDatepickerInputEvent<Date>;
+        value: {
+          toDate: jest.fn(() => new Date(milliseconds)) // Date takes milliseconds, not seconds.
+        }
+      } as unknown as NgxMatDatepickerInputEvent<Moment>;
   
       component.onDateChange(event);
       expect(valueChangeSpy).toHaveBeenCalledWith(`${milliseconds / 1000}`);
@@ -39,7 +55,7 @@ describe('FiltersDialogInputComponent', () => {
     it('should emit null if there is no value', () => {
       const event = {
         value: null
-      } as unknown as NgxMatDatepickerInputEvent<Date>;
+      } as unknown as NgxMatDatepickerInputEvent<Moment>;
   
       component.onDateChange(event);
       expect(valueChangeSpy).toHaveBeenCalledWith('');

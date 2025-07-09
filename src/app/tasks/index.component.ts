@@ -10,6 +10,7 @@ import { DashboardStorageService } from '@app/dashboard/services/dashboard-stora
 import { TableHandlerCustomValues } from '@app/types/components';
 import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
 import { DataFilterService } from '@app/types/services/data-filter.service';
+import { StatusService } from '@app/types/status';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -51,7 +52,6 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
   providers: [
     TasksGrpcService,
     TasksFiltersService,
-    TasksStatusesService,
     TasksIndexService,
     {
       provide: DataFilterService,
@@ -70,7 +70,11 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
     DashboardStorageService,
     GrpcSortFieldService,
     TasksDataService,
-  ]
+    {
+      provide: StatusService,
+      useClass: TasksStatusesService,
+    },
+  ],
 })
 export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly notificationService = inject(NotificationService);
