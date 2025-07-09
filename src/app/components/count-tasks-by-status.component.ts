@@ -21,7 +21,6 @@ import { Subject, switchMap } from 'rxjs';
   `,
   styles: [`
   `],
-  standalone: true,
   providers: [
     TasksGrpcService,
     TasksFiltersService,

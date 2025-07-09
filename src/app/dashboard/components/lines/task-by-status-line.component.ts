@@ -49,7 +49,6 @@ app-actions-toolbar {
   grid-gap: 1rem;
 }
     `],
-  standalone: true,
   providers: [
     ShareUrlService,
     QueryParamsService,

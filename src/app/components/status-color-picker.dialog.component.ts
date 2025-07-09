@@ -16,7 +16,6 @@ import { NotificationService } from '@services/notification.service';
   selector: 'app-status-picker-dialog',
   templateUrl: 'status-color-picker.dialog.component.html',
   styleUrl: 'status-color-picker.dialog.component.css',
-  standalone: true,
   imports: [
     MatIconModule,
     MatButtonModule,

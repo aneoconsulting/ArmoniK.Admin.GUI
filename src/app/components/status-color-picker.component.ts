@@ -16,7 +16,6 @@ import { StatusColorPickerDialogComponent } from './status-color-picker.dialog.c
     MatButtonModule,
     MatTooltipModule,
   ],
-  standalone: true,
 })
 export class StatusColorPickerComponent<S extends Status> {
   private readonly iconsService = inject(IconsService);

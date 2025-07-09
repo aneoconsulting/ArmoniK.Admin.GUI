@@ -24,7 +24,6 @@ import { FiltersDialogOrComponent } from './filters-dialog-or.component';
   gap: 1rem;
 }
   `],
-  standalone: true,
   imports: [
     FiltersDialogOrComponent,
     MatDialogModule,
@@ -38,7 +37,7 @@ import { FiltersDialogOrComponent } from './filters-dialog-or.component';
   ],
   providers: [
     FiltersService,
-  ],
+  ]
 })
 export class FiltersDialogComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> implements OnInit {
   private readonly iconsService = inject(IconsService);

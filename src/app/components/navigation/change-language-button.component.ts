@@ -10,7 +10,6 @@ import { StorageService } from '@services/storage.service';
 
 @Component({
   selector: 'app-change-language-button',
-  standalone: true,
   templateUrl: './change-language-button.component.html',
   imports: [
     RouterModule,

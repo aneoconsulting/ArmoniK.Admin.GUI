@@ -13,13 +13,12 @@ export interface TableInspectObjectDialogData {
   templateUrl: './table-inspect-object-dialog.component.html',
   styles: [`
   `],
-  standalone: true,
   imports: [
     ShowCardContentComponent,
     MatDialogModule,
     MatButtonModule
   ],
-  providers: [],
+  providers: []
 })
 export class TableInspectObjectDialogComponent implements OnInit {
 

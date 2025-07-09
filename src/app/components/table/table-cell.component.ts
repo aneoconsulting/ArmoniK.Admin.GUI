@@ -20,7 +20,6 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
 
 @Component({
   selector: 'app-table-cell',
-  standalone: true,
   templateUrl: './table-cell.component.html',
   imports: [
     EmptyCellPipe,

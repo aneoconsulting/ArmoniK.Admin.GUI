@@ -37,7 +37,6 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
 @Component({
   selector: 'app-tasks-index',
   templateUrl: './index.component.html',
-  standalone: true,
   imports: [
     FiltersToolbarComponent,
     TableIndexActionsToolbarComponent,

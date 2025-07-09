@@ -36,7 +36,6 @@ import { PartitionRaw } from './types';
 @Component({
   selector: 'app-partitions-index',
   templateUrl: './index.component.html',
-  standalone: true,
   providers: [
     ShareUrlService,
     QueryParamsService,

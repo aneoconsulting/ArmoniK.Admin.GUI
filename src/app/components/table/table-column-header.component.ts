@@ -11,7 +11,6 @@ import { StatusColorPickerComponent } from '../status-color-picker.component';
 @Component({
   selector: 'app-table-column-header',
   templateUrl: './table-column-header.component.html',
-  standalone: true,
   imports: [
     MatCheckboxModule,
     MatIconModule,

@@ -19,13 +19,12 @@ import { UtilsService } from '@services/utils.service';
   margin-left: 8px;
 }
   `],
-  standalone: true,
   imports: [
     MatChipsModule,
   ],
   providers: [
     FiltersService,
-  ],
+  ]
 })
 export class FiltersChipsComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
   private readonly filtersService = inject(FiltersService);

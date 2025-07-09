@@ -1,6 +1,6 @@
 import { FilterInput } from '@app/types/filters';
-// eslint-disable-next-line import/no-unresolved
-import { NgxMatDatepickerInputEvent } from '@ngxmc/datetime-picker/lib/datepicker-input-base';
+import { NgxMatDatepickerInputEvent } from '@ngxmc/datetime-picker';
+import { Moment } from 'moment';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 
 describe('FiltersDialogInputComponent', () => {
@@ -43,8 +43,10 @@ describe('FiltersDialogInputComponent', () => {
     it('should emit the value', () => {
       const milliseconds = 19043234000;
       const event = {
-        value: new Date(milliseconds) // Date takes milliseconds, not seconds.
-      } as unknown as NgxMatDatepickerInputEvent<Date>;
+        value: {
+          toDate: jest.fn(() => new Date(milliseconds)) // Date takes milliseconds, not seconds.
+        }
+      } as unknown as NgxMatDatepickerInputEvent<Moment>;
   
       component.onDateChange(event);
       expect(valueChangeSpy).toHaveBeenCalledWith(`${milliseconds / 1000}`);
@@ -53,7 +55,7 @@ describe('FiltersDialogInputComponent', () => {
     it('should emit null if there is no value', () => {
       const event = {
         value: null
-      } as unknown as NgxMatDatepickerInputEvent<Date>;
+      } as unknown as NgxMatDatepickerInputEvent<Moment>;
   
       component.onDateChange(event);
       expect(valueChangeSpy).toHaveBeenCalledWith('');
