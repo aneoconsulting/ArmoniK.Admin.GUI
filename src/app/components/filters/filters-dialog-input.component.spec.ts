@@ -1,17 +1,30 @@
+import { FilterInput } from '@app/types/filters';
 // eslint-disable-next-line import/no-unresolved
-import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
+import { NgxMatDatepickerInputEvent } from '@ngxmc/datetime-picker/lib/datepicker-input-base';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 
 describe('FiltersDialogInputComponent', () => {
   const component = new FiltersDialogInputComponent();
-  component.input = {
+  const input: FilterInput = {
     type: 'string',
     value: 'someValue'
   };
   const valueChangeSpy = jest.spyOn(component.valueChange, 'emit');
+  const dateTimeOffsetSpy = jest.spyOn(Date.prototype, 'getTimezoneOffset');
+
+  beforeEach(() => {
+    component.input = input;
+    dateTimeOffsetSpy.mockReturnValue(0);
+  });
 
   it('should run', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('On initialisation', () => {
+    it('should set the filter object', () => {
+      expect(component.input).toBe(input);
+    });
   });
 
   it('should emit on string change', () => {
