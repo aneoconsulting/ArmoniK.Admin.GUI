@@ -1,4 +1,5 @@
 import { Component, Inject } from '@angular/core';
+import { FormArray, FormControl } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -29,13 +30,15 @@ export class ColumnsModifyDialogComponent<T extends DataRaw, O extends TaskOptio
   optionsColumns: ColumnKey<T, O>[] = [];
   customColumns: CustomColumn[] = [];
 
-  selectedColumns: ColumnKey<T, O>[] = [];
+  selectedColumns: FormArray<FormControl<ColumnKey<T, O>>>;
 
   constructor(
     private readonly dialogRef: MatDialogRef<ColumnsModifyDialogComponent<T, O>>,
     @Inject(MAT_DIALOG_DATA) private readonly data: ColumnsModifyDialogData<T, O>
   ) {
-    this.selectedColumns = this.data.currentColumns;
+    this.selectedColumns = new FormArray(this.data.currentColumns.map((value) => {
+      return new FormControl(value, {nonNullable: true});
+    }));
     this.columnsLabels = this.data.columnsLabels;
     this.customColumns = this.data.customColumns;
     this.sortColumns(this.data.availableColumns);
@@ -68,16 +71,33 @@ export class ColumnsModifyDialogComponent<T extends DataRaw, O extends TaskOptio
    * checked: add the column.
    * Unchecked: remove it
    */
-  updateColumn(event: CheckedColumn<T, O>): void {
+  selectOne(event: CheckedColumn<T, O>): void {
+    const index = this.selectedColumns.value.findIndex((column) => event.column === column);
     if (event.checked) {
-      if (!this.selectedColumns.includes(event.column)) {
-        this.selectedColumns.push(event.column);
+      if (index === -1) {
+        this.selectedColumns.push(new FormControl(event.column, {nonNullable: true}));
       }
-    } else if(this.selectedColumns.includes(event.column)) {
-      this.selectedColumns = this.selectedColumns.filter(currentColumn => currentColumn !== event.column);
+    } else if(index !== -1) {
+      this.selectedColumns.removeAt(index);
     }
   }
   
+  selectAll(columns: ColumnKey<T, O>[], event: boolean) {
+    if (event) {
+      columns.forEach(column => {
+        if (!this.selectedColumns.value.includes(column)) {
+          this.selectedColumns.push(new FormControl(column, { nonNullable: true }));
+        }
+      });
+    } else {
+      columns.forEach(column => {
+        const index = this.selectedColumns.value.findIndex((col) => column === col);
+        if (index !== -1) {
+          this.selectedColumns.removeAt(index);
+        }
+      });
+    }
+  }
 
   onNoClick(): void {
     this.dialogRef.close();

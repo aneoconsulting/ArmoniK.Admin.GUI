@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { TaskOptions } from '@app/tasks/types';
 import { ColumnKey, DataRaw } from '@app/types/data';
@@ -12,7 +12,8 @@ import { CheckedColumn } from '../type';
   imports: [
     MatCheckboxModule,
     CustomColumnPipe,
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ColumnsModifyAreaComponent<T extends DataRaw, O extends TaskOptions | null = null> {
   @Input({ required: true }) selectedColumns: ColumnKey<T, O>[];
@@ -25,17 +26,23 @@ export class ColumnsModifyAreaComponent<T extends DataRaw, O extends TaskOptions
   }
 
   @Output() checked = new EventEmitter<CheckedColumn<T, O>>();
+  @Output() selectAll = new EventEmitter<boolean>();
 
   allColumns: ColumnKey<T, O>[];
   count = 0;
 
-  updateColumn({ checked }: MatCheckboxChange, column: ColumnKey<T, O>) {
+  selectOne({ checked }: MatCheckboxChange, column: ColumnKey<T, O>) {
     this.checked.emit({ column, checked });
     if (checked) {
       this.count += 1;
     } else if (this.count > 0) {
       this.count -= 1;
     }
+  }
+
+  selectAllOnClick({ checked }: MatCheckboxChange) {
+    this.selectAll.emit(checked);
+    this.count = checked ? this.allColumns.length : 0;
   }
 
   isSelected(column: ColumnKey<T, O>): boolean {

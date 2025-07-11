@@ -7,31 +7,31 @@
   </article>
   
   @if (commonColumns.length !== 0) {
-    <app-columns-modify-area [columnsLabels]="columnsLabels" [selectedColumns]="selectedColumns" [columns]="commonColumns" (checked)="updateColumn($event)">
+    <app-columns-modify-area [columnsLabels]="columnsLabels" [selectedColumns]="selectedColumns.value" [columns]="commonColumns" (checked)="selectOne($event)" (selectAll)="selectAll(commonColumns, $event)">
       <h3 title i18n>Common Columns</h3>
     </app-columns-modify-area>
   }
 
   @if (dateColumns.length !== 0) {
-    <app-columns-modify-area [columnsLabels]="columnsLabels" [selectedColumns]="selectedColumns" [columns]="dateColumns" (checked)="updateColumn($event)">
+    <app-columns-modify-area [columnsLabels]="columnsLabels" [selectedColumns]="selectedColumns.value" [columns]="dateColumns" (checked)="selectOne($event)" (selectAll)="selectAll(dateColumns, $event)">
       <h3 title i18n>Date & Duration Columns</h3>
     </app-columns-modify-area>
   }
 
   @if (objectArrayColumns.length !== 0) {
-    <app-columns-modify-area [columnsLabels]="columnsLabels" [selectedColumns]="selectedColumns" [columns]="objectArrayColumns" (checked)="updateColumn($event)">
+    <app-columns-modify-area [columnsLabels]="columnsLabels" [selectedColumns]="selectedColumns.value" [columns]="objectArrayColumns" (checked)="selectOne($event)" (selectAll)="selectAll(objectArrayColumns, $event)">
       <h3 title i18n>Objets & Arrays Columns</h3>
     </app-columns-modify-area>
   }
 
   @if (optionsColumns.length !== 0) {
-    <app-columns-modify-area [columnsLabels]="columnsLabels" [selectedColumns]="selectedColumns" [columns]="optionsColumns" (checked)="updateColumn($event)">
+    <app-columns-modify-area [columnsLabels]="columnsLabels" [selectedColumns]="selectedColumns.value" [columns]="optionsColumns" (checked)="selectOne($event)" (selectAll)="selectAll(optionsColumns, $event)">
       <h3 title i18n>Options Columns</h3>
     </app-columns-modify-area>
   }
 
   @if (customColumns.length !== 0) {
-    <app-columns-modify-area [columnsLabels]="columnsLabels" [selectedColumns]="selectedColumns" [columns]="customColumns" (checked)="updateColumn($event)">
+    <app-columns-modify-area [columnsLabels]="columnsLabels" [selectedColumns]="selectedColumns.value" [columns]="customColumns" (checked)="selectOne($event)" (selectAll)="selectAll(customColumns, $event)">
       <h3 title i18n>Custom Columns</h3>
     </app-columns-modify-area>
   }
@@ -39,5 +39,5 @@
 
 <mat-dialog-actions align="end">
   <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
-  <button mat-flat-button [mat-dialog-close]="selectedColumns" color="primary" i18n="Dialog action"> Confirm </button>
+  <button mat-flat-button [mat-dialog-close]="selectedColumns.value" [disabled]="selectedColumns.length === 0" color="primary" i18n="Dialog action"> Confirm </button>
 </mat-dialog-actions>

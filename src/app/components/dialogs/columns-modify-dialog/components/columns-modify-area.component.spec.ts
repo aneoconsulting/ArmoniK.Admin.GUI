@@ -44,7 +44,7 @@ describe('ColumnsModifyAreaComponent', () => {
     });
   });
 
-  describe('updateColumn', () => {
+  describe('selectOne', () => {
     const emitedColumn: ColumnKey<TaskRaw, TaskOptions> = 'count';
     const checkEvent = {
       checked: true
@@ -52,19 +52,44 @@ describe('ColumnsModifyAreaComponent', () => {
 
     it('should emit', () => {
       const spy = jest.spyOn(component.checked, 'emit');
-      component.updateColumn(checkEvent, emitedColumn);
+      component.selectOne(checkEvent, emitedColumn);
       expect(spy).toHaveBeenCalledWith({ column: emitedColumn, checked: checkEvent.checked });
     });
 
     it('should add one to the count if the column is checked', () => {
-      component.updateColumn(checkEvent, emitedColumn);
+      component.selectOne(checkEvent, emitedColumn);
       expect(component.count).toEqual(3);  
     });
 
     it('should remove one from the count if the column is unchecked', () => {
       checkEvent.checked = false;
-      component.updateColumn(checkEvent, emitedColumn);
+      component.selectOne(checkEvent, emitedColumn);
       expect(component.count).toEqual(1);
+    });
+  });
+
+  describe('selectAllOnClick', () => {
+    const checkEvent = {
+      checked: true
+    } as MatCheckboxChange;
+
+    it('should emit', () => {
+      const spy = jest.spyOn(component.selectAll, 'emit');
+      component.selectAllOnClick(checkEvent);
+      expect(spy).toHaveBeenCalledWith(checkEvent.checked);
+    });
+
+    it('should set the count to the columns length on select all', () => {
+      component.count = 0;
+      component.selectAllOnClick(checkEvent);
+      expect(component.count).toEqual(component.allColumns.length);
+    });
+
+    it('should set the count to 0 on unselect all', () => {
+      component.count = 12;
+      checkEvent.checked = false;
+      component.selectAllOnClick(checkEvent);
+      expect(component.count).toEqual(0);
     });
   });
 });

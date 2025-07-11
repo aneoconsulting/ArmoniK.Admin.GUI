@@ -9,9 +9,15 @@ h3 {
 article {
   display: flex;
   justify-content: space-between;
+  margin-top: 1rem;
+}
+
+article > div {
+  display: flex;
 }
 
 section {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  margin-left: 2rem;
 }

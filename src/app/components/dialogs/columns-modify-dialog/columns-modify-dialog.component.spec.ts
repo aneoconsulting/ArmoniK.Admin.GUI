@@ -76,7 +76,7 @@ describe('', () => {
         { provide: MatDialogRef, useValue: mockMatDialogRef },
         { provide: MAT_DIALOG_DATA, useValue: mockMatDialogData }
       ]
-    }).inject(ColumnsModifyDialogComponent);
+    }).inject(ColumnsModifyDialogComponent<TaskSummary, TaskOptions>);
   });
 
   it('should run', () => {
@@ -85,7 +85,7 @@ describe('', () => {
 
   describe('initialisation', () => {
     it('should get current columns', () => {
-      expect(component.selectedColumns).toEqual(selectedColumns);
+      expect(component.selectedColumns.value).toEqual(selectedColumns);
     });
 
     it('should set the columns Labels', () => {
@@ -113,17 +113,33 @@ describe('', () => {
     });
   });
 
-  describe('updateColumn', () => {
+  describe('selectOne', () => {
     it('should add a column on check', () => {
       const checkEvent: CheckedColumn<TaskSummary, TaskOptions> = { checked: true, column: 'endedAt' };
-      component.updateColumn(checkEvent);
-      expect(component.selectedColumns).toContain('endedAt');
+      component.selectOne(checkEvent);
+      expect(component.selectedColumns.value).toContain('endedAt');
     });
 
     it('should add a column on unchecked', () => {
       const checkEvent: CheckedColumn<TaskSummary, TaskOptions> = { checked: false, column: 'id' };
-      component.updateColumn(checkEvent);
-      expect(component.selectedColumns).not.toContain('id');
+      component.selectOne(checkEvent);
+      expect(component.selectedColumns.value).not.toContain('id');
+    });
+  });
+
+  describe('selectAll', () => {
+    beforeEach(() => {
+      component.selectedColumns.clear();
+      component.selectAll(component.commonColumns, true);
+    });
+
+    it('should select all common columns', () => {
+      expect(component.selectedColumns.value).toEqual(component.commonColumns);  
+    });
+
+    it('should unselect all common columns', () => {
+      component.selectAll(component.commonColumns, false);
+      expect(component.selectedColumns.value).toEqual([]);
     });
   });
 
