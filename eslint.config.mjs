@@ -89,6 +89,7 @@ export default tseslint.config(
           }
         }
       ],
+      '@typescript-eslint/no-unused-expressions': 'off',
     },
   },
   {

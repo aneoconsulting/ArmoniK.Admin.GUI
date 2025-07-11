@@ -83,20 +83,24 @@ export class ColumnsModifyDialogComponent<T extends DataRaw, O extends TaskOptio
   }
   
   selectAll(columns: ColumnKey<T, O>[], event: boolean) {
-    if (event) {
-      columns.forEach(column => {
-        if (!this.selectedColumns.value.includes(column)) {
-          this.selectedColumns.push(new FormControl(column, { nonNullable: true }));
-        }
-      });
-    } else {
-      columns.forEach(column => {
-        const index = this.selectedColumns.value.findIndex((col) => column === col);
-        if (index !== -1) {
-          this.selectedColumns.removeAt(index);
-        }
-      });
-    }
+    event ? this.selectAllColumns(columns) : this.unselectAllColumns(columns);
+  }
+
+  private selectAllColumns(columns: ColumnKey<T, O>[]) {
+    columns.forEach(column => {
+      if (!this.selectedColumns.value.includes(column)) {
+        this.selectedColumns.push(new FormControl(column, { nonNullable: true }));
+      }
+    });
+  }
+
+  private unselectAllColumns(columns: ColumnKey<T, O>[]) {
+    columns.forEach(column => {
+      const index = this.selectedColumns.value.findIndex((col) => column === col);
+      if (index !== -1) {
+        this.selectedColumns.removeAt(index);
+      }
+    });
   }
 
   onNoClick(): void {
