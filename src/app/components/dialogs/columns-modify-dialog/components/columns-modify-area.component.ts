@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TaskOptions } from '@app/tasks/types';
 import { ColumnKey, DataRaw } from '@app/types/data';
 import { CustomColumnPipe } from '@pipes/custom-column.pipe';
@@ -12,6 +13,7 @@ import { CheckedColumn } from '../type';
   imports: [
     MatCheckboxModule,
     CustomColumnPipe,
+    MatTooltipModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -30,6 +32,9 @@ export class ColumnsModifyAreaComponent<T extends DataRaw, O extends TaskOptions
 
   allColumns: ColumnKey<T, O>[];
   count = 0;
+
+  selectAllTooltip = $localize`Select All`;
+  unselectAllTooltip = $localize`Unselect All`;
 
   selectOne({ checked }: MatCheckboxChange, column: ColumnKey<T, O>) {
     this.checked.emit({ column, checked });
