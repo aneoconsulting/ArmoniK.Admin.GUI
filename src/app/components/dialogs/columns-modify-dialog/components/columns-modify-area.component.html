@@ -1,0 +1,16 @@
+<article>
+  <div>
+    <mat-checkbox (change)="selectAllOnClick($event)" [checked]="count === allColumns.length"
+      [indeterminate]="count !== 0 && count !== allColumns.length"
+      [matTooltip]="count === allColumns.length ? unselectAllTooltip : selectAllTooltip" />
+    <ng-content select="[title]" />
+  </div>
+  <p>{{ count }} <span i18n>selected</span></p>
+</article>
+<section>
+  @for (column of allColumns; track $index) {
+  <mat-checkbox (change)="selectOne($event, column)" [checked]="isSelected(column)">
+    {{ (column | customColumnPipe) ?? columnsLabels[column] }}
+  </mat-checkbox>
+  }
+</section>
