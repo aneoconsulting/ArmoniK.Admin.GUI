@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-// eslint-disable-next-line import/no-unresolved
-import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
 import { DataFilterService } from '@app/types/services/data-filter.service';
+import { NgxMatDatepickerInputEvent } from '@ngxmc/datetime-picker';
+import { Moment } from 'moment';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 import { FilterInputValue } from './types';
 
@@ -68,9 +68,11 @@ describe('FiltersDialogInputComponent', () => {
     describe('onDateChange', () => {
       const event = {
         value: {
-          getTime: () => 10000
+          toDate: jest.fn(() => ({
+            getTime: jest.fn(() => 10000), 
+          })),
         }
-      } as NgxMatDatepickerInputEvent<Date>;
+      } as unknown as NgxMatDatepickerInputEvent<Moment>;
 
       it('should write value if there is one', () => {
         component.onDateChange(event);
@@ -78,7 +80,7 @@ describe('FiltersDialogInputComponent', () => {
       });
 
       it('should write null if there is no value', () => {
-        component.onDateChange({value: null} as NgxMatDatepickerInputEvent<Date>);
+        component.onDateChange({value: null} as NgxMatDatepickerInputEvent<Moment>);
         expect(spy).toHaveBeenCalledWith(null);
       });
     });

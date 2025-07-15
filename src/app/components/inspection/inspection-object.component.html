@@ -14,6 +14,8 @@
         <app-message [message]="getError(field)" [label]="field.key" />
       } @else if(field.type === 'message') {
         <app-message [message]="getMessage(field)" [label]="field.key" />
+      } @else if (field.type === 'byte-array') {
+        <app-byte-array-inspection [data]="getByteArray(field)" [label]="field.key" />
       } @else {
         <app-field-content [field]="field" [statuses]="statuses" [data]="data" />
       }

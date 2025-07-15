@@ -23,6 +23,9 @@ export class FiltersDialogOperatorComponent implements ControlValueAccessor {
   @Input({ required: true }) set operators(entry: Record<number, string>) {
     this.operatorRecord = entry;
     this.operatorsLabels = Object.values(entry);
+    if (this.operatorsLabels.length === 1) {
+      this.writeValue(this.operatorsLabels[0]);
+    }
   }
 
   private operatorRecord: Record<number, string>;

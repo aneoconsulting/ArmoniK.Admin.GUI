@@ -1,13 +1,13 @@
 import { Component, Input, forwardRef, inject } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
-// eslint-disable-next-line import/no-unresolved
-import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
 import { FilterType } from '@app/types/filters';
 import { DataFilterService } from '@app/types/services/data-filter.service';
 import { AutoCompleteComponent } from '@components/auto-complete.component';
+import { NgxMatDatepickerActions, NgxMatDatepickerApply, NgxMatDatepickerCancel, NgxMatDatepickerInput, NgxMatDatepickerInputEvent, NgxMatDatepickerToggle, NgxMatDatetimepicker } from '@ngxmc/datetime-picker';
+import { Moment } from 'moment';
 import { FilterInputValue } from './types';
 
 @Component({
@@ -17,11 +17,15 @@ import { FilterInputValue } from './types';
   imports: [
     MatFormFieldModule,
     MatInputModule,
-    NgxMatTimepickerModule,
-    NgxMatDatetimePickerModule,
-    NgxMatNativeDateModule,
     AutoCompleteComponent,
     ReactiveFormsModule,
+    NgxMatDatepickerActions,
+    NgxMatDatepickerApply,
+    NgxMatDatepickerCancel,
+    NgxMatDatepickerInput,
+    NgxMatDatetimepicker,
+    NgxMatDatepickerToggle,
+    MatButtonModule,
   ],
   providers: [
     {
@@ -40,7 +44,6 @@ export class FiltersDialogInputComponent implements ControlValueAccessor {
   value: FilterInputValue = null;
   dateForm = new FormControl<Date | null>(null);
 
-  actualDate = new Date();
   duration: {[key: number]: string} = {};
 
   get valueAsString() {
@@ -61,9 +64,9 @@ export class FiltersDialogInputComponent implements ControlValueAccessor {
     this.writeValue(`${value?.toLowerCase() === 'true'}`);
   }
 
-  onDateChange(event: NgxMatDatepickerInputEvent<Date>): void {
+  onDateChange(event: NgxMatDatepickerInputEvent<Moment>): void {
     if (event.value) {
-      this.writeValue(`${event.value.getTime() / 1000}`);
+      this.writeValue(`${event.value.toDate().getTime() / 1000}`);
     } else {
       this.writeValue(null);
     }
@@ -97,7 +100,7 @@ export class FiltersDialogInputComponent implements ControlValueAccessor {
 
   writeValue(value: FilterInputValue): void {
     if (this.type === 'date' && !isNaN(Number(value))) {
-      this.dateForm.setValue(new Date(Number(value)));
+      this.dateForm.setValue(new Date(Number(value) * 1000));
     }
     this.value = value;
 

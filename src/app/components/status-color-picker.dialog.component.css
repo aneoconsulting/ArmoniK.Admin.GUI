@@ -1,0 +1,28 @@
+form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 0.5rem 1.25rem;
+}
+
+section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+p, h3 {
+  margin: 0px;
+}
+
+input, .header > mat-icon {
+  margin-right: 1rem;
+}
+
+input[type=color] {
+  padding: 0px;
+  height: 3rem;
+  width: 3rem;
+  border-radius: 0.3rem;
+  border: 0px;
+  cursor: pointer;
+}

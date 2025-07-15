@@ -2,6 +2,7 @@ import { ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Component, OnInit, inject } from '@angular/core';
 import { AbstractTableComponent } from '@app/types/components/table';
 import { ArmonikData } from '@app/types/data';
+import { StatusService } from '@app/types/status';
 import { TableComponent } from '@components/table/table.component';
 import { NotificationService } from '@services/notification.service';
 import ResultsDataService from '../services/results-data.service';
@@ -10,8 +11,7 @@ import { ResultRaw } from '../types';
 
 @Component({
   selector: 'app-results-table',
-  standalone: true,
-  templateUrl: './table.component.html', 
+  templateUrl: './table.component.html',
   providers: [
     ResultsStatusesService,
     NotificationService,
@@ -22,7 +22,7 @@ import { ResultRaw } from '../types';
 })
 export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, ResultRawEnumField> implements OnInit {
   readonly tableDataService = inject(ResultsDataService);
-  readonly statusesService = inject(ResultsStatusesService);
+  readonly statusesService: ResultsStatusesService = inject(StatusService);
 
   ngOnInit(): void {
     this.initTableDataService();

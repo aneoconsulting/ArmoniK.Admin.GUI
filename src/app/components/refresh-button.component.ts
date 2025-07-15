@@ -14,7 +14,6 @@ import { IconsService } from '@services/icons.service';
   `,
   styles: [`
   `],
-  standalone: true,
   imports: [
     MatButtonModule,
     MatTooltipModule,
