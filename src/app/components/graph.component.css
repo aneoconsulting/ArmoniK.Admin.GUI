@@ -6,15 +6,30 @@ mat-card {
   width: fit-content;
 }
 
-mat-card-title {
+mat-card-content {
+  min-width: 60vw;
+  padding: 0.5rem !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+section {
   width: fit-content !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+h2 {
+  padding: 0px;
+  margin: 0px;
 }
 
 mat-card-actions {
   display: flex;
-  justify-content: space-between;
-  gap: 2rem;
-  align-items: start;
+  gap: 1rem;
+  align-items: center;
 }
 
 mat-card-actions > section {

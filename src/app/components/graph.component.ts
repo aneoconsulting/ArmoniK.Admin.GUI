@@ -17,6 +17,7 @@ import { IconsService } from '@services/icons.service';
 import { forceLink, forceManyBody } from 'd3';
 import ForceGraph from 'force-graph';
 import { Observable, Subject, Subscription, switchMap } from 'rxjs';
+import { AutoCompleteComponent } from './auto-complete.component';
 import { GraphLegendComponent } from './graph-legend.component';
 
 @Component({
@@ -34,6 +35,7 @@ import { GraphLegendComponent } from './graph-legend.component';
     RouterModule,
     GraphLegendComponent,
     MatTooltipModule,
+    AutoCompleteComponent
   ],
   providers: [
     SessionsStatusesService,
@@ -52,10 +54,9 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
   private canvasWidth: number = window.innerWidth;
   private canvasHeight: number = window.innerHeight;
 
-  private taskToFind: string = '';
   private readonly nodesToHighlight: Set<string> = new Set();
   
-  private readonly colorMap: Map<string, string> = new Map<string, string>([
+  readonly colorMap: Map<string, string> = new Map<string, string>([
     ['taskResultLink', '#f7b657'],
     ['parentLink', '#8A427AAA'],
     ['dependencyLink', '#878adeDD'],
@@ -71,7 +72,9 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
 
   private readonly subscription = new Subscription();
 
-  private nodes: N[];
+  private nodes: N[] = [];
+  nodesIds: string[] = [];
+  readonly highlightLabel = $localize`Highlight a task`;
 
   ngAfterViewInit(): void {
     if (this.graphRef) {
@@ -123,19 +126,16 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
    * Hightlight nodes with names included the searched value
    * @param searchedValue 
    */
-  highlightNodes(searchedValue: Event): void {
-    this.taskToFind = (searchedValue.target as HTMLInputElement).value;
+  highlightNodes(searchedValue: string) {
     this.nodesToHighlight.clear();
-    this.nodes.forEach((node: N) => {
-      if (this.taskToFind !== '' &&
-        node.id.includes(this.taskToFind)
+    this.nodes.forEach((node: ArmoniKGraphNode) => {
+      if (
+        searchedValue !== '' &&
+        node.id.includes(searchedValue)
       ) {
         this.nodesToHighlight.add(node.id);
       }
     });
-    this.graph.nodeCanvasObject((node: N, ctx: CanvasRenderingContext2D) =>
-      this.drawNode(node, ctx)
-    );
   }
 
   /**
@@ -164,6 +164,7 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
    */
   private subscribeToData(result: GraphData<N, L>) {
     this.nodes = result.nodes;
+    this.nodesIds = result.nodes.map((node) => node.id);
     this.graph.graphData({ nodes: result.nodes, links: result.links });
   }
 

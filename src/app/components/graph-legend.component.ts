@@ -1,5 +1,5 @@
 import { ResultStatus, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ResultsStatusesService } from '@app/results/services/results-statuses.service';
 import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
+import { PrettyPipe } from '@pipes/pretty.pipe';
 import { IconsService } from '@services/icons.service';
 
 @Component({
@@ -19,6 +20,7 @@ import { IconsService } from '@services/icons.service';
     MatChipsModule,
     MatIconModule,
     MatDividerModule,
+    PrettyPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -28,20 +30,14 @@ export class GraphLegendComponent implements OnInit {
   readonly tasksStatusesService = inject(TasksStatusesService);
   readonly resultsStatusesService = inject(ResultsStatusesService);
 
-  links: { label: string, color: string }[] = [
-    {
-      label: 'Task result',
-      color: '#f7b657',
-    },
-    {
-      label: 'Parent',
-      color: '#8A427AAA',
-    },
-    {
-      label: 'Dependency',
-      color: '#878adeDD',
-    }
-  ];
+  @Input({ required: true }) set links(entry: Map<string, string>) {
+    this.linksDescription = [...entry.keys()].map(key => ({
+      label: key.replace('Link', ''),
+      color: entry.get(key) as string,
+    }));
+  }
+
+  linksDescription: { label: string, color: string }[];
 
   // TODO: this part will be useless when statuses are merged
   sessionsStatuses: SessionStatus[];

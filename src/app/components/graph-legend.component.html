@@ -60,10 +60,10 @@
     <article>
       <h3 i18n>Links</h3>
       <section>
-        @for (link of links; track link.label) {
+        @for (link of linksDescription; track link.label) {
           <mat-chip>
             <mat-icon matChipAvatar [style]="'color: ' + link.color" [fontIcon]="getIcon('line')" />
-            <span>{{ link.label }}</span>
+            <span>{{ link.label | pretty }}</span>
           </mat-chip>
         }
       </section>
