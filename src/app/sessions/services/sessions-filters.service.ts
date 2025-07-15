@@ -90,16 +90,16 @@ export class SessionsFiltersService extends DataFilterService<SessionRawEnumFiel
       field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PURGED_AT,
       type: 'date'
     },
-    {
-      for: 'root',
-      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLIENT_SUBMISSION,
-      type: 'boolean'
-    },
-    {
-      for: 'root',
-      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_WORKER_SUBMISSION,
-      type: 'boolean'
-    },
+    // {
+    //   for: 'root',
+    //   field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLIENT_SUBMISSION,
+    //   type: 'boolean'
+    // },
+    // {
+    //   for: 'root',
+    //   field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_WORKER_SUBMISSION,
+    //   type: 'boolean'
+    // },
     {
       for: 'options',
       field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
