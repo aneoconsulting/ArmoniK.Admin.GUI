@@ -76,11 +76,11 @@ export class ResultsFiltersService extends DataFilterService<ResultRawEnumField>
       field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SIZE,
       type: 'number'
     },
-    {
-      for: 'root',
-      field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_MANUAL_DELETION,
-      type: 'boolean'
-    }
+    // {
+    //   for: 'root',
+    //   field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_MANUAL_DELETION,
+    //   type: 'boolean'
+    // }
   ];
 
   readonly defaultFilters: ResultRawFilters = this.defaultConfigService.defaultResults.filters;
