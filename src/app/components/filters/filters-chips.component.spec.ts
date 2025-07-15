@@ -100,7 +100,7 @@ describe('FiltersChipsComponent', () => {
         operator: FilterDateOperator.FILTER_DATE_OPERATOR_AFTER_OR_EQUAL,
         value: '0',
       }];
-      expect(component.filters()).toEqual(['CreatedAt After or Equal Thu, 01 Jan 1970 00:00:00 GMT']);
+      expect(component.filters()).toEqual([`CreatedAt After or Equal ${(new Date(0)).toLocaleString()}`]);
     });
   
     it('should create the label of a duration filter', () => {

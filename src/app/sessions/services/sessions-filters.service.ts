@@ -2,6 +2,7 @@ import { SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField, TaskOpt
 import { Injectable, inject } from '@angular/core';
 import { Scope } from '@app/types/config';
 import { DataFilterService, FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/data-filter.service';
+import { StatusService } from '@app/types/status';
 import { SessionsStatusesService } from './sessions-statuses.service';
 import { SessionFilterDefinition, SessionFilterField, SessionFilterFor, SessionRawFilters } from '../types';
 
@@ -11,7 +12,7 @@ import { SessionFilterDefinition, SessionFilterField, SessionFilterFor, SessionR
 export class SessionsFiltersService extends DataFilterService<SessionRawEnumField, TaskOptionEnumField>
   implements FiltersServiceOptionsInterface<TaskOptionEnumField>, FiltersServiceStatusesInterface<SessionStatus> {
   protected readonly scope: Scope = 'sessions';
-  readonly statusService = inject(SessionsStatusesService);
+  readonly statusService = inject(StatusService) as SessionsStatusesService;
 
   readonly rootField: Record<SessionRawEnumField, string> = {
     [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID]: $localize`Session ID`,

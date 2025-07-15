@@ -12,7 +12,6 @@ import { JsonComponent } from './json.component';
 @Component({
   selector: 'app-json-inspection',
   templateUrl: 'inspection-json.component.html',
-  standalone: true,
   providers: [
     IconsService,
   ],

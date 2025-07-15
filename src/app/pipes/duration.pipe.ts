@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Duration } from '@ngx-grpc/well-known-types';
 
-@Pipe({ name: 'duration', standalone: true })
+@Pipe({ name: 'duration' })
 export class DurationPipe  implements PipeTransform {
   transform(value: Duration | null | undefined) {
     if (!value) {

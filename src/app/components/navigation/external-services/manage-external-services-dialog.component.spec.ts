@@ -1,24 +1,13 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { TestBed } from '@angular/core/testing';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ExternalService } from '@app/types/external-service';
 import { IconsService } from '@services/icons.service';
-import { BehaviorSubject } from 'rxjs';
 import { ManageExternalServicesDialogComponent } from './manage-external-services-dialog.component';
 
 describe('ManageExternalServicesDialogComponent', () => {
   let component: ManageExternalServicesDialogComponent;
 
-  let dialogRefSubject: BehaviorSubject<ExternalService | null>;
-  const mockMatDialog = {
-    open: jest.fn(() => {
-      return {
-        afterClosed() {
-          return dialogRefSubject;
-        }
-      };
-    })
-  };
   const externalService = {
     name: 'service',
     url: 'url',
@@ -35,7 +24,6 @@ describe('ManageExternalServicesDialogComponent', () => {
     component = TestBed.configureTestingModule({
       providers: [
         ManageExternalServicesDialogComponent,
-        { provide: MatDialog, useValue: mockMatDialog },
         { provide: MatDialogRef, useValue: mockMatDialogRef },
         { provide: MAT_DIALOG_DATA, useValue: mockMatDialogData },
         IconsService

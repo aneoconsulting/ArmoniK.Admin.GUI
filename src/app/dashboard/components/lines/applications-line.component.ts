@@ -24,7 +24,6 @@ import { ShareUrlService } from '@services/share-url.service';
 @Component({
   selector: 'app-dashboard-applications-line',
   templateUrl: './applications-line.component.html',
-  standalone: true,
   providers: [
     ShareUrlService,
     AutoRefreshService,

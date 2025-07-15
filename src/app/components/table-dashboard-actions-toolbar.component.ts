@@ -9,7 +9,6 @@ import { TableActionsToolbarComponent } from './table-actions-toolbar.component'
 @Component({
   selector: 'app-table-dashboard-actions-toolbar',
   templateUrl: './table-dashboard-actions-toolbar.component.html',
-  standalone: true,
   imports: [
     TableActionsToolbarComponent,
     MatIconModule,
