@@ -12,7 +12,6 @@ import { ShowActionButton } from '@app/types/components/show';
     margin-right: 3px;
   }
   `],
-  standalone: true,
   imports: [
     RouterModule,
     MatButtonModule,

@@ -12,8 +12,7 @@ import { NavigationComponent } from '@components/navigation/navigation.component
   <app-navigation>
     <router-outlet></router-outlet>
   </app-navigation>
-  `,
-  standalone: true
+  `
 })
 export class AppComponent {
 }
