@@ -8,6 +8,7 @@ import { SessionRaw } from '@app/sessions/types';
 import { TaskOptions, TaskSummary } from '@app/tasks/types';
 import { ExportedDefaultConfig, ScopeConfig } from '@app/types/config';
 import { ExternalService } from '@app/types/external-service';
+import { LinkType } from '@app/types/graph.types';
 import { Sidebar } from '@app/types/navigation';
 import { StatusLabelColor } from '@app/types/status';
 import { Theme } from '@app/types/themes';
@@ -347,6 +348,13 @@ export class DefaultConfigService {
     }
   };
 
+  readonly #defaultGraphLinksColors: Record<LinkType, string> = {
+    'parent': '#8A427AAA',
+    'dependency': '#878adeDD',
+    'payload': '#00a700ff',
+    'output': '#f7b657',
+  };
+
   // We use getters to be able to deep copy the default config and to access the default config from the outside
 
   get defaultTheme(): Theme {
@@ -409,6 +417,10 @@ export class DefaultConfigService {
     return structuredClone(this.#availableLanguages);
   }
 
+  get defaultGraphLinksColors() {
+    return structuredClone(this.#defaultGraphLinksColors);
+  }
+
   readonly #exportedDefaultConfig: ExportedDefaultConfig = {
     'language': this.#defaultLanguage,
     'navigation-sidebar': this.#defaultSidebar,
@@ -456,6 +468,7 @@ export class DefaultConfigService {
     'tasks-statuses': this.#defaultTaskStatuses,
     'tasks-custom-columns': [],
     'sessions-custom-columns': [],
+    'graph-links-colors': this.#defaultGraphLinksColors,
   };
 
   get exportedDefaultConfig(): ExportedDefaultConfig {
