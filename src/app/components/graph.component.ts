@@ -72,6 +72,8 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
   private readonly subscription = new Subscription();
 
   private nodes: N[] = [];
+  private links: L[] = [];
+
   nodesIds: string[] = [];
   readonly highlightLabel = $localize`Highlight a task`;
 
@@ -95,6 +97,7 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
         .linkColor((link: L) => {
           return this.getLinkColor(link);
         })
+        .linkDirectionalParticleWidth(15)
         .linkWidth(4)
         .nodeLabel('id')
         .onNodeClick((node: N) => {
@@ -127,7 +130,8 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
   }
 
   /**
-   * Hightlight nodes with names included the searched value
+   * Hightlight nodes with names included the searched value.
+   * If there is only one node, will display all its parents and children
    * @param searchedValue 
    */
   highlightNodes(searchedValue: string) {
@@ -140,6 +144,63 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
         this.nodesToHighlight.add(node.id);
       }
     });
+    if (this.nodesToHighlight.size === 1) {
+      const parentsIds = this.getParentNodes([...(this.nodesToHighlight).values()][0]);
+      const childrenIds = this.getChildrenNodes([...(this.nodesToHighlight).values()][0]);
+      [...parentsIds, ...childrenIds].forEach(id => this.nodesToHighlight.add(id));
+    }
+
+    this.graph.nodeCanvasObject((node: N, ctx: CanvasRenderingContext2D) =>
+      this.drawNode(node, ctx)
+    );
+  }
+
+  /**
+   * Retrieves all parent nodes of the provided node.
+   * @param nodeId string
+   * @returns string[]
+   */
+  private getParentNodes(nodeId: string): string[] {
+    const parentIds: string[] = [];
+    const links = this.getLinksBySourceId(nodeId);
+    links.forEach(link => {
+      const parentId = (link.target as N)?.id ?? link.target;
+      parentIds.push(parentId, ...this.getParentNodes(parentId));
+    });
+    return parentIds;
+  }
+
+  /**
+   * Retrieves all children nodes of the provided node.
+   * @param nodeId string
+   * @returns string[]
+   */
+  private getChildrenNodes(nodeId: string): string[] {
+    const childrenIds: string[] = [];
+    const links = this.getLinksByTargetId(nodeId);
+    links.forEach(link => {
+      const childrenId = (link.source as N)?.id ?? link.source;
+      childrenIds.push(childrenId, ...this.getChildrenNodes(childrenId));
+    });
+    return childrenIds;
+  }
+
+  /**
+   * Retrieves the source link from the provided nodeId.
+   * @param nodeId string
+   * @returns L[]
+   */
+  private getLinksBySourceId(nodeId: string): L[] {
+    return this.links.filter(link => link.source === nodeId || (link.source as N).id === nodeId);
+  }
+
+  /**
+   * Retrieves the target link from the provided nodeId
+   * @param nodeId string
+   * @returns L[]
+   */
+  private getLinksByTargetId(nodeId: string): L[] {
+    return this.links.filter(link => link.target === nodeId || (link.target as N).id === nodeId);
   }
 
   /**
@@ -168,6 +229,7 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
    */
   private subscribeToData(result: GraphData<N, L>) {
     this.nodes = result.nodes;
+    this.links = result.links;
     this.nodesIds = result.nodes.map((node) => node.id);
     this.graph.graphData({ nodes: result.nodes, links: result.links });
   }
@@ -179,6 +241,11 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
    */
   private drawNode(node: N, ctx: CanvasRenderingContext2D) {
     if (node.x !== undefined && node.y !== undefined) {
+      if (this.nodesToHighlight.has(node.id)) {
+        ctx.font = '70px Material Icons';
+        ctx.fillStyle = 'black';
+        ctx.fillText(this.iconsService.getIcon(`${node.type}-graph-icon`), node.x - 35, node.y + 35);
+      }
       const label = this.getNodeStatusData(node);
       ctx.font = '50px Material Icons';
       ctx.fillStyle = label.color;

@@ -49,4 +49,5 @@ module.exports = class ForceGraph {
   height = jest.fn(() => this);
 
   linkDirectionalParticles = jest.fn(() => this);
+  linkDirectionalParticleWidth = jest.fn(() => this);
 }

@@ -33,7 +33,7 @@ export class GraphLegendComponent implements OnInit {
 
   @Input({ required: true }) set links(entry: Record<LinkType, string>) {
     this.linksDescription = Object.keys(entry).map(key => ({
-      label: key.replace('Link', ''),
+      label: key,
       color: entry[key as LinkType] as string,
     }));
   }
