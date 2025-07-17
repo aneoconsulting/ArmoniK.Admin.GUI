@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ResultsStatusesService } from '@app/results/services/results-statuses.service';
 import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
+import { LinkType } from '@app/types/graph.types';
 import { PrettyPipe } from '@pipes/pretty.pipe';
 import { IconsService } from '@services/icons.service';
 
@@ -30,10 +31,10 @@ export class GraphLegendComponent implements OnInit {
   readonly tasksStatusesService = inject(TasksStatusesService);
   readonly resultsStatusesService = inject(ResultsStatusesService);
 
-  @Input({ required: true }) set links(entry: Map<string, string>) {
-    this.linksDescription = [...entry.keys()].map(key => ({
+  @Input({ required: true }) set links(entry: Record<LinkType, string>) {
+    this.linksDescription = Object.keys(entry).map(key => ({
       label: key.replace('Link', ''),
-      color: entry.get(key) as string,
+      color: entry[key as LinkType] as string,
     }));
   }
 

@@ -1,5 +1,5 @@
 import { ResultStatus, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -11,9 +11,11 @@ import { RouterModule } from '@angular/router';
 import { ResultsStatusesService } from '@app/results/services/results-statuses.service';
 import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { ArmoniKGraphNode, GraphData, GraphLink } from '@app/types/graph.types';
+import { ArmoniKGraphNode, GraphData, GraphLink, LinkType } from '@app/types/graph.types';
 import { StatusLabelColor } from '@app/types/status';
+import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
+import { StorageService } from '@services/storage.service';
 import { forceLink, forceManyBody } from 'd3';
 import ForceGraph from 'force-graph';
 import { Observable, Subject, Subscription, switchMap } from 'rxjs';
@@ -44,7 +46,7 @@ import { GraphLegendComponent } from './graph-legend.component';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> implements AfterViewInit {
+export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> implements OnInit, AfterViewInit {
   @Input({ required: true }) grpcObservable: Observable<GraphData<N, L>>;
   @Input({ required: true }) sessionId: string;
 
@@ -56,17 +58,14 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
 
   private readonly nodesToHighlight: Set<string> = new Set();
   
-  readonly colorMap: Map<string, string> = new Map<string, string>([
-    ['taskResultLink', '#f7b657'],
-    ['parentLink', '#8A427AAA'],
-    ['dependencyLink', '#878adeDD'],
-    ['payloadLink', 'red'],
-  ]);
+  colorMap: Record<LinkType, string>;
 
   private readonly iconsService = inject(IconsService);
   private readonly sessionsStatusesService = inject(SessionsStatusesService);
   private readonly tasksStatusesService = inject(TasksStatusesService);
   private readonly resultsStatusesService = inject(ResultsStatusesService);
+  private readonly storageService = inject(StorageService);
+  private readonly defaultConfigService = inject(DefaultConfigService);
 
   private readonly redrawGraph$ = new Subject<void>();
 
@@ -75,6 +74,11 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
   private nodes: N[] = [];
   nodesIds: string[] = [];
   readonly highlightLabel = $localize`Highlight a task`;
+
+  ngOnInit(): void {
+    const storedColorMap = this.storageService.getItem<Record<LinkType, string>>('graph-links-colors', true) as Record<LinkType, string> | null;
+    this.colorMap = storedColorMap ?? this.defaultConfigService.defaultGraphLinksColors;    
+  }
 
   ngAfterViewInit(): void {
     if (this.graphRef) {
@@ -209,15 +213,6 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
    * @returns string
    */
   private getLinkColor(link: L): string {
-    switch (link.type) {
-    case 'parent':
-      return this.colorMap.get('parentLink')!;
-    case 'dependency':
-      return this.colorMap.get('dependencyLink')!;
-    case 'payload':
-      return this.colorMap.get('payloadLink')!;
-    default:
-      return this.colorMap.get('taskResultLink')!;
-    }
+    return this.colorMap[link.type];
   }
 }
