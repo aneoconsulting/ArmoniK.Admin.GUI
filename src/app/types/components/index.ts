@@ -33,7 +33,7 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
 
   readonly displayedColumns = signal<TableColumn<T, O>[]>([]);
   displayedColumnsKeys: ColumnKey<T, O>[] = [];
-  availableColumns: ColumnKey<T, O>[] = [];
+  availableColumns: TableColumn<T, O>[] = [];
   lockColumns: boolean = false;
   columnsLabels: Record<ColumnKey<T, O>, string> = {} as Record<ColumnKey<T, O>, string>;
 
@@ -70,7 +70,7 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
 
   protected initColumns() {
     this.displayedColumnsKeys = this.indexService.restoreColumns();
-    this.availableColumns = this.indexService.availableTableColumns.map(column => column.key);
+    this.availableColumns = this.indexService.availableTableColumns;
     this.indexService.availableTableColumns.forEach(column => {
       this.columnsLabels[column.key] = column.name;
     });
@@ -205,7 +205,6 @@ export abstract class TableHandlerCustomValues<T extends DataRaw, F extends Filt
   protected override initColumns() {
     super.initColumns();
     this.customColumns = this.indexService.restoreCustomColumns();
-    this.availableColumns.push(...this.customColumns as ColumnKey<T, O>[]);
   }
 
   override updateDisplayedColumns(): void {
@@ -233,8 +232,6 @@ export abstract class TableHandlerCustomValues<T extends DataRaw, F extends Filt
     dialogRef.afterClosed().subscribe((result) => {
       if(result) {
         this.customColumns = result;
-        this.availableColumns = this.availableColumns.filter(column => !column.toString().startsWith('options.options.'));
-        this.availableColumns.push(...result as ColumnKey<T, O>[]);
         this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.toString().startsWith('options.options.'));
         this.displayedColumnsKeys.push(...result as ColumnKey<T, O>[]);
         this.updateDisplayedColumns();

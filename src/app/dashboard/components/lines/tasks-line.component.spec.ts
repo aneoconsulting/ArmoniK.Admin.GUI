@@ -438,10 +438,6 @@ describe('TasksLineComponent', () => {
       expect(component.customColumns).toEqual(newCustom);
     });
 
-    it('should update available columns', () => {
-      expect(component.availableColumns).toEqual([...defaultColumns, ...newCustom]);
-    });
-
     it('should update displayed columns', () => {
       expect(component.displayedColumnsKeys).toEqual([...defaultColumns, 'options.options.newColumn']);
     });

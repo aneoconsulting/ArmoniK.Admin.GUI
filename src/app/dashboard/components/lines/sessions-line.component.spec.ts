@@ -413,16 +413,12 @@ describe('SessionsLineComponent', () => {
         }
       });
       component.customColumns = customColumns;
-      component.availableColumns = [...defaultColumns, ...customColumns];
+      component.availableColumns = displayedColumns;
       component.addCustomColumn();
     });
 
     it('should update custom columns', () => {
       expect(component.customColumns).toEqual(newCustom);
-    });
-
-    it('should update available columns', () => {
-      expect(component.availableColumns).toEqual([...defaultColumns, ...newCustom]);
     });
 
     it('should update displayed columns', () => {
