@@ -7,7 +7,7 @@ import { ColumnsModifyDialogData } from '@app/types/dialog';
 import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component';
 import { CheckedColumn } from './type';
 
-describe('', () => {
+describe('ColumnsModifyDialogComponent', () => {
   let component: ColumnsModifyDialogComponent<TaskSummary, TaskOptions>;
 
   const mockMatDialogRef = {
@@ -84,7 +84,7 @@ describe('', () => {
   });
 
   describe('initialisation', () => {
-    it('should get current columns', () => {
+    it('should get currently columns', () => {
       expect(component.selectedColumns.value).toEqual(selectedColumns);
     });
 
@@ -100,15 +100,15 @@ describe('', () => {
       expect(component.dateColumns).toEqual(['createdAt', 'creationToEndDuration']);
     });
 
-    it('should group the common columns', () => {
+    it('should group the objects & arrays columns', () => {
       expect(component.objectArrayColumns).toEqual(['options', 'parentTaskIds']);
     });
 
-    it('should group the common columns', () => {
+    it('should group the options columns', () => {
       expect(component.optionsColumns).toEqual(['options.applicationName']);
     });
 
-    it('should group the common columns', () => {
+    it('should group the customs columns', () => {
       expect(component.customColumns).toEqual(customColumns);
     });
   });

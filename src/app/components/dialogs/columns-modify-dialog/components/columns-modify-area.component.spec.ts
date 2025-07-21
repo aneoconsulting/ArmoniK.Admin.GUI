@@ -1,10 +1,11 @@
+import { TestBed } from '@angular/core/testing';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { TaskOptions, TaskRaw } from '@app/tasks/types';
 import { ColumnKey } from '@app/types/data';
 import { ColumnsModifyAreaComponent } from './columns-modify-area.component';
 
 describe('ColumnsModifyAreaComponent', () => {
-  const component = new ColumnsModifyAreaComponent<TaskRaw, TaskOptions>();
+  let component: ColumnsModifyAreaComponent<TaskRaw, TaskOptions>;
 
   const selectedColumns: ColumnKey<TaskRaw, TaskOptions>[] = ['id', 'createdBy', 'options.options.customColumn'];
 
@@ -17,6 +18,11 @@ describe('ColumnsModifyAreaComponent', () => {
   const columns: ColumnKey<TaskRaw, TaskOptions>[] = ['id', 'options.options.customColumn', 'count', 'actions'];
 
   beforeEach(() => {
+    component = TestBed.configureTestingModule({
+      providers: [
+        ColumnsModifyAreaComponent,
+      ],
+    }).inject(ColumnsModifyAreaComponent<TaskRaw, TaskOptions>);
     component.selectedColumns = selectedColumns;
     component.columnsLabels = columnsLabels;
     component.columns = columns;
@@ -39,7 +45,7 @@ describe('ColumnsModifyAreaComponent', () => {
       expect(component.allColumns).toEqual(columns);
     });
 
-    it('should count the number of selected columns', () => {
+    it('should count only the selected columns that are provided to the component', () => {
       expect(component.count).toEqual(2); // customColumn and id
     });
   });
