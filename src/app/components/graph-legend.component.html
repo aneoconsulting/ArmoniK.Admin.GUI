@@ -9,7 +9,7 @@
         <h3 i18n>Sessions Statuses</h3>
       </div>
       <section>
-        @for (status of sessionsStatuses; track status) {
+        @for (status of sessionsStatusesService.keys; track status) {
           @let statusData = sessionsStatusesService.statusToLabel(status);
           <mat-chip>
             <mat-icon matChipAvatar [style]="'color: ' + statusData.color" [fontIcon]="getIcon('session-graph-icon')" />
@@ -27,7 +27,7 @@
         <h3 i18n>Tasks Statuses</h3>
       </div>
       <section>
-        @for (status of tasksStatuses; track status) {
+        @for (status of tasksStatusesService.keys; track status) {
           @let statusData = tasksStatusesService.statusToLabel(status);
           <mat-chip>
             <mat-icon matChipAvatar [style]="'color: ' + statusData.color" [fontIcon]="getIcon('task-graph-icon')" />
@@ -45,7 +45,7 @@
         <h3 i18n>Results Statuses</h3>
       </div>
       <section>
-        @for (status of resultsStatuses; track status) {
+        @for (status of resultsStatusesService.keys; track status) {
           @let statusData = resultsStatusesService.statusToLabel(status);
           <mat-chip>
             <mat-icon matChipAvatar [style]="'color: ' + statusData.color" [fontIcon]="getIcon('result-graph-icon')" />

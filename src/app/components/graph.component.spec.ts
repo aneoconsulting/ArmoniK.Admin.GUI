@@ -4,8 +4,10 @@ import { TestBed } from '@angular/core/testing';
 import { ResultsStatusesService } from '@app/results/services/results-statuses.service';
 import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { ArmoniKGraphNode, GraphData, GraphLink } from '@app/types/graph.types';
+import { ArmoniKGraphNode, GraphData, GraphLink, LinkType } from '@app/types/graph.types';
+import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
+import { StorageService } from '@services/storage.service';
 import { Subject } from 'rxjs';
 import { GraphComponent } from './graph.component';
 
@@ -13,6 +15,10 @@ describe('GraphComponent', () => {
   let component: GraphComponent<ArmoniKGraphNode, GraphLink<ArmoniKGraphNode>>;
 
   const grpcObservable = new Subject<GraphData<ArmoniKGraphNode, GraphLink<ArmoniKGraphNode>>>();
+
+  const mockStorageService = {
+    getItem: jest.fn(),
+  };
 
   const mockSessionsStatuses = {
     statusToLabel: jest.fn(() => ({
@@ -47,6 +53,8 @@ describe('GraphComponent', () => {
     component = TestBed.configureTestingModule({
       providers: [
         GraphComponent,
+        DefaultConfigService,
+        { provide: StorageService, useValue: mockStorageService },
         { provide: IconsService, useValue: mockIconsService },
         { provide: SessionsStatusesService, useValue: mockSessionsStatuses },
         { provide: TasksStatusesService, useValue: mockTasksStatuses },
@@ -58,6 +66,7 @@ describe('GraphComponent', () => {
     component['canvasHeight'] = 100;
     component['canvasWidth'] = 100;
     component['graphRef'] = mockGraph;
+    component.ngOnInit();
     component.ngAfterViewInit();
   });
 
@@ -91,8 +100,8 @@ describe('GraphComponent', () => {
     expect(mockIconsService.getIcon).toHaveBeenCalledWith(name);
   });
 
-  it('should highlight nodes correctly', () => {
-    component['nodes'] = [
+  describe('highlightNodes', () => {
+    const nodes = [
       {
         id: 'abc',
       },
@@ -102,15 +111,38 @@ describe('GraphComponent', () => {
       {
         id: '123',
       },
+      {
+        id: '1234',
+      },
     ] as ArmoniKGraphNode[];
 
-    const event = {
-      target: {
-        value: 'abc',
+    const links = [
+      {
+        source: '123',
+        target: '123abc',
       },
-    } as unknown as Event;
-    component.highlightNodes(event);
-    expect(component['nodesToHighlight']).toEqual(new Set(['abc', '123abc']));
+      {
+        source: '123abc',
+        target: '1234',
+      }
+    ] as GraphLink<ArmoniKGraphNode>[];
+
+    beforeEach(() => {
+      component['nodes'] = nodes;
+      component['links'] = links;
+    });
+
+    it('should highlight nodes correctly', () => {
+      const event = 'abc';
+      component.highlightNodes(event);
+      expect(component['nodesToHighlight']).toEqual(new Set(['abc', '123abc']));
+    });
+
+    it('should highlight all parents and children nodes if there is only one matching node', () => {
+      const event = '123abc';
+      component.highlightNodes(event);
+      expect(component['nodesToHighlight']).toEqual(new Set(['123', '123abc', '1234']));
+    });
   });
 
   describe('onResize', () => {
@@ -155,24 +187,38 @@ describe('GraphComponent', () => {
     });
   });
 
-  it('should draw a node', () => {
+  describe('drawNode', () => {
+    let mockCtx: CanvasRenderingContext2D;
+
     const node = {
+      id: '1',
       x: 0,
       y: 0,
       type: 'session',
     } as ArmoniKGraphNode;
 
-    const mockCtx = {
-      fillText: jest.fn(),
-    } as unknown as CanvasRenderingContext2D;
+    beforeEach(() => {
+      mockCtx = {
+        fillText: jest.fn(),
+      } as unknown as CanvasRenderingContext2D;
+    });
 
-    component['drawNode'](node, mockCtx);
+    it('should draw a node', () => {
+      component['drawNode'](node, mockCtx);
 
-    expect(mockCtx.fillText).toHaveBeenCalledWith(
-      `${node.type}-graph-icon`,
-      node.x! - 25,
-      node.y! + 25,
-    );
+      expect(mockCtx.fillText).toHaveBeenCalledWith(
+        `${node.type}-graph-icon`,
+        node.x! - 25,
+        node.y! + 25,
+      );
+    });
+
+    it('should highlight a node if its id is in the nodesToHighlight', () => {
+      component['nodesToHighlight'].add('1');
+      component['drawNode'](node, mockCtx);
+
+      expect(mockCtx.fillText).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe('getNodeStatusData', () => {
@@ -221,25 +267,14 @@ describe('GraphComponent', () => {
   });
 
   describe('getLinkColor', () => {
-    it('should get the parentlink color', () => {
-      const link = {
-        type: 'parent'
-      } as GraphLink<ArmoniKGraphNode>;
-      expect(component['getLinkColor'](link)).toEqual(component['colorMap'].get('parentLink'));
-    });
-    
-    it('should get the dependencyLink color', () => {
-      const link = {
-        type: 'dependency'
-      } as GraphLink<ArmoniKGraphNode>;
-      expect(component['getLinkColor'](link)).toEqual(component['colorMap'].get('dependencyLink'));
-    });
-    
-    it('should get the taskResultLink color', () => {
-      const link = {
-        type: 'output'
-      } as GraphLink<ArmoniKGraphNode>;
-      expect(component['getLinkColor'](link)).toEqual(component['colorMap'].get('taskResultLink'));
+    it('should get all kind of link colors', () => {
+      const types: LinkType[] = ['dependency', 'output', 'parent', 'payload'];
+      types.forEach(type => {
+        const link = {
+          type: type
+        } as GraphLink<ArmoniKGraphNode>;
+        expect(component['getLinkColor'](link)).toEqual(component.colorMap[type]);
+      });
     });
   });
 

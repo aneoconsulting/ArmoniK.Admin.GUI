@@ -1,8 +1,8 @@
-import { ResultStatus, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { ResultsStatusesService } from '@app/results/services/results-statuses.service';
 import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
+import { LinkType } from '@app/types/graph.types';
 import { IconsService } from '@services/icons.service';
 import { GraphLegendComponent } from './graph-legend.component';
 
@@ -10,40 +10,26 @@ describe('GraphLegendComponent', () => {
   let component: GraphLegendComponent;
 
   const mockTasksStatusesService = {
-    statuses: {
-      [TaskStatus.TASK_STATUS_CANCELLED]: {
-        label: 'cancelled'
-      },
-      [TaskStatus.TASK_STATUS_CREATING]: {
-        label: 'creating'
-      },
-    },
+    keys: ['Cancelled', 'Creating'],
   };
 
   const mockSessionsStatusesService = {
-    statuses: {
-      [SessionStatus.SESSION_STATUS_CANCELLED]: {
-        label: 'Cancelled',
-      },
-      [SessionStatus.SESSION_STATUS_CLOSED]: {
-        label: 'Closed',
-      },
-    },
+    keys: ['Cancelled', 'Closed'],
   };
 
   const mockResultsStatusesService = {
-    statuses: {
-      [ResultStatus.RESULT_STATUS_ABORTED]: {
-        label: 'Aborted',
-      },
-      [ResultStatus.RESULT_STATUS_COMPLETED]: {
-        label: 'Completed'
-      },
-    },
+    keys: ['Aborted', 'Completed'],
   };
 
   const mockIconsService = {
     getIcon: jest.fn(),
+  };
+
+  const links: Record<LinkType, string> = {
+    dependency: 'blue',
+    output: 'red',
+    parent: 'yellow',
+    payload: 'green'
   };
 
   beforeEach(() => {
@@ -56,25 +42,32 @@ describe('GraphLegendComponent', () => {
         { provide: IconsService, useValue: mockIconsService },
       ]
     }).inject(GraphLegendComponent);
-    component.ngOnInit();
+    component.links = links;
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('initialisation', () => {
-    it('should set sessionsStatuses', () => {
-      expect(component.sessionsStatuses).toEqual([SessionStatus.SESSION_STATUS_CANCELLED, SessionStatus.SESSION_STATUS_CLOSED]);
-    });
-
-    it('should set TaskStatuses', () => {
-      expect(component.tasksStatuses).toEqual([TaskStatus.TASK_STATUS_CANCELLED, TaskStatus.TASK_STATUS_CANCELLING]);
-    });
-
-    it('should set resultsStatuses', () => {
-      expect(component.resultsStatuses).toEqual([ResultStatus.RESULT_STATUS_ABORTED, ResultStatus.RESULT_STATUS_COMPLETED]);
-    });
+  it('should initialize linksDescription', () => {
+    expect(component.linksDescription).toEqual([
+      {
+        label: 'dependency',
+        color: 'blue',
+      },
+      {
+        label: 'output',
+        color: 'red',
+      },
+      {
+        label: 'parent',
+        color: 'yellow',
+      },
+      {
+        label: 'payload',
+        color: 'green',
+      },
+    ]);
   });
 
   it('should get icons', () => {
