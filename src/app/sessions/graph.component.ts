@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ArmoniKGraphNode, GraphData, GraphLink } from '@app/types/graph.types';
 import { GraphComponent } from '@components/graph.component';
@@ -19,7 +19,7 @@ import { Observable, Subscription, map } from 'rxjs';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SessionGraphComponent implements OnInit {
+export class SessionGraphComponent implements OnInit, OnDestroy {
   id: string;
 
   grpcObservable: Observable<GraphData<ArmoniKGraphNode, GraphLink<ArmoniKGraphNode>>>;
@@ -39,5 +39,9 @@ export class SessionGraphComponent implements OnInit {
     this.grpcObservable = this.graphDataService.listenToEvents();
 
     this.subscriptions.add(routeSubscription);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }
