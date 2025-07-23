@@ -1,6 +1,4 @@
 module.exports = class ForceGraph {
-  constructor(value) {}
-
   node = {
     x: 0,
     y: 0,
