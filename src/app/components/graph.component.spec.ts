@@ -101,18 +101,35 @@ describe('GraphComponent', () => {
   });
 
   describe('highlightNodes', () => {
+    const nodes = [
+      {
+        id: 'abc',
+      },
+      {
+        id: '123abc',
+      },
+      {
+        id: '123',
+      },
+      {
+        id: '1234',
+      },
+    ] as ArmoniKGraphNode[];
+
+    const links = [
+      {
+        source: '123',
+        target: '123abc',
+      },
+      {
+        source: '123abc',
+        target: '1234',
+      }
+    ] as GraphLink<ArmoniKGraphNode>[];
+
     beforeEach(() => {
-      component['nodes'] = [
-        {
-          id: 'abc',
-        },
-        {
-          id: '123abc',
-        },
-        {
-          id: '123',
-        },
-      ] as ArmoniKGraphNode[];
+      component['nodes'] = nodes;
+      component['links'] = links;
     });
 
     it('should highlight nodes correctly', () => {
@@ -122,7 +139,9 @@ describe('GraphComponent', () => {
     });
 
     it('should highlight all parents and children nodes if there is only one matching node', () => {
-      
+      const event = '123abc';
+      component.highlightNodes(event);
+      expect(component['nodesToHighlight']).toEqual(new Set(['123', '123abc', '1234']));
     });
   });
 
@@ -168,24 +187,38 @@ describe('GraphComponent', () => {
     });
   });
 
-  it('should draw a node', () => {
+  describe('drawNode', () => {
+    let mockCtx: CanvasRenderingContext2D;
+
     const node = {
+      id: '1',
       x: 0,
       y: 0,
       type: 'session',
     } as ArmoniKGraphNode;
 
-    const mockCtx = {
-      fillText: jest.fn(),
-    } as unknown as CanvasRenderingContext2D;
+    beforeEach(() => {
+      mockCtx = {
+        fillText: jest.fn(),
+      } as unknown as CanvasRenderingContext2D;
+    });
 
-    component['drawNode'](node, mockCtx);
+    it('should draw a node', () => {
+      component['drawNode'](node, mockCtx);
 
-    expect(mockCtx.fillText).toHaveBeenCalledWith(
-      `${node.type}-graph-icon`,
-      node.x! - 25,
-      node.y! + 25,
-    );
+      expect(mockCtx.fillText).toHaveBeenCalledWith(
+        `${node.type}-graph-icon`,
+        node.x! - 25,
+        node.y! + 25,
+      );
+    });
+
+    it('should highlight a node if its id is in the nodesToHighlight', () => {
+      component['nodesToHighlight'].add('1');
+      component['drawNode'](node, mockCtx);
+
+      expect(mockCtx.fillText).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe('getNodeStatusData', () => {
