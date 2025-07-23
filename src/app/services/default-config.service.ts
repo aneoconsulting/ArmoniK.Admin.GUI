@@ -349,10 +349,10 @@ export class DefaultConfigService {
   };
 
   readonly #defaultGraphLinksColors: Record<LinkType, string> = {
-    'parent': '#8A427AAA',
-    'dependency': '#878adeDD',
-    'payload': '#00a700ff',
-    'output': '#f7b657',
+    parent: '#8A427AAA',
+    dependency: '#878adeDD',
+    payload: '#00a700ff',
+    output: '#f7b657',
   };
 
   // We use getters to be able to deep copy the default config and to access the default config from the outside

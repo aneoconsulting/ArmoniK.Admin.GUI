@@ -1,5 +1,4 @@
-import { ResultStatus, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -25,7 +24,7 @@ import { IconsService } from '@services/icons.service';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GraphLegendComponent implements OnInit {
+export class GraphLegendComponent {
   private readonly iconsService = inject(IconsService);
   readonly sessionsStatusesService = inject(SessionsStatusesService);
   readonly tasksStatusesService = inject(TasksStatusesService);
@@ -39,17 +38,6 @@ export class GraphLegendComponent implements OnInit {
   }
 
   linksDescription: { label: string, color: string }[];
-
-  // TODO: this part will be useless when statuses are merged
-  sessionsStatuses: SessionStatus[];
-  tasksStatuses: TaskStatus[];
-  resultsStatuses: ResultStatus[];
-
-  ngOnInit(): void {
-    this.sessionsStatuses = Object.keys(this.sessionsStatusesService.statuses).map((key) => Number(key) as SessionStatus);
-    this.tasksStatuses = Object.keys(this.tasksStatusesService.statuses).map((key) => Number(key) as TaskStatus);
-    this.resultsStatuses = Object.keys(this.resultsStatusesService.statuses).map((key) => Number(key) as ResultStatus);
-  }
 
   getIcon(name: string | undefined) {
     return this.iconsService.getIcon(name);
