@@ -75,7 +75,7 @@ describe('GraphDataService', () => {
       );
     });
 
-    it('should add a task to the nodes', () => {
+    it('should add a task to the nodes, as well as its dependencies and payload', () => {
       events.next(event);
       expect(service.nodes).toEqual<ArmoniKGraphNode[]>([
         sessionNode,
@@ -84,60 +84,36 @@ describe('GraphDataService', () => {
           id: event.newTask!.taskId,
           status: event.newTask!.status,
           type: 'task'
-        }
+        },
+        {
+          id: event.newTask!.payloadId,
+          status: ResultStatus.RESULT_STATUS_UNSPECIFIED,
+          type: 'result'
+        },
       ]);
     });
 
-    it('should add task dependencies to links', () => {
+    it('should add task dependencies and payload to links', () => {
       events.next(event);
       expect(service.links).toEqual<GraphLink<ArmoniKGraphNode>[]>(
-        event.newTask!.dataDependencies.map((dependency) => ({
-          type: 'dependency',
-          source: dependency,
-          target: event.newTask!.taskId
-        })),
+        [
+          {
+            type: 'payload',
+            source: event.newTask!.payloadId,
+            target: event.newTask!.taskId,
+          },
+          {
+            type: 'parent',
+            source: event.newTask!.parentTaskIds.at(-1),
+            target: event.newTask!.payloadId,
+          },
+          ...event.newTask!.dataDependencies.map((dependency) => ({
+            type: 'dependency',
+            source: dependency,
+            target: event.newTask!.taskId
+          } as GraphLink<ArmoniKGraphNode>)),
+        ]
       );
-    });
-
-    describe('with payloadId and no dataDependency', () => {
-      beforeEach(() => {
-        event.newTask!.dataDependencies = [];
-        events.next(event);
-      });
-
-      it('should add a payload link if there is no data dependency', () => {
-        expect(service.links).toEqual<GraphLink<ArmoniKGraphNode>[]>(
-          [       
-            {
-              type: 'payload',
-              source: event.newTask!.payloadId,
-              target: event.newTask!.taskId,
-            },
-            {
-              type: 'parent',
-              source: event.newTask!.parentTaskIds.at(-1),
-              target: event.newTask!.payloadId,
-            }
-          ]
-        );
-      });
-
-      it('should add the payload to the nodes', () => {
-        expect(service.nodes).toEqual<ArmoniKGraphNode[]>([
-          sessionNode,
-          ...startingNodes,
-          {
-            id: event.newTask!.taskId,
-            status: event.newTask!.status,
-            type: 'task'
-          },
-          {
-            id: event.newTask!.payloadId,
-            status: ResultStatus.RESULT_STATUS_UNSPECIFIED,
-            type: 'result'
-          },
-        ]);
-      });
     });
   });
 

@@ -104,9 +104,10 @@ export class GraphDataService {
   private addTask(newTask: EventSubscriptionResponse.NewTask | undefined) {
     if (newTask) {
       this.createNode(newTask.taskId, newTask.status, 'task');
-      if (newTask.dataDependencies.length === 0) {
+      if (newTask.payloadId?.length !== 0) {
         this.addPayload(newTask);
-      } else {
+      }
+      if (newTask.dataDependencies.length !== 0) {
         newTask.dataDependencies.forEach(dependencyId => {
           this.addDependency(newTask.taskId, dependencyId);
         });
