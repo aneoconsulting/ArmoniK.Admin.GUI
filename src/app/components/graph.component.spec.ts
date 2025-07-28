@@ -18,6 +18,7 @@ describe('GraphComponent', () => {
 
   const mockStorageService = {
     getItem: jest.fn(),
+    setItem: jest.fn(),
   };
 
   const mockSessionsStatuses = {
@@ -138,8 +139,24 @@ describe('GraphComponent', () => {
       expect(component['nodesToHighlight']).toEqual(new Set(['abc', '123abc']));
     });
 
-    it('should highlight all parents and children nodes if there is only one matching node', () => {
+    it('should highlight all parents nodes if there is only one matching node and highlightParentNodes is true', () => {
       const event = '123abc';
+      component.highlightParentNodes = true;
+      component.highlightNodes(event);
+      expect(component['nodesToHighlight']).toEqual(new Set(['123', '123abc']));
+    });
+
+    it('should highlight all parents nodes if there is only one matching node and highlightChildrenNodes is true', () => {
+      const event = '123abc';
+      component.highlightChildrenNodes = true;
+      component.highlightNodes(event);
+      expect(component['nodesToHighlight']).toEqual(new Set(['123abc', '1234']));
+    });
+
+    it('should highlight both parents and children nodes if there is only one matching node and highlightChildrenNodes and highlightParentNodes are true', () => {
+      const event = '123abc';
+      component.highlightChildrenNodes = true;
+      component.highlightParentNodes = true;
       component.highlightNodes(event);
       expect(component['nodesToHighlight']).toEqual(new Set(['123', '123abc', '1234']));
     });
@@ -319,6 +336,60 @@ describe('GraphComponent', () => {
 
     it('should zoom on the node' ,() => {
       expect(component['graph'].zoom).toHaveBeenCalled();
+    });
+  });
+
+  describe('toggleHighlightChildrenNodes', () => {
+    const checked = true;
+    let spy: jest.SpyInstance;
+
+    beforeEach(() => {
+      spy = jest.spyOn(component, 'highlightNodes');
+      component['highlightChildrenNodes'] = !checked;
+      component['nodeToHighlight'] = null;
+    });
+
+    it('should set the provided value as highlightChildrenNodes', () => {
+      component.toggleHighlightChildrenNodes(checked);
+      expect(component['highlightChildrenNodes']).toEqual(checked);
+    });
+
+    it('should not highlight the nodes if there is no nodes to hightlight', () => {
+      component.toggleHighlightChildrenNodes(checked);
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should hightlight the nodes if there is a node to highlight', () => {
+      component['nodeToHighlight'] = 'some node';
+      component.toggleHighlightChildrenNodes(checked);
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe('toggleHighlightChildrenNodes', () => {
+    const checked = true;
+    let spy: jest.SpyInstance;
+
+    beforeEach(() => {
+      spy = jest.spyOn(component, 'highlightNodes');
+      component['highlightParentNodes'] = !checked;
+      component['nodeToHighlight'] = null;
+    });
+
+    it('should set the provided value as highlightChildrenNodes', () => {
+      component.toggleHighlightChildrenNodes(checked);
+      expect(component['highlightChildrenNodes']).toEqual(checked);
+    });
+
+    it('should not highlight the nodes if there is no nodes to hightlight', () => {
+      component.toggleHighlightParentNodes(checked);
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should hightlight the nodes if there is a node to highlight', () => {
+      component['nodeToHighlight'] = 'some node';
+      component.toggleHighlightParentNodes(checked);
+      expect(spy).toHaveBeenCalled();
     });
   });
 });

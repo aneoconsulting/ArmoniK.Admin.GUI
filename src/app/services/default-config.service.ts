@@ -355,6 +355,9 @@ export class DefaultConfigService {
     output: '#f7b657',
   };
 
+  readonly #defaultGraphHighlightParents: boolean = false;
+  readonly #defaultGraphHighlightChildren: boolean = false;
+
   // We use getters to be able to deep copy the default config and to access the default config from the outside
 
   get defaultTheme(): Theme {
@@ -421,6 +424,14 @@ export class DefaultConfigService {
     return structuredClone(this.#defaultGraphLinksColors);
   }
 
+  get defaultGraphHighlightParents() {
+    return structuredClone(this.#defaultGraphHighlightParents);
+  }
+
+  get defaultGraphHighlightChildren() {
+    return structuredClone(this.#defaultGraphHighlightChildren);
+  }
+
   readonly #exportedDefaultConfig: ExportedDefaultConfig = {
     'language': this.#defaultLanguage,
     'navigation-sidebar': this.#defaultSidebar,
@@ -469,6 +480,8 @@ export class DefaultConfigService {
     'tasks-custom-columns': [],
     'sessions-custom-columns': [],
     'graph-links-colors': this.#defaultGraphLinksColors,
+    'graph-highlight-parents': this.#defaultGraphHighlightParents,
+    'graph-highlight-children': this.#defaultGraphHighlightChildren,
   };
 
   get exportedDefaultConfig(): ExportedDefaultConfig {
