@@ -57,6 +57,9 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
   private canvasHeight: number = window.innerHeight;
 
   private readonly nodesToHighlight: Set<string> = new Set();
+  highlightParentNodes = false;
+  highlightChildrenNodes = false;
+  private nodeToHighlight: string | null;
   
   colorMap: Record<LinkType, string>;
 
@@ -79,7 +82,13 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
 
   ngOnInit(): void {
     const storedColorMap = this.storageService.getItem<Record<LinkType, string>>('graph-links-colors', true) as Record<LinkType, string> | null;
-    this.colorMap = storedColorMap ?? this.defaultConfigService.defaultGraphLinksColors;    
+    this.colorMap = storedColorMap ?? this.defaultConfigService.defaultGraphLinksColors;
+    
+    const storedHighlightParents = this.storageService.getItem<boolean>('graph-highlight-parents', true) as boolean;
+    this.highlightParentNodes = storedHighlightParents ?? this.defaultConfigService.defaultGraphHighlightParents;
+
+    const storedHighlightChildren = this.storageService.getItem<boolean>('graph-highlight-children', true) as boolean;
+    this.highlightChildrenNodes = storedHighlightChildren ?? this.defaultConfigService.defaultGraphHighlightChildren;
   }
 
   ngAfterViewInit(): void {
@@ -130,12 +139,53 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
   }
 
   /**
+   * Updates and stores highlightParentNodes.
+   * @param checked boolean
+   */
+  toggleHighlightParentNodes(checked: boolean) {
+    this.highlightParentNodes = checked;
+    this.storageService.setItem('graph-highlight-parents', checked);
+    if (this.nodeToHighlight !== null) {
+      this.highlightNodes(this.nodeToHighlight);
+    }
+  }
+
+  /**
+   * Updates and stores highlightChildrenNodes.
+   * @param checked boolean
+   */
+  toggleHighlightChildrenNodes(checked: boolean) {
+    this.highlightChildrenNodes = checked;
+    this.storageService.setItem('graph-highlight-children', checked);
+    if (this.nodeToHighlight !== null) {
+      this.highlightNodes(this.nodeToHighlight);
+    }
+  }
+
+  /**
+   * Returns the complementary color of the provided color
+   * @param color hexadecimal color
+   * @returns hexadecimal color
+   */
+  getComplementaryColor(color: string) {
+    const colorHex = color.replace('#', '');
+    const colorDec = parseInt(colorHex, 16);
+    let complementaryHex = ((1 << 4 * colorHex.length) - 1 - colorDec).toString(16);
+
+    while (complementaryHex.length < colorHex.length) {
+      complementaryHex = '0' + complementaryHex;
+    }
+    return '#' + complementaryHex;
+  }
+
+  /**
    * Hightlight nodes with names included the searched value.
    * If there is only one node, will display all its parents and children
    * @param searchedValue 
    */
   highlightNodes(searchedValue: string) {
     this.nodesToHighlight.clear();
+    this.nodeToHighlight = searchedValue;
     this.nodes.forEach((node: ArmoniKGraphNode) => {
       if (
         searchedValue !== '' &&
@@ -145,9 +195,15 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
       }
     });
     if (this.nodesToHighlight.size === 1) {
-      const parentsIds = this.getParentNodes([...(this.nodesToHighlight).values()][0]);
-      const childrenIds = this.getChildrenNodes([...(this.nodesToHighlight).values()][0]);
-      [...parentsIds, ...childrenIds].forEach(id => this.nodesToHighlight.add(id));
+      const nodeId = [...(this.nodesToHighlight).values()][0];
+      const node = this.nodes.find(node => node.id === nodeId) as ArmoniKGraphNode;
+      this.graph.centerAt(node.x, node.y, 500);
+      if (this.highlightParentNodes) {
+        this.getParentNodes(nodeId).forEach(id => this.nodesToHighlight.add(id));
+      }
+      if (this.highlightChildrenNodes) {
+        this.getChildrenNodes(nodeId).forEach(id => this.nodesToHighlight.add(id));
+      }
     }
 
     this.graph.nodeCanvasObject((node: N, ctx: CanvasRenderingContext2D) =>
@@ -162,9 +218,9 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
    */
   private getParentNodes(nodeId: string): string[] {
     const parentIds: string[] = [];
-    const links = this.getLinksBySourceId(nodeId);
+    const links = this.getLinksByTargetId(nodeId);
     links.forEach(link => {
-      const parentId = (link.target as N)?.id ?? link.target;
+      const parentId = (link.source as N)?.id ?? link.source;
       parentIds.push(parentId, ...this.getParentNodes(parentId));
     });
     return parentIds;
@@ -177,9 +233,10 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
    */
   private getChildrenNodes(nodeId: string): string[] {
     const childrenIds: string[] = [];
-    const links = this.getLinksByTargetId(nodeId);
+    const links = this.getLinksBySourceId(nodeId);
     links.forEach(link => {
-      const childrenId = (link.source as N)?.id ?? link.source;
+      const childrenId = (link.target as N)?.id ?? link.target;
+      console.log(childrenId);
       childrenIds.push(childrenId, ...this.getChildrenNodes(childrenId));
     });
     return childrenIds;
@@ -241,12 +298,13 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
    */
   private drawNode(node: N, ctx: CanvasRenderingContext2D) {
     if (node.x !== undefined && node.y !== undefined) {
+      const label = this.getNodeStatusData(node);
       if (this.nodesToHighlight.has(node.id)) {
         ctx.font = '70px Material Icons';
-        ctx.fillStyle = 'black';
+        const complementary = this.getComplementaryColor(label.color);
+        ctx.fillStyle = complementary;
         ctx.fillText(this.iconsService.getIcon(`${node.type}-graph-icon`), node.x - 35, node.y + 35);
       }
-      const label = this.getNodeStatusData(node);
       ctx.font = '50px Material Icons';
       ctx.fillStyle = label.color;
       ctx.fillText(this.iconsService.getIcon(`${node.type}-graph-icon`), node.x - 25, node.y + 25);
