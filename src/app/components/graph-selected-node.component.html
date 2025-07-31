@@ -1,0 +1,27 @@
+  @if (node && node.type !== 'session') {
+  <mat-card-content>
+    <p>
+    @switch (node.type) {
+      @case ('result') {
+        <span i18n>Result: </span>
+      }
+      @case ('task') {
+        <span i18n>Task: </span>
+      }
+      @default {
+        <span i18n>Node: </span>
+      }
+    }
+    <span>{{ node.id }}</span>
+    </p>
+    @if (node.type === 'task') {
+    <button mat-flat-button color="primary" [routerLink]="'/tasks/' + node.id">
+      <span i18n>See task data</span>
+    </button>
+    } @else if (node.type === 'result') {
+    <button mat-flat-button color="primary" [routerLink]="'/results/' + node.id">
+      <span i18n>See result data</span>
+    </button>
+    }
+  </mat-card-content>
+}

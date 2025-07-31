@@ -34,6 +34,7 @@
       Display Particles
     </mat-checkbox>
   </mat-card-actions>
+  <app-graph-selected-node [node]="selectedNode()" />
 </mat-card>
 <app-graph-legend [links]="colorMap" />
 <div class="graph" #graph (window:resize)="onResize($event)"></div>

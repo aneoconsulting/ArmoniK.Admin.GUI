@@ -1,5 +1,5 @@
 import { ResultStatus, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -21,6 +21,7 @@ import ForceGraph from 'force-graph';
 import { Observable, Subject, Subscription, switchMap } from 'rxjs';
 import { AutoCompleteComponent } from './auto-complete.component';
 import { GraphLegendComponent } from './graph-legend.component';
+import { GraphSelectedNodeComponent } from './graph-selected-node.component';
 
 @Component({
   selector: 'app-graph',
@@ -37,7 +38,8 @@ import { GraphLegendComponent } from './graph-legend.component';
     RouterModule,
     GraphLegendComponent,
     MatTooltipModule,
-    AutoCompleteComponent
+    AutoCompleteComponent,
+    GraphSelectedNodeComponent,
   ],
   providers: [
     SessionsStatusesService,
@@ -79,6 +81,7 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
 
   nodesIds: string[] = [];
   readonly highlightLabel = $localize`Highlight a task`;
+  selectedNode = signal<N | null>(null);
 
   ngOnInit(): void {
     const storedColorMap = this.storageService.getItem<Record<LinkType, string>>('graph-links-colors', true) as Record<LinkType, string> | null;
@@ -111,7 +114,8 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
         .nodeLabel('id')
         .onNodeClick((node: N) => {
           this.graph.centerAt(node.x, node.y);
-          this.graph.zoom(4, 2000);
+          this.graph.zoom(2, 2000);
+          this.selectedNode.set(node);
         });
 
       this.subscription.add(this.grpcObservable.subscribe((result) => this.subscribeToData(result)));
