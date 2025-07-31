@@ -37,7 +37,7 @@ describe('FiltersDialogInputComponent', () => {
     const date = 1234;
     component.type = 'date';
     component.writeValue(`${date}`);
-    expect(component.dateForm.value).toEqual(new Date(date));
+    expect(component.dateForm.value).toEqual(new Date(date * 1000));
   });
 
   describe('changes', () => {
