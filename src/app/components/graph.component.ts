@@ -219,10 +219,15 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
   private getParentNodes(nodeId: string): string[] {
     const parentIds: string[] = [];
     const links = this.getLinksByTargetId(nodeId);
-    links.forEach(link => {
-      const parentId = (link.source as N)?.id ?? link.source;
-      parentIds.push(parentId, ...this.getParentNodes(parentId));
-    });
+    const idBuffer: L[] = [...links];
+    while (idBuffer.length !== 0) {
+      const link = idBuffer.pop();
+      if (link) {
+        const parentId = (link.source as N)?.id ?? link.source;
+        parentIds.push(parentId);
+        idBuffer.push(...this.getLinksByTargetId(parentId));
+      }
+    }
     return parentIds;
   }
 
@@ -234,11 +239,15 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
   private getChildrenNodes(nodeId: string): string[] {
     const childrenIds: string[] = [];
     const links = this.getLinksBySourceId(nodeId);
-    links.forEach(link => {
-      const childrenId = (link.target as N)?.id ?? link.target;
-      console.log(childrenId);
-      childrenIds.push(childrenId, ...this.getChildrenNodes(childrenId));
-    });
+    const idBuffer: L[] = [...links];
+    while (idBuffer.length !== 0) {
+      const link = idBuffer.pop();
+      if (link) {
+        const childrenId = (link.target as N)?.id ?? link.target;
+        childrenIds.push(childrenId);
+        idBuffer.push(...this.getLinksBySourceId(childrenId));
+      }
+    }
     return childrenIds;
   }
 
