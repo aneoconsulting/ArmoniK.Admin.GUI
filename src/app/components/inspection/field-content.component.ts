@@ -8,7 +8,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { TaskOptions } from '@app/tasks/types';
 import { ColumnType, Field } from '@app/types/column.type';
-import { DataRaw, Status } from '@app/types/data';
+import { DataRaw } from '@app/types/data';
+import { Status } from '@app/types/status';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
@@ -19,7 +20,6 @@ import { NotificationService } from '@services/notification.service';
 @Component({
   selector: 'app-field-content',
   templateUrl: 'field-content.component.html',
-  standalone: true,
   imports: [
     MatChipsModule,
     DatePipe,

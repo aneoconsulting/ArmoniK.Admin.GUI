@@ -7,6 +7,7 @@ import { TaskOptions, TaskSummary } from '@app/tasks/types';
 import { ColumnKey, CustomColumn, DataRaw } from '@app/types/data';
 import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
+import { StatusLabelColor } from '@app/types/status';
 import { TableType } from '@app/types/table';
 
 export type LineType = TableType | 'CountStatus';
@@ -49,13 +50,11 @@ export type ManageGroupsDialogResult = {
   groups: TasksStatusesGroup[];
 };
 
-export type StatusLabeled = { name: string, value: string };
-
 export type AddStatusGroupDialogData = {
-  statuses: StatusLabeled[];
+  statuses: Record<TaskStatus, StatusLabelColor>;
 };
 
 export type EditStatusGroupDialogData = {
   group: TasksStatusesGroup;
-  statuses: StatusLabeled[];
+  statuses: Record<TaskStatus, StatusLabelColor>;
 };

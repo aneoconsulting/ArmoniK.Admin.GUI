@@ -6,13 +6,16 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Params, RouterModule } from '@angular/router';
 import { Field } from '@app/types/column.type';
 import { AppShowComponent } from '@app/types/components/show';
+import { StatusLabelColor, StatusService } from '@app/types/status';
 import { ShowPageComponent } from '@components/show-page.component';
+import { DefaultConfigService } from '@services/default-config.service';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
@@ -27,7 +30,6 @@ import { TaskOptions, TaskRaw } from './types';
   selector: 'app-tasks-show',
   templateUrl: 'show.component.html',
   styleUrl: '../../inspections.css',
-  standalone: true,
   providers: [
     IconsService,
     UtilsService,
@@ -44,6 +46,12 @@ import { TaskOptions, TaskRaw } from './types';
     FiltersService,
     GrpcSortFieldService,
     TasksInspectionService,
+    DefaultConfigService,
+    StorageService,
+    {
+      provide: StatusService,
+      useClass: TasksStatusesService,
+    },
   ],
   imports: [
     ShowPageComponent,
@@ -58,10 +66,10 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
   readonly grpcService = inject(TasksGrpcService);
   readonly inspectionService = inject(TasksInspectionService);
 
-  private readonly tasksStatusesService = inject(TasksStatusesService);
+  private readonly tasksStatusesService = inject(StatusService) as TasksStatusesService;
   private readonly filtersService = inject(FiltersService);
 
-  private _status: string | undefined;
+  private _status: StatusLabelColor | undefined;
 
   resultsKey: string = '';
   resultsQueryParams: Params = {};
@@ -71,7 +79,7 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
   arrays: Field<TaskRaw>[] = this.inspectionService.arrays;
   optionsFields: Field<TaskOptions>[] = this.inspectionService.optionsFields;
 
-  get status(): string | undefined {
+  get status(): StatusLabelColor | undefined {
     return this._status;
   }
 

@@ -1,4 +1,4 @@
-import { ListApplicationsResponse, ListPartitionsResponse, ListResultsResponse, ListSessionsResponse, ListTasksResponse , ResultStatus, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { ListApplicationsResponse, ListPartitionsResponse, ListResultsResponse, ListSessionsResponse, ListTasksResponse } from '@aneoconsultingfr/armonik.api.angular';
 import { Params } from '@angular/router';
 import { ApplicationRaw, } from '@app/applications/types';
 import { PartitionRaw } from '@app/partitions/types';
@@ -42,8 +42,6 @@ export interface ApplicationData extends ArmonikTaskByStatusData<ApplicationRaw>
 
 export interface ResultData extends ArmonikData<ResultRaw> {
 }
-
-export type Status = TaskStatus | SessionStatus | ResultStatus;
 
 export type GrpcResponse = ListApplicationsResponse | ListTasksResponse | ListSessionsResponse | ListPartitionsResponse | ListResultsResponse;
 

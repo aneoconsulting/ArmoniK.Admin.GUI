@@ -11,13 +11,28 @@ describe('', () => {
     close: jest.fn()
   };
 
+  const statusesLabelsColors = {
+    [TaskStatus.TASK_STATUS_CANCELLED]: {
+      label: 'Cancelled',
+      color: 'black',
+    },
+    [TaskStatus.TASK_STATUS_COMPLETED]: {
+      label: 'Completed',
+      color: 'green',
+    },
+    [TaskStatus.TASK_STATUS_ERROR]: {
+      label: 'Error',
+      color: 'red',
+    }
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         AddStatusesGroupDialogComponent,
         { provide: MatDialogRef, useValue: mockMatDialogRef },
         { provide: MAT_DIALOG_DATA, useValue: {
-          statuses: [{ name: 'result', value: 'the-result' }]
+          statuses: statusesLabelsColors,
         } }
       ]
     }).inject(AddStatusesGroupDialogComponent);
@@ -28,8 +43,7 @@ describe('', () => {
   });
 
   it('should init', () => {
-    component.ngOnInit();
-    expect(component.statuses).toEqual([{ name: 'result', value: 'the-result' }]);
+    expect(component.data.statuses).toEqual(statusesLabelsColors);
   });
 
   it('should close with result on submit', () => {

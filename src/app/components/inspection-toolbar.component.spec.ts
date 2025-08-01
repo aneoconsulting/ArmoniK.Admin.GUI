@@ -25,4 +25,10 @@ describe('InspectionToolbar', () => {
   it('should have a defined refreshIcon', () => {
     expect(component.refreshIcon).toBeDefined();
   });
+
+  it('should emit on refresh', () => {
+    const spy = jest.spyOn(component.refresh, 'emit');
+    component.onRefresh();
+    expect(spy).toHaveBeenCalled();
+  });
 });

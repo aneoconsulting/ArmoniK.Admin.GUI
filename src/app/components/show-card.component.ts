@@ -12,7 +12,6 @@ pre {
   margin-top: 0;
 }
   `],
-  standalone: true,
   imports: [
     ShowCardContentComponent,
     MatCardModule,
@@ -21,5 +20,4 @@ pre {
 })
 export class ShowCardComponent<T extends DataRaw> {
   @Input({ required: true }) data: T | null;
-  @Input() statuses: Record<number, string> = [];
 }

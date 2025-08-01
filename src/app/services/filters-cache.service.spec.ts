@@ -53,6 +53,15 @@ describe('FiltersCacheService', () => {
     it('should delete the cached value', () => {
       expect(service.get(taskScope)).toBeUndefined();
     });
+
+    it('should set the "isCachedData" property to true (still one filter left)', () => {
+      expect(service.isDataCached).toBeTruthy();
+    });
+
+    it('should set the "isCachedData" property to false (no filter left)', () => {
+      service.get(sessionsScope);
+      expect(service.isDataCached).toBeFalsy();
+    });
   });
 
   describe('deleting', () => {
@@ -62,6 +71,15 @@ describe('FiltersCacheService', () => {
 
     it('should properly delete the specified scope', () => {
       expect(service.get(sessionsScope)).toBeUndefined();
+    });
+
+    it('should set the "isCachedData" property to true (still one filter left)', () => {
+      expect(service.isDataCached).toBeTruthy();
+    });
+
+    it('should set the "isCachedData" property to false (no filter left)', () => {
+      service.delete(taskScope);
+      expect(service.isDataCached).toBeFalsy();
     });
   });
 
@@ -73,6 +91,10 @@ describe('FiltersCacheService', () => {
     it('should empty all scopes', () => {
       expect(service.get(taskScope)).toBeUndefined();
       expect(service.get(sessionsScope)).toBeUndefined();
+    });
+
+    it('should set the isDataCached variable to false', () => {
+      expect(service.isDataCached).toBeFalsy();
     });
   });
 });

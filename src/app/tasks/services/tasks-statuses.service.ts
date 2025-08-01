@@ -1,51 +1,12 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
-import { StatusesServiceI } from '@app/types/services';
+import { StatusService } from '@app/types/status';
 
 
 @Injectable()
-export class TasksStatusesService implements StatusesServiceI<TaskStatus> {
-  readonly statuses: Record<TaskStatus, string> = {
-    [TaskStatus.TASK_STATUS_UNSPECIFIED]: $localize`Unspecified`,
-    [TaskStatus.TASK_STATUS_CREATING]: $localize`Creating`,
-    [TaskStatus.TASK_STATUS_SUBMITTED]: $localize`Submitted`,
-    [TaskStatus.TASK_STATUS_DISPATCHED]: $localize`Dispatched`,
-    [TaskStatus.TASK_STATUS_COMPLETED]: $localize`Completed`,
-    [TaskStatus.TASK_STATUS_ERROR]: $localize`Error`,
-    [TaskStatus.TASK_STATUS_TIMEOUT]: $localize`Timeout`,
-    [TaskStatus.TASK_STATUS_CANCELLING]: $localize`Cancelling`,
-    [TaskStatus.TASK_STATUS_CANCELLED]: $localize`Cancelled`,
-    [TaskStatus.TASK_STATUS_PROCESSING]: $localize`Processing`,
-    [TaskStatus.TASK_STATUS_PROCESSED]: $localize`Processed`,
-    [TaskStatus.TASK_STATUS_RETRIED]: $localize`Retried`,
-    [TaskStatus.TASK_STATUS_PENDING]: $localize`Pending`,
-    [TaskStatus.TASK_STATUS_PAUSED]: $localize`Paused`,
-  };
-
-  statusesRecord(): { value: string, name: string }[] {
-    const values = Object.values(this.statuses).sort((a, b) => a.toString().localeCompare(b.toString()));
-    const keys = Object.keys(this.statuses).sort((a, b) => a.toString().localeCompare(b.toString()));
-    const sortedKeys = values.map((value) => {
-      return keys.find((key) => {
-        return this.statuses[Number(key) as TaskStatus] === value;
-      });
-    });
-
-    return (sortedKeys.filter(Boolean) as string[]).map((key) => {
-      const status = Number(key) as TaskStatus;
-      return {
-        value: key,
-        name: this.statusToLabel(status)
-      };
-    });
-  }
-
-  /**
-   * @param status Number standing for a task status
-   * @returns a string standing for the corresponding task status
-   */
-  statusToLabel(status: TaskStatus): string {
-    return this.statuses[status];
+export class TasksStatusesService extends StatusService<TaskStatus> {
+  constructor() {
+    super('tasks');
   }
 
   /**

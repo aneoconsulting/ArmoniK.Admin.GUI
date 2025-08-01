@@ -1,11 +1,8 @@
 import { inject } from '@angular/core';
 import { ApplicationFilterField, ApplicationFilterFor } from '@app/applications/types';
 import { PartitionFilterField, PartitionFilterFor } from '@app/partitions/types';
-import { ResultsStatusesService } from '@app/results/services/results-statuses.service';
 import { ResultFilterField, ResultFilterFor } from '@app/results/types';
-import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
 import { SessionFilterField, SessionFilterFor } from '@app/sessions/types';
-import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { TaskFilterField, TaskFilterFor } from '@app/tasks/types';
 import { DefaultConfigService } from '@services/default-config.service';
 import { FiltersCacheService } from '@services/filters-cache.service';
@@ -13,12 +10,12 @@ import { TableService } from '@services/table.service';
 import { Scope } from '../config';
 import { FilterDefinition } from '../filter-definition';
 import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '../filters';
+import { Status, StatusService } from '../status';
 
-type StatusesService = TasksStatusesService | ResultsStatusesService | SessionsStatusesService;
 export type FilterFor = TaskFilterFor | ResultFilterFor | SessionFilterFor | PartitionFilterFor | ApplicationFilterFor;
 export type FilterField = TaskFilterField | ResultFilterField | SessionFilterField | PartitionFilterField | ApplicationFilterField;
 
-export abstract class AbstractFilterService<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
+export abstract class DataFilterService<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
   protected abstract readonly scope: Scope;
   protected readonly defaultConfigService = inject(DefaultConfigService);
   private readonly tableService = inject(TableService);
@@ -59,12 +56,13 @@ export abstract class AbstractFilterService<F extends FiltersEnums, O extends Fi
   }
 
   abstract retrieveLabel(filterFor: FilterFor, filterField: FilterField): string;
+  abstract retrieveField(filterField: string): FilterField;
 }
 
 export interface FiltersServiceOptionsInterface<O extends NonNullable<FiltersOptionsEnums>> {
   readonly optionsFields: Record<O, string>;
 }
 
-export interface FiltersServiceStatusesInterface {
-  readonly statusService: StatusesService;
+export interface FiltersServiceStatusesInterface<S extends Status> {
+  readonly statusService: StatusService<S>;
 }

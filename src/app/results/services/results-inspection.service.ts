@@ -28,7 +28,14 @@ export class ResultsInspectionService extends InspectionService<ResultRaw> {
       type: 'date'
     },
     {
+      key: 'manualDeletion',
+    },
+    {
       key: 'size'
+    },
+    {
+      key: 'opaqueId',
+      type: 'byte-array',
     }
   ];
 }

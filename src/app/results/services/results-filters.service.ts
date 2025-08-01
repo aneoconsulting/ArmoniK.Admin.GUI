@@ -2,16 +2,17 @@ import { ResultRawEnumField, ResultStatus } from '@aneoconsultingfr/armonik.api.
 import { Injectable, inject } from '@angular/core';
 import { Scope } from '@app/types/config';
 import { FilterFor } from '@app/types/filter-definition';
-import { AbstractFilterService, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
+import { DataFilterService, FiltersServiceStatusesInterface } from '@app/types/services/data-filter.service';
+import { StatusService } from '@app/types/status';
 import { ResultsStatusesService } from './results-statuses.service';
 import { ResultFilterField, ResultRawFilters, ResultsFiltersDefinition } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ResultsFiltersService extends AbstractFilterService<ResultRawEnumField> implements FiltersServiceStatusesInterface {
+export class ResultsFiltersService extends DataFilterService<ResultRawEnumField> implements FiltersServiceStatusesInterface<ResultStatus> {
   protected readonly scope: Scope = 'results';
-  readonly statusService = inject(ResultsStatusesService);
+  readonly statusService: ResultsStatusesService = inject(StatusService);
 
   readonly rootField: Record<ResultRawEnumField, string> = {
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_COMPLETED_AT]: $localize`Completed at`,
@@ -23,6 +24,8 @@ export class ResultsFiltersService extends AbstractFilterService<ResultRawEnumFi
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID]: $localize`Session ID`,
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_STATUS]: $localize`Status`,
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SIZE]: $localize`Size`,
+    [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OPAQUE_ID]: $localize`Opaque ID`,
+    [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_MANUAL_DELETION]: $localize`Manual Deletion`,
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_UNSPECIFIED]: $localize`Unspecified`,
   };
 
@@ -59,7 +62,7 @@ export class ResultsFiltersService extends AbstractFilterService<ResultRawEnumFi
       statuses: Object.keys(this.statusService.statuses).map(status => {
         return {
           key: status,
-          value: this.statusService.statuses[Number(status) as ResultStatus],
+          value: this.statusService.statuses[Number(status) as ResultStatus].label,
         };
       }),
     },
@@ -72,6 +75,11 @@ export class ResultsFiltersService extends AbstractFilterService<ResultRawEnumFi
       for: 'root',
       field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SIZE,
       type: 'number'
+    },
+    {
+      for: 'root',
+      field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_MANUAL_DELETION,
+      type: 'boolean'
     }
   ];
 

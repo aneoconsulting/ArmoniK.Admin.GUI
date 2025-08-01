@@ -1,6 +1,7 @@
 import { ApplicationRawEnumField, FilterStringOperator } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey } from '@app/types/data';
@@ -154,6 +155,10 @@ describe('Application component', () => {
     },
   };
 
+  const mockRouter = {
+    navigate: jest.fn()
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -176,6 +181,7 @@ describe('Application component', () => {
           }
         },
         { provide: DashboardIndexService, useValue: mockDashboardIndexService },
+        { provide: Router, useValue: mockRouter },
         DefaultConfigService,
       ]
     }).inject(IndexComponent);

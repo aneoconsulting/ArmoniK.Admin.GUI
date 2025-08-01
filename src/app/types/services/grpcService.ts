@@ -8,7 +8,7 @@ import { DataRaw, FieldKey, GrpcResponse } from '../data';
 import { FilterDefinition } from '../filter-definition';
 import { Filter, FilterType, FiltersAnd, FiltersEnums, FiltersOptionsEnums, FiltersOr } from '../filters';
 import { ListOptions } from '../options';
-import { AbstractFilterService } from './filtersService';
+import { DataFilterService } from './data-filter.service';
 
 export type GrpcClient = TasksClient | ApplicationsClient | ResultsClient | SessionsClient | PartitionsClient;
 export type GetResponse = GetTaskResponse | GetPartitionResponse | GetResultResponse | GetSessionResponse;
@@ -50,7 +50,7 @@ export abstract class GrpcTableService<T extends DataRaw, F extends FiltersEnums
   abstract readonly sortFields: Record<FieldKey<T>, F>;
   
   abstract readonly grpcClient: GrpcClient;
-  abstract readonly filterService: AbstractFilterService<F, FO>;
+  abstract readonly filterService: DataFilterService<F, FO>;
 
   readonly utilsService = inject(UtilsService<F, FO>);
   

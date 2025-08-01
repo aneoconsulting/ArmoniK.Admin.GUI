@@ -24,6 +24,8 @@ export class ResultsGrpcService extends GrpcTableService<ResultRaw, ResultRawEnu
     'resultId': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID,
     'completedAt': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_COMPLETED_AT,
     'size': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SIZE,
+    'opaqueId': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OPAQUE_ID,
+    'manualDeletion': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_MANUAL_DELETION,
   };
 
   list$(options: ResultRawListOptions, filters: ResultRawFilters): Observable<ListResultsResponse> {

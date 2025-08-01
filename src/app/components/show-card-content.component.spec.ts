@@ -91,20 +91,6 @@ describe('ShowCardContentComponent', () => {
     });
   });
 
-  describe('isStatus', () => {
-    it('Should return true when a string contains "status"', () => {
-      expect(component.isStatus('status')).toBeTruthy();
-    });
-
-    it('Should return false when the given string does not have "status"', () => {
-      expect(component.isStatus('string')).toBeFalsy();
-    });
-
-    it('Should return false when the given parameter is an empty string', () => {
-      expect(component.isStatus('empty')).toBeFalsy();
-    });
-  });
-
   describe('isArray', () => {
     it('Should return true when an array is provided', () => {
       expect(component.isArray(data['array'])).toBeTruthy();
@@ -292,58 +278,6 @@ describe('ShowCardContentComponent', () => {
     it('Should return an empty array if data is null', () => {
       component.data = null;
       expect(component.findObject('')).toEqual({});
-    });
-  });
-
-  describe('statusToLabel', () => {
-    it('Should return a label if the key and data are correct', () => {
-
-      component.statuses = {1: 'first_label', 2: 'second_label'};
-
-      component.data = {
-        first_key: '1',
-        second_key: 2, 
-        third_key: ['45', '62']
-      };
-      expect(component.statusToLabel('first_key')).toEqual('first_label');
-      expect(component.statusToLabel('second_key')).toEqual('second_label');
-    });
-
-    it('Should return "null" if no data is provided', () => {
-      component.statuses = {1: 'first_label', 2: 'second_label'};
-      expect(component.statusToLabel('first_key')).toBeNull();
-    });
-
-    it('Should return "null" if no statuses are provided', () => {
-      component.data = {
-        first_key: '1',
-        second_key: 2, 
-        third_key: ['45', '62']
-      };
-      expect(component.statusToLabel('first_key')).toBeNull();
-    });
-
-    it('Should return "null" if the data key is invalid', () => {
-      component.statuses = {1: 'first_label', 2: 'second_label'};
-
-      component.data = {
-        first_key: '1',
-        second_key: 2, 
-        third_key: ['45', '62']
-      };
-      expect(component.statusToLabel('some_random_key')).toBeNull();
-    });
-
-    it('Should return "null" if the data value is invalid', () => {
-      component.statuses = {1: 'first_label', 2: 'second_label'};
-
-      component.data = {
-        first_key: 'invalid data',
-        second_key: 3, 
-        third_key: ['45', '62']
-      };
-      expect(component.statusToLabel('first_key')).toBeNull();
-      expect(component.statusToLabel('second_key')).toBeNull();
     });
   });
 

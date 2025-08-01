@@ -1,6 +1,7 @@
 import { GetTaskResponse, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { StatusService } from '@app/types/status';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -9,7 +10,6 @@ import { ShareUrlService } from '@services/share-url.service';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksInspectionService } from './services/tasks-inspection.service';
-import { TasksStatusesService } from './services/tasks-statuses.service';
 import { ShowComponent } from './show.component';
 import { TaskRaw } from './types';
 
@@ -50,13 +50,26 @@ describe('AppShowComponent', () => {
     cancel$: jest.fn(() => of({}))
   };
 
+  const mockStatusService = {
+    statuses: {
+      [TaskStatus.TASK_STATUS_CANCELLED]: {
+        label: 'Cancelled',
+        color: 'red'
+      },
+      [TaskStatus.TASK_STATUS_PROCESSING]: {
+        label: 'Processing',
+        color: 'green'
+      }
+    },
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         ShowComponent,
         IconsService,
         FiltersService,
-        TasksStatusesService,
+        { provide: StatusService, useValue: mockStatusService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
@@ -118,7 +131,7 @@ describe('AppShowComponent', () => {
     it('should return the status label if there is data', () => {
       component.status = undefined;
       component.refresh.next();
-      expect(component.status).toEqual('Processing');
+      expect(component.status).toEqual(mockStatusService.statuses[TaskStatus.TASK_STATUS_PROCESSING]);
     });
   });
 
@@ -185,7 +198,7 @@ describe('AppShowComponent', () => {
   });
 
   it('should get statuses', () => {
-    expect(component.statuses).toEqual((new TasksStatusesService).statuses);
+    expect(component.statuses).toEqual(mockStatusService.statuses);
   });
 
   describe('cancelling', () => {

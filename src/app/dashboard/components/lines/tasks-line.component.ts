@@ -11,10 +11,12 @@ import TasksDataService from '@app/tasks/services/tasks-data.service';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
+import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { TaskOptions, TaskSummary } from '@app/tasks/types';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DashboardLineCustomColumnsComponent } from '@app/types/components/dashboard-line-table';
 import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
+import { DataFilterService } from '@app/types/services/data-filter.service';
+import { StatusService } from '@app/types/status';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { FiltersService } from '@services/filters.service';
@@ -24,20 +26,23 @@ import { NotificationService } from '@services/notification.service';
 @Component({
   selector: 'app-dashboard-tasks-line',
   templateUrl: './tasks-line.component.html',
-  standalone: true,
   providers: [
     MatSnackBar,
     TasksIndexService,
     NotificationService,
     TasksFiltersService,
     {
-      provide: DATA_FILTERS_SERVICE,
+      provide: DataFilterService,
       useExisting: TasksFiltersService
     },
     TasksGrpcService,
     GrpcSortFieldService,
     TasksDataService,
     FiltersService,
+    {
+      provide: StatusService,
+      useClass: TasksStatusesService,
+    }
   ],
   imports: [
     MatToolbarModule,

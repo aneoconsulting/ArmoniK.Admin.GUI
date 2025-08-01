@@ -78,7 +78,7 @@ describe('FiltersToolbarComponent', () => {
   });
 
   it('should get icon', () => {
-    expect(component.getIcon('add')).toEqual('add');
+    expect(component.getIcon('heart')).toEqual('favorite');
   });
 
   describe('toggleShow', () => {

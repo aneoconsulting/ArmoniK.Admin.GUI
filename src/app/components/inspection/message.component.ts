@@ -10,7 +10,6 @@ import { NotificationService } from '@services/notification.service';
   selector: 'app-message',
   templateUrl: 'message.component.html',
   styleUrl: 'message.component.css',
-  standalone: true,
   imports: [
     MatCardModule,
     MatButtonModule,

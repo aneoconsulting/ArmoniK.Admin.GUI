@@ -2,13 +2,13 @@ import { PartitionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import { Scope } from '@app/types/config';
 import { FilterFor } from '@app/types/filter-definition';
-import { AbstractFilterService } from '@app/types/services/filtersService';
+import { DataFilterService } from '@app/types/services/data-filter.service';
 import { PartitionFilterField, PartitionRawFilters, PartitionsFiltersDefinition } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PartitionsFiltersService extends AbstractFilterService<PartitionRawEnumField> {
+export class PartitionsFiltersService extends DataFilterService<PartitionRawEnumField> {
   protected readonly scope: Scope = 'partitions';
   readonly rootField: Record<PartitionRawEnumField, string> = {
     [PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID]: $localize`ID`,

@@ -3,6 +3,7 @@ import { TaskOptions } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
 import { ShowActionButton } from '@app/types/components/show';
 import { DataRaw } from '@app/types/data';
+import { StatusLabelColor } from '@app/types/status';
 import { InspectionCardComponent } from './inspection/inspection-card.component';
 import { InspectionJsonComponent } from './inspection/inspection-json.component';
 import { InspectionListGridComponent } from './inspection/inspection-list-grid.component';
@@ -13,7 +14,6 @@ import { InspectionToolbarComponent } from './inspection-toolbar.component';
   selector: 'app-show-page',
   templateUrl: './show-page.component.html',
   styleUrl: 'show-page.component.css',
-  standalone: true,
   imports: [
     InspectionCardComponent,
     InspectionHeaderComponent,
@@ -26,12 +26,11 @@ import { InspectionToolbarComponent } from './inspection-toolbar.component';
 export class ShowPageComponent<T extends DataRaw, O extends TaskOptions | null = null>{
   @Input({ required: true }) id: string | null = null;
   @Input({required: true }) data: T | null;
-  @Input() statuses: Record<number, string> = [];
   @Input() sharableURL: string | null = null;
   @Input({ required: false }) actionsButton: ShowActionButton[];
   @Output() refresh = new EventEmitter<never>();
   @Input({ required: false }) arrays: Field<T>[];
-  @Input({ required: false }) status: string | undefined;
+  @Input({ required: false }) status: StatusLabelColor | undefined;
   @Input({ required: false }) fields: Field<T>[];
   @Input({ required: false }) optionsFields: Field<O>[];
 

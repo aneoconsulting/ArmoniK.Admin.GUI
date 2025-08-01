@@ -15,8 +15,9 @@ import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { TaskOptions } from '@app/tasks/types';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DashboardLineCustomColumnsComponent } from '@app/types/components/dashboard-line-table';
+import { DataFilterService } from '@app/types/services/data-filter.service';
+import { StatusService } from '@app/types/status';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { FiltersService } from '@services/filters.service';
@@ -26,17 +27,19 @@ import { NotificationService } from '@services/notification.service';
 @Component({
   selector: 'app-dashboard-sessions-line',
   templateUrl: './sessions-line.component.html',
-  standalone: true,
   providers: [
     MatSnackBar,
     NotificationService,
     SessionsFiltersService,
     {
-      provide: DATA_FILTERS_SERVICE,
+      provide: DataFilterService,
       useExisting: SessionsFiltersService
     },
     SessionsIndexService,
-    SessionsStatusesService,
+    {
+      provide: StatusService,
+      useClass: SessionsStatusesService,
+    },
     TasksStatusesService,
     TasksFiltersService,
     SessionsGrpcService,
@@ -52,7 +55,7 @@ import { NotificationService } from '@services/notification.service';
     SessionsTableComponent,
     MatIconModule,
     MatMenuModule,
-  ],
+  ]
 })
 export class SessionsLineComponent extends DashboardLineCustomColumnsComponent<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly indexService = inject(SessionsIndexService);

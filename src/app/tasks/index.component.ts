@@ -7,9 +7,10 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { DashboardStorageService } from '@app/dashboard/services/dashboard-storage.service';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TableHandlerCustomValues } from '@app/types/components';
 import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
+import { DataFilterService } from '@app/types/services/data-filter.service';
+import { StatusService } from '@app/types/status';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -36,7 +37,6 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
 @Component({
   selector: 'app-tasks-index',
   templateUrl: './index.component.html',
-  standalone: true,
   imports: [
     FiltersToolbarComponent,
     TableIndexActionsToolbarComponent,
@@ -52,10 +52,9 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
   providers: [
     TasksGrpcService,
     TasksFiltersService,
-    TasksStatusesService,
     TasksIndexService,
     {
-      provide: DATA_FILTERS_SERVICE,
+      provide: DataFilterService,
       useExisting: TasksFiltersService
     },
     TableService,
@@ -71,6 +70,10 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
     DashboardStorageService,
     GrpcSortFieldService,
     TasksDataService,
+    {
+      provide: StatusService,
+      useClass: TasksStatusesService,
+    },
   ],
 })
 export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {

@@ -1,17 +1,18 @@
 import { TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { Scope } from '@app/types/config';
-import { AbstractFilterService, FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
+import { DataFilterService, FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/data-filter.service';
+import { StatusService } from '@app/types/status';
 import { TasksStatusesService } from './tasks-statuses.service';
 import { TaskFilterDefinition, TaskFilterField, TaskFilterFor, TaskSummaryFilters } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TasksFiltersService extends AbstractFilterService<TaskSummaryEnumField, TaskOptionEnumField>
-  implements FiltersServiceOptionsInterface<TaskOptionEnumField>, FiltersServiceStatusesInterface {
+export class TasksFiltersService extends DataFilterService<TaskSummaryEnumField, TaskOptionEnumField>
+  implements FiltersServiceOptionsInterface<TaskOptionEnumField>, FiltersServiceStatusesInterface<TaskStatus> {
   protected readonly scope: Scope = 'tasks';
-  readonly statusService = inject(TasksStatusesService);
+  readonly statusService = inject(StatusService) as TasksStatusesService;
 
   readonly rootField: Record<TaskSummaryEnumField, string> = {
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID]: $localize`Task ID`,
@@ -76,7 +77,7 @@ export class TasksFiltersService extends AbstractFilterService<TaskSummaryEnumFi
       statuses: Object.keys(this.statusService.statuses).map(status => {
         return {
           key: status,
-          value: this.statusService.statuses[Number(status) as TaskStatus],
+          value: this.statusService.statuses[Number(status) as TaskStatus].label,
         };
       }),
     },

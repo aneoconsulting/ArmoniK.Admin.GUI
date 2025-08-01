@@ -6,19 +6,20 @@ import { NavigationExtras, Params, Router, RouterModule } from '@angular/router'
 import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
-import { ApplicationData, ArmonikData, DataRaw, PartitionData, SessionData, Status } from '@app/types/data';
-import { StatusesServiceI } from '@app/types/services';
+import { ApplicationData, ArmonikData, DataRaw, PartitionData, SessionData } from '@app/types/data';
+import { Status, StatusLabelColor, StatusService } from '@app/types/status';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
+import { StatusChipComponent } from '@components/status-chip.component';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { Subject } from 'rxjs';
+import { ByteArrayComponent } from './cells/byte-array-cell.component';
 import { TableInspectMessageComponent } from './table-inspect-message.component';
 import { TableInspectObjectComponent } from './table-inspect-object.component';
 
 @Component({
   selector: 'app-table-cell',
-  standalone: true,
   templateUrl: './table-cell.component.html',
   imports: [
     EmptyCellPipe,
@@ -30,6 +31,8 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
     CountTasksByStatusComponent,
     MatCheckboxModule,
     TableInspectMessageComponent,
+    StatusChipComponent,
+    ByteArrayComponent,
   ]
 })
 export class TableCellComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null>{
@@ -52,7 +55,7 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
     }
   }
 
-  @Input({ required: false }) statusesService: StatusesServiceI<S>;
+  @Input({ required: false }) statusesService: StatusService<S>;
   @Input({ required: false }) isSelected: boolean = false;
   @Input({ required: false }) statusesGroups: TasksStatusesGroup[] = [];
 
@@ -88,10 +91,6 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
     return this._value as Duration;
   }
 
-  get statusValue() {
-    return this._value as S;
-  }
-
   get dateValue(): Date | null {
     return (this.value as Timestamp)?.toDate() ?? null;
   }
@@ -110,6 +109,10 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
 
   get countFilters() {
     return (this._element as unknown as SessionData | ApplicationData | PartitionData).filters;
+  }
+
+  get byteArray() {
+    return this._value as Uint8Array;
   }
 
   createLink() {
@@ -158,7 +161,7 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
     }
   }
 
-  statusLabel(): string {
-    return this.statusesService.statusToLabel(this.statusValue);
+  statusLabel(): StatusLabelColor {
+    return this.statusesService.statusToLabel(this._value as S);
   }
 }

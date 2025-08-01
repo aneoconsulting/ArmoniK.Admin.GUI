@@ -10,13 +10,16 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service
 import { TaskOptions } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
 import { AppShowComponent } from '@app/types/components/show';
+import { StatusLabelColor, StatusService } from '@app/types/status';
 import { ShowPageComponent } from '@components/show-page.component';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
+import { DefaultConfigService } from '@services/default-config.service';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
@@ -33,13 +36,11 @@ import { SessionRaw } from './types';
   selector: 'app-sessions-show',
   templateUrl: 'show.component.html',
   styleUrl: '../../inspections.css',
-  standalone: true,
   providers: [
     UtilsService,
     ShareUrlService,
     QueryParamsService,
     SessionsGrpcService,
-    SessionsStatusesService,
     SessionsIndexService,
     SessionsFiltersService,
     TableService,
@@ -53,6 +54,12 @@ import { SessionRaw } from './types';
     GrpcSortFieldService,
     SessionsInspectionService,
     TasksInspectionService,
+    DefaultConfigService,
+    StorageService,
+    {
+      provide: StatusService,
+      useClass: SessionsStatusesService,
+    }
   ],
   imports: [
     ShowPageComponent,
@@ -73,7 +80,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
   readonly inspectionService = inject(SessionsInspectionService);
   readonly tasksInspectionService = inject(TasksInspectionService);
 
-  private readonly sessionsStatusesService = inject(SessionsStatusesService);
+  private readonly sessionsStatusesService = inject(StatusService) as SessionsStatusesService;
   private readonly filtersService = inject(FiltersService);
   private readonly router = inject(Router);
 
@@ -95,9 +102,9 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
 
   arrays: Field<SessionRaw>[];
 
-  private _status: string | undefined;
+  private _status: StatusLabelColor | undefined;
 
-  get status(): string | undefined {
+  get status(): StatusLabelColor | undefined {
     return this._status;
   }
 

@@ -5,7 +5,10 @@ import { RouterModule } from '@angular/router';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
 import { Filter } from '@app/types/filters';
+import { StatusLabelColor, StatusService } from '@app/types/status';
+import { DefaultConfigService } from '@services/default-config.service';
 import { FiltersService } from '@services/filters.service';
+import { StorageService } from '@services/storage.service';
 import { TasksStatusesGroup } from '../types';
 
 @Component({
@@ -39,9 +42,13 @@ ul li a {
   text-decoration: none;
 }
   `],
-  standalone: true,
   providers: [
-    TasksStatusesService,
+    DefaultConfigService,
+    StorageService,
+    {
+      provide: StatusService,
+      useClass: TasksStatusesService
+    },
     FiltersService,
   ],
   imports: [
@@ -56,10 +63,10 @@ export class StatusesGroupCardComponent {
   @Input({ required: true }) data: StatusCount[] = [];
   @Input({ required: true }) filters: TaskSummaryFilters;
 
-  private readonly tasksStatusesService = inject(TasksStatusesService);
+  private readonly tasksStatusesService = inject(StatusService) as TasksStatusesService;
   private readonly filtersService = inject(FiltersService);
 
-  statusToLabel(status: TaskStatus): string {
+  statusToLabel(status: TaskStatus): StatusLabelColor {
     return this.tasksStatusesService.statusToLabel(status);
   }
 

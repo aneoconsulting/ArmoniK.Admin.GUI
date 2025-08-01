@@ -24,7 +24,7 @@
           @for (status of group.statuses; track status) {
             <li cdkDrag class="task-status">
               <mat-icon aria-hidden="true" [fontIcon]="getIcon('drag')"/>
-              <span>{{ statusToLabel(status) }}</span>
+              <span>{{ statusToLabel(status).label }}</span>
             </li>
           }
         </ul>

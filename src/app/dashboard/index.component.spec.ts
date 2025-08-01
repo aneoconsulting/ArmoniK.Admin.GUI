@@ -86,11 +86,8 @@ describe('IndexComponent', () => {
     expect(component.columns).toEqual(10);
   });
 
-  it('should get required icons', () => {
-    expect(component.getIcon('settings')).toEqual('settings');
-    expect(component.getIcon('add')).toEqual('add');
-    expect(component.getIcon('list')).toEqual('view_list');
-    expect(component.getIcon('vertical-split')).toEqual('vertical_split');
+  it('should get icons', () => {
+    expect(component.getIcon('heart')).toEqual('favorite');
   });
 
   it('should open Fab', () => {

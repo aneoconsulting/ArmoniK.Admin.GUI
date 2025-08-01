@@ -8,9 +8,10 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
-import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
+import { StatusLabelColor, StatusService } from '@app/types/status';
+import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
+import { StorageService } from '@services/storage.service';
 import { AddStatusesGroupDialogComponent } from './add-statuses-group-dialog.component';
 import { EditStatusesGroupDialogComponent } from './edit-status-group-dialog.component';
 
@@ -113,13 +114,15 @@ ul {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
   `],
-  standalone: true,
   providers: [
-    TasksStatusesService,
+    DefaultConfigService,
+    StorageService,
+    {
+      provide: StatusService,
+      useClass: TasksStatusesService
+    },
   ],
   imports: [
-    ActionsToolbarComponent,
-    ActionsToolbarGroupComponent,
     MatButtonModule,
     MatDialogModule,
     MatToolbarModule,
@@ -138,7 +141,7 @@ export class ManageGroupsDialogComponent {
 
   private readonly dialog = inject(MatDialog);
   private readonly iconsServices = inject(IconsService);
-  private readonly tasksStatusesService = inject(TasksStatusesService);
+  private readonly tasksStatusesService = inject(StatusService) as TasksStatusesService;
 
   constructor(
     public _dialogRef: MatDialogRef<ManageGroupsDialogComponent, ManageGroupsDialogResult>,
@@ -151,7 +154,7 @@ export class ManageGroupsDialogComponent {
     return this.iconsServices.getIcon(name);
   }
 
-  statusToLabel(status: TaskStatus): string {
+  statusToLabel(status: TaskStatus): StatusLabelColor {
     return this.tasksStatusesService.statusToLabel(status);
   }
 
@@ -171,7 +174,7 @@ export class ManageGroupsDialogComponent {
   openAddStatusGroupModal(): void {
     const dialogRef: MatDialogRef<AddStatusesGroupDialogComponent, TasksStatusesGroup> = this.dialog.open(AddStatusesGroupDialogComponent, {
       data: {
-        statuses: this.tasksStatusesService.statusesRecord(),
+        statuses: this.tasksStatusesService.statuses,
       }
     });
 
@@ -186,7 +189,7 @@ export class ManageGroupsDialogComponent {
     const dialogRef: MatDialogRef<EditStatusesGroupDialogComponent, TasksStatusesGroup> = this.dialog.open(EditStatusesGroupDialogComponent, {
       data: {
         group,
-        statuses: this.tasksStatusesService.statusesRecord(),
+        statuses: this.tasksStatusesService.statuses,
       }
     });
 
