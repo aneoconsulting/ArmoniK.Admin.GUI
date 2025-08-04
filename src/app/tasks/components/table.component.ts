@@ -10,6 +10,7 @@ import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { Subject } from 'rxjs';
 import TasksDataService from '../services/tasks-data.service';
+import { TasksGrpcActionsService } from '../services/tasks-grpc-actions.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
 import { TaskOptions, TaskSummary } from '../types';
 
@@ -53,6 +54,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   readonly router = inject(Router);
   readonly clipboard = inject(Clipboard);
   readonly tasksStatusesService = inject(StatusService) as TasksStatusesService;
+  private readonly grpcActionsService = inject(TasksGrpcActionsService);
 
   private _serviceIcon: string = '';
   private _serviceName: string = '';
@@ -103,12 +105,6 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
       icon: 'published_with_changes',
       action$: this.retries$,
       condition: (element: ArmonikData<TaskSummary, TaskOptions>) => this.isRetried(element.raw),
-    },
-    {
-      label: $localize`Cancel task`,
-      icon: 'cancel',
-      action$: this.cancelTask$,
-      condition: (element: ArmonikData<TaskSummary, TaskOptions>) => this.canCancelTask(element.raw),
     },
   ];
 

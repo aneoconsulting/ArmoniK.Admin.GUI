@@ -26,6 +26,7 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { Subject, map, switchMap } from 'rxjs';
 import { SessionsFiltersService } from './services/sessions-filters.service';
+import { SessionsGrpcActionsService } from './services/sessions-grpc-actions.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionsInspectionService } from './services/sessions-inspection.service';
@@ -59,7 +60,8 @@ import { SessionRaw } from './types';
     {
       provide: StatusService,
       useClass: SessionsStatusesService,
-    }
+    },
+    SessionsGrpcActionsService,
   ],
   imports: [
     ShowPageComponent,
@@ -79,6 +81,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
   readonly grpcService = inject(SessionsGrpcService);
   readonly inspectionService = inject(SessionsInspectionService);
   readonly tasksInspectionService = inject(TasksInspectionService);
+  readonly grpcActionsService = inject(SessionsGrpcActionsService);
 
   private readonly sessionsStatusesService = inject(StatusService) as SessionsStatusesService;
   private readonly filtersService = inject(FiltersService);
@@ -89,6 +92,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
   disableCancel: boolean = false;
   disableClose: boolean = false;
   disablePurge: boolean = true;
+  session: SessionRaw;
 
   tasksKey: string = '';
   tasksQueryParams: Params = {};
@@ -115,6 +119,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
   ngOnInit(): void {
     this.subscribeToDuration();
     this.initInspection();
+    this.grpcActionsService.refresh = this.refresh;
     this.arrays = this.inspectionService.arrays;
     this.optionsFields = this.tasksInspectionService.optionsFields;
     this.resultsKey = this.filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
@@ -133,6 +138,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
     const data = this.data();
     this.status = data?.status;
     if (data) {
+      this.session = data;
       this.createResultsQueryParams();
       this.createTasksQueryParams();
       this.partitionsQueryParams = this.filtersService.createFilterPartitionQueryParams(data.partitionIds);
@@ -191,86 +197,6 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
     this.subscriptions.add(lowerDurationSubscription);
     this.subscriptions.add(upperDurationSubscription);
     this.subscriptions.add(computeDurationSubscription);
-  }
-
-  cancel(): void {
-    const data: SessionRaw | null = this.data();
-    if(data?.sessionId) {
-      this.grpcService.cancel$(data.sessionId).subscribe({
-        complete: () => {
-          this.success('Session canceled');
-          this.refresh.next();
-        },
-        error: (error) => {
-          console.error(error);
-          this.error('Unable to cancel session');
-        },
-      });
-    }
-  }
-
-  purge(): void {
-    const data: SessionRaw | null = this.data();
-    if (data?.sessionId) {
-      this.grpcService.purge$(data.sessionId).subscribe({
-        complete: () => {
-          this.success('Session purged');
-          this.refresh.next();
-        },
-        error: (error) => {
-          console.error(error);
-          this.error('Unable to purge session');
-        }
-      });
-    }
-  }
-
-  pause(): void {
-    const data: SessionRaw | null = this.data();
-    if(data?.sessionId) {
-      this.grpcService.pause$(data.sessionId).subscribe({
-        complete: () => {
-          this.success('Session paused');
-          this.refresh.next();
-        },
-        error: (error) => {
-          console.error(error);
-          this.error('Unable to pause session');
-        },
-      });
-    }
-  }
-
-  resume(): void {
-    const data: SessionRaw | null = this.data();
-    if(data?.sessionId) {
-      this.grpcService.resume$(data.sessionId).subscribe({
-        complete: () => {
-          this.success('Session resumed');
-          this.refresh.next();
-        },
-        error: (error) => {
-          console.error(error);
-          this.error('Unable to resume session');
-        },
-      });
-    }
-  }
-
-  close(): void {
-    const data: SessionRaw | null = this.data();
-    if(data?.sessionId) {
-      this.grpcService.close$(data.sessionId).subscribe({
-        complete: () => {
-          this.success('Session closed');
-          this.refresh.next();
-        },
-        error: (error) => {
-          console.error(error);
-          this.error('Unable to close session');
-        },
-      });
-    }
   }
 
   deleteSession(): void {
