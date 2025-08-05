@@ -153,6 +153,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   addService() {
     if (this._serviceIcon !== '' && this._serviceName !== '' && this._urlTemplate !== '') {
       if (this.actions[4]) {
+        console.log(this._serviceIcon);
         this.actions[4] = {
           ...this.actions[4],
           label: this._serviceName,
