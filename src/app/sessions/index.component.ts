@@ -35,6 +35,7 @@ import { UtilsService } from '@services/utils.service';
 import { SessionsTableComponent } from './components/table.component';
 import { SessionsDataService } from './services/sessions-data.service';
 import { SessionsFiltersService } from './services/sessions-filters.service';
+import { SessionsGrpcActionsService } from './services/sessions-grpc-actions.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';
@@ -74,6 +75,7 @@ import { SessionRaw } from './types';
     NotificationService,
     TasksGrpcService,
     GrpcSortFieldService,
+    SessionsGrpcActionsService,
   ],
   imports: [
     PageHeaderComponent,

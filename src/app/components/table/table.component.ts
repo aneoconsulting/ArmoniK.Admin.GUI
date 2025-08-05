@@ -6,11 +6,11 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
+import { GrpcAction } from '@app/types/actions.type';
 import { TableColumn } from '@app/types/column.type';
 import { ArmonikData, ColumnKey, DataRaw } from '@app/types/data';
 import { ListOptions } from '@app/types/options';
 import { Status, StatusService } from '@app/types/status';
-import { ActionTable } from '@app/types/table';
 import { TableContainerComponent } from '@components/table-container.component';
 import { TableActionsComponent } from './table-actions.component';
 import { TableCellComponent } from './table-cell.component';
@@ -56,7 +56,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   @Input({ required: true }) lockColumns: boolean;
 
   // Optional inputs
-  @Input({ required: false }) actions: ActionTable<T, O>[];
+  @Input({ required: false }) actions: GrpcAction<T>[];
   @Input({ required: false }) statusesService: StatusService<S>;
   @Input({ required: false }) statusesGroups: TasksStatusesGroup[];
   @Input({ required: false }) dataComparator: ((a: T, b: T) => boolean) | undefined;

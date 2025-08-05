@@ -2,11 +2,11 @@ import { TaskOptionEnumField, TaskSummaryEnumField} from '@aneoconsultingfr/armo
 import { Clipboard, } from '@angular/cdk/clipboard';
 import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { Router} from '@angular/router';
+import { GrpcAction } from '@app/types/actions.type';
 import { AbstractTableComponent } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
 import { ArmonikData, TaskData } from '@app/types/data';
 import { StatusService } from '@app/types/status';
-import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { Subject } from 'rxjs';
 import TasksDataService from '../services/tasks-data.service';
@@ -74,50 +74,51 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
 
   selection: string[];
 
-  copy$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
-  copyS = this.copy$.subscribe((data) => this.onCopiedTaskId(data));
+  copy$ = new Subject<TaskSummary>();
+  copyS = this.copy$.subscribe((task) => this.onCopiedTaskId(task));
 
-  seeResult$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
-  resultSubscription = this.seeResult$.subscribe((data) => this.router.navigate(['/results'], { queryParams: (data as TaskData).resultsQueryParams }));
+  seeResult$ = new Subject<TaskSummary>();
+  resultSubscription = this.seeResult$.subscribe((task) => {
+    const taskData = this.data().find(taskData => taskData.raw.id === task.id) as TaskData;
+    this.router.navigate(['/results'], { queryParams: taskData.resultsQueryParams });
+  });
 
-  retries$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
-  retriesSubscription = this.retries$.subscribe((data) => this.onRetries(data.raw));
+  retries$ = new Subject<TaskSummary>();
+  retriesSubscription = this.retries$.subscribe((task) => this.onRetries(task));
 
-  cancelTask$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
-  cancelTaskSubscription = this.cancelTask$.subscribe((data) => this.onCancelTask(data.raw.id));
-
-  openViewInLogs$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
-  openViewInLogsSubscription = this.openViewInLogs$.subscribe((data) => window.open(this.generateViewInLogsUrl(data.raw.id), '_blank'));
+  openViewInLogs$ = new Subject<TaskSummary>();
+  openViewInLogsSubscription = this.openViewInLogs$.subscribe((task) => window.open(this.generateViewInLogsUrl(task.id), '_blank'));
   
-  actions: ActionTable<TaskSummary, TaskOptions>[] = [
+  actions: GrpcAction<TaskSummary>[] = [
     {
       label: $localize`Copy Task ID`,
       icon: 'copy',
-      action$: this.copy$,
+      click: (tasks: TaskSummary[]) => this.copy$.next(tasks[0]),
     },
     {
       label: $localize`See related result`,
       icon: 'view',
-      action$: this.seeResult$,
+      click: (tasks: TaskSummary[]) => this.seeResult$.next(tasks[0]),
     },
     {
       label: $localize`Retries`,
       icon: 'published_with_changes',
-      action$: this.retries$,
-      condition: (element: ArmonikData<TaskSummary, TaskOptions>) => this.isRetried(element.raw),
+      click: (tasks: TaskSummary[]) => this.retries$.next(tasks[0]),
+      condition: (tasks: TaskSummary[]) => this.isRetried(tasks[0]),
     },
   ];
 
   ngOnInit(): void {
     this.initTableDataService();
+    this.actions.push(...this.grpcActionsService.actions);
   }
 
   isDataRawEqual(value: TaskSummary, entry: TaskSummary): boolean {
     return value.id === entry.id;
   }
 
-  onCopiedTaskId(element: ArmonikData<TaskSummary, TaskOptions>) {
-    this.clipboard.copy(element.raw.id);
+  onCopiedTaskId(task: TaskSummary) {
+    this.clipboard.copy(task.id);
     this.notificationService.success('Task ID copied to clipboard');
   }
 
@@ -153,15 +154,15 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
     if (this._serviceIcon !== '' && this._serviceName !== '' && this._urlTemplate !== '') {
       if (this.actions[4]) {
         this.actions[4] = {
+          ...this.actions[4],
           label: this._serviceName,
           icon: this._serviceIcon,
-          action$: this.openViewInLogs$,
         };
       } else {
         this.actions.push({
           label: this._serviceName,
           icon: this._serviceIcon,
-          action$: this.openViewInLogs$,
+          click: (tasks: TaskSummary[]) => this.openViewInLogs$.next(tasks[0]),
         });
       }
     }

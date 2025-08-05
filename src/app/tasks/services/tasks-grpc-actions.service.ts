@@ -13,17 +13,6 @@ export class TasksGrpcActionsService extends GrpcActionsService<TaskSummary | Ta
   protected readonly grpcService = inject(TasksGrpcService);
 
   private readonly cancel$ = new Subject<(TaskSummary | TaskRaw)[]>();
-  private readonly cancelSubscription$ = this.cancel$.pipe(
-    switchMap(tasks => this.grpcService.cancel$(tasks.map(task => task.id))),
-    catchError(error => this.handleError(error)),
-  ).subscribe((result) => {
-    if (result) {
-      this.success('Task canceled');
-      if (this.refresh) {
-        this.refresh.next();
-      }
-    }
-  });
 
   constructor() {
     super();
@@ -35,6 +24,20 @@ export class TasksGrpcActionsService extends GrpcActionsService<TaskSummary | Ta
         click: (tasks) => this.cancel$.next(tasks),
       }
     );
-    this.subscriptions.add(this.cancelSubscription$);
+  }
+
+  protected subscribeToActions(refresh?: Subject<void> | null): void {
+    const cancelSubscription$ = this.cancel$.pipe(
+      switchMap(tasks => this.grpcService.cancel$(tasks.map(task => task.id))),
+      catchError(error => this.handleError(error)),
+    ).subscribe((result) => {
+      if (result) {
+        this.success('Task canceled');
+        if (refresh) {
+          refresh.next();
+        }
+      }
+    });
+    this.subscriptions.add(cancelSubscription$);
   }
 }

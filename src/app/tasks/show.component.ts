@@ -94,7 +94,9 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
   ngOnInit(): void {
     this.resultsKey = this.filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
     this.initInspection();
+    this.gprcActionsService.refresh = this.refresh;
   }
+
   ngOnDestroy(): void {
     this.unsubscribe();
   }

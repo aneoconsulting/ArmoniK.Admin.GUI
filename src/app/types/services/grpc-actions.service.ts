@@ -16,9 +16,16 @@ export abstract class GrpcActionsService<T extends DataRaw, S extends Status, F 
   protected readonly notificationService = inject(NotificationService);
 
   protected readonly subscriptions = new Subscription();
-
-  refresh: Subject<void> | null = null;
+  
   actions: GrpcAction<T>[] = [];
+
+  protected _refresh: Subject<void> | null = null;
+  set refresh(entry: Subject<void> | null) {
+    this._refresh = entry;
+    this.subscribeToActions(entry);
+  }
+
+  protected abstract subscribeToActions(refresh?: Subject<void> | null): void;
 
   protected success(message: string) {
     return this.notificationService.success(message);
