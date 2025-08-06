@@ -20,6 +20,7 @@ import { TableEmptyDataComponent } from './table-empty-data.component';
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
+  styleUrl: './table.component.css',
   imports: [
     TableColumnHeaderComponent,
     TableCellComponent,
@@ -36,6 +37,14 @@ import { TableEmptyDataComponent } from './table-empty-data.component';
 export class TableComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null> implements AfterViewInit, OnDestroy {
   // Required inputs
   @Input({ required: true }) set columns(entries: TableColumn<T, O>[]) {
+    const selectColumn = entries.find(column => column.key === 'select');
+    if (selectColumn) {
+      entries = [selectColumn, ...entries.filter(column => column.key !== 'select')];
+    }
+    const actionsColumn = entries.find(column => column.key === 'actions');
+    if (actionsColumn) {
+      entries = [...entries.filter(column => column.key !== 'actions'), actionsColumn];
+    }
     this._columns = entries;
     this._columnsKeys = entries.map((entry) => entry.key);
   }

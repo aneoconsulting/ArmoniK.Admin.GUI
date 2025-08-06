@@ -5,7 +5,7 @@
     aria-label="Data Table">
 
     @for (column of columns; track column.key) {
-    <ng-container [matColumnDef]="column.key.toString()">
+    <ng-container [matColumnDef]="column.key.toString()" [sticky]="column.type === 'select'" [stickyEnd]="column.type === 'actions'">
       <!-- Header -->
       <th mat-header-cell mat-sort-header [disabled]="!column.sortable" *matHeaderCellDef cdkDrag appNoWrap>
         <app-table-column-header [column]="column" [checked]="selection.hasValue() && isAllSelected"

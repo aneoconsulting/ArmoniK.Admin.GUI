@@ -13,6 +13,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   border: 0;
 }
 
+.mat-mdc-button .mdc-button__label {
+  z-index: unset !important;
+}
+
 .mat-mdc-snack-bar-container.success {
   --mat-snackbar-container-color: #4caf50;
   --mat-mdc-snack-bar-button-color: #000;
