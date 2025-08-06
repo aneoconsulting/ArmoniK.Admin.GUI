@@ -279,18 +279,18 @@ describe('ResultsLineComponent', () => {
 
     it('should change displayedColumns', () => {
       component.onColumnsChange(newColumns);
-      expect(component.displayedColumnsKeys).toEqual(['select', 'resultId', 'name', 'sessionId']);
+      expect(component.displayedColumnsKeys).toEqual(newColumns);
     });
 
     it('should change line displayedColumns', () => {
       component.onColumnsChange(newColumns);
-      expect(component.line.displayedColumns).toEqual(['select', 'resultId', 'name', 'sessionId']);
+      expect(component.line.displayedColumns).toEqual(newColumns);
     });
 
     it('should emit', () => {
       const spy = jest.spyOn(component.lineChange, 'emit');
-      component.onColumnsChange(['select', 'resultId', 'name', 'sessionId']);
-      expect(spy).toHaveBeenCalled();
+      component.onColumnsChange(newColumns);
+      expect(spy).toHaveBeenCalledWith();
     });
   });
 
