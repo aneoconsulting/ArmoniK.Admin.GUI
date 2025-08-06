@@ -31,7 +31,7 @@ export class TasksGrpcActionsService extends GrpcActionsService<TaskSummary | Ta
       switchMap(tasks => this.grpcService.cancel$(tasks.map(task => task.id))),
       catchError(error => this.handleError(error)),
     ).subscribe((result) => {
-      if (result && result.tasks) {
+      if (result?.tasks) {
         this.success(result.tasks.length !== 1 ? $localize`Tasks cancelled` : $localize`Task cancelled`);
         if (refresh) {
           refresh.next();
