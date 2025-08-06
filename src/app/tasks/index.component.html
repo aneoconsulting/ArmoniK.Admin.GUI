@@ -23,14 +23,14 @@
       (addToDashboard)="onAddToDashboard()"
       >
         <ng-container extra-buttons-right>
-          <!-- @if (selection) {
+          @if (selection) {
             @for (action of grpcActionsService.actions; track $index) {
-            <button mat-flat-button color="accent" (click)="action.action$.next(selection)"  [disabled]="selection.length === 0">
+            <button mat-flat-button color="accent" (click)="action.click(selection)"  [disabled]="selection.length === 0">
               <span i18n>{{ action.label }}s</span>
               <mat-icon [fontIcon]="this.getIcon(action.icon)" />
             </button>
             }
-          } -->
+          }
         </ng-container>
         <ng-container extra-menu-items>
         <button mat-menu-item (click)="manageViewInLogs()">
@@ -68,5 +68,6 @@
   [urlTemplate]="urlTemplate"
   (retries)="onRetries($event)"
   (optionsUpdate)="onOptionsChange()"
+  (selectionChange)="onSelectionChange($event)"
 />
   

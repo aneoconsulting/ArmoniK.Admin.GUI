@@ -1,9 +1,10 @@
 import { SessionRawEnumField, SessionStatus, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { inject, Injectable } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TaskOptions } from '@app/tasks/types';
 import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
-import { catchError, combineLatest, Subject, switchMap } from 'rxjs';
+import { catchError, combineLatest, of, Subject, switchMap } from 'rxjs';
 import { SessionRaw } from '../types';
 import { SessionsGrpcService } from './sessions-grpc.service';
 import { SessionsStatusesService } from './sessions-statuses.service';
@@ -12,6 +13,8 @@ import { SessionsStatusesService } from './sessions-statuses.service';
 export class SessionsGrpcActionsService extends GrpcActionsService<SessionRaw, SessionStatus, SessionRawEnumField, TaskOptions, TaskOptionEnumField> {
   protected readonly grpcService = inject(SessionsGrpcService);
   protected readonly statusesService = inject(StatusService) as SessionsStatusesService;
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   private readonly pauseSession$ = new Subject<SessionRaw[]>();
   private readonly resumeSession$ = new Subject<SessionRaw[]>();
@@ -73,12 +76,17 @@ export class SessionsGrpcActionsService extends GrpcActionsService<SessionRaw, S
             catchError(error => this.handleError(error, $localize`An error occured while deleting session ` + session.sessionId))
           )
         )
-      ))
-    ).subscribe(result => {
+      )),
+      switchMap(result => combineLatest([of(result), this.route.params])),
+    ).subscribe(([result, params]) => {
       const success = result.reduce((acc, session) => acc && session !== null, true);
       if (success) {
-        const plural = result.length > 1 ? $localize`Sessions` : $localize`Session`;
-        this.success(plural + $localize` deleted`);
+        if (params['id']) {
+          this.router.navigate(['/sessions']);
+        } else {
+          const plural = result.length > 1 ? $localize`Sessions` : $localize`Session`;
+          this.success(plural + $localize` deleted`);
+        }
       }
       if (refresh) {
         refresh.next();

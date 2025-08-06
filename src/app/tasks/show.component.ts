@@ -64,7 +64,6 @@ import { TaskOptions, TaskRaw } from './types';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> implements OnInit, OnDestroy {
-
   readonly grpcService = inject(TasksGrpcService);
   readonly inspectionService = inject(TasksInspectionService);
 
@@ -88,7 +87,7 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
   }
 
   set status(value: TaskStatus | undefined) {
-    this._status = value ? this.statuses[value] : undefined;
+    this._status = value ? this.tasksStatusesService.statuses[value] : undefined;
   }
 
   ngOnInit(): void {
@@ -116,26 +115,7 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
     }
   }
 
-  cancel(): void {
-    const data = this.data();
-    if (data) {
-      this.grpcService.cancel$([data.id]).subscribe({
-        complete: () => {
-          this.success('Task canceled');
-          this.refresh.next();
-        },
-        error: (error) => {
-          this.handleError(error);
-        },
-      });
-    }
-  }
-
   createResultQueryParams() {
     this.resultsQueryParams[this.resultsKey] = this.data()?.id;
-  }
-
-  get statuses() {
-    return this.tasksStatusesService.statuses;
   }
 }

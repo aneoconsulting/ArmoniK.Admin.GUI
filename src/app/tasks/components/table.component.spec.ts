@@ -104,8 +104,6 @@ describe('TasksTableComponent', () => {
     }).inject(TasksTableComponent);
 
     component.displayedColumns = displayedColumns;
-    component.selection = [];
-
     component.ngOnInit();
   });
 
@@ -147,19 +145,6 @@ describe('TasksTableComponent', () => {
     expect(spy).toHaveBeenCalledWith(task);
   });
 
-  it('should call the cancelTask method on cancel', () => {
-    const id = 'taskId';
-    component.onCancelTask(id);
-    expect(mockTasksDataService.cancelTask).toHaveBeenCalledWith(id);
-  });
-
-  it('should check if task can be cancelled', () => {
-    const task: TaskSummary = {
-      status: TaskStatus.TASK_STATUS_PROCESSING
-    } as unknown as TaskSummary;
-    expect(component.canCancelTask(task)).toBeTruthy();
-  });
-
   describe('generateViewInLogsUrl', () => {
     it('should return an empty string if there is no urlTemplate', () => {
       component.urlTemplate = null;
@@ -181,8 +166,9 @@ describe('TasksTableComponent', () => {
 
   it('should emit on selection change', () => {
     const spy = jest.spyOn(component.selectionChange, 'emit');
-    component.onSelectionChange([{ id: 'taskId1' }, { id: 'taskId2' }] as unknown as TaskSummary[]);
-    expect(spy).toHaveBeenCalledWith(['taskId1', 'taskId2']);
+    const event = [{ id: 'taskId1' }, { id: 'taskId2' }] as unknown as TaskSummary[];
+    component.onSelectionChange(event);
+    expect(spy).toHaveBeenCalledWith(event);
   });
 
   describe('Adding a service', () => {

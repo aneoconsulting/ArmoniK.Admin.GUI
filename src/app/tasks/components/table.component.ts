@@ -48,7 +48,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
 
   @Output() retries = new EventEmitter<TaskSummary>();
   @Output() cancelTask = new EventEmitter<string>();
-  @Output() selectionChange = new EventEmitter<string[]>();
+  @Output() selectionChange = new EventEmitter<TaskSummary[]>();
 
   readonly tableDataService = inject(TasksDataService);
   readonly router = inject(Router);
@@ -71,8 +71,6 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   get urlTemplate(): string {
     return this._urlTemplate;
   }
-
-  selection: string[];
 
   copy$ = new Subject<TaskSummary>();
   copyS = this.copy$.subscribe((task) => this.onCopiedTaskId(task));
@@ -126,20 +124,12 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
     return this.tasksStatusesService.isRetried(task.status);
   }
 
-  canCancelTask(task: TaskSummary): boolean {
-    return this.tasksStatusesService.taskNotEnded(task.status);
-  }
-
   onRetries(task: TaskSummary) {
     this.retries.emit(task);
   }
 
-  onCancelTask(taskId: string) {
-    this.tableDataService.cancelTask(taskId);
-  }
-
   onSelectionChange($event: TaskSummary[]): void {
-    this.selectionChange.emit($event.map(task => task.id));
+    this.selectionChange.emit($event);
   }
 
   generateViewInLogsUrl(taskId: string): string {

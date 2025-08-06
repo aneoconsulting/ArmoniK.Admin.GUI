@@ -87,7 +87,7 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSu
 
   tableType: TableType = 'Tasks';
 
-  selection: string[] = [];
+  selection: TaskSummary[] = [];
 
   serviceIcon: string | null = null;
   serviceName: string | null = null;
@@ -96,6 +96,7 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSu
   ngOnInit(): void {
     this.initTableEnvironment();
 
+    this.grpcActionsService.refresh = this.tableDataService.refresh$;
     const viewInLogs = this.indexService.restoreViewInLogs();
     this.serviceIcon = viewInLogs.serviceIcon;
     this.serviceName = viewInLogs.serviceName;
@@ -121,16 +122,8 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSu
     this.onFiltersChange([[filter]]);
   }
 
-  onSelectionChange(selection: string[]): void {
+  onSelectionChange(selection: TaskSummary[]): void {
     this.selection = selection;
-  }
-
-  onCancelTasksSelection():void {
-    this.cancelTasks(this.selection);
-  }
-
-  cancelTasks(tasksIds: string[]): void {
-    this.tableDataService.cancelTasks(tasksIds);
   }
 
   manageViewInLogs(): void {

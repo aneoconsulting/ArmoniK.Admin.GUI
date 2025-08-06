@@ -9,6 +9,7 @@ import { ManageViewInLogsDialogComponent } from '@app/tasks/components/manage-vi
 import { TasksTableComponent } from '@app/tasks/components/table.component';
 import TasksDataService from '@app/tasks/services/tasks-data.service';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
+import { TasksGrpcActionsService } from '@app/tasks/services/tasks-grpc-actions.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
@@ -42,7 +43,8 @@ import { NotificationService } from '@services/notification.service';
     {
       provide: StatusService,
       useClass: TasksStatusesService,
-    }
+    },
+    TasksGrpcActionsService,
   ],
   imports: [
     MatToolbarModule,
@@ -57,17 +59,19 @@ import { NotificationService } from '@services/notification.service';
 export class TasksLineComponent extends DashboardLineCustomColumnsComponent<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly indexService = inject(TasksIndexService);
   readonly tableDataService = inject(TasksDataService);
+  readonly grpcActionsService = inject(TasksGrpcActionsService);
 
   serviceIcon: string | null = null;
   serviceName: string | null = null;
   urlTemplate: string | null = null;
 
-  selection: string[] = [];
+  selection: TaskSummary[] = [];
   readonly defaultConfig = this.defaultConfigService.defaultTasks;
 
   ngOnInit(): void {
     this.initLineEnvironment();
 
+    this.grpcActionsService.refresh = this.tableDataService.refresh$;
     const viewInLogs = this.indexService.restoreViewInLogs();
     this.serviceIcon = viewInLogs.serviceIcon;
     this.serviceName = viewInLogs.serviceName;
@@ -83,16 +87,8 @@ export class TasksLineComponent extends DashboardLineCustomColumnsComponent<Task
     this.unsubscribe();
   }
 
-  onSelectionChange(selection: string[]): void {
+  onSelectionChange(selection: TaskSummary[]): void {
     this.selection = selection;
-  }
-
-  onCancelTasksSelection():void {
-    this.cancelTasks(this.selection);
-  }
-
-  cancelTasks(tasksIds: string[]): void {
-    this.tableDataService.cancelTasks(tasksIds);
   }
 
   manageViewInLogs(): void {

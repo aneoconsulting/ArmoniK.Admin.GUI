@@ -20,7 +20,7 @@
   <div class="actions" bonus-actions>
     @if (session) {
       @for (action of grpcActionsService.actions; track $index) {
-        @if (!action.key || (action.key === 'pause' && disableResume) || (action.key === 'resume' && !disableResume)) {
+        @if (!action.key || (action.key === 'pause' && action.condition!([session])) || (action.key === 'resume' && action.condition!([session]))) {
           <button mat-flat-button color="accent" (click)="action.click([session])" [disabled]="action.condition ? !action.condition([session]) : false">
             <span i18n>{{ action.label }}</span>
             <mat-icon [fontIcon]="this.getIcon(action.icon)" />

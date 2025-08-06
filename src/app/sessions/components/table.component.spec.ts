@@ -64,12 +64,6 @@ describe('SessionsTableComponent', () => {
     refresh$: {
       next: jest.fn()
     },
-    onPause: jest.fn(),
-    onResume: jest.fn(),
-    onCancel: jest.fn(),
-    onPurge: jest.fn(),
-    onClose: jest.fn(),
-    onDelete: jest.fn(),
   };
 
   const mockNotificationService = {

@@ -2,7 +2,7 @@ import { FilterStringOperator, GetSessionResponse, ResultRawEnumField, SessionSt
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Params, Router, RouterModule } from '@angular/router';
+import { Params, RouterModule } from '@angular/router';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksInspectionService } from '@app/tasks/services/tasks-inspection.service';
@@ -85,13 +85,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
 
   private readonly sessionsStatusesService = inject(StatusService) as SessionsStatusesService;
   private readonly filtersService = inject(FiltersService);
-  private readonly router = inject(Router);
 
-  disablePause: boolean = false;
-  disableResume: boolean = false;
-  disableCancel: boolean = false;
-  disableClose: boolean = false;
-  disablePurge: boolean = true;
   session: SessionRaw;
 
   tasksKey: string = '';
@@ -113,7 +107,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
   }
 
   set status(value: SessionStatus | undefined) {
-    this._status = value ? this.statuses[value] : undefined;
+    this._status = value ? this.sessionsStatusesService.statuses[value] : undefined;
   }
 
   ngOnInit(): void {
@@ -142,18 +136,9 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
       this.createResultsQueryParams();
       this.createTasksQueryParams();
       this.partitionsQueryParams = this.filtersService.createFilterPartitionQueryParams(data.partitionIds);
-      this.disablePause = !this.sessionsStatusesService.canPause(data.status);
-      this.disableResume = !this.sessionsStatusesService.canResume(data.status);
-      this.disableCancel = !this.sessionsStatusesService.canCancel(data.status);
-      this.disableClose = !this.sessionsStatusesService.canClose(data.status);
-      this.disablePurge = !this.sessionsStatusesService.canPurge(data.status);
       this.lowerDuration$.next();
       this.upperDuration$.next();
     }  
-  }
-
-  get statuses() {
-    return this.sessionsStatusesService.statuses;
   }
 
   createResultsQueryParams() {
@@ -197,21 +182,5 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
     this.subscriptions.add(lowerDurationSubscription);
     this.subscriptions.add(upperDurationSubscription);
     this.subscriptions.add(computeDurationSubscription);
-  }
-
-  deleteSession(): void {
-    const data: SessionRaw | null = this.data();
-    if(data?.sessionId) {
-      this.grpcService.delete$(data.sessionId).subscribe({
-        complete: () => {
-          this.success('Session deleted');
-          this.router.navigate(['/sessions']);
-        },
-        error: (error) => {
-          console.error(error);
-          this.error('Unable to delete session');
-        },
-      });
-    }
   }
 }

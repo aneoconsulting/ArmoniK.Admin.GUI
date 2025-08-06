@@ -1,5 +1,6 @@
 import { SessionRaw, SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcAction } from '@app/types/actions.type';
 import { StatusService } from '@app/types/status';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
@@ -48,6 +49,15 @@ describe('SessionsGrpcActionsService', () => {
     error: jest.fn(),
   };
 
+  const mockParams:Record<string, string> = {};
+  const mockRoute = {
+    params: of(mockParams),
+  };
+
+  const mockRouter = {
+    navigate: jest.fn(),
+  };
+
   const refresh = {
     next: jest.fn(),
   } as unknown as Subject<void>;
@@ -61,7 +71,9 @@ describe('SessionsGrpcActionsService', () => {
         { provide: SessionsGrpcService, useValue: mockGrpcService },
         { provide: StatusService, useValue: mockStatusesService },
         { provide: NotificationService, useValue: mockNotificationService },
-      ]
+        { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: Router, useValue: mockRouter },
+      ],
     }).inject(SessionsGrpcActionsService);
     service.refresh = refresh;
     consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -235,6 +247,12 @@ describe('SessionsGrpcActionsService', () => {
     it('should delete many sessions', () => {
       action.click([session1, session2]);
       expect(mockNotificationService.success).toHaveBeenCalledWith('Sessions deleted');
+    });
+
+    it('should navigate to sessions lists if there is an id in the query params', () => {
+      mockParams['id'] = 'session-id';
+      action.click([session1]);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/sessions']);
     });
 
     it('should catch errors', () => {
