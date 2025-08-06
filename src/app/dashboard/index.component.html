@@ -13,7 +13,7 @@
         <button mat-mini-fab matTooltip="Add a Line" i18n-matTooltip (click)="onAddLineDialog()">
           <mat-icon [fontIcon]="getIcon('add')"></mat-icon>
         </button>
-        @if (!hasOnlyOneLine) {
+        @if (!hasOnlyOneLine()) {
           <button mat-mini-fab matTooltip="Reorganize Lines" i18n-matTooltip (click)="onReorganizeLinesDialog()">
             <mat-icon [fontIcon]="getIcon('list')"></mat-icon>
           </button>
