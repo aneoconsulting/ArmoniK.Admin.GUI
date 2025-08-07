@@ -1,8 +1,9 @@
+import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
@@ -11,6 +12,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { HealthCheckComponent } from '@app/healthcheck/healthcheck.component';
+import { SidebarItem } from '@app/types/navigation';
 import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
@@ -18,6 +20,8 @@ import { StorageService } from '@services/storage.service';
 import { UserService } from '@services/user.service';
 import { Observable, Subscription, interval } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
+import { AddSideBarItemDialogComponent } from './add-sidebar-item-dialog/add-sidebar-item.dialog.component';
+import { AddSideBarItemDialogResult } from './add-sidebar-item-dialog/types';
 import { ChangeLanguageButtonComponent } from './change-language-button.component';
 import { ExternalServicesComponent } from './external-services/external-services.component';
 import { ThemeSelectorComponent } from './theme-selector.component';
@@ -26,47 +30,7 @@ import { VersionsMenuComponent } from './version-menu/versions-menu.component';
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
-  styles: [`
-.sidenav-container {
-  height: calc(100% - 64px);
-}
-
-.sidenav {
-  width: 200px;
-}
-
-.sidenav .mat-toolbar {
-  background: inherit;
-}
-
-.mat-toolbar.mat-primary {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-}
-
-.navbar-item-selected {
-  background-color: rgba(0, 0, 0, 0.2);
-}
-
-.spacer {
-  flex: 1 1 auto;
-}
-
-.greeting {
-  font-weight: normal;
-}
-
-.environment {
-  background: white;
-  padding: 0 1rem;
-  border-radius: 0.25rem;
-}
-
-main {
-  padding: 20px 50px;
-}
-  `],
+  styleUrl: './navigation.component.css',
   providers: [
     StorageService,
     IconsService,
@@ -87,15 +51,19 @@ main {
     HealthCheckComponent,
     ExternalServicesComponent,
     VersionsMenuComponent,
+    CdkDropList,
+    CdkDrag,
+    CdkDragHandle,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavigationComponent implements OnInit, OnDestroy {
   private readonly breakpointObserver = inject(BreakpointObserver);
-  private readonly navigationService = inject(NavigationService);
+  readonly navigationService = inject(NavigationService);
   private readonly userService = inject(UserService);
   private readonly iconsService = inject(IconsService);
   private readonly environmentService = inject(EnvironmentService);
+  private readonly dialog = inject(MatDialog);
 
   environment = this.environmentService.getEnvironment();
   settingsItem = $localize`Settings`;
@@ -112,7 +80,6 @@ export class NavigationComponent implements OnInit, OnDestroy {
     return this._greetings();
   }
 
-  sidebar = this.navigationService.currentSidebar;
   sideBarOpened = true;
   
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -135,6 +102,10 @@ export class NavigationComponent implements OnInit, OnDestroy {
     return this.iconsService.getIcon(name);
   }
 
+  drop(event: CdkDragDrop<SidebarItem[]>) {
+    moveItemInArray(this.navigationService.currentSidebar, event.previousIndex, event.currentIndex);
+  }
+
   private verifyGreetings() {
     const hour = new Date().getHours();
     const username = this.userService.user ? this.userService.user.username : '';
@@ -150,5 +121,19 @@ export class NavigationComponent implements OnInit, OnDestroy {
   toggleSideBar() {
     this.sideBarOpened = !this.sideBarOpened;
     this.navigationService.saveSideBarOpened(this.sideBarOpened);
+  }
+
+  deleteSideBarItem() {
+    this.navigationService.delete();
+  }
+
+  addNewSideBarItem() {
+    const dialogRef = this.dialog.open<AddSideBarItemDialogComponent, void, AddSideBarItemDialogResult>(AddSideBarItemDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.navigationService.addSidebarItem(result.item);
+      }
+    });
   }
 }

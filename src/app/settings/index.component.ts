@@ -1,4 +1,3 @@
-import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -142,7 +141,6 @@ main {
     MatButtonModule,
     MatSnackBarModule,
     MatMenuModule,
-    DragDropModule,
   ]
 })
 export class IndexComponent implements OnInit {
@@ -151,19 +149,16 @@ export class IndexComponent implements OnInit {
   keys: Set<Key> = new Set();
   selectedKeys: Set<Key> = new Set();
 
-  sidebar: Sidebar[] = [];
-
   readonly dialog = inject(MatDialog);
   private readonly iconsService = inject(IconsService);
   private readonly notificationService = inject(NotificationService);
-  private readonly navigationService = inject(NavigationService);
+  readonly navigationService = inject(NavigationService);
   private readonly storageService = inject(StorageService);
   private readonly httpClient = inject(HttpClient);
   readonly filtersCacheService = inject(FiltersCacheService);
 
   ngOnInit(): void {
     this.keys = this.sortKeys(this.storageService.restoreKeys());
-    this.sidebar = this.navigationService.restoreSidebar();
   }
 
   getIcon(name: string | null): string {
@@ -171,7 +166,8 @@ export class IndexComponent implements OnInit {
   }
 
   onRestoreSidebar(): void {
-    this.sidebar = this.navigationService.restoreSidebar();
+    this.navigationService.resetSidebar();
+    this.navigationService.edit.set(false);
   }
 
   onClearSideBar(): void {
@@ -184,20 +180,19 @@ export class IndexComponent implements OnInit {
   }
 
   private clearSideBar(): void {
-    this.sidebar = Array.from(this.navigationService.defaultSidebar);
+    this.navigationService.edit.set(true);
+    this.navigationService.resetSidebar(true);
+    this.navigationService.edit.set(false);
+  }
+
+  startEditSideBar() {
+    this.navigationService.edit.set(true);
   }
 
   onSaveSidebar(): void {
-    this.navigationService.saveSidebar(this.sidebar);
+    this.navigationService.saveSidebar();
     this.keys = this.sortKeys(this.storageService.restoreKeys());
-  }
-
-  onRemoveSidebarItem(index: number): void {
-    this.sidebar.splice(index, 1);
-  }
-
-  onAddSidebarItem(): void {
-    this.sidebar.push('dashboard');
+    this.navigationService.edit.set(false);
   }
 
   getSidebarItems(): { name: string, value: Sidebar }[] {
@@ -215,10 +210,6 @@ export class IndexComponent implements OnInit {
     }
 
     return item;
-  }
-
-  onSidebarItemChange(index: number, value: Sidebar): void {
-    this.sidebar[index] = value;
   }
 
   updateKeySelection(event: MatCheckboxChange): void {
@@ -325,8 +316,7 @@ export class IndexComponent implements OnInit {
   
         // Update sidebar
         if (hasSidebarKey) {
-          this.sidebar = this.navigationService.restoreSidebar();
-          this.navigationService.updateSidebar(this.sidebar);
+          this.navigationService.updateSidebar(this.navigationService.restoreSidebar());
         }
   
         this.notificationService.success('Settings imported');
@@ -338,10 +328,6 @@ export class IndexComponent implements OnInit {
       form.reset();
     };
     reader.readAsText(file);
-  }
-
-  drop(event: CdkDragDrop<SidebarItem[]>) {
-    moveItemInArray(this.sidebar, event.previousIndex, event.currentIndex);
   }
 
   private sortKeys(keys: Set<Key>): Set<Key> {

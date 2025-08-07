@@ -1,5 +1,7 @@
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { TestBed } from '@angular/core/testing';
+import { SidebarItem } from '@app/types/navigation';
 import { DefaultConfigService } from '@services/default-config.service';
 import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
@@ -88,10 +90,6 @@ describe('NavigationComponent', () => {
       }
     });
   });
-
-  it('should get sideBar', () => {
-    expect(component.sidebar).toEqual(currentSidebar);
-  });
   
   it('should greet correctly', () => {
     jest.useFakeTimers().setSystemTime(new Date('2020-01-01T10:00:00'));
@@ -132,5 +130,10 @@ describe('NavigationComponent', () => {
       component.toggleSideBar();
       expect(mockNavigationService.saveSideBarOpened).toHaveBeenCalledWith(component.sideBarOpened);
     });
+  });
+
+  it('should change the position of the droped element in the navigation component array', () => {
+    component.drop({ currentIndex: 1, previousIndex: 0 } as CdkDragDrop<SidebarItem[]>);
+    expect(mockNavigationService.currentSidebar).toEqual(['item-2', 'item-1']);
   });
 });

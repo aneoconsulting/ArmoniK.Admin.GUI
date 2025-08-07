@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
 import { ExternalService } from '@app/types/external-service';
 import { Sidebar, SidebarItem, isSideBar } from '@app/types/navigation';
@@ -10,6 +10,8 @@ export class NavigationService {
   private readonly defaultConfigService = inject(DefaultConfigService);
   private readonly storageService = inject(StorageService);
   private readonly userConnectedGuard = inject(UserConnectedGuard);
+
+  readonly edit = signal(false);
 
   sidebarItems: SidebarItem[] = [
     {
@@ -62,8 +64,6 @@ export class NavigationService {
     },
   ];
 
-  defaultSidebar: Sidebar[] = this.defaultConfigService.defaultSidebar;
-
   // Used to display the sidebar on the navigation component.
   currentSidebar: SidebarItem[];
 
@@ -85,15 +85,32 @@ export class NavigationService {
     return sidebar.filter(element => isSideBar(element));
   }
 
-  saveSidebar(sidebar: Sidebar[]) {
+  resetSidebar(defaultConfig: boolean = false) {
+    if (defaultConfig) {
+      this.sideBar = this.formatSidebar(this.defaultConfigService.defaultSidebar);
+      this.storageService.setItem('navigation-sidebar', this.defaultConfigService.defaultSidebar);
+    } else {
+      this.sideBar = this.formatSidebar(this.restoreSidebar());
+    }
+  }
+
+  saveSidebar() {
+    const sidebar = this.currentSidebar.map((item) => item.id);
     this.sideBar = this.formatSidebar(sidebar);
     this.storageService.setItem('navigation-sidebar', sidebar);
   }
 
   updateSidebar(sidebar: Sidebar[]) {
     this.sideBar = this.formatSidebar(sidebar);
+    this.storageService.setItem('navigation-sidebar', sidebar);
   }
 
+  addSidebarItem(sidebar: Sidebar) {
+    const item = this.sidebarItems.find(sidebarItem => sidebar === sidebarItem.id);
+    if (item) {
+      this.currentSidebar.push(item);
+    }
+  }
 
   saveSideBarOpened(sideBarOpened: boolean) {
     this.storageService.setItem('navigation-sidebar-opened', sideBarOpened);
@@ -107,7 +124,7 @@ export class NavigationService {
    * Change the format of a simple sidebar to a [SidebarItem](../types/navigation.ts)
    */
   formatSidebar(sidebarItems: Sidebar[]): SidebarItem[] {
-    const sidebar = sidebarItems.reduce((acc, item) => {
+    return sidebarItems.reduce((acc, item) => {
       const sidebarItem = this.sidebarItems.find(sidebarItem => sidebarItem.id === item);
       if (sidebarItem) {
         acc.push(sidebarItem);
@@ -116,7 +133,6 @@ export class NavigationService {
       return acc;
     }, [] as SidebarItem[]);
 
-    return sidebar;
   }
 
   restoreExternalServices(): ExternalService[] {

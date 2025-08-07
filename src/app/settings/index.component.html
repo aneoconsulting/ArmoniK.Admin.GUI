@@ -18,41 +18,16 @@
     </p>
 
     <div class="actions navbar between">
-      <div class="actions">
-        <button mat-flat-button (click)="onSaveSidebar()" color="primary" type="button" i18n="Form">Save</button>
-        <button mat-stroked-button (click)="onRestoreSidebar()" type="button" i18n="Form">Reset</button>
-      </div>
+      @if (navigationService.edit()) {
+        <div class="actions">
+          <button mat-flat-button (click)="onSaveSidebar()" color="primary" type="button" i18n="Form">Save</button>
+          <button mat-stroked-button (click)="onRestoreSidebar()" type="button" i18n="Form">Reset</button>
+        </div>
+      } @else {
+        <button mat-flat-button (click)="startEditSideBar()" color="primary" type="button" i18n="Form">Edit sidebar</button>
+      }
       <button mat-stroked-button (click)="onClearSideBar()" type="button" i18n="Form">Reset to default</button>
     </div>
-
-    <ul class="sidebar-items" cdkDropList (cdkDropListDropped)="drop($event)">
-      @for (item of sidebar; track item+$index) {
-        <li cdkDrag>
-          <div class="sidebar-item-drag">
-            <mat-icon cdkDragHandle aria-hidden="true" [fontIcon]="getIcon(findSidebarItem(item).id)"></mat-icon>
-          </div>
-  
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
-            <mat-label i18n="Sidebar item label"> Sidebar item </mat-label>
-            <mat-select [value]="item" (valueChange)="onSidebarItemChange($index, $event)">
-              @for (sidebarItem of getSidebarItems(); track sidebarItem.name) {
-                <mat-option [value]="sidebarItem.value">
-                  {{ sidebarItem.name }}
-                </mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-  
-          <button mat-icon-button (click)="onRemoveSidebarItem($index)">
-            <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"/>
-          </button>
-        </li>
-      }
-      <button class="add-sidebar-item" mat-stroked-button (click)="onAddSidebarItem()">
-        <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
-        <span i18n> Add an item </span>
-      </button>
-    </ul>
   </app-page-section>
 
   <section>

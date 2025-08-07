@@ -22,7 +22,6 @@ import { ManageExternalServicesDialogComponent } from './manage-external-service
   ],
   providers: [
     IconsService,
-    NavigationService
   ],
   styleUrl: 'external-services.css',
   changeDetection: ChangeDetectionStrategy.OnPush

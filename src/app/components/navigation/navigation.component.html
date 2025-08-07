@@ -32,21 +32,32 @@
   [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
   [mode]="(isHandset$ | async) ? 'over' : 'side'"
   [opened]="(isHandset$ | async) === false && sideBarOpened">
-    <mat-nav-list>
-      @for (item of sidebar; track $index) {
-        @if(item.type !== 'divider') {
-          <a mat-list-item [routerLink]="item.route" routerLinkActive="navbar-item-selected">
+    <mat-nav-list cdkDropList (cdkDropListDropped)="drop($event)">
+      @for (item of navigationService.currentSidebar; track $index) {
+        <li cdkDrag>
+          @if (navigationService.edit()) {
+            <mat-icon cdkDragHandle [fontIcon]="getIcon('drag')" />
+          }
+          @if(item.type !== 'divider') {
+          <a mat-list-item [routerLink]="item.route" routerLinkActive="navbar-item-selected" [disabled]="navigationService.edit()">
             <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon(item.id)"></mat-icon>
             <span matListItemTitle> {{ item.display}} </span>
           </a>
-        } @else {
-          <mat-divider/>
-        }
+          } @else {
+            <mat-divider/>
+          }
+          @if (navigationService.edit()) {
+            <button mat-icon-button>
+              <mat-icon [fontIcon]="getIcon('delete')" />
+            </button>
+          }
+        </li>
       }
       <a mat-list-item [routerLink]="'/settings'" routerLinkActive="navbar-item-selected">
         <mat-icon matListItemIcon aria-hidden="true" fontIcon="settings"></mat-icon>
         <span matListItemTitle> {{ settingsItem }} </span>
       </a>
+      <button mat-button (click)="addNewSideBarItem()">Add item</button>
     </mat-nav-list>
 
   </mat-sidenav>
