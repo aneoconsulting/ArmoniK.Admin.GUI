@@ -1,5 +1,5 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -10,15 +10,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { AddLineDialogData, AddLineDialogResult, ReorganizeLinesDialogData, ReorganizeLinesDialogResult, SplitLinesDialogData, SplitLinesDialogResult } from '@app/types/dialog';
-import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
-import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
-import { AutoRefreshButtonComponent } from '@components/auto-refresh-button.component';
-import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
-import { RefreshButtonComponent } from '@components/refresh-button.component';
-import { SpinnerComponent } from '@components/spinner.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -86,7 +80,6 @@ import { Line, LineType } from './types';
   margin-bottom: 2rem
 }
   `],
-  standalone: true,
   providers: [
     ShareUrlService,
     QueryParamsService,
@@ -106,12 +99,7 @@ import { Line, LineType } from './types';
   imports: [
     PageHeaderComponent,
     PageSectionComponent,
-    SpinnerComponent,
     PageSectionHeaderComponent,
-    ActionsToolbarComponent,
-    ActionsToolbarGroupComponent,
-    RefreshButtonComponent,
-    AutoRefreshButtonComponent,
     MatIconModule,
     MatToolbarModule,
     MatButtonModule,
@@ -120,7 +108,6 @@ import { Line, LineType } from './types';
     MatCardModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
-    FiltersToolbarComponent,
     TaskByStatusLineComponent,
     ApplicationsLineComponent,
     ResultsLineComponent,
@@ -138,7 +125,7 @@ export class IndexComponent implements OnInit {
 
   lines: Line[];
   showFabActions = false;
-  hasOnlyOneLine = false;
+  hasOnlyOneLine = signal(false);
   columns = 1;
 
   sharableURL = '';
@@ -174,7 +161,7 @@ export class IndexComponent implements OnInit {
 
   openFab() {
     this.showFabActions = !this.showFabActions;
-    this.hasOnlyOneLine = this.lines.length === 1;
+    this.hasOnlyOneLine.set(this.lines.length === 1);
   }
 
   onAddLineDialog() {
@@ -270,7 +257,7 @@ export class IndexComponent implements OnInit {
   }
 
   onSaveChange() {
-    this.hasOnlyOneLine = this.lines.length === 1;
+    this.hasOnlyOneLine.set(this.lines.length === 1);
     this.#dashboardIndexService.saveLines(this.lines);
   }
 }

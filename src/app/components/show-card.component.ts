@@ -12,7 +12,6 @@ pre {
   margin-top: 0;
 }
   `],
-  standalone: true,
   imports: [
     ShowCardContentComponent,
     MatCardModule,

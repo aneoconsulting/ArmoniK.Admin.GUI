@@ -5,11 +5,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { AppShowComponent } from '@app/types/components/show';
-import { StatusLabelColor } from '@app/types/status';
+import { StatusLabelColor, StatusService } from '@app/types/status';
 import { ShowPageComponent } from '@components/show-page.component';
+import { DefaultConfigService } from '@services/default-config.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
@@ -24,13 +26,11 @@ import { ResultRaw } from './types';
   selector: 'app-result-show',
   templateUrl: 'show.component.html',
   styleUrl: '../../inspections.css',
-  standalone: true,
   providers: [
     UtilsService,
     ShareUrlService,
     QueryParamsService,
     ResultsGrpcService,
-    ResultsStatusesService,
     TableService,
     TableStorageService,
     TableURLService,
@@ -38,6 +38,12 @@ import { ResultRaw } from './types';
     NotificationService,
     MatSnackBar,
     ResultsInspectionService,
+    DefaultConfigService,
+    StorageService,
+    {
+      provide: StatusService,
+      useClass: ResultsStatusesService
+    }
   ],
   imports: [
     ShowPageComponent,
@@ -51,7 +57,7 @@ export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse
   readonly grpcService = inject(ResultsGrpcService);
   readonly inspectionService = inject(ResultsInspectionService);
 
-  private readonly resultsStatusesService = inject(ResultsStatusesService);
+  private readonly resultsStatusesService = inject(StatusService) as ResultsStatusesService;
 
   private _status: StatusLabelColor | undefined;
 

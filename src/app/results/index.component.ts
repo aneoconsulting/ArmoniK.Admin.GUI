@@ -7,9 +7,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { DashboardStorageService } from '@app/dashboard/services/dashboard-storage.service';
-import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { TableHandler } from '@app/types/components';
 import { DataFilterService } from '@app/types/services/data-filter.service';
+import { StatusService } from '@app/types/status';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -36,7 +36,6 @@ import { ResultRaw } from './types';
 @Component({
   selector: 'app-results-index',
   templateUrl: './index.component.html',
-  standalone: true,
   providers: [
     ShareUrlService,
     QueryParamsService,
@@ -51,12 +50,14 @@ import { ResultRaw } from './types';
       provide: DataFilterService,
       useExisting: ResultsFiltersService,
     },
-    ResultsStatusesService,
+    {
+      provide: StatusService,
+      useClass: ResultsStatusesService
+    },
     TableStorageService,
     NotificationService,
     DashboardIndexService,
     DashboardStorageService,
-    TasksStatusesService,
     ResultsDataService,
     ResultsGrpcService,
     GrpcSortFieldService,

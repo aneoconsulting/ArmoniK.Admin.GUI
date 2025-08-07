@@ -3,30 +3,27 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
-// eslint-disable-next-line import/no-unresolved
-import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
 import { FilterInput } from '@app/types/filters';
 import { AutoCompleteComponent } from '@components/auto-complete.component';
+import { NgxMatDatepickerActions, NgxMatDatepickerApply, NgxMatDatepickerCancel, NgxMatDatepickerInput, NgxMatDatepickerInputEvent, NgxMatDatepickerToggle, NgxMatDatetimepicker } from '@ngxmc/datetime-picker';
+import { Moment } from 'moment';
 
 @Component({
   selector: 'app-filters-dialog-input',
   templateUrl: './filters-dialog-input.component.html',
-  styles: [`
-mat-form-field {
-  width: 100%;
-}
-`],
-  standalone: true,
+  styleUrl: 'filters-dialog-input.component.css',
   imports: [
     MatFormFieldModule,
     MatInputModule,
-    NgxMatTimepickerModule,
-    NgxMatDatetimePickerModule,
-    NgxMatNativeDateModule,
     MatAutocompleteModule,
     MatButtonModule,
-    AutoCompleteComponent
+    AutoCompleteComponent,
+    NgxMatDatepickerActions,
+    NgxMatDatepickerApply,
+    NgxMatDatepickerCancel,
+    NgxMatDatepickerInput,
+    NgxMatDatetimepicker,
+    NgxMatDatepickerToggle,
   ],
 })
 export class FiltersDialogInputComponent {
@@ -35,7 +32,6 @@ export class FiltersDialogInputComponent {
   @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
   booleans = ['true', 'false'];
-  actualDate = new Date();
   duration: {[key: number]: string} = {};
 
   private emit(value: string) {
@@ -46,9 +42,9 @@ export class FiltersDialogInputComponent {
     this.emit((event.target as HTMLInputElement).value);
   }
 
-  onDateChange(event: NgxMatDatepickerInputEvent<Date>): void {
+  onDateChange(event: NgxMatDatepickerInputEvent<Moment>): void {
     if (event.value) {
-      this.emit(`${event.value.getTime() / 1000}`);
+      this.emit(`${event.value.toDate().getTime() / 1000}`);
     } else {
       this.emit('');
     }

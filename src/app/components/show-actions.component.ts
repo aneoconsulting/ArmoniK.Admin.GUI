@@ -20,7 +20,6 @@ import { ShowActionAreaComponent } from './show-action-area.component';
     margin-right: 5px;
   }
   `],
-  standalone: true,
   imports: [
     CommonModule,
     MatIconModule,

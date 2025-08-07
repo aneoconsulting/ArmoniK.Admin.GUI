@@ -14,7 +14,6 @@ import { InspectionToolbarComponent } from './inspection-toolbar.component';
   selector: 'app-show-page',
   templateUrl: './show-page.component.html',
   styleUrl: 'show-page.component.css',
-  standalone: true,
   imports: [
     InspectionCardComponent,
     InspectionHeaderComponent,

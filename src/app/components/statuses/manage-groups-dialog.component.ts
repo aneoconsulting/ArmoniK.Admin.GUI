@@ -8,8 +8,10 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { StatusLabelColor } from '@app/types/status';
+import { StatusLabelColor, StatusService } from '@app/types/status';
+import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
+import { StorageService } from '@services/storage.service';
 import { AddStatusesGroupDialogComponent } from './add-statuses-group-dialog.component';
 import { EditStatusesGroupDialogComponent } from './edit-status-group-dialog.component';
 
@@ -112,9 +114,13 @@ ul {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
   `],
-  standalone: true,
   providers: [
-    TasksStatusesService,
+    DefaultConfigService,
+    StorageService,
+    {
+      provide: StatusService,
+      useClass: TasksStatusesService
+    },
   ],
   imports: [
     MatButtonModule,
@@ -135,7 +141,7 @@ export class ManageGroupsDialogComponent {
 
   private readonly dialog = inject(MatDialog);
   private readonly iconsServices = inject(IconsService);
-  private readonly tasksStatusesService = inject(TasksStatusesService);
+  private readonly tasksStatusesService = inject(StatusService) as TasksStatusesService;
 
   constructor(
     public _dialogRef: MatDialogRef<ManageGroupsDialogComponent, ManageGroupsDialogResult>,

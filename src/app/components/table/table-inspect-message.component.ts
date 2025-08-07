@@ -13,7 +13,6 @@ import { TableInspectMessageDialogComponent, TableInspectMessageDialogData } fro
   selector: 'app-table-inspect-message',
   templateUrl: 'table-inspect-message.component.html',
   styleUrl: 'table-inspect-message.component.css',
-  standalone: true,
   imports: [
     MatDialogModule,
     MatButtonModule,

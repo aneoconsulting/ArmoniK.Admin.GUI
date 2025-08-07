@@ -1,0 +1,20 @@
+<section id="byte-array-header">
+  <p i18n>{{ label | pretty }} ({{ byteLength ? byteLength : '0 o' }})</p>
+  @if (decodedData) {
+    <button mat-icon-button (click)="copy()">
+      <mat-icon [fontIcon]="getIcon('copy')" />
+    </button>
+  } @else {
+    <span class="binary-indicator" i18n>- Binary</span>
+  }
+  @if (byteLength) {
+    <button mat-icon-button (click)="download()">
+      <mat-icon [fontIcon]="getIcon('download')" />
+    </button>
+  }
+</section>
+@if (decodedData) {
+  <mat-card appearance="outlined">
+    <span>{{ decodedData }}</span>
+  </mat-card>
+}

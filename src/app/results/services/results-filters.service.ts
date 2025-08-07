@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Scope } from '@app/types/config';
 import { FilterFor } from '@app/types/filter-definition';
 import { DataFilterService, FiltersServiceStatusesInterface } from '@app/types/services/data-filter.service';
+import { StatusService } from '@app/types/status';
 import { ResultsStatusesService } from './results-statuses.service';
 import { ResultFilterField, ResultRawFilters, ResultsFiltersDefinition } from '../types';
 
@@ -11,7 +12,7 @@ import { ResultFilterField, ResultRawFilters, ResultsFiltersDefinition } from '.
 })
 export class ResultsFiltersService extends DataFilterService<ResultRawEnumField> implements FiltersServiceStatusesInterface<ResultStatus> {
   protected readonly scope: Scope = 'results';
-  readonly statusService = inject(ResultsStatusesService);
+  readonly statusService: ResultsStatusesService = inject(StatusService);
 
   readonly rootField: Record<ResultRawEnumField, string> = {
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_COMPLETED_AT]: $localize`Completed at`,
@@ -23,6 +24,8 @@ export class ResultsFiltersService extends DataFilterService<ResultRawEnumField>
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID]: $localize`Session ID`,
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_STATUS]: $localize`Status`,
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SIZE]: $localize`Size`,
+    [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OPAQUE_ID]: $localize`Opaque ID`,
+    [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_MANUAL_DELETION]: $localize`Manual Deletion`,
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_UNSPECIFIED]: $localize`Unspecified`,
   };
 
@@ -72,6 +75,11 @@ export class ResultsFiltersService extends DataFilterService<ResultRawEnumField>
       for: 'root',
       field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SIZE,
       type: 'number'
+    },
+    {
+      for: 'root',
+      field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_MANUAL_DELETION,
+      type: 'boolean'
     }
   ];
 

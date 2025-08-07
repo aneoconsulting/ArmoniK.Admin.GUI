@@ -6,15 +6,16 @@ import { TaskOptions } from '@app/tasks/types';
 import { ColumnType, TableColumn } from '@app/types/column.type';
 import { DataRaw } from '@app/types/data';
 import { IconsService } from '@services/icons.service';
+import { StatusColorPickerComponent } from '../status-color-picker.component';
 
 @Component({
   selector: 'app-table-column-header',
   templateUrl: './table-column-header.component.html',
-  standalone: true,
   imports: [
     MatCheckboxModule,
     MatIconModule,
     MatButtonModule,
+    StatusColorPickerComponent
   ]
 })
 export class TableColumnHeaderComponent<T extends DataRaw, O extends TaskOptions | null = null> {
