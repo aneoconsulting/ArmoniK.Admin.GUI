@@ -29,6 +29,7 @@ import { ManageViewInLogsDialogComponent } from './components/manage-view-in-log
 import { TasksTableComponent } from './components/table.component';
 import TasksDataService from './services/tasks-data.service';
 import { TasksFiltersService } from './services/tasks-filters.service';
+import { TasksGrpcActionsService } from './services/tasks-grpc-actions.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksIndexService } from './services/tasks-index.service';
 import { TasksStatusesService } from './services/tasks-statuses.service';
@@ -74,6 +75,7 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
       provide: StatusService,
       useClass: TasksStatusesService,
     },
+    TasksGrpcActionsService
   ],
 })
 export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
@@ -81,10 +83,11 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSu
   readonly indexService = inject(TasksIndexService);
   readonly filtersService = inject(TasksFiltersService);
   readonly tableDataService = inject(TasksDataService);
+  readonly grpcActionsService = inject(TasksGrpcActionsService);
 
   tableType: TableType = 'Tasks';
 
-  selection: string[] = [];
+  selection: TaskSummary[] = [];
 
   serviceIcon: string | null = null;
   serviceName: string | null = null;
@@ -93,6 +96,7 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSu
   ngOnInit(): void {
     this.initTableEnvironment();
 
+    this.grpcActionsService.refresh = this.tableDataService.refresh$;
     const viewInLogs = this.indexService.restoreViewInLogs();
     this.serviceIcon = viewInLogs.serviceIcon;
     this.serviceName = viewInLogs.serviceName;
@@ -118,16 +122,8 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSu
     this.onFiltersChange([[filter]]);
   }
 
-  onSelectionChange(selection: string[]): void {
+  onSelectionChange(selection: TaskSummary[]): void {
     this.selection = selection;
-  }
-
-  onCancelTasksSelection():void {
-    this.cancelTasks(this.selection);
-  }
-
-  cancelTasks(tasksIds: string[]): void {
-    this.tableDataService.cancelTasks(tasksIds);
   }
 
   manageViewInLogs(): void {

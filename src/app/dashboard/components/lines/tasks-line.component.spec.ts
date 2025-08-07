@@ -2,6 +2,7 @@ import { TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/arm
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import TasksDataService from '@app/tasks/services/tasks-data.service';
+import { TasksGrpcActionsService } from '@app/tasks/services/tasks-grpc-actions.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TaskOptions, TaskSummary } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
@@ -121,6 +122,10 @@ describe('TasksLineComponent', () => {
     error: jest.fn(),
   };
 
+  const mockGrpcService = {
+    actions: [],
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -132,6 +137,7 @@ describe('TasksLineComponent', () => {
         { provide: TasksIndexService, useValue: mockTasksIndexService },
         DefaultConfigService,
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: TasksGrpcActionsService, useValue: mockGrpcService },
       ]
     }).inject(TasksLineComponent);
     component.line = line;
@@ -387,22 +393,9 @@ describe('TasksLineComponent', () => {
   });
 
   it('should update selection', () => {
-    const selection = ['1', '2'];
+    const selection = [{ id: 'taskId1' }, { id: 'taskId2' }] as unknown as TaskSummary[];
     component.onSelectionChange(selection);
     expect(component.selection).toEqual(selection);
-  });
-
-  it('should cancel task', () => {
-    const tasksIds = ['1', '2'];
-    component.cancelTasks(tasksIds);
-    expect(mockTasksDataService.cancelTasks).toHaveBeenCalledWith(tasksIds);
-  });
-
-  it('should cancel selected tasks', () => {
-    const selection = ['1', '2'];
-    component.selection = selection;
-    component.onCancelTasksSelection();
-    expect(mockTasksDataService.cancelTasks).toHaveBeenCalledWith(selection);
   });
 
   it('should update view in logs', () => {

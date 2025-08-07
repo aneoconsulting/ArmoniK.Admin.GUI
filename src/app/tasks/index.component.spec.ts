@@ -16,6 +16,7 @@ import { of } from 'rxjs';
 import { IndexComponent } from './index.component';
 import TasksDataService from './services/tasks-data.service';
 import { TasksFiltersService } from './services/tasks-filters.service';
+import { TasksGrpcActionsService } from './services/tasks-grpc-actions.service';
 import { TasksIndexService } from './services/tasks-index.service';
 import { TaskOptions, TaskSummary } from './types';
 
@@ -160,6 +161,10 @@ describe('Tasks Index Component', () => {
     cancelTasks: jest.fn(),
   };
 
+  const mockGrpcService = {
+    actions: [],
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -174,6 +179,7 @@ describe('Tasks Index Component', () => {
         { provide: TasksFiltersService, useValue: mockTaskFiltersService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: TasksGrpcActionsService, useValue: mockGrpcService },
       ]
     }).inject(IndexComponent);
     component.ngOnInit();
@@ -524,22 +530,9 @@ describe('Tasks Index Component', () => {
   });
 
   it('should update selection', () => {
-    const selection = ['taskId1', 'taskId2'];
+    const selection = [{ id: 'taskId1' }, { id: 'taskId2' }] as unknown as TaskSummary[];
     component.onSelectionChange(selection);
     expect(component.selection).toEqual(selection);
-  });
-
-  it('should cancel tasks', () => {
-    const tasks = ['taskId'];
-    component.cancelTasks(tasks);
-    expect(mockTasksDataService.cancelTasks).toHaveBeenCalledWith(tasks);
-  });
-
-  it('should cancel selected tasks', () => {
-    const selection = ['taskId1', 'taskId2'];
-    component.selection = selection;
-    component.onCancelTasksSelection();
-    expect(mockTasksDataService.cancelTasks).toHaveBeenCalledWith(selection);
   });
 
   describe('Manage view in logs', () => {

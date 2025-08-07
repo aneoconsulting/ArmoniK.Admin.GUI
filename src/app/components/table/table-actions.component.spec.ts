@@ -6,11 +6,15 @@ import { TableActionsComponent } from './table-actions.component';
 describe('TableActionsComponent', () => {
   let component: TableActionsComponent<ApplicationRaw>;
 
+  const mockIconsService = {
+    getIcon: jest.fn(),
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         TableActionsComponent,
-        IconsService
+        { provide: IconsService, useValue: mockIconsService },
       ]
     }).inject(TableActionsComponent<ApplicationRaw>);
   });
@@ -20,6 +24,8 @@ describe('TableActionsComponent', () => {
   });
 
   it('should get icon', () => {
-    expect(component.getIcon('icon')).toEqual('palette');
+    const iconName = 'icon';
+    component.getIcon(iconName);
+    expect(mockIconsService.getIcon).toHaveBeenCalledWith(iconName);
   });
 });
