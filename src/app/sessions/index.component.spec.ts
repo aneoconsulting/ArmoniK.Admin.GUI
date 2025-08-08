@@ -315,17 +315,11 @@ describe('Sessions Index Component', () => {
     });
 
     it('should update displayed column keys', () => {
-      expect(component.displayedColumnsKeys).toEqual(['select', 'sessionId', 'createdAt']);
+      expect(component.displayedColumnsKeys).toEqual(newColumns);
     });
 
     it('should update displayed columns', () => {
       expect(component.displayedColumns()).toEqual([
-        {
-          name: $localize`Select`,
-          key: 'select',
-          type: 'select',
-          sortable: false,
-        },
         {
           name: $localize`Session ID`,
           key: 'sessionId',
@@ -339,11 +333,17 @@ describe('Sessions Index Component', () => {
           type: 'date',
           sortable: true,
         },
+        {
+          name: $localize`Select`,
+          key: 'select',
+          type: 'select',
+          sortable: false,
+        },
       ]);
     });
 
     it('should save columns', () => {
-      expect(mockSessionsIndexService.saveColumns).toHaveBeenCalledWith(['select', 'sessionId', 'createdAt']);
+      expect(mockSessionsIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
     });
 
     it('should refresh if duration is included', () => {

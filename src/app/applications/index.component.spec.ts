@@ -252,17 +252,11 @@ describe('Application component', () => {
     });
 
     it('should update displayed column keys', () => {
-      expect(component.displayedColumnsKeys).toEqual(['select', 'name', 'count']);
+      expect(component.displayedColumnsKeys).toEqual(newColumns);
     });
 
     it('should update displayed columns', () => {
       expect(component.displayedColumns()).toEqual([
-        {
-          name: $localize`Select`,
-          key: 'select',
-          type: 'select',
-          sortable: false,
-        },
         {
           name: $localize`Name`,
           key: 'name',
@@ -274,11 +268,17 @@ describe('Application component', () => {
           type: 'count',
           sortable: true,
         },
+        {
+          name: $localize`Select`,
+          key: 'select',
+          type: 'select',
+          sortable: false,
+        },
       ]);
     });
 
     it('should save columns', () => {
-      expect(mockApplicationIndexService.saveColumns).toHaveBeenCalledWith(['select', 'name', 'count']);
+      expect(mockApplicationIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
     });
   });
 

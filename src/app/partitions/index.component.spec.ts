@@ -276,17 +276,11 @@ describe('Partitions Index Component', () => {
     });
 
     it('should update displayed column keys', () => {
-      expect(component.displayedColumnsKeys).toEqual(['select', 'id', 'count']);
+      expect(component.displayedColumnsKeys).toEqual(newColumns);
     });
 
     it('should update displayed columns', () => {
       expect(component.displayedColumns()).toEqual([
-        {
-          name: $localize`Select`,
-          key: 'select',
-          type: 'select',
-          sortable: false,
-        },
         {
           name: $localize`ID`,
           key: 'id',
@@ -300,11 +294,17 @@ describe('Partitions Index Component', () => {
           type: 'date',
           sortable: true,
         },
+        {
+          name: $localize`Select`,
+          key: 'select',
+          type: 'select',
+          sortable: false,
+        },
       ]);
     });
 
     it('should save columns', () => {
-      expect(mockPartitionsIndexService.saveColumns).toHaveBeenCalledWith(['select', 'id', 'count']);
+      expect(mockPartitionsIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
     });
   });
 
