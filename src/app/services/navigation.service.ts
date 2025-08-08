@@ -112,6 +112,10 @@ export class NavigationService {
     }
   }
 
+  deleteSidebarItem(index: number) {
+    this.currentSidebar = this.currentSidebar.filter((_item, itemIndex) => index !== itemIndex);
+  }
+
   saveSideBarOpened(sideBarOpened: boolean) {
     this.storageService.setItem('navigation-sidebar-opened', sideBarOpened);
   }

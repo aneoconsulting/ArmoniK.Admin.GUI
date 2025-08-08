@@ -1,3 +1,10 @@
-@for (item of availableSidebars; track $index) {
-  <p>{{ item }}</p>
-}
+<h2 mat-dialog-title i18n>Add a navigation item</h2>
+
+<mat-dialog-content>
+  <app-autocomplete i18n-label label="Item to add" [options]="availableSidebars" (valueChange)="updateSelectedItem($event)" />
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button matButton i18n (click)="close()">Close</button>
+  <button mat-flat-button color="primary" (click)="submit()" i18n>Add item</button>
+</mat-dialog-actions>

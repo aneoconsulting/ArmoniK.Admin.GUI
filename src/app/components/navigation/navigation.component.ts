@@ -123,8 +123,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
     this.navigationService.saveSideBarOpened(this.sideBarOpened);
   }
 
-  deleteSideBarItem() {
-    this.navigationService.delete();
+  deleteSideBarItem(index: number) {
+    this.navigationService.deleteSidebarItem(index);
   }
 
   addNewSideBarItem() {

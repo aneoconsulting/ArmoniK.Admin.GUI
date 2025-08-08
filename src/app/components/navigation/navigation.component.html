@@ -47,7 +47,7 @@
             <mat-divider/>
           }
           @if (navigationService.edit()) {
-            <button mat-icon-button>
+            <button mat-icon-button (click)="deleteSideBarItem($index)">
               <mat-icon [fontIcon]="getIcon('delete')" />
             </button>
           }
@@ -57,9 +57,10 @@
         <mat-icon matListItemIcon aria-hidden="true" fontIcon="settings"></mat-icon>
         <span matListItemTitle> {{ settingsItem }} </span>
       </a>
-      <button mat-button (click)="addNewSideBarItem()">Add item</button>
     </mat-nav-list>
-
+    @if (navigationService.edit()) {
+      <button id="add-item-button" mat-button (click)="addNewSideBarItem()">Add item</button>
+    }
   </mat-sidenav>
   <mat-sidenav-content>
     <main>
