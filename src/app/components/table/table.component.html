@@ -10,7 +10,7 @@
       <th mat-header-cell mat-sort-header [disabled]="!column.sortable" *matHeaderCellDef cdkDrag appNoWrap>
         <app-table-column-header [column]="column" [checked]="selection.hasValue() && isAllSelected"
           [isSelectionIndeterminate]="selection.hasValue() && !isAllSelected" (rowsSelectionChange)="toggleAllRows()"
-          (statusesChange)="onPersonnalizeTasksByStatus()" />
+          (statusesChange)="onPersonalizeTasksByStatus()" />
       </th>
       <!-- Columns -->
       @if (column.type !== 'actions') {

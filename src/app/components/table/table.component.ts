@@ -78,7 +78,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   @Output() columnDrop = new EventEmitter<ColumnKey<T, O>[]>();
   @Output() optionsChange = new EventEmitter<never>();
   @Output() selectionChange = new EventEmitter<T[]>();
-  @Output() personnalizeTasksByStatus = new EventEmitter<void>();
+  @Output() personalizeTasksByStatus = new EventEmitter<void>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -170,7 +170,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
     this.emitSelectionChange();
   }
 
-  onPersonnalizeTasksByStatus(): void {
-    this.personnalizeTasksByStatus.emit();
+  onPersonalizeTasksByStatus(): void {
+    this.personalizeTasksByStatus.emit();
   }
 }

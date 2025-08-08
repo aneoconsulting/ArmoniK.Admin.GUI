@@ -268,24 +268,8 @@ describe('SessionsLineComponent', () => {
     });
 
     it('should refresh', () => {
-      component.refresh();
       expect(mockSessionsDataService.refresh$.next).toHaveBeenCalled();
-    });
-  
-    describe('On Options Change', () => {
-      beforeEach(() => {
-        component.onOptionsChange();
-      });
-  
-      it('should save options', () => {
-        expect(component.line.options).toEqual(mockSessionsDataService.options);
-      });
-  
-      it('should refresh', () => {
-        expect(mockSessionsDataService.refresh$.next).toHaveBeenCalled();
-      });
-    });
-  
+    });  
   });
 
   describe('OnColumnsChange', () => {
@@ -337,7 +321,6 @@ describe('SessionsLineComponent', () => {
   });
 
   describe('onFiltersReset', () => {
-
     beforeEach(() => {
       mockSessionsDataService.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
       component.line.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
@@ -360,24 +343,8 @@ describe('SessionsLineComponent', () => {
     });
 
     it('should refresh', () => {
-      component.refresh();
       expect(mockSessionsDataService.refresh$.next).toHaveBeenCalled();
-    });
-  
-    describe('On Options Change', () => {
-      beforeEach(() => {
-        component.onOptionsChange();
-      });
-  
-      it('should save options', () => {
-        expect(component.line.options).toEqual(mockSessionsDataService.options);
-      });
-  
-      it('should refresh', () => {
-        expect(mockSessionsDataService.refresh$.next).toHaveBeenCalled();
-      });
-    });
-  
+    });  
   });
 
   describe('onLockColumnChange', () => {

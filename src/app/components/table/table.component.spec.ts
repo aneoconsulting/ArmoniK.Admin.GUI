@@ -240,9 +240,9 @@ describe('TableComponent', () => {
     });
   });
 
-  it('should emit on PersonnalizeTasksByStatus', () => {
-    const spy = jest.spyOn(component.personnalizeTasksByStatus, 'emit');
-    component.onPersonnalizeTasksByStatus();
+  it('should emit on PersonalizeTasksByStatus', () => {
+    const spy = jest.spyOn(component.personalizeTasksByStatus, 'emit');
+    component.onPersonalizeTasksByStatus();
     expect(spy).toHaveBeenCalled();
   });
 

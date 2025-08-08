@@ -246,25 +246,26 @@ describe('ResultsLineComponent', () => {
 
   describe('onFilterChange', () => {
     const newFilters: FiltersOr<ResultRawEnumField> = [[{for: 'root', field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_AT, operator: 1, value: 2}]];
+    let lineSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      lineSpy = jest.spyOn(component.lineChange, 'emit');
+      component.onFiltersChange(newFilters);
+    });
 
     it('should update applied filters', () => {
-      component.onFiltersChange(newFilters);
       expect(component.filters).toEqual(newFilters);
     });
 
     it('should update line filters', () => {
-      component.onFiltersChange(newFilters);
       expect(component.line.filters).toEqual(newFilters);
     });
 
     it('should emit', () => {
-      const lineSpy = jest.spyOn(component.lineChange, 'emit');
-      component.onFiltersChange(newFilters);
       expect(lineSpy).toHaveBeenCalled();
     });
 
     it('should refresh', () => {
-      component.onFiltersChange(newFilters);
       expect(mockResultsDataService.refresh$.next).toHaveBeenCalled();
     });
   });

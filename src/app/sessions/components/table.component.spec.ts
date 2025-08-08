@@ -198,7 +198,7 @@ describe('SessionsTableComponent', () => {
     expect(mockNotificationService.success).toHaveBeenCalledWith('Session ID copied to clipboard');
   });
 
-  describe('personnalizeTasksByStatus', () => {
+  describe('personalizeTasksByStatus', () => {
     beforeEach(() => {
       component.personalizeTasksByStatus();
     });

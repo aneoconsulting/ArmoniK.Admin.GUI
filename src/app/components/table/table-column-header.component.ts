@@ -56,7 +56,7 @@ export class TableColumnHeaderComponent<T extends DataRaw, O extends TaskOptions
     this.rowsSelectionChange.emit();
   }
 
-  onPersonnalizeStatuses() {
+  onPersonalizeStatuses() {
     this.statusesChange.emit();
   }
 }
