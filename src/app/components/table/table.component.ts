@@ -46,7 +46,8 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
       const selection = entries.filter(entry => this.isSelected(entry.raw)).map(entry => entry.raw);
       this.selection.clear();
       this.selection.select(...selection);
-      this._isAllSelected = this.selection.selected.length === entries.length;
+      this._isAllSelected = this.selection.selected.length === entries.length && entries.length > 0;
+      this.emitSelectionChange();
     }
   }
 
