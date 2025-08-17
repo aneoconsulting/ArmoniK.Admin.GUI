@@ -11,7 +11,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { HealthCheckComponent } from '@app/healthcheck/healthcheck.component';
-import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
@@ -19,6 +18,7 @@ import { UserService } from '@services/user.service';
 import { Observable, Subscription, interval } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { ChangeLanguageButtonComponent } from './change-language-button.component';
+import { EnvironmentComponent } from './environment/environment.component';
 import { ExternalServicesComponent } from './external-services/external-services.component';
 import { ThemeSelectorComponent } from './theme-selector.component';
 import { VersionsMenuComponent } from './version-menu/versions-menu.component';
@@ -57,12 +57,6 @@ import { VersionsMenuComponent } from './version-menu/versions-menu.component';
   font-weight: normal;
 }
 
-.environment {
-  background: white;
-  padding: 0 1rem;
-  border-radius: 0.25rem;
-}
-
 main {
   padding: 20px 50px;
 }
@@ -87,6 +81,7 @@ main {
     HealthCheckComponent,
     ExternalServicesComponent,
     VersionsMenuComponent,
+    EnvironmentComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -95,9 +90,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
   private readonly navigationService = inject(NavigationService);
   private readonly userService = inject(UserService);
   private readonly iconsService = inject(IconsService);
-  private readonly environmentService = inject(EnvironmentService);
 
-  environment = this.environmentService.getEnvironment();
   settingsItem = $localize`Settings`;
 
   checkGreetingsSubscription: Subscription;

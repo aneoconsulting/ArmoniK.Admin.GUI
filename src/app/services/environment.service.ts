@@ -1,4 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { GrpcHostInterceptor } from '@app/interceptors/grpc.interceptor';
+import { GRPC_INTERCEPTORS } from '@ngx-grpc/core';
+import { DefaultConfigService } from './default-config.service';
+import { StorageService } from './storage.service';
 
 export interface Environment {
   color: string,
@@ -9,13 +13,41 @@ export interface Environment {
 
 @Injectable()
 export class EnvironmentService {
-  #environment: Environment;
+  readonly hosts: string[];
+  currentHost: string | null;
+  currentIndex: number | null;
 
-  getEnvironment(): Environment {
-    return this.#environment;
+  private readonly storageService = inject(StorageService);
+  private readonly defaultConfigService = inject(DefaultConfigService);
+  private readonly grpcInterceptor = inject(GRPC_INTERCEPTORS) as GrpcHostInterceptor;
+
+  constructor() {
+    this.hosts = (this.storageService.getItem<string[]>('environments', true) ?? this.defaultConfigService.environment) as string[];
+    this.currentHost = this.storageService.getItem<string>('host-config') ?? null;
+    this.currentIndex = this.hosts.findIndex((host) => host === this.currentHost);
   }
 
-  setEnvironment(environment: Environment): void {
-    this.#environment = environment;
+  selectHost(index: number) {
+    this.currentIndex = index;
+    if (index !== -1) {
+      this.currentHost = this.hosts[index] ?? null;
+    } else {
+      this.currentHost = null;
+    }
+    this.grpcInterceptor.setHost(this.currentHost);
+  }
+
+  addEnvironment(environment: string): void {
+    this.hosts.push(environment);
+    this.saveEnvironments();
+  }
+
+  removeEnvironment(index: number): void {
+    this.hosts.splice(index, 1);
+    this.saveEnvironments();
+  }
+
+  private saveEnvironments() {
+    this.storageService.setItem('environments', this.hosts);
   }
 }

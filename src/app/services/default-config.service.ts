@@ -275,6 +275,8 @@ export class DefaultConfigService {
     urlTemplate: null,
   };
 
+  readonly #environment: string[] = ['http://172.26.174.64:5000'];
+
   readonly #defaultTaskStatuses: Record<string, StatusLabelColor> = {
     [TaskStatus.TASK_STATUS_COMPLETED]: {
       label: 'Completed',
@@ -409,6 +411,10 @@ export class DefaultConfigService {
     return structuredClone(this.#availableLanguages);
   }
 
+  get environment() {
+    return structuredClone(this.#environment);
+  }
+
   readonly #exportedDefaultConfig: ExportedDefaultConfig = {
     'language': this.#defaultLanguage,
     'navigation-sidebar': this.#defaultSidebar,
@@ -456,6 +462,8 @@ export class DefaultConfigService {
     'tasks-statuses': this.#defaultTaskStatuses,
     'tasks-custom-columns': [],
     'sessions-custom-columns': [],
+    'environments': this.#environment,
+    'host-config': null,
   };
 
   get exportedDefaultConfig(): ExportedDefaultConfig {
