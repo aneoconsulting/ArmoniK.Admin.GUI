@@ -89,6 +89,7 @@ export default tseslint.config(
           }
         }
       ],
+      "@angular-eslint/prefer-inject": "off",
     },
   },
   {
