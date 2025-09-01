@@ -74,18 +74,22 @@ export class FiltersDialogInputComponent implements ControlValueAccessor {
 
   onDurationChange(event: Event, index: number) {
     this.duration[index] = (event.target as HTMLInputElement).value;
-    const getHours = !isNaN(Number(this.duration[0])) ? Number(this.duration[0]) : this.getDurationInputValue('hours');
-    const getMinutes = !isNaN(Number(this.duration[1])) ? Number(this.duration[1]) : this.getDurationInputValue('minutes');
-    const getSeconds = !isNaN(Number(this.duration[2])) ? Number(this.duration[2]) : this.getDurationInputValue('seconds');
 
-    const durationSeconds = (getHours ?? 0) * 3600
-      + (getMinutes ?? 0) * 60 
-      + (getSeconds ?? 0);
+    const hours = this.getValidNumber(this.duration[0]) ?? this.getDurationInputValue('hours') ?? 0;
+    const minutes = this.getValidNumber(this.duration[1]) ?? this.getDurationInputValue('minutes') ?? 0;
+    const seconds = this.getValidNumber(this.duration[2]) ?? this.getDurationInputValue('seconds') ?? 0;
 
+    const durationSeconds = hours * 3600 + minutes * 60 + seconds;
     this.writeValue(durationSeconds.toString());
   }
 
-  getDurationInputValue(searchItem: string): number | undefined {
+  
+  private getValidNumber(value: string): number | null {
+    const num = Number(value);
+    return !isNaN(num) ? num : null;
+  }
+
+  getDurationInputValue(searchItem: 'hours' | 'minutes' | 'seconds'): number | undefined {
     switch (searchItem) {
     case 'hours':
       return !isNaN(Number(this.value)) ? Math.floor(Number(this.value)/3600) : undefined;

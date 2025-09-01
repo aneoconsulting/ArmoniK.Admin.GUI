@@ -17,12 +17,12 @@ import { FormFilterType } from './types';
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => FitlersDialogFieldComponent),
+      useExisting: forwardRef(() => FiltersDialogFieldComponent),
       multi: true,
     },
   ],
 })
-export class FitlersDialogFieldComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> implements OnInit, ControlValueAccessor {
+export class FiltersDialogFieldComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> implements OnInit, ControlValueAccessor {
   value: string | null = null;
   
   labelledProperties: string[];
@@ -35,18 +35,14 @@ export class FitlersDialogFieldComponent<F extends FiltersEnums, O extends Filte
   private readonly dataFiltersService = inject(DataFilterService);
 
   ngOnInit(): void {
-    this.labelledProperties = this.dataFiltersService.filtersDefinitions.map(property => this.retrieveLabel(property));
-    if (this.customProperties) {
-      this.labelledProperties.push(...this.customProperties.map(custom => custom.replace('options.options.', '')));
-    }
+    this.labelledProperties = [
+      ...this.dataFiltersService.filtersDefinitions.map(property => this.retrieveLabel(property)),
+      ...this.customProperties.map(custom => custom.replace('options.options.', ''))
+    ];
   }
 
   private retrieveLabel(filterDefinition: FilterDefinition<F, O>) {
-    try {
-      return this.dataFiltersService.retrieveLabel(filterDefinition.for, filterDefinition.field as FilterField);
-    } catch {
-      return '';
-    }
+    return this.dataFiltersService.retrieveLabel(filterDefinition.for, filterDefinition.field as FilterField);
   }
 
   writeValue(value: string): void {

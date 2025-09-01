@@ -28,7 +28,7 @@ describe('FiltersDialogInputComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('shouldget the value as a string', () => {
+  it('should get the value as a string', () => {
     component.value = 'test';
     expect(typeof component.valueAsString).toEqual('string');
   });
@@ -126,7 +126,7 @@ describe('FiltersDialogInputComponent', () => {
         expect(component.getDurationInputValue('seconds')).toEqual(30);
       });
       it('should return undefined for an invalid search item', () => {
-        expect(component.getDurationInputValue('invalid')).toBeUndefined();
+        expect(component.getDurationInputValue('invalid' as 'hours')).toBeUndefined(); // Cast the string to another specific string type to test completely the code.
       });
     });
 
@@ -144,7 +144,7 @@ describe('FiltersDialogInputComponent', () => {
         expect(component.getDurationInputValue('seconds')).toBeUndefined();
       });
       it('should return undefined for an invalid search item', () => {
-        expect(component.getDurationInputValue('invalid')).toBeUndefined();
+        expect(component.getDurationInputValue('invalid' as 'minutes')).toBeUndefined(); // Cast the string to another specific string type to test completely the code.
       });
     });
   });

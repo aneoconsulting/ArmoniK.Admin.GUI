@@ -4,11 +4,11 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { CustomColumn } from '@app/types/data';
 import { FilterFor } from '@app/types/filter-definition';
 import { DataFilterService } from '@app/types/services/data-filter.service';
-import { FitlersDialogFieldComponent } from './filters-dialog-field.component';
+import { FiltersDialogFieldComponent } from './filters-dialog-field.component';
 import { FilterInputValue, FormFilterType } from './types';
 
-describe('FitlersDialogFieldComponent', () => {
-  let component: FitlersDialogFieldComponent<TaskSummaryEnumField, TaskOptionEnumField>;
+describe('FiltersDialogFieldComponent', () => {
+  let component: FiltersDialogFieldComponent<TaskSummaryEnumField, TaskOptionEnumField>;
 
   const mockDataFiltersService = {
     filtersDefinitions: [{
@@ -38,10 +38,10 @@ describe('FitlersDialogFieldComponent', () => {
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
-        FitlersDialogFieldComponent,
+        FiltersDialogFieldComponent,
         { provide: DataFilterService, useValue: mockDataFiltersService },
       ],
-    }).inject(FitlersDialogFieldComponent<TaskSummaryEnumField, TaskOptionEnumField>);
+    }).inject(FiltersDialogFieldComponent<TaskSummaryEnumField, TaskOptionEnumField>);
     component.customProperties = customProperties;
     component.filter = filterForm;
     component.registerOnChange(registeredOnChange);
@@ -104,15 +104,8 @@ describe('FitlersDialogFieldComponent', () => {
     });
   });
 
-  describe('retrieveLabel', () => {
-    it('should retrieve the label', () => {
-      component['retrieveLabel']({ for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID, type: 'string' });
-      expect(mockDataFiltersService.retrieveLabel).toHaveBeenCalled();
-    });
-
-    it('should return an empty string when an error is catched', () => {
-      mockDataFiltersService.retrieveLabel.mockImplementationOnce(() => {throw new Error();});
-      expect(component['retrieveLabel']({ for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID, type: 'string' })).toEqual('');
-    });
+  it('should retrieve the label', () => {
+    component['retrieveLabel']({ for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID, type: 'string' });
+    expect(mockDataFiltersService.retrieveLabel).toHaveBeenCalled();
   });
 });

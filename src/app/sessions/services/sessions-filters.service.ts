@@ -156,7 +156,8 @@ export class SessionsFiltersService extends DataFilterService<SessionRawEnumFiel
     case 'options':
       return this.optionsFields[filterField as SessionTaskOptionEnumField];
     default:
-      throw new Error(`Unknown filter type: ${filterFor} ${filterField}`);
+      console.error(`Unknown filter type: ${filterFor} ${filterField}`);
+      return '';
     }
   }
 

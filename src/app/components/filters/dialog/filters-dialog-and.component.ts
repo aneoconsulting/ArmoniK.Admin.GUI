@@ -11,7 +11,7 @@ import { DataFilterService } from '@app/types/services/data-filter.service';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { Subscription } from 'rxjs';
-import { FitlersDialogFieldComponent } from './filters-dialog-field.component';
+import { FiltersDialogFieldComponent } from './filters-dialog-field.component';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 import { FiltersDialogOperatorComponent } from './filters-dialog-operator.component';
 import { FilterInputValue, FormFilter, FormFilterType, FormFiltersAnd } from './types';
@@ -25,7 +25,7 @@ import { FilterInputValue, FormFilter, FormFilterType, FormFiltersAnd } from './
     FiltersDialogInputComponent,
     FiltersDialogOperatorComponent,
     ReactiveFormsModule,
-    FitlersDialogFieldComponent,
+    FiltersDialogFieldComponent,
     MatButtonModule,
     MatIconModule,
     MatCardModule,
