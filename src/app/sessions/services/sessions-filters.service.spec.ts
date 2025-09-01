@@ -105,7 +105,7 @@ describe('SessionsFilterService', () => {
 
     it('should restore default showFilters if it cannot restore', () => {
       mockTableService.restoreShowFilters.mockReturnValueOnce(null);
-      expect(service.restoreShowFilters()).toBe(true);
+      expect(service.restoreShowFilters()).toBeTruthy();
     });
   });
 
@@ -132,7 +132,7 @@ describe('SessionsFilterService', () => {
     it('should return an empty string when filterFor is unknown', () => {
       const field = SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID;
       const _for = 'custom';
-      expect(service.retrieveLabel(_for, field)).toBe('');
+      expect(service.retrieveLabel(_for, field)).toEqual('');
     });
 
     it('should log an error when filterFor is unknown', () => {

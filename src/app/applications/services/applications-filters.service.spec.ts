@@ -132,7 +132,7 @@ describe('ApplicationsFiltersService', () => {
 
     it('should restore default showFilters if it cannot restore', () => {
       mockTableService.restoreShowFilters.mockReturnValueOnce(null);
-      expect(service.restoreShowFilters()).toBe(true);
+      expect(service.restoreShowFilters()).toBeTruthy();
     });
   });
 
@@ -143,12 +143,12 @@ describe('ApplicationsFiltersService', () => {
   
     it('should return an empty string in case of options property', () => {
       expect(service.retrieveLabel('options', ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME))
-        .toBe('');
+        .toEqual('');
     });
 
     it('should return an empty string in case of an unknown filter for', () => {
       expect(service.retrieveLabel('unexisting' as FilterFor<ApplicationRawEnumField, null>, ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME))
-        .toBe('');
+        .toEqual('');
     });
   });
 

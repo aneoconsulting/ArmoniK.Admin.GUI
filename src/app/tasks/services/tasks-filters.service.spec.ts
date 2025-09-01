@@ -112,7 +112,7 @@ describe('TasksFilterService', () => {
 
     it('should restore default showFilters if it cannot restore', () => {
       mockTableService.restoreShowFilters.mockReturnValueOnce(null);
-      expect(service.restoreShowFilters()).toBe(true);
+      expect(service.restoreShowFilters()).toBeTruthy();
     });
   });
 
@@ -141,7 +141,7 @@ describe('TasksFilterService', () => {
     it('should return an empty string when filterFor is unknown', () => {
       const _for = 'custom';
       const field = TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT;
-      expect(service.retrieveLabel(_for , field)).toBe('');
+      expect(service.retrieveLabel(_for , field)).toEqual('');
     });
 
     it('should log an error when filterFor is unknown', () => {

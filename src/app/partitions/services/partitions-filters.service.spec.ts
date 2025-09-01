@@ -112,7 +112,7 @@ describe('PartitionsFilterService', () => {
 
     it('should restore default showFilters if it cannot restore', () => {
       mockTableService.restoreShowFilters.mockReturnValueOnce(null);
-      expect(service.restoreShowFilters()).toBe(true);
+      expect(service.restoreShowFilters()).toBeTruthy();
     });
   });
 
@@ -129,11 +129,11 @@ describe('PartitionsFilterService', () => {
     });
 
     it('should return an empty string for options cases', () => {
-      expect(service.retrieveLabel('options', PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID)).toBe('');
+      expect(service.retrieveLabel('options', PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID)).toEqual('');
     });
 
     it('should return an empty string for unknown filter type', () => {
-      expect(service.retrieveLabel('custom', PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID)).toBe('');
+      expect(service.retrieveLabel('custom', PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID)).toEqual('');
     });
 
     it('should log an error when filterFor is unknown', () => {

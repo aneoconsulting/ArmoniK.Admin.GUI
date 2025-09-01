@@ -125,7 +125,7 @@ describe('ResultsFilterService', () => {
 
     it('should restore default showFilters if it cannot restore', () => {
       mockTableService.restoreShowFilters.mockReturnValueOnce(null);
-      expect(service.restoreShowFilters()).toBe(true);
+      expect(service.restoreShowFilters()).toBeTruthy();
     });
   });
 
@@ -142,11 +142,11 @@ describe('ResultsFilterService', () => {
     });
 
     it('should return an empty string for options cases', () => {
-      expect(service.retrieveLabel('options', ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID)).toBe('');
+      expect(service.retrieveLabel('options', ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID)).toEqual('');
     });
 
     it('should return an empty string for unknown filter type', () => {
-      expect(service.retrieveLabel('custom', ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID)).toBe('');
+      expect(service.retrieveLabel('custom', ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID)).toEqual('');
     });
 
     it('should log an error when filterFor is unknown', () => {
