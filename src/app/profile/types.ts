@@ -1,4 +1,4 @@
-const ALL_GROUPS = ['applications', 'partitions', 'sessions', 'tasks', 'results', 'submitter', 'dashboard', 'profile', 'healthcheck'] as const;
+const ALL_GROUPS = ['applications', 'partitions', 'sessions', 'tasks', 'results', 'dashboard', 'profile', 'healthcheck'] as const;
 export type Group = typeof ALL_GROUPS[number];
 
 export type PermissionGroup = {
