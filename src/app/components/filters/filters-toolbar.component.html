@@ -27,7 +27,10 @@
                 Or
               </span>
             }
-            <app-filters-chips [filtersAnd]="filtersAnd"/>
+            <app-filters-chips 
+              [filtersAnd]="filtersAnd" 
+              [customColumns]="customColumns"
+              (filtersChange)="onFiltersChange($event)"/>
           </div>
         
         }

@@ -141,4 +141,11 @@ export class FiltersToolbarComponent<F extends FiltersEnums, O extends FiltersOp
   isFilterNull(result: FiltersDialogResult<F, O>): boolean {
     return result[0][0].field === null && result[0][0].for === null && result[0][0].operator === null && result[0][0].value === null;
   }
+
+  onFiltersChange(newFilters: FiltersOr<F, O>): void {
+    this.filters = newFilters;
+    this.setHasFilters();
+    this.setHasOneOrFilter();
+    this.filtersChange.emit(this.filters);
+  }
 }

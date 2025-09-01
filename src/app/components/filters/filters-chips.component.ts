@@ -1,9 +1,13 @@
-import { Component, Input, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewContainerRef, inject, signal } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
-import { Filter, FiltersAnd, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { CustomColumn } from '@app/types/data';
+import { FiltersDialogData, FiltersDialogResult } from '@app/types/dialog';
+import { Filter, FiltersAnd, FiltersEnums, FiltersOptionsEnums, FiltersOr } from '@app/types/filters';
 import { DataFilterService } from '@app/types/services/data-filter.service';
 import { FiltersService } from '@services/filters.service';
 import { UtilsService } from '@services/utils.service';
+import { FiltersDialogComponent } from './filters-dialog.component';
 
 @Component({
   selector: 'app-filters-chips',
@@ -18,9 +22,18 @@ import { UtilsService } from '@services/utils.service';
 
   margin-left: 8px;
 }
+
+.mat-chip-clickable {
+  cursor: pointer;
+}
+
+.mat-chip-clickable:hover {
+  opacity: 0.8;
+}
   `],
   imports: [
     MatChipsModule,
+    MatDialogModule,
   ],
   providers: [
     FiltersService,
@@ -30,11 +43,34 @@ export class FiltersChipsComponent<F extends FiltersEnums, O extends FiltersOpti
   private readonly filtersService = inject(FiltersService);
   private readonly utilsService = inject(UtilsService<F, O>);
   private readonly dataFiltersService = inject(DataFilterService);
+  private readonly dialog = inject(MatDialog);
+  private readonly viewContainerRef = inject(ViewContainerRef);
 
   readonly filters = signal<string[]>([]);
+  private _filtersAnd: FiltersAnd<F, O> = [];
 
   @Input({ required: true }) set filtersAnd(entry: FiltersAnd<F, O>) {
+    this._filtersAnd = entry;
     this.filters.set(entry.map(filter => this.toContent(filter)));
+  }
+
+  @Input() customColumns: CustomColumn[] = [];
+  @Output() filtersChange: EventEmitter<FiltersOr<F, O>> = new EventEmitter<FiltersOr<F, O>>();
+
+  openFiltersDialog(): void {
+    const dialogRef = this.dialog.open<FiltersDialogComponent<F, O>, FiltersDialogData<F, O>, FiltersDialogResult<F, O>>(FiltersDialogComponent, {
+      data: {
+        filtersOr: [Array.from(this._filtersAnd)],
+        customColumns: this.customColumns
+      },
+      viewContainerRef: this.viewContainerRef,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        this.filtersChange.emit(result);
+      }
+    });
   }
 
   private toContent(filter: Filter<F, O>): string {
