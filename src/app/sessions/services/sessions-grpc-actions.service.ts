@@ -178,7 +178,7 @@ export class SessionsGrpcActionsService extends GrpcActionsService<SessionRaw, S
       switchMap(sessions => combineLatest(
         sessions.map(session => 
           this.grpcService.pause$(session.sessionId).pipe(
-            catchError(error => this.handleError(error, $localize`An error occured while pausing session ` + session.sessionId))
+            catchError(error => this.handleError(error, $localize`An error ocured while pausing session ` + session.sessionId))
           )
         )
       ))

@@ -22,7 +22,7 @@ describe('SessionsGrpcActionsService', () => {
   } as SessionRaw;
 
   const session2 = {
-    sessionId: 'session-1',
+    sessionId: 'session-2',
     status: SessionStatus.SESSION_STATUS_RUNNING
   } as SessionRaw;
 
@@ -108,7 +108,7 @@ describe('SessionsGrpcActionsService', () => {
       mockGrpcService.pause$.mockReturnValueOnce(throwError(() => new Error()));
       action.click([session1]);
       expect(consoleErrorSpy).toHaveBeenCalled();
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occured while pausing session ' + session1.sessionId);
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error ocured while pausing session ' + session1.sessionId);
     });
   });
 
@@ -152,12 +152,12 @@ describe('SessionsGrpcActionsService', () => {
       expect(action.condition!([session1])).toBe(true);
     });
   
-    it('should resume a session', () => {
+    it('should purge a session', () => {
       action.click([session1]);
       expect(mockNotificationService.success).toHaveBeenCalledWith('Session purged');
     });
 
-    it('should resume many sessions', () => {
+    it('should purge many sessions', () => {
       action.click([session1, session2]);
       expect(mockNotificationService.success).toHaveBeenCalledWith('Sessions purged');
     });

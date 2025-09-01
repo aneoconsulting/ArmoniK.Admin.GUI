@@ -19,7 +19,7 @@ function getAction(actions: GrpcAction<ApplicationRaw>[], label: string) {
   return actions.filter(action => action.label === label)[0];
 } 
 
-describe('TasksTableComponent', () => {
+describe('ApplicationsTableComponent', () => {
   let component: ApplicationsTableComponent;
 
   const displayedColumns: TableColumn<ApplicationRaw>[] = [
