@@ -1,0 +1,7 @@
+.mat-mdc-table-sticky-border-elem-right {
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.mat-mdc-table-sticky-border-elem-left {
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
