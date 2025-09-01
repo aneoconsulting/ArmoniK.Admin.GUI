@@ -1,4 +1,5 @@
 import { ResultStatus, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { Clipboard } from '@angular/cdk/clipboard';
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -69,6 +70,7 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
   private readonly resultsStatusesService = inject(ResultsStatusesService);
   private readonly storageService = inject(StorageService);
   private readonly defaultConfigService = inject(DefaultConfigService);
+  private readonly clipboard = inject(Clipboard);
 
   private readonly redrawGraph$ = new Subject<void>();
 
@@ -136,6 +138,13 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
    */
   getIcon(name: string | undefined): string {
     return this.iconsService.getIcon(name);
+  }
+
+  /**
+   * 
+   */
+  copySessionId() {
+    this.clipboard.copy(this.sessionId);
   }
 
   /**

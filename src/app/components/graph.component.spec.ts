@@ -1,4 +1,5 @@
 import { ResultStatus, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { Clipboard } from '@angular/cdk/clipboard';
 import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ResultsStatusesService } from '@app/results/services/results-statuses.service';
@@ -42,6 +43,10 @@ describe('GraphComponent', () => {
     })),
   };
 
+  const mockClipboard = {
+    copy: jest.fn(),
+  };
+
   const mockIconsService = {
     getIcon: jest.fn(v => v)
   };
@@ -60,6 +65,7 @@ describe('GraphComponent', () => {
         { provide: SessionsStatusesService, useValue: mockSessionsStatuses },
         { provide: TasksStatusesService, useValue: mockTasksStatuses },
         { provide: ResultsStatusesService, useValue: mockResultsStatuses },
+        { provide: Clipboard, useValue: mockClipboard },
       ]
     }).inject(GraphComponent<ArmoniKGraphNode, GraphLink<ArmoniKGraphNode>>);
 
@@ -99,6 +105,11 @@ describe('GraphComponent', () => {
     const name = 'heart';
     component.getIcon(name);
     expect(mockIconsService.getIcon).toHaveBeenCalledWith(name);
+  });
+
+  it('should copy the session Id', () => {
+    component.copySessionId();
+    expect(mockClipboard.copy).toHaveBeenCalledWith(component.sessionId);
   });
 
   describe('highlightNodes', () => {
