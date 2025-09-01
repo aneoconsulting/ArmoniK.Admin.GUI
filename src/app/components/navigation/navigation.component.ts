@@ -66,6 +66,9 @@ import { VersionsMenuComponent } from './version-menu/versions-menu.component';
 main {
   padding: 20px 50px;
 }
+.profile-button {
+  margin-left: 8px;
+}
   `],
   providers: [
     StorageService,
