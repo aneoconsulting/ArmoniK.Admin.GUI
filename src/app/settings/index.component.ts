@@ -10,7 +10,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule} from '@angular/material/snack-bar';
 import { Key } from '@app/types/config';
-import { Sidebar, SidebarItem } from '@app/types/navigation';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
@@ -175,7 +174,7 @@ export class IndexComponent implements OnInit {
   }
 
   resetToDefaultSideBar(): void {
-    const dialogRef = this.dialog.open<ClearAllDialogComponent>(ClearAllDialogComponent, {});
+    const dialogRef = this.dialog.open<ClearAllDialogComponent, void, boolean>(ClearAllDialogComponent, {});
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.clearSideBar();
@@ -193,23 +192,6 @@ export class IndexComponent implements OnInit {
     this.navigationService.saveSidebar();
     this.keys = this.sortKeys(this.storageService.restoreKeys());
     this.navigationService.edit.set(false);
-  }
-
-  getSidebarItems(): { name: string, value: Sidebar }[] {
-    return this.navigationService.sidebarItems.map(item => ({
-      name: item.display,
-      value: item.id as Sidebar,
-    }));
-  }
-
-  findSidebarItem(id: Sidebar): SidebarItem {
-    const item = this.navigationService.sidebarItems.find(item => item.id === id);
-
-    if (!item) {
-      throw new Error(`Sidebar item with id "${id}" not found`);
-    }
-
-    return item;
   }
 
   updateKeySelection(event: MatCheckboxChange): void {
