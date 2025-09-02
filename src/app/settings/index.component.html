@@ -21,12 +21,12 @@
       @if (navigationService.edit()) {
         <div class="actions">
           <button mat-flat-button (click)="onSaveSidebar()" color="primary" type="button" i18n="Form">Save</button>
-          <button mat-stroked-button (click)="onRestoreSidebar()" type="button" i18n="Form">Reset</button>
+          <button mat-stroked-button (click)="resetSidebar()" type="button" i18n="Form">Reset</button>
         </div>
       } @else {
         <button mat-flat-button (click)="startEditSideBar()" color="primary" type="button" i18n="Form">Edit sidebar</button>
       }
-      <button mat-stroked-button (click)="onClearSideBar()" type="button" i18n="Form">Reset to default</button>
+      <button mat-stroked-button (click)="resetToDefaultSideBar()" type="button" i18n="Form">Reset to default</button>
     </div>
   </app-page-section>
 

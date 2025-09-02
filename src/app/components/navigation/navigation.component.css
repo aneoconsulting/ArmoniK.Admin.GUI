@@ -50,3 +50,21 @@ li {
 mat-divider {
   width: 100%;
 }
+
+.handle {
+  margin-right: 0.5rem;
+}
+
+.nav-container {
+  height: 100%;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#add-item-button {
+  position: fixed;
+  z-index: 2;
+  bottom: 0;
+  margin: 1rem;
+}

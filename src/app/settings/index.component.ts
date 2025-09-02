@@ -165,12 +165,16 @@ export class IndexComponent implements OnInit {
     return this.iconsService.getIcon(name);
   }
 
-  onRestoreSidebar(): void {
+  startEditSideBar() {
+    this.navigationService.edit.set(true);
+  }
+
+  resetSidebar(): void {
     this.navigationService.resetSidebar();
     this.navigationService.edit.set(false);
   }
 
-  onClearSideBar(): void {
+  resetToDefaultSideBar(): void {
     const dialogRef = this.dialog.open<ClearAllDialogComponent>(ClearAllDialogComponent, {});
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -183,10 +187,6 @@ export class IndexComponent implements OnInit {
     this.navigationService.edit.set(true);
     this.navigationService.resetSidebar(true);
     this.navigationService.edit.set(false);
-  }
-
-  startEditSideBar() {
-    this.navigationService.edit.set(true);
   }
 
   onSaveSidebar(): void {

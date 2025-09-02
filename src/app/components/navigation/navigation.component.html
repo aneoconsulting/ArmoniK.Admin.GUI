@@ -32,11 +32,12 @@
   [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
   [mode]="(isHandset$ | async) ? 'over' : 'side'"
   [opened]="(isHandset$ | async) === false && sideBarOpened">
-    <mat-nav-list cdkDropList (cdkDropListDropped)="drop($event)">
+    <div class="nav-container">
+      <mat-nav-list cdkDropList (cdkDropListDropped)="drop($event)">
       @for (item of navigationService.currentSidebar; track $index) {
         <li cdkDrag>
           @if (navigationService.edit()) {
-            <mat-icon cdkDragHandle [fontIcon]="getIcon('drag')" />
+            <mat-icon class="handle" cdkDragHandle [fontIcon]="getIcon('drag')" />
           }
           @if(item.type !== 'divider') {
           <a mat-list-item [routerLink]="item.route" routerLinkActive="navbar-item-selected" [disabled]="navigationService.edit()">
@@ -59,8 +60,9 @@
       </a>
     </mat-nav-list>
     @if (navigationService.edit()) {
-      <button id="add-item-button" mat-button (click)="addNewSideBarItem()">Add item</button>
+      <button id="add-item-button" mat-flat-button color="primary" (click)="addNewSideBarItem()" i18n>Add item</button>
     }
+    </div>
   </mat-sidenav>
   <mat-sidenav-content>
     <main>
