@@ -4,8 +4,8 @@
       <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
     </button>
   }
-  <button mat-icon-button (click)="toggleSideBar()">
-    @if (sideBarOpened) {
+  <button mat-icon-button (click)="toggleSidebar()">
+    @if (navigationService.sideBarOpened()) {
       <mat-icon [fontIcon]="getIcon('menu-open')" [dir]="'rtl'"/>
     } @else {
       <mat-icon [fontIcon]="getIcon('menu')" [dir]="'rtl'"/>
@@ -31,7 +31,7 @@
   <mat-sidenav #drawer class="sidenav"
   [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
   [mode]="(isHandset$ | async) ? 'over' : 'side'"
-  [opened]="(isHandset$ | async) === false && sideBarOpened">
+  [opened]="(isHandset$ | async) === false && navigationService.sideBarOpened()">
     <div class="nav-container">
     <mat-nav-list cdkDropList (cdkDropListDropped)="drop($event)">
       <ul>

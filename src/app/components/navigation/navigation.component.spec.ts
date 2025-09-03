@@ -32,6 +32,7 @@ describe('NavigationComponent', () => {
     saveSideBarOpened: jest.fn(),
     addSidebarItem: jest.fn(),
     deleteSidebarItem: jest.fn(),
+    toggleSidebarOpened: jest.fn(),
   };
   const mockUserService = {
     user: undefined as unknown as {username: string}
@@ -73,12 +74,6 @@ describe('NavigationComponent', () => {
 
   it('should run', () => {
     expect(component).toBeTruthy();
-  });
-
-  describe('on init', () => {
-    it('should retore sideBarOpened', () => {
-      expect(mockNavigationService.restoreSideBarOpened).toHaveBeenCalled();
-    });
   });
 
   it('should set handset', () => {
@@ -131,17 +126,9 @@ describe('NavigationComponent', () => {
     expect(component.greetings).toEqual('Good afternoon, user');
   });
 
-  describe('toggle sidebar', () => {
-    it('should toggle sidebar', () => {
-      component.sideBarOpened = false;
-      component.toggleSideBar();
-      expect(component.sideBarOpened).toBeTruthy();
-    });
-
-    it('should save sidebar opened', () => {
-      component.toggleSideBar();
-      expect(mockNavigationService.saveSideBarOpened).toHaveBeenCalledWith(component.sideBarOpened);
-    });
+  it('should toggle navigation service sidebar opened', () => {
+    component.toggleSidebar();
+    expect(mockNavigationService.toggleSidebarOpened).toHaveBeenCalled();
   });
 
   it('should change the position of the droped element in the navigation component array', () => {

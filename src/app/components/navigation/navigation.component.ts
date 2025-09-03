@@ -79,8 +79,6 @@ export class NavigationComponent implements OnInit, OnDestroy {
   get greetings() {
     return this._greetings();
   }
-
-  sideBarOpened = true;
   
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -89,7 +87,6 @@ export class NavigationComponent implements OnInit, OnDestroy {
     );
 
   ngOnInit(): void {
-    this.sideBarOpened = this.navigationService.restoreSideBarOpened();
     this.verifyGreetings();
     this.checkGreetingsSubscription = interval(60000).subscribe(() => this.verifyGreetings());
   }
@@ -118,9 +115,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleSideBar() {
-    this.sideBarOpened = !this.sideBarOpened;
-    this.navigationService.saveSideBarOpened(this.sideBarOpened);
+  toggleSidebar() {
+    this.navigationService.toggleSidebarOpened();
   }
 
   deleteSideBarItem(index: number) {
