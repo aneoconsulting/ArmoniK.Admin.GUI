@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { ArmonikData } from '@app/types/data';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
@@ -29,7 +30,7 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
   implements OnInit {
   table: TableTasksByStatus = 'applications';
   
-  readonly tableDataService = inject(ApplicationsDataService);
+  readonly tableDataService = inject(TABLE_DATA_TASKS_STATUS) as ApplicationsDataService;
   readonly iconsService = inject(IconsService);
   readonly router = inject(Router);
 

@@ -17,6 +17,7 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service
 import { TaskOptions } from '@app/tasks/types';
 import { DashboardLineCustomColumnsComponent } from '@app/types/components/dashboard-line-table';
 import { DataFilterService } from '@app/types/services/data-filter.service';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { StatusService } from '@app/types/status';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
@@ -43,7 +44,10 @@ import { NotificationService } from '@services/notification.service';
     TasksStatusesService,
     TasksFiltersService,
     SessionsGrpcService,
-    SessionsDataService,
+    {
+      provide: TABLE_DATA_TASKS_STATUS,
+      useClass: SessionsDataService
+    },
     GrpcSortFieldService,
     FiltersService,
     TasksGrpcService,
@@ -60,7 +64,7 @@ import { NotificationService } from '@services/notification.service';
 export class SessionsLineComponent extends DashboardLineCustomColumnsComponent<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly indexService = inject(SessionsIndexService);
   readonly defaultConfig = this.defaultConfigService.defaultSessions;
-  readonly tableDataService = inject(SessionsDataService);
+  readonly tableDataService = inject(TABLE_DATA_TASKS_STATUS) as SessionsDataService;
 
   ngOnInit(): void {
     this.initLineEnvironment();

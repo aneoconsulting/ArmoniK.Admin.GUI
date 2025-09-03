@@ -6,8 +6,10 @@ import { Router, RouterModule } from '@angular/router';
 import { TaskOptions } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { ArmonikData, SessionData } from '@app/types/data';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { StatusService } from '@app/types/status';
 import { ActionTable } from '@app/types/table';
+import { WarningGraphDialogComponent } from '@components/graph/dialogs/warning-graph.dialog.component';
 import { TableComponent } from '@components/table/table.component';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { Subject } from 'rxjs';
@@ -34,7 +36,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   readonly router = inject(Router);
   readonly copyService = inject(Clipboard);
 
-  readonly tableDataService = inject(SessionsDataService);
+  readonly tableDataService = inject(TABLE_DATA_TASKS_STATUS) as SessionsDataService;
 
   table: TableTasksByStatus = 'sessions';
 
@@ -68,7 +70,20 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   deleteSessionSubscription = this.deleteSession$.subscribe(data => this.onDelete(data.raw.sessionId));
 
   seeGraph$ = new Subject<ArmonikData<SessionRaw, TaskOptions>>();
-  seeGraphSubscription = this.seeGraph$.subscribe(data => this.router.navigate(['/sessions', 'graph', data.raw.sessionId]));
+  seeGraphSubscription = this.seeGraph$.subscribe(data => {
+    const tasksNb = this.tableDataService.itemsTasksSize.get(data.raw.sessionId);
+    if (tasksNb && tasksNb > 300) {
+      const dialogRef = this.dialog.open<WarningGraphDialogComponent, void, boolean>(WarningGraphDialogComponent);
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.router.navigate(['/sessions', 'graph', data.raw.sessionId]);          
+        }
+      });
+    } else {
+      this.router.navigate(['/sessions', 'graph', data.raw.sessionId]);
+    }
+  });
 
   actions: ActionTable<SessionRaw, TaskOptions>[] = [
     {

@@ -6,12 +6,12 @@ import { Router } from '@angular/router';
 import { ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TableColumn } from '@app/types/column.type';
 import { ApplicationData, ColumnKey } from '@app/types/data';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { of } from 'rxjs';
 import { ApplicationsTableComponent } from './table.component';
-import ApplicationsDataService from '../services/applications-data.service';
 import { ApplicationRaw } from '../types';
 
 describe('TasksTableComponent', () => {
@@ -114,7 +114,7 @@ describe('TasksTableComponent', () => {
     component = TestBed.configureTestingModule({
       providers: [
         ApplicationsTableComponent,
-        { provide: ApplicationsDataService, useValue: mockApplicationsDataService },
+        { provide: TABLE_DATA_TASKS_STATUS, useValue: mockApplicationsDataService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
         { provide: MatDialog, useValue: mockMatDialog },

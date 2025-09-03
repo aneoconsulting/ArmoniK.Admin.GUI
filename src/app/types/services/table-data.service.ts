@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, InjectionToken, inject, signal } from '@angular/core';
 import { TaskOptions } from '@app/tasks/types';
 import { ArmonikData, DataRaw, GrpcResponse } from '@app/types/data';
 import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '@app/types/filters';
@@ -10,6 +10,12 @@ import { NotificationService } from '@services/notification.service';
 import { Subject, catchError, map, of, switchMap } from 'rxjs';
 import { GrpcTableService } from './grpcService';
 import { Scope } from '../config';
+
+export const TABLE_DATA_TASKS_STATUS = new InjectionToken<TableDataTaskByStatusService>('TableData');
+
+export interface TableDataTaskByStatusService {
+  readonly itemsTasksSize: Map<string, number>;
+}
 
 @Injectable()
 /**
@@ -142,4 +148,9 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
    * @param entry 
    */
   abstract createNewLine(entry: T): ArmonikData<T, O>;
+}
+
+export abstract class AbstractTableDataTaskByStatusService<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null>
+  extends AbstractTableDataService<T, F, O, FO> implements TableDataTaskByStatusService {
+  readonly itemsTasksSize = new Map<string, number>();
 }

@@ -1,12 +1,12 @@
 import { ApplicationRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import ApplicationsDataService from '@app/applications/services/applications-data.service';
 import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOptions } from '@app/applications/types';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
@@ -124,7 +124,7 @@ describe('ApplicationsLineComponent', () => {
       providers: [
         ApplicationsLineComponent,
         { provide: MatDialog, useValue: mockMatDialog },
-        { provide: ApplicationsDataService, useValue: mockApplicationsDataService },
+        { provide: TABLE_DATA_TASKS_STATUS, useValue: mockApplicationsDataService },
         AutoRefreshService,
         IconsService,
         { provide: ApplicationsIndexService, useValue: mockApplicationsIndexService },

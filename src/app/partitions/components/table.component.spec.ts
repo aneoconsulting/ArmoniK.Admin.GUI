@@ -5,11 +5,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, PartitionData } from '@app/types/data';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { of } from 'rxjs';
 import { PartitionsTableComponent } from './table.component';
-import PartitionsDataService from '../services/partitions-data.service';
 import { PartitionRaw } from '../types';
 
 describe('PartitionsTableComponent', () => {
@@ -103,7 +103,7 @@ describe('PartitionsTableComponent', () => {
     component = TestBed.configureTestingModule({
       providers: [
         PartitionsTableComponent,
-        { provide: PartitionsDataService, useValue: mockPartitionsDataService },
+        { provide: TABLE_DATA_TASKS_STATUS, useValue: mockPartitionsDataService },
         { provide: Clipboard, useValue: mockClipBoard },
         { provide: MatDialog, useValue: mockMatDialog },
         { provide: TasksByStatusService, useValue: mockTasksByStatusService },

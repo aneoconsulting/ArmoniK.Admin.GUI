@@ -12,6 +12,7 @@ import { ApplicationsIndexService } from '@app/applications/services/application
 import { ApplicationRaw } from '@app/applications/types';
 import { DashboardLineTableComponent } from '@app/types/components/dashboard-line-table';
 import { DataFilterService } from '@app/types/services/data-filter.service';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
@@ -38,7 +39,10 @@ import { ShareUrlService } from '@services/share-url.service';
     },
     ApplicationsFiltersService,
     FiltersService,
-    ApplicationsDataService,
+    {
+      provide: TABLE_DATA_TASKS_STATUS,
+      useClass: ApplicationsDataService
+    },
     GrpcSortFieldService,
   ],
   imports: [
@@ -53,7 +57,7 @@ import { ShareUrlService } from '@services/share-url.service';
 export class ApplicationsLineComponent extends DashboardLineTableComponent<ApplicationRaw, ApplicationRawEnumField> implements OnInit, AfterViewInit,OnDestroy {
   readonly indexService = inject(ApplicationsIndexService);
   readonly defaultConfig = this.defaultConfigService.defaultApplications;
-  readonly tableDataService = inject(ApplicationsDataService);
+  readonly tableDataService = inject(TABLE_DATA_TASKS_STATUS) as ApplicationsDataService;
 
   ngOnInit(): void {
     this.initLineEnvironment();

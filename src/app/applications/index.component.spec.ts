@@ -7,13 +7,13 @@ import { TableColumn } from '@app/types/column.type';
 import { ColumnKey } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { Subject, of } from 'rxjs';
 import { IndexComponent } from './index.component';
-import ApplicationsDataService from './services/applications-data.service';
 import { ApplicationsFiltersService } from './services/applications-filters.service';
 import { ApplicationsIndexService } from './services/applications-index.service';
 import { ApplicationRaw } from './types';
@@ -165,7 +165,7 @@ describe('Application component', () => {
         IndexComponent,
         IconsService,
         { provide: ApplicationsFiltersService, useValue: mockApplicationsFilterService },
-        { provide: ApplicationsDataService, useValue: mockApplicationsDataService },
+        { provide: TABLE_DATA_TASKS_STATUS, useValue: mockApplicationsDataService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ApplicationsIndexService, useValue: mockApplicationIndexService },
         { provide: AutoRefreshService, useValue: mockAutoRefreshService },

@@ -16,6 +16,7 @@ import { TaskOptions } from '@app/tasks/types';
 import { TableHandlerCustomValues } from '@app/types/components';
 import { ColumnKey } from '@app/types/data';
 import { DataFilterService } from '@app/types/services/data-filter.service';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { StatusService } from '@app/types/status';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -69,7 +70,10 @@ import { SessionRaw } from './types';
     MatDialog,
     DashboardIndexService,
     DashboardStorageService,
-    SessionsDataService,
+    {
+      provide: TABLE_DATA_TASKS_STATUS,
+      useClass: SessionsDataService,
+    },
     SessionsGrpcService,
     NotificationService,
     TasksGrpcService,
@@ -90,7 +94,7 @@ import { SessionRaw } from './types';
 export class IndexComponent extends TableHandlerCustomValues<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly filtersService = inject(SessionsFiltersService);
   readonly indexService = inject(SessionsIndexService);
-  readonly tableDataService = inject(SessionsDataService);
+  readonly tableDataService = inject(TABLE_DATA_TASKS_STATUS) as SessionsDataService;
 
   tableType: TableType = 'Sessions';
 

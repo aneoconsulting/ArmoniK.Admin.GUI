@@ -10,6 +10,7 @@ import { DashboardStorageService } from '@app/dashboard/services/dashboard-stora
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { TableHandler } from '@app/types/components';
 import { DataFilterService } from '@app/types/services/data-filter.service';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -56,7 +57,10 @@ import { ApplicationRaw } from './types';
     },
     DashboardIndexService,
     DashboardStorageService,
-    ApplicationsDataService,
+    {
+      provide: TABLE_DATA_TASKS_STATUS,
+      useClass: ApplicationsDataService
+    },
     ApplicationsGrpcService,
     CacheService,
     NotificationService,
@@ -76,7 +80,7 @@ import { ApplicationRaw } from './types';
   ]
 })
 export class IndexComponent extends TableHandler<ApplicationRaw, ApplicationRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
-  readonly tableDataService = inject(ApplicationsDataService);
+  readonly tableDataService = inject(TABLE_DATA_TASKS_STATUS) as ApplicationsDataService;
   readonly filtersService = inject(ApplicationsFiltersService);
   readonly indexService = inject(ApplicationsIndexService);
 

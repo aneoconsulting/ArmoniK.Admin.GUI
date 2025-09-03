@@ -11,6 +11,7 @@ import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { TableHandler } from '@app/types/components';
 import { DataFilterService } from '@app/types/services/data-filter.service';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -58,7 +59,10 @@ import { PartitionRaw } from './types';
     },
     DashboardIndexService,
     DashboardStorageService,
-    PartitionsDataService,
+    {
+      provide: TABLE_DATA_TASKS_STATUS,
+      useClass: PartitionsDataService
+    },
     GrpcSortFieldService,
     PartitionsGrpcService,
   ],
@@ -78,7 +82,7 @@ import { PartitionRaw } from './types';
 export class IndexComponent extends TableHandler<PartitionRaw, PartitionRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly filtersService = inject(PartitionsFiltersService);
   readonly indexService = inject(PartitionsIndexService);
-  readonly tableDataService = inject(PartitionsDataService);
+  readonly tableDataService = inject(TABLE_DATA_TASKS_STATUS) as PartitionsDataService;
 
   tableType: TableType = 'Partitions';
 

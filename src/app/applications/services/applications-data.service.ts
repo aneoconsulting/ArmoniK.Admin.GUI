@@ -4,12 +4,12 @@ import { TaskSummaryFilters } from '@app/tasks/types';
 import { Scope } from '@app/types/config';
 import { ApplicationData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
-import { AbstractTableDataService } from '@app/types/services/table-data.service';
+import { AbstractTableDataTaskByStatusService } from '@app/types/services/table-data.service';
 import { ApplicationRaw } from '../types';
 import { ApplicationsGrpcService } from './applications-grpc.service';
 
 @Injectable()
-export default class ApplicationsDataService extends AbstractTableDataService<ApplicationRaw, ApplicationRawEnumField> {
+export default class ApplicationsDataService extends AbstractTableDataTaskByStatusService<ApplicationRaw, ApplicationRawEnumField> {
   readonly grpcService = inject(ApplicationsGrpcService);
 
   scope: Scope = 'applications';

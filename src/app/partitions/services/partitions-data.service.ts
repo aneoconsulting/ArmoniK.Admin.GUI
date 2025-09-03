@@ -3,12 +3,12 @@ import { Injectable, inject } from '@angular/core';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { Scope } from '@app/types/config';
 import { PartitionData } from '@app/types/data';
-import { AbstractTableDataService } from '@app/types/services/table-data.service';
+import { AbstractTableDataTaskByStatusService } from '@app/types/services/table-data.service';
 import { PartitionRaw } from '../types';
 import { PartitionsGrpcService } from './partitions-grpc.service';
 
 @Injectable()
-export default class PartitionsDataService extends AbstractTableDataService<PartitionRaw, PartitionRawEnumField> {
+export default class PartitionsDataService extends AbstractTableDataTaskByStatusService<PartitionRaw, PartitionRawEnumField> {
   readonly grpcService = inject(PartitionsGrpcService);
 
   scope: Scope = 'partitions';

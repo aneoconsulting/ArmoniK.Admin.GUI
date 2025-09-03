@@ -1,12 +1,12 @@
 import { PartitionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import PartitionsDataService from '@app/partitions/services/partitions-data.service';
 import { PartitionsIndexService } from '@app/partitions/services/partitions-index.service';
 import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawListOptions } from '@app/partitions/types';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
@@ -118,7 +118,7 @@ describe('PartitionsLineComponent', () => {
         { provide: MatDialog, useValue: mockMatDialog },
         AutoRefreshService,
         IconsService,
-        { provide: PartitionsDataService, useValue: mockPartitionsDataService },
+        { provide: TABLE_DATA_TASKS_STATUS, useValue: mockPartitionsDataService },
         { provide: PartitionsIndexService, useValue: mockPartitionsIndexService },
         DefaultConfigService,
         { provide: NotificationService, useValue: mockNotificationService },

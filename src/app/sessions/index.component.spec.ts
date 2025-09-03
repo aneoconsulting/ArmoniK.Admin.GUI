@@ -9,13 +9,13 @@ import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, CustomColumn } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { of } from 'rxjs';
 import { IndexComponent } from './index.component';
-import { SessionsDataService } from './services/sessions-data.service';
 import { SessionsFiltersService } from './services/sessions-filters.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionRaw } from './types';
@@ -169,7 +169,7 @@ describe('Sessions Index Component', () => {
         IconsService,
         AutoRefreshService,
         { provide: SessionsIndexService, useValue: mockSessionsIndexService },
-        { provide: SessionsDataService, useValue: mockSessionsDataService },
+        { provide: TABLE_DATA_TASKS_STATUS, useValue: mockSessionsDataService },
         { provide: MatDialog, useValue: mockMatDialog },
         { provide: DashboardIndexService, useValue: mockDashboardIndexService },
         { provide: Router, useValue: mockRouter },

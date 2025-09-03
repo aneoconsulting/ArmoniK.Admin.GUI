@@ -12,6 +12,7 @@ import { PartitionsIndexService } from '@app/partitions/services/partitions-inde
 import { PartitionRaw } from '@app/partitions/types';
 import { DashboardLineTableComponent } from '@app/types/components/dashboard-line-table';
 import { DataFilterService } from '@app/types/services/data-filter.service';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
@@ -30,7 +31,10 @@ import { NotificationService } from '@services/notification.service';
       useExisting: PartitionsFiltersService
     },
     PartitionsGrpcService,
-    PartitionsDataService,
+    {
+      provide: TABLE_DATA_TASKS_STATUS,
+      useClass: PartitionsDataService
+    },
     GrpcSortFieldService,
   ],
   imports: [
@@ -45,7 +49,7 @@ import { NotificationService } from '@services/notification.service';
 export class PartitionsLineComponent extends DashboardLineTableComponent<PartitionRaw, PartitionRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly indexService = inject(PartitionsIndexService);
   readonly defaultConfig = this.defaultConfigService.defaultPartitions;
-  readonly tableDataService = inject(PartitionsDataService);
+  readonly tableDataService = inject(TABLE_DATA_TASKS_STATUS) as PartitionsDataService;
 
   ngOnInit() {
     this.initLineEnvironment();

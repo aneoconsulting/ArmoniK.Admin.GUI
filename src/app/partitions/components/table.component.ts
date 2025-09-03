@@ -2,6 +2,7 @@ import { PartitionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Component, OnInit, inject } from '@angular/core';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { ArmonikData } from '@app/types/data';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
@@ -22,7 +23,7 @@ import { PartitionRaw } from '../types';
 export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent<PartitionRaw, PartitionRawEnumField>
   implements OnInit {
   
-  readonly tableDataService = inject(PartitionsDataService);
+  readonly tableDataService = inject(TABLE_DATA_TASKS_STATUS) as PartitionsDataService;
   
   table: TableTasksByStatus = 'partitions';
 

@@ -7,6 +7,7 @@ import { ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/typ
 import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, SessionData } from '@app/types/data';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { StatusService } from '@app/types/status';
 import { ActionTable } from '@app/types/table';
 import { CacheService } from '@services/cache.service';
@@ -15,7 +16,6 @@ import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { of } from 'rxjs';
 import { SessionsTableComponent } from './table.component';
-import { SessionsDataService } from '../services/sessions-data.service';
 import { SessionRaw } from '../types';
 
 function getAction(actions: ActionTable<SessionRaw, TaskOptions>[], label: string) {
@@ -151,7 +151,7 @@ describe('SessionsTableComponent', () => {
     component = TestBed.configureTestingModule({
       providers: [
         SessionsTableComponent,
-        { provide: SessionsDataService, useValue: mockSessionsDataService },
+        { provide: TABLE_DATA_TASKS_STATUS, useValue: mockSessionsDataService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: StatusService, useValue: mockStatusService },
         FiltersService,

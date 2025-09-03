@@ -1,7 +1,6 @@
 import { SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { SessionsDataService } from '@app/sessions/services/sessions-data.service';
 import { SessionsIndexService } from '@app/sessions/services/sessions-index.service';
 import { SessionRaw } from '@app/sessions/types';
 import { TaskOptions } from '@app/tasks/types';
@@ -121,7 +120,7 @@ describe('SessionsLineComponent', () => {
         { provide: MatDialog, useValue: mockMatDialog },
         AutoRefreshService,
         IconsService,
-        { provide: SessionsDataService, useValue: mockSessionsDataService },
+        { provide: TABLE_DATA_TASKS_STATUS, useValue: mockSessionsDataService },
         { provide: SessionsIndexService, useValue: mockSessionsIndexService },
         DefaultConfigService,
         { provide: NotificationService, useValue: mockNotificationService },

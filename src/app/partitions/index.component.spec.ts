@@ -7,13 +7,13 @@ import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, CustomColumn } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { of } from 'rxjs';
 import { IndexComponent } from './index.component';
-import PartitionsDataService from './services/partitions-data.service';
 import { PartitionsFiltersService } from './services/partitions-filters.service';
 import { PartitionsIndexService } from './services/partitions-index.service';
 import { PartitionRaw } from './types';
@@ -152,7 +152,7 @@ describe('Partitions Index Component', () => {
         IconsService,
         AutoRefreshService,
         { provide: PartitionsIndexService, useValue: mockPartitionsIndexService },
-        { provide: PartitionsDataService, useValue: mockPartitionsDataService },
+        { provide: TABLE_DATA_TASKS_STATUS, useValue: mockPartitionsDataService },
         { provide: MatDialog, useValue: mockMatDialog },
         { provide: DashboardIndexService, useValue: mockDashboardIndexService },
         { provide: Router, useValue: mockRouter },
