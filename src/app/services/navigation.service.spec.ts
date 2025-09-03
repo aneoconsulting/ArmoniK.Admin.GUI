@@ -14,6 +14,10 @@ describe('NavigationService', () => {
     setItem: jest.fn()
   };
 
+  const mockDefaultConfigService = {
+    defaultSidebar: ['applications', 'divider', 'partitions'],
+  };
+
   const mockUserConnectedGuard = {
     canActivate: jest.fn(() => true),
   };
@@ -55,7 +59,7 @@ describe('NavigationService', () => {
     service = TestBed.configureTestingModule({
       providers: [
         NavigationService,
-        DefaultConfigService,
+        { provide: DefaultConfigService, useValue: mockDefaultConfigService },
         { provide: StorageService, useValue: mockStorageService },
         { provide: UserConnectedGuard, useValue: mockUserConnectedGuard }
       ]
@@ -64,6 +68,10 @@ describe('NavigationService', () => {
 
   it('Should run', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should set edit to false', () => {
+    expect(service.edit()).toBeFalsy();
   });
 
   describe('restoreSidebar', () => {
@@ -79,7 +87,7 @@ describe('NavigationService', () => {
 
     it('Should restore default config sideBar if none is stored', () => {
       storedSideBar = null;
-      expect(service.restoreSidebar()).toEqual(new DefaultConfigService().defaultSidebar);
+      expect(service.restoreSidebar()).toEqual(mockDefaultConfigService.defaultSidebar);
     });
   });
 
@@ -98,21 +106,95 @@ describe('NavigationService', () => {
   });
 
   describe('saveSidebar', () => {
-    
-    it('should change the format of the provided sidebar and set it to the current SideBar', () => {
-      service.saveSidebar(sidebar);
+    it('should store the current sidebar configuration', () => {
+      service.saveSidebar();
+      expect(mockStorageService.setItem).toHaveBeenCalledWith('navigation-sidebar', service.currentSidebar.map(sb => sb.id));
+    });
+  });
+
+  describe('updateSidebar', () => {
+    beforeEach(() => {
+      service.updateSidebar(sidebar);
+    });
+
+    it('should change and format the current sidebar', () => {
       expect(service.currentSidebar).toEqual(expectedFormatResult);
     });
 
-    it('should call StorageService.setItem', () => {
-      service.saveSidebar(sidebar);
+    it('should store the updated sidebar', () => {
       expect(mockStorageService.setItem).toHaveBeenCalledWith('navigation-sidebar', sidebar);
     });
   });
 
-  test('updateSidebar should change and format the current sidebar', () => {
+  describe('resetSidebarToDefault', () => {
+    beforeEach(() => {
+      service.resetSidebarToDefault();
+    });
+
+    it('should replace the current sidebar with the default one', () => {
+      expect(service.currentSidebar).toEqual([
+        {
+          type: 'link',
+          id: 'applications',
+          display: 'Applications',
+          route: '/applications'
+        },
+        {
+          type: 'divider',
+          id: 'divider',
+          display: 'Divider',
+          route: null
+        },
+        {
+          type: 'link',
+          id: 'partitions',
+          display: 'Partitions',
+          route: '/partitions'
+        },
+      ]);
+    });
+
+    it('should store the default sidebar', () => {
+      expect(mockStorageService.setItem).toHaveBeenCalledWith('navigation-sidebar', mockDefaultConfigService.defaultSidebar);
+    });
+  });
+
+  describe('resetSidebarToStored', () => {
+    beforeEach(() => {
+      service.currentSidebar = [
+        {
+          type: 'link',
+          id: 'applications',
+          display: 'Applications',
+          route: '/applications'
+        },
+      ];
+      mockStorageService.getItem.mockReturnValueOnce(sidebar);
+      service.resetSidebarToStored();
+    });
+
+    it('should set the current sidebar as the stored sidebar', () => {
+      expect(service.currentSidebar).toEqual(expectedFormatResult);
+    });
+  });
+
+  it('should add an item to the sidebar', () => {
     service.updateSidebar(sidebar);
-    expect(service.currentSidebar).toEqual(expectedFormatResult);
+    service.addSidebarItem('dashboard');
+    expect(service.currentSidebar).toEqual([
+      ...expectedFormatResult,
+      {
+        type: 'link',
+        id: 'dashboard',
+        display: 'Dashboard',
+        route: '/dashboard'
+      },
+    ]);
+  });
+
+  it('should delete the sidebar item at the specified index', () => {
+    service.deleteSidebarItem(0);
+    expect(service.currentSidebar.map(s => s.id).includes('applications')).toBeFalsy();
   });
 
   describe('restoreExternalService', () => {

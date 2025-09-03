@@ -169,7 +169,7 @@ export class IndexComponent implements OnInit {
   }
 
   resetSidebar(): void {
-    this.navigationService.resetSidebar();
+    this.navigationService.resetSidebarToStored();
     this.navigationService.edit.set(false);
   }
 
@@ -184,7 +184,7 @@ export class IndexComponent implements OnInit {
 
   private clearSideBar(): void {
     this.navigationService.edit.set(true);
-    this.navigationService.resetSidebar(true);
+    this.navigationService.resetSidebarToDefault();
     this.navigationService.edit.set(false);
   }
 

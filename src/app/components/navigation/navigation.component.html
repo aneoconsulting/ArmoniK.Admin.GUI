@@ -33,8 +33,9 @@
   [mode]="(isHandset$ | async) ? 'over' : 'side'"
   [opened]="(isHandset$ | async) === false && sideBarOpened">
     <div class="nav-container">
-      <mat-nav-list cdkDropList (cdkDropListDropped)="drop($event)">
-      @for (item of navigationService.currentSidebar; track $index) {
+    <mat-nav-list cdkDropList (cdkDropListDropped)="drop($event)">
+      <ul>
+        @for (item of navigationService.currentSidebar; track $index) {
         <li cdkDrag>
           @if (navigationService.edit()) {
             <mat-icon class="handle" cdkDragHandle [fontIcon]="getIcon('drag')" />
@@ -54,6 +55,7 @@
           }
         </li>
       }
+      </ul>
       <a mat-list-item [routerLink]="'/settings'" routerLinkActive="navbar-item-selected">
         <mat-icon matListItemIcon aria-hidden="true" fontIcon="settings"></mat-icon>
         <span matListItemTitle> {{ settingsItem }} </span>

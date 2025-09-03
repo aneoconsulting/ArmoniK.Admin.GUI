@@ -38,6 +38,15 @@ main {
   padding: 20px 50px;
 }
 
+mat-nav-list {
+  padding: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
 li {
   display: flex;
   align-items: center;

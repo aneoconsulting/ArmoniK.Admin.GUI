@@ -85,18 +85,17 @@ export class NavigationService {
     return sidebar.filter(element => isSideBar(element));
   }
 
-  resetSidebar(defaultConfig: boolean = false) {
-    if (defaultConfig) {
-      this.sideBar = this.formatSidebar(this.defaultConfigService.defaultSidebar);
-      this.storageService.setItem('navigation-sidebar', this.defaultConfigService.defaultSidebar);
-    } else {
-      this.sideBar = this.formatSidebar(this.restoreSidebar());
-    }
+  resetSidebarToStored() {
+    this.sideBar = this.formatSidebar(this.restoreSidebar());
+  }
+
+  resetSidebarToDefault() {
+    this.sideBar = this.formatSidebar(this.defaultConfigService.defaultSidebar);
+    this.storageService.setItem('navigation-sidebar', this.defaultConfigService.defaultSidebar);
   }
 
   saveSidebar() {
     const sidebar = this.currentSidebar.map((item) => item.id);
-    this.sideBar = this.formatSidebar(sidebar);
     this.storageService.setItem('navigation-sidebar', sidebar);
   }
 
