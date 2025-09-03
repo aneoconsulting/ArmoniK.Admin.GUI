@@ -5,7 +5,7 @@
         <span i18n>Session:</span>
         {{ sessionId }}
       </h2>
-      <button mat-icon-button i18n-matToolTip matTooltip="Copy the session Id">
+      <button mat-icon-button (click)="copySessionId()" i18n-matToolTip matTooltip="Copy the session Id">
         <mat-icon [fontIcon]="getIcon('copy')" />
       </button>
     </section>
@@ -13,7 +13,7 @@
       <a mat-flat-button color="primary" routerLink="/sessions">
         <span i18n>Back to Sessions List</span> 
       </a>
-      <a mat-flat-button color="primary" routerLink="/sessions">
+      <a mat-flat-button color="primary" [routerLink]="'/sessions/' + sessionId">
         <span i18n>See Session</span> 
       </a>
       <button mat-flat-button color="accent" (click)="redraw()">
