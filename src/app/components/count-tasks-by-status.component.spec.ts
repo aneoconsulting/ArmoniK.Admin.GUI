@@ -4,6 +4,7 @@ import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { Observable, Subject, of } from 'rxjs';
 import { CountTasksByStatusComponent } from './count-tasks-by-status.component';
 
@@ -33,6 +34,10 @@ describe('CountTasksByStatusComponent', () => {
     countByStatus$: jest.fn((): Observable<{ status: StatusCount[] | null | undefined }> => of({ status: finalStatusesCount }))
   };
 
+  const mockTableDataTasksStatus = {
+    itemsTasksSize: new Map<string, number>(),
+  };
+
   const filters: TaskSummaryFilters = [[{
     for: 'options',
     field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID,
@@ -48,7 +53,8 @@ describe('CountTasksByStatusComponent', () => {
       providers: [
         CountTasksByStatusComponent,
         { provide: TasksGrpcService, useValue: mockTasksGrpcService },
-        TasksFiltersService
+        { provide: TABLE_DATA_TASKS_STATUS, useValue: mockTableDataTasksStatus },
+        TasksFiltersService,
       ]
     }).inject(CountTasksByStatusComponent);
 
@@ -73,7 +79,7 @@ describe('CountTasksByStatusComponent', () => {
 
     it('should not set id if there is no filter value', () => {
       component.filters = [];
-      component.initId();
+      component.ngOnInit();
       expect(component.id).toEqual(undefined);
     });
   });
@@ -98,6 +104,12 @@ describe('CountTasksByStatusComponent', () => {
     it('should update statusesCounts', () => {
       refresh$.next();
       expect(component.statusesCount()).toEqual(finalStatusesCount);
+    });
+
+    it('should update the total number of tasks for this item', () => {
+      refresh$.next();
+      expect(mockTableDataTasksStatus.itemsTasksSize.get(component.id as string))
+        .toEqual(finalStatusesCount.reduce((acc, current) => current.count + acc, 0));
     });
 
     it('should set null if there is no response status', () => {

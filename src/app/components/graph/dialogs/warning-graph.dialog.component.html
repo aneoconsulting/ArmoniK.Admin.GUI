@@ -1,0 +1,11 @@
+<h2 mat-dialog-title i18n>Warning</h2>
+
+<mat-dialog-content>
+  <p i18n>This graph will display a lot of nodes. Your browser may crash.</p>
+  <p i18n>Do you still want to display this graph ?</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-flat-button [mat-dialog-close]="false">No</button>
+  <button mat-flat-button color="primary" [mat-dialog-close]="true">Yes</button>
+</mat-dialog-actions>

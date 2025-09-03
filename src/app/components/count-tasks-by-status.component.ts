@@ -4,6 +4,7 @@ import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
+import { TABLE_DATA_TASKS_STATUS } from '@app/types/services/table-data.service';
 import { StatusService } from '@app/types/status';
 import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.component';
 import { Subject, switchMap } from 'rxjs';
@@ -35,6 +36,7 @@ import { Subject, switchMap } from 'rxjs';
 })
 export class CountTasksByStatusComponent implements OnInit {
   private readonly tasksGrpcService = inject(TasksGrpcService);
+  private readonly tableService = inject(TABLE_DATA_TASKS_STATUS);
 
   id: string | undefined;
   statusesCount: WritableSignal<StatusCount[]> = signal([]);
@@ -42,18 +44,18 @@ export class CountTasksByStatusComponent implements OnInit {
 
   private _statusesGroups: TasksStatusesGroup[] = [];
   private _filters: TaskSummaryFilters;
-  private _refresh$: Subject<void>;
+  private refresh$: Subject<void>;
 
   @Input({ required: true }) queryParams: Record<string, string> = {};
 
   @Input({ required: true }) set refresh(subject: Subject<void>) {
-    this._refresh$ = subject;
+    this.refresh$ = subject;
     this.initRefresh();
   }
 
   @Input({ required: true }) set statusesGroups(entries: TasksStatusesGroup[]) {
     this._statusesGroups = entries;
-    this._refresh$.next();
+    this.refresh$.next();
   }
 
   get statusesGroups(): TasksStatusesGroup[] {
@@ -72,24 +74,26 @@ export class CountTasksByStatusComponent implements OnInit {
     this.initId();
   }
 
-  initId() {
-    this.#setId(this.filters);
+  private initId() {
+    if (this.filters[0]?.[0]?.value) {
+      this.id = this.filters[0][0].value.toString();
+    } else {
+      this.id = undefined;
+    }
   }
 
-  initRefresh() {
-    this._refresh$.pipe(
+  private initRefresh() {
+    this.refresh$.pipe(
       switchMap(() => this.tasksGrpcService.countByStatus$(this.filters)),
     ).subscribe(response => {
       this.loading = false;
       this.statusesCount.set(response.status ?? []);
+      if (this.id) {
+        this.tableService.itemsTasksSize.set(
+          this.id,
+          this.statusesCount().reduce((acc, statusCount) => statusCount.count + acc, 0)
+        );
+      }
     });
-  }
-
-  #setId(filter: TaskSummaryFilters) {
-    if (filter[0]?.[0]?.value) {
-      this.id = filter[0][0].value.toString();
-    } else {
-      this.id = undefined;
-    }
   }
 }
