@@ -1,5 +1,8 @@
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
+import { SidebarItem } from '@app/types/navigation';
 import { DefaultConfigService } from '@services/default-config.service';
 import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
@@ -8,6 +11,7 @@ import { StorageService } from '@services/storage.service';
 import { UserService } from '@services/user.service';
 import { VersionsService } from '@services/versions.service';
 import { Subject, lastValueFrom, of } from 'rxjs';
+import { AddSideBarItemDialogResult } from './add-sidebar-item-dialog/types';
 import { NavigationComponent } from './navigation.component';
 
 
@@ -26,6 +30,9 @@ describe('NavigationComponent', () => {
     currentSidebar: currentSidebar,
     restoreSideBarOpened: jest.fn(),
     saveSideBarOpened: jest.fn(),
+    addSidebarItem: jest.fn(),
+    deleteSidebarItem: jest.fn(),
+    toggleSidebarOpened: jest.fn(),
   };
   const mockUserService = {
     user: undefined as unknown as {username: string}
@@ -40,6 +47,13 @@ describe('NavigationComponent', () => {
     observe: jest.fn(() => of({matches: true}))
   };
 
+  const dialogResult = new Subject<AddSideBarItemDialogResult>();
+  const mockDialog = {
+    open: jest.fn(() => ({
+      afterClosed: jest.fn(() => dialogResult)
+    })),
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -52,6 +66,7 @@ describe('NavigationComponent', () => {
         EnvironmentService,
         DefaultConfigService,
         { provide: StorageService, useValue: mockStorageService },
+        { provide: MatDialog, useValue: mockDialog },
       ]
     }).inject(NavigationComponent);
     component.ngOnInit();
@@ -59,12 +74,6 @@ describe('NavigationComponent', () => {
 
   it('should run', () => {
     expect(component).toBeTruthy();
-  });
-
-  describe('on init', () => {
-    it('should retore sideBarOpened', () => {
-      expect(mockNavigationService.restoreSideBarOpened).toHaveBeenCalled();
-    });
   });
 
   it('should set handset', () => {
@@ -87,10 +96,6 @@ describe('NavigationComponent', () => {
         expect(component.getIcon(icon)).toEqual(icon);
       }
     });
-  });
-
-  it('should get sideBar', () => {
-    expect(component.sidebar).toEqual(currentSidebar);
   });
   
   it('should greet correctly', () => {
@@ -121,16 +126,26 @@ describe('NavigationComponent', () => {
     expect(component.greetings).toEqual('Good afternoon, user');
   });
 
-  describe('toggle sidebar', () => {
-    it('should toggle sidebar', () => {
-      component.sideBarOpened = false;
-      component.toggleSideBar();
-      expect(component.sideBarOpened).toBeTruthy();
-    });
+  it('should toggle navigation service sidebar opened', () => {
+    component.toggleSidebar();
+    expect(mockNavigationService.toggleSidebarOpened).toHaveBeenCalled();
+  });
 
-    it('should save sidebar opened', () => {
-      component.toggleSideBar();
-      expect(mockNavigationService.saveSideBarOpened).toHaveBeenCalledWith(component.sideBarOpened);
-    });
+  it('should change the position of the droped element in the navigation component array', () => {
+    component.drop({ currentIndex: 1, previousIndex: 0 } as CdkDragDrop<SidebarItem[]>);
+    expect(mockNavigationService.currentSidebar).toEqual(['item-2', 'item-1']);
+  });
+
+  it('should add a new item to the sidebar', () => {
+    const item = 'results';
+    component.addNewSideBarItem();
+    dialogResult.next({ item: item });
+    expect(mockNavigationService.addSidebarItem).toHaveBeenCalledWith(item);
+  });
+
+  it('should delete a sidebar item at the specified index', () => {
+    const index = 1;
+    component.deleteSideBarItem(index);
+    expect(mockNavigationService.deleteSidebarItem).toHaveBeenCalledWith(index);
   });
 });
