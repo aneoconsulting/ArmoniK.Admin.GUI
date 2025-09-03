@@ -1,0 +1,24 @@
+<mat-card appearance="outlined">
+  <mat-card-content>
+    <article>
+      <section>
+        <h3>{{ node.id }}</h3>
+        <button mat-icon-button (click)="copy()"  i18n-matTooltip matTooltip="Copy">
+          <mat-icon [fontIcon]="getIcon(copyIcon())" />
+        </button>
+      </section>
+      <button mat-icon-button (click)="onClose()" i18n-matTooltip matTooltip="Close">
+        <mat-icon [fontIcon]="getIcon('cancelling')" />
+      </button>
+    </article>
+    <app-status-chip [status]="nodeStatusService.getNodeStatusData(node)" />
+  </mat-card-content>
+  @switch (node.type) {
+    @case ('task') {
+      <app-graph-inspect-task-actions [node]="node" />
+    }
+    @case ('result') {
+      <app-graph-inspect-result-actions [node]="node" />
+    }
+  }
+</mat-card>
