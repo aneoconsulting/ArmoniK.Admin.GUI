@@ -100,7 +100,8 @@ describe('IndexComponent', () => {
   const mockNavigationService = {
     restoreSidebar: jest.fn(() => [...mockSideBar]),
     saveSidebar: jest.fn(),
-    resetSidebar: jest.fn(),
+    resetSidebarToDefault: jest.fn(),
+    resetSidebarToStored: jest.fn(),
     updateSidebar: jest.fn(),
     defaultSidebar: [...mockSideBar],
     sidebarItems: [...mockSidebarItems],
@@ -176,7 +177,7 @@ describe('IndexComponent', () => {
     });
 
     it('should reset navigation sidebar', () => {
-      expect(mockNavigationService.resetSidebar).toHaveBeenCalled();
+      expect(mockNavigationService.resetSidebarToStored).toHaveBeenCalled();
     });
 
     it('should stop editing', () => {
@@ -191,7 +192,7 @@ describe('IndexComponent', () => {
     });
 
     it('should reset the sidebar to its default configuration', () => {
-      expect(mockNavigationService.resetSidebar).toHaveBeenCalledWith(true);
+      expect(mockNavigationService.resetSidebarToDefault).toHaveBeenCalled();
     });
 
     it('should stop editing', () => {

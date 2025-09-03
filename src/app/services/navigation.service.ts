@@ -68,7 +68,7 @@ export class NavigationService {
   // Used to display the sidebar on the navigation component.
   currentSidebar: SidebarItem[];
 
-  private set sidebar(entry: SidebarItem[]) {
+  set sidebar(entry: SidebarItem[]) {
     if (!this.userConnectedGuard.canActivate()) {
       this.currentSidebar = entry.filter(element => element.id !== 'profile');
     } else {

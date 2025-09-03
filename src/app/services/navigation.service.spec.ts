@@ -74,18 +74,28 @@ describe('NavigationService', () => {
     expect(service.edit()).toBeFalsy();
   });
 
+  describe('initialisation', () => {
+    it('should restore sidebar configuration', () => {
+      expect(mockStorageService.getItem).toHaveBeenNthCalledWith(1, 'navigation-sidebar', true);
+    });
+
+    it('should restore SideBarOpened', () => {
+      expect(mockStorageService.getItem).toHaveBeenNthCalledWith(2, 'navigation-sidebar-opened');
+    });
+  });
+
   describe('restoreSidebar', () => {
     let storedSideBar: Sidebar[] | null;
     mockStorageService.getItem.mockImplementation(() => {
       return storedSideBar;
     });
 
-    it('Should restore the stored sideBar', () => {
+    it('Should restore the stored sidebar', () => {
       storedSideBar = ['applications', 'dashboard', 'divider', 'sessions'];
       expect(service.restoreSidebar()).toEqual(storedSideBar);
     });
 
-    it('Should restore default config sideBar if none is stored', () => {
+    it('Should restore default config sidebar if none is stored', () => {
       storedSideBar = null;
       expect(service.restoreSidebar()).toEqual(mockDefaultConfigService.defaultSidebar);
     });
@@ -94,13 +104,13 @@ describe('NavigationService', () => {
   describe('setting sidebar', () => {
     const newSideBar = [{id: 'applications'}, {id: 'partitions'}, {id: 'divider'}] as SidebarItem[];
     it('should set the whole sidebar', () => {
-      service.sideBar = newSideBar;
+      service.sidebar = newSideBar;
       expect(service.currentSidebar).toEqual(newSideBar);
     });
 
     it('should filter the profile if no user are connected', () => {
       mockUserConnectedGuard.canActivate.mockReturnValueOnce(false);
-      service.sideBar = newSideBar;
+      service.sidebar = newSideBar;
       expect(service.currentSidebar).toEqual(newSideBar.filter(e => e.id !== 'profile'));
     });
   });
@@ -197,6 +207,23 @@ describe('NavigationService', () => {
     expect(service.currentSidebar.map(s => s.id).includes('applications')).toBeFalsy();
   });
 
+  describe('toggleSidebarOpened', () => {
+    let previousSidebarOpened: boolean;
+
+    beforeEach(() => {
+      previousSidebarOpened = service.sideBarOpened();
+      service.toggleSidebarOpened();
+    });
+
+    it('should toggle sidebarOpened', () => {
+      expect(service.sideBarOpened()).not.toEqual(previousSidebarOpened);
+    });
+
+    it('should store the toggled sidebar', () => {
+      expect(mockStorageService.setItem).toHaveBeenCalledWith('navigation-sidebar-opened', service.sideBarOpened());
+    });
+  });
+
   describe('restoreExternalService', () => {
     it('should return stored item', () => {
       mockStorageService.getItem.mockReturnValueOnce(externalServices);
@@ -212,17 +239,5 @@ describe('NavigationService', () => {
   test('saveExternalServices should call setItem', () => {
     service.saveExternalServices(externalServices);
     expect(mockStorageService.setItem).toHaveBeenCalledWith('navigation-external-services', externalServices);
-  });
-
-  it('should save SideBarOpened', () => {
-    const sideBarOpened = true;
-    service.saveSideBarOpened(sideBarOpened);
-    expect(mockStorageService.setItem).toHaveBeenCalledWith('navigation-sidebar-opened', sideBarOpened);
-  });
-
-  it('should restore SideBarOpened', () => {
-    const sideBarOpened = true;
-    mockStorageService.getItem.mockReturnValueOnce(sideBarOpened);
-    expect(service.restoreSideBarOpened()).toBe(sideBarOpened);
   });
 });
