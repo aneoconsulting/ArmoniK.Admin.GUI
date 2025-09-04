@@ -21,6 +21,7 @@ import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './services/tasks-filters.service';
+import { TasksGrpcActionsService } from './services/tasks-grpc-actions.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksInspectionService } from './services/tasks-inspection.service';
 import { TasksStatusesService } from './services/tasks-statuses.service';
@@ -52,6 +53,7 @@ import { TaskOptions, TaskRaw } from './types';
       provide: StatusService,
       useClass: TasksStatusesService,
     },
+    TasksGrpcActionsService,
   ],
   imports: [
     ShowPageComponent,
@@ -62,14 +64,15 @@ import { TaskOptions, TaskRaw } from './types';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> implements OnInit, OnDestroy {
-
   readonly grpcService = inject(TasksGrpcService);
   readonly inspectionService = inject(TasksInspectionService);
 
   private readonly tasksStatusesService = inject(StatusService) as TasksStatusesService;
   private readonly filtersService = inject(FiltersService);
+  readonly gprcActionsService = inject(TasksGrpcActionsService);
 
   private _status: StatusLabelColor | undefined;
+  task: TaskRaw;
 
   resultsKey: string = '';
   resultsQueryParams: Params = {};
@@ -84,12 +87,13 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
   }
 
   set status(value: TaskStatus | undefined) {
-    this._status = value ? this.statuses[value] : undefined;
+    this._status = value ? this.tasksStatusesService.statuses[value] : undefined;
   }
 
   ngOnInit(): void {
     this.resultsKey = this.filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
     this.initInspection();
+    this.gprcActionsService.refresh = this.refresh;
   }
 
   ngOnDestroy(): void {
@@ -104,32 +108,14 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
     const data = this.data();
     this.status = data?.status;
     if (data) {
+      this.task = data;
       data.parentTaskIds = data.parentTaskIds.filter(taskId => taskId !== data.sessionId);
       this.createResultQueryParams();
       this.canCancel = !this.tasksStatusesService.taskNotEnded(data.status);
     }
   }
 
-  cancel(): void {
-    const data = this.data();
-    if (data) {
-      this.grpcService.cancel$([data.id]).subscribe({
-        complete: () => {
-          this.success('Task canceled');
-          this.refresh.next();
-        },
-        error: (error) => {
-          this.handleError(error);
-        },
-      });
-    }
-  }
-
   createResultQueryParams() {
     this.resultsQueryParams[this.resultsKey] = this.data()?.id;
-  }
-
-  get statuses() {
-    return this.tasksStatusesService.statuses;
   }
 }

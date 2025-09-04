@@ -2,11 +2,12 @@ import { TaskOptionEnumField, TaskSummaryEnumField} from '@aneoconsultingfr/armo
 import { Clipboard, } from '@angular/cdk/clipboard';
 import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { Router} from '@angular/router';
-import { AbstractTableComponent } from '@app/types/components/table';
+import { GrpcAction } from '@app/types/actions.type';
+import { AbstractTableComponent, SelectionTable } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
 import { ArmonikData, TaskData } from '@app/types/data';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
-import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { Subject } from 'rxjs';
 import TasksDataService from '../services/tasks-data.service';
@@ -23,7 +24,7 @@ import { TaskOptions, TaskSummary } from '../types';
     TableComponent
   ]
 })
-export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit {
+export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, SelectionTable<TaskSummary> {
   scope: Scope = 'tasks';
 
   @Input({ required: false }) set serviceIcon(entry: string | null) {
@@ -47,12 +48,13 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
 
   @Output() retries = new EventEmitter<TaskSummary>();
   @Output() cancelTask = new EventEmitter<string>();
-  @Output() selectionChange = new EventEmitter<string[]>();
+  @Output() selectionChange = new EventEmitter<TaskSummary[]>();
 
   readonly tableDataService = inject(TasksDataService);
   readonly router = inject(Router);
   readonly clipboard = inject(Clipboard);
   readonly tasksStatusesService = inject(StatusService) as TasksStatusesService;
+  private readonly grpcActionsService = inject(GrpcActionsService);
 
   private _serviceIcon: string = '';
   private _serviceName: string = '';
@@ -70,58 +72,51 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
     return this._urlTemplate;
   }
 
-  selection: string[];
+  copy$ = new Subject<TaskSummary>();
+  copyS = this.copy$.subscribe((task) => this.onCopiedTaskId(task));
 
-  copy$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
-  copyS = this.copy$.subscribe((data) => this.onCopiedTaskId(data));
+  seeResult$ = new Subject<TaskSummary>();
+  resultSubscription = this.seeResult$.subscribe((task) => {
+    const taskData = this.data().find(taskData => taskData.raw.id === task.id) as TaskData;
+    this.router.navigate(['/results'], { queryParams: taskData.resultsQueryParams });
+  });
 
-  seeResult$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
-  resultSubscription = this.seeResult$.subscribe((data) => this.router.navigate(['/results'], { queryParams: (data as TaskData).resultsQueryParams }));
+  retries$ = new Subject<TaskSummary>();
+  retriesSubscription = this.retries$.subscribe((task) => this.onRetries(task));
 
-  retries$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
-  retriesSubscription = this.retries$.subscribe((data) => this.onRetries(data.raw));
-
-  cancelTask$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
-  cancelTaskSubscription = this.cancelTask$.subscribe((data) => this.onCancelTask(data.raw.id));
-
-  openViewInLogs$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
-  openViewInLogsSubscription = this.openViewInLogs$.subscribe((data) => window.open(this.generateViewInLogsUrl(data.raw.id), '_blank'));
+  openViewInLogs$ = new Subject<TaskSummary>();
+  openViewInLogsSubscription = this.openViewInLogs$.subscribe((task) => window.open(this.generateViewInLogsUrl(task.id), '_blank'));
   
-  actions: ActionTable<TaskSummary, TaskOptions>[] = [
+  actions: GrpcAction<TaskSummary>[] = [
     {
       label: $localize`Copy Task ID`,
       icon: 'copy',
-      action$: this.copy$,
+      click: (tasks: TaskSummary[]) => this.copy$.next(tasks[0]),
     },
     {
       label: $localize`See related result`,
       icon: 'view',
-      action$: this.seeResult$,
+      click: (tasks: TaskSummary[]) => this.seeResult$.next(tasks[0]),
     },
     {
       label: $localize`Retries`,
       icon: 'published_with_changes',
-      action$: this.retries$,
-      condition: (element: ArmonikData<TaskSummary, TaskOptions>) => this.isRetried(element.raw),
-    },
-    {
-      label: $localize`Cancel task`,
-      icon: 'cancel',
-      action$: this.cancelTask$,
-      condition: (element: ArmonikData<TaskSummary, TaskOptions>) => this.canCancelTask(element.raw),
+      click: (tasks: TaskSummary[]) => this.retries$.next(tasks[0]),
+      condition: (tasks: TaskSummary[]) => this.isRetried(tasks[0]),
     },
   ];
 
   ngOnInit(): void {
     this.initTableDataService();
+    this.actions.push(...this.grpcActionsService.actions);
   }
 
   isDataRawEqual(value: TaskSummary, entry: TaskSummary): boolean {
     return value.id === entry.id;
   }
 
-  onCopiedTaskId(element: ArmonikData<TaskSummary, TaskOptions>) {
-    this.clipboard.copy(element.raw.id);
+  onCopiedTaskId(task: TaskSummary) {
+    this.clipboard.copy(task.id);
     this.notificationService.success('Task ID copied to clipboard');
   }
 
@@ -129,20 +124,12 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
     return this.tasksStatusesService.isRetried(task.status);
   }
 
-  canCancelTask(task: TaskSummary): boolean {
-    return this.tasksStatusesService.taskNotEnded(task.status);
-  }
-
   onRetries(task: TaskSummary) {
     this.retries.emit(task);
   }
 
-  onCancelTask(taskId: string) {
-    this.tableDataService.cancelTask(taskId);
-  }
-
   onSelectionChange($event: TaskSummary[]): void {
-    this.selectionChange.emit($event.map(task => task.id));
+    this.selectionChange.emit($event);
   }
 
   generateViewInLogsUrl(taskId: string): string {
@@ -157,15 +144,15 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
     if (this._serviceIcon !== '' && this._serviceName !== '' && this._urlTemplate !== '') {
       if (this.actions[4]) {
         this.actions[4] = {
+          ...this.actions[4],
           label: this._serviceName,
           icon: this._serviceIcon,
-          action$: this.openViewInLogs$,
         };
       } else {
         this.actions.push({
           label: this._serviceName,
           icon: this._serviceIcon,
-          action$: this.openViewInLogs$,
+          click: (tasks: TaskSummary[]) => this.openViewInLogs$.next(tasks[0]),
         });
       }
     }
