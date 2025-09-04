@@ -8,6 +8,7 @@ import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, CustomColumn } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -16,7 +17,6 @@ import { of } from 'rxjs';
 import { IndexComponent } from './index.component';
 import TasksDataService from './services/tasks-data.service';
 import { TasksFiltersService } from './services/tasks-filters.service';
-import { TasksGrpcActionsService } from './services/tasks-grpc-actions.service';
 import { TasksIndexService } from './services/tasks-index.service';
 import { TaskOptions, TaskSummary } from './types';
 
@@ -179,7 +179,7 @@ describe('Tasks Index Component', () => {
         { provide: TasksFiltersService, useValue: mockTaskFiltersService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: NotificationService, useValue: mockNotificationService },
-        { provide: TasksGrpcActionsService, useValue: mockGrpcService },
+        { provide: GrpcActionsService, useValue: mockGrpcService },
       ]
     }).inject(IndexComponent);
     component.ngOnInit();

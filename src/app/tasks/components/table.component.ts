@@ -6,11 +6,11 @@ import { GrpcAction } from '@app/types/actions.type';
 import { AbstractTableComponent } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
 import { ArmonikData, TaskData } from '@app/types/data';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { TableComponent } from '@components/table/table.component';
 import { Subject } from 'rxjs';
 import TasksDataService from '../services/tasks-data.service';
-import { TasksGrpcActionsService } from '../services/tasks-grpc-actions.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
 import { TaskOptions, TaskSummary } from '../types';
 
@@ -54,7 +54,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   readonly router = inject(Router);
   readonly clipboard = inject(Clipboard);
   readonly tasksStatusesService = inject(StatusService) as TasksStatusesService;
-  private readonly grpcActionsService = inject(TasksGrpcActionsService);
+  private readonly grpcActionsService = inject(GrpcActionsService);
 
   private _serviceIcon: string = '';
   private _serviceName: string = '';

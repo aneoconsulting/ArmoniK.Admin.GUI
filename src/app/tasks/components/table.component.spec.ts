@@ -6,11 +6,11 @@ import { Router } from '@angular/router';
 import { GrpcAction } from '@app/types/actions.type';
 import { TableColumn } from '@app/types/column.type';
 import { ArmonikData, ColumnKey, TaskData } from '@app/types/data';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { NotificationService } from '@services/notification.service';
 import { TasksTableComponent } from './table.component';
 import TasksDataService from '../services/tasks-data.service';
-import { TasksGrpcActionsService } from '../services/tasks-grpc-actions.service';
 import { TaskOptions, TaskSummary } from '../types';
 
 function getAction(actions: GrpcAction<TaskSummary>[], label: string) {
@@ -99,7 +99,7 @@ describe('TasksTableComponent', () => {
         { provide: Clipboard, useValue: mockClipBoard },
         { provide: Router, useValue: mockRouter },
         { provide: TasksDataService, useValue: mockTasksDataService },
-        { provide: TasksGrpcActionsService, useValue: mockGrpcService },
+        { provide: GrpcActionsService, useValue: mockGrpcService },
       ]
     }).inject(TasksTableComponent);
 

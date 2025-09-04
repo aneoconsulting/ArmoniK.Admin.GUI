@@ -2,13 +2,13 @@ import { TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/arm
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import TasksDataService from '@app/tasks/services/tasks-data.service';
-import { TasksGrpcActionsService } from '@app/tasks/services/tasks-grpc-actions.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TaskOptions, TaskSummary } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, CustomColumn } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
@@ -137,7 +137,7 @@ describe('TasksLineComponent', () => {
         { provide: TasksIndexService, useValue: mockTasksIndexService },
         DefaultConfigService,
         { provide: NotificationService, useValue: mockNotificationService },
-        { provide: TasksGrpcActionsService, useValue: mockGrpcService },
+        { provide: GrpcActionsService, useValue: mockGrpcService },
       ]
     }).inject(TasksLineComponent);
     component.line = line;

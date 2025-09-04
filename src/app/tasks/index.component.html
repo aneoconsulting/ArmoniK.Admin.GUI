@@ -22,16 +22,6 @@
       (lockColumnsChange)="onLockColumnsChange()"
       (addToDashboard)="onAddToDashboard()"
       >
-        <ng-container extra-buttons-right>
-          @if (selection) {
-            @for (action of grpcActionsService.actions; track $index) {
-            <button mat-flat-button color="accent" (click)="action.click(selection)"  [disabled]="selection.length === 0">
-              <span i18n>{{ action.label }}s</span>
-              <mat-icon [fontIcon]="this.getIcon(action.icon)" />
-            </button>
-            }
-          }
-        </ng-container>
         <ng-container extra-menu-items>
         <button mat-menu-item (click)="manageViewInLogs()">
           <mat-icon aria-hidden="true" [fontIcon]="getIcon('find-logs')"/>
@@ -57,6 +47,10 @@
       (filtersChange)="onFiltersChange($event)" 
       (showFiltersChange)="onShowFiltersChange($event)"
     />
+  </mat-toolbar-row>
+  
+  <mat-toolbar-row>
+    <app-table-grpc-actions [refresh$]="tableDataService.refresh$" [selection]="selection" />
   </mat-toolbar-row>
 </mat-toolbar>
 

@@ -9,6 +9,7 @@ import { TaskOptions } from '@app/tasks/types';
 import { GrpcAction } from '@app/types/actions.type';
 import { TableColumn } from '@app/types/column.type';
 import { ArmonikData, ColumnKey, SessionData } from '@app/types/data';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
@@ -17,7 +18,6 @@ import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { of } from 'rxjs';
 import { SessionsTableComponent } from './table.component';
 import { SessionsDataService } from '../services/sessions-data.service';
-import { SessionsGrpcActionsService } from '../services/sessions-grpc-actions.service';
 import { SessionRaw } from '../types';
 
 function getAction(actions: GrpcAction<SessionRaw>[], label: string) {
@@ -160,7 +160,7 @@ describe('SessionsTableComponent', () => {
         { provide: TasksByStatusService, useValue: mockTasksByStatusService},
         { provide: MatDialog, useValue: mockMatDialog },
         { provide: Router, useValue: mockRouter },
-        { provide: SessionsGrpcActionsService, useValue: mockGrpcService },
+        { provide: GrpcActionsService, useValue: mockGrpcService },
       ]
     }).inject(SessionsTableComponent);
 
