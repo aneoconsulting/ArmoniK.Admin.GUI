@@ -7,7 +7,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { DashboardStorageService } from '@app/dashboard/services/dashboard-storage.service';
-import { TableHandlerCustomValues } from '@app/types/components';
+import { SelectionTableHandler, TableHandlerCustomValues } from '@app/types/components';
 import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
 import { DataFilterService } from '@app/types/services/data-filter.service';
 import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
@@ -84,7 +84,7 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
     },
   ],
 })
-export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy, SelectionTableHandler<TaskSummary> {
   readonly notificationService = inject(NotificationService);
   readonly indexService = inject(TasksIndexService);
   readonly filtersService = inject(TasksFiltersService);

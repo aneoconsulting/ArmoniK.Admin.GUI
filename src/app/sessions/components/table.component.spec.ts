@@ -290,4 +290,11 @@ describe('SessionsTableComponent', () => {
   it('should get displayedColumns', () => {
     expect(component.columns).toEqual(displayedColumns);
   });
+
+  it('should emit on selection change', () => {
+    const spy = jest.spyOn(component.selectionChange, 'emit');
+    const event = [{ id: 'sessionId1' }, { id: 'sessionId2' }] as unknown as SessionRaw[];
+    component.onSelectionChange(event);
+    expect(spy).toHaveBeenCalledWith(event);
+  });
 });

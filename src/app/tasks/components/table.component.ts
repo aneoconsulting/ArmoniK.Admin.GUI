@@ -3,7 +3,7 @@ import { Clipboard, } from '@angular/cdk/clipboard';
 import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { Router} from '@angular/router';
 import { GrpcAction } from '@app/types/actions.type';
-import { AbstractTableComponent } from '@app/types/components/table';
+import { AbstractTableComponent, SelectionTable } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
 import { ArmonikData, TaskData } from '@app/types/data';
 import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
@@ -24,7 +24,7 @@ import { TaskOptions, TaskSummary } from '../types';
     TableComponent
   ]
 })
-export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit {
+export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, SelectionTable<TaskSummary> {
   scope: Scope = 'tasks';
 
   @Input({ required: false }) set serviceIcon(entry: string | null) {

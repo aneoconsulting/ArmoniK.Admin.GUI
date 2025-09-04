@@ -13,7 +13,7 @@ import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { TaskOptions } from '@app/tasks/types';
-import { TableHandlerCustomValues } from '@app/types/components';
+import { SelectionTableHandler, TableHandlerCustomValues } from '@app/types/components';
 import { ColumnKey } from '@app/types/data';
 import { DataFilterService } from '@app/types/services/data-filter.service';
 import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
@@ -95,7 +95,7 @@ import { SessionRaw } from './types';
     TableGrpcActionsComponent,
   ]
 })
-export class IndexComponent extends TableHandlerCustomValues<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent extends TableHandlerCustomValues<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy, SelectionTableHandler<SessionRaw> {
   readonly filtersService = inject(SessionsFiltersService);
   readonly indexService = inject(SessionsIndexService);
   readonly tableDataService = inject(SessionsDataService);
@@ -130,5 +130,9 @@ export class IndexComponent extends TableHandlerCustomValues<SessionRaw, Session
     if (this.displayedColumnsKeys.includes('duration')) {
       this.refresh();
     }
+  }
+
+  onSelectionChange(selection: SessionRaw[]): void {
+    this.selection = selection;
   }
 }

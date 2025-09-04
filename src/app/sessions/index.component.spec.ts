@@ -523,4 +523,10 @@ describe('Sessions Index Component', () => {
       expect(mockSessionFiltersService.saveShowFilters).toHaveBeenCalledWith(newShowFilters);
     });
   });
+
+  it('should emit on selection change', () => {
+    const event = [{ id: 'sessionId1' }, { id: 'sessionId2' }] as unknown as SessionRaw[];
+    component.onSelectionChange(event);
+    expect(component.selection).toBe(event);
+  });
 });

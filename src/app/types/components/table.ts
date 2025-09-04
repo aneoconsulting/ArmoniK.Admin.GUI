@@ -98,3 +98,9 @@ export abstract class AbstractTaskByStatusTableComponent<T extends DataRaw, F ex
     });
   }
 }
+
+export interface SelectionTable<T extends DataRaw> {
+  selectionChange: EventEmitter<T[]>;
+  
+  onSelectionChange($event: T[]): void;
+}
