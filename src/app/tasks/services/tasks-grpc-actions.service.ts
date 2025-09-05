@@ -7,6 +7,13 @@ import { TaskOptions, TaskRaw, TaskSummary } from '../types';
 import { TasksGrpcService } from './tasks-grpc.service';
 import { TasksStatusesService } from './tasks-statuses.service';
 
+
+/**
+ * Service used for session index, table and inspection components to share a common configuration of their grpc-related actions.
+ * 
+ * Provided actions:
+ * - Cancel
+ */
 @Injectable()
 export class TasksGrpcActionsService extends GrpcActionsService<TaskSummary | TaskRaw, TaskStatus, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> {
   protected readonly statusesService = inject(StatusService) as TasksStatusesService;

@@ -9,6 +9,16 @@ import { SessionRaw } from '../types';
 import { SessionsGrpcService } from './sessions-grpc.service';
 import { SessionsStatusesService } from './sessions-statuses.service';
 
+/**
+ * Service used for session index, table and inspection components to share a common configuration of their grpc-related actions.
+ * 
+ * Provided actions:
+ * - Pause/Resume
+ * - Cancel
+ * - Purge
+ * - Close
+ * - Delete 
+ */
 @Injectable()
 export class SessionsGrpcActionsService extends GrpcActionsService<SessionRaw, SessionStatus, SessionRawEnumField, TaskOptions, TaskOptionEnumField> {
   protected readonly grpcService = inject(SessionsGrpcService);
