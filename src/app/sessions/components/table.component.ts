@@ -7,12 +7,12 @@ import { TaskOptions } from '@app/tasks/types';
 import { GrpcAction } from '@app/types/actions.type';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { ArmonikData, SessionData } from '@app/types/data';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { TableComponent } from '@components/table/table.component';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { Subject } from 'rxjs';
 import { SessionsDataService } from '../services/sessions-data.service';
-import { SessionsGrpcActionsService } from '../services/sessions-grpc-actions.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
 import { SessionRaw } from '../types';
 
@@ -36,7 +36,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   readonly copyService = inject(Clipboard);
 
   readonly tableDataService = inject(SessionsDataService);
-  private readonly grpcActions = inject(SessionsGrpcActionsService);
+  private readonly grpcActions = inject(GrpcActionsService);
 
   table: TableTasksByStatus = 'sessions';
 

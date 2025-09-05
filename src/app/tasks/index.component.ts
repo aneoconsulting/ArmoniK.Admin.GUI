@@ -10,6 +10,7 @@ import { DashboardStorageService } from '@app/dashboard/services/dashboard-stora
 import { TableHandlerCustomValues } from '@app/types/components';
 import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
 import { DataFilterService } from '@app/types/services/data-filter.service';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -75,7 +76,10 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
       provide: StatusService,
       useClass: TasksStatusesService,
     },
-    TasksGrpcActionsService
+    {
+      provide: GrpcActionsService, 
+      useClass: TasksGrpcActionsService,
+    },
   ],
 })
 export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
@@ -83,7 +87,7 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSu
   readonly indexService = inject(TasksIndexService);
   readonly filtersService = inject(TasksFiltersService);
   readonly tableDataService = inject(TasksDataService);
-  readonly grpcActionsService = inject(TasksGrpcActionsService);
+  readonly grpcActionsService = inject(GrpcActionsService);
 
   tableType: TableType = 'Tasks';
 

@@ -16,6 +16,7 @@ import { TaskOptions } from '@app/tasks/types';
 import { TableHandlerCustomValues } from '@app/types/components';
 import { ColumnKey } from '@app/types/data';
 import { DataFilterService } from '@app/types/services/data-filter.service';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -75,7 +76,10 @@ import { SessionRaw } from './types';
     NotificationService,
     TasksGrpcService,
     GrpcSortFieldService,
-    SessionsGrpcActionsService,
+    {
+      provide: GrpcActionsService,
+      useClass: SessionsGrpcActionsService,
+    },
   ],
   imports: [
     PageHeaderComponent,
