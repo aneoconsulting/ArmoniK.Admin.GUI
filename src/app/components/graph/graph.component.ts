@@ -20,7 +20,7 @@ import { StorageService } from '@services/storage.service';
 import { forceLink, forceManyBody } from 'd3';
 import ForceGraph from 'force-graph';
 import { Observable, Subject, Subscription, switchMap } from 'rxjs';
-import { AutoCompleteComponent } from './auto-complete.component';
+import { AutoCompleteComponent } from '../auto-complete.component';
 import { GraphLegendComponent } from './graph-legend.component';
 
 @Component({
