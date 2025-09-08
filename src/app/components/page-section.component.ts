@@ -7,8 +7,6 @@ import { Component } from '@angular/core';
   <ng-content></ng-content>
 </section>
   `,
-  styles: [`
-  `],
   providers: [],
   imports: []
 })

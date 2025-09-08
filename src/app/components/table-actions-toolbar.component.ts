@@ -17,8 +17,6 @@ import { SpinnerComponent } from './spinner.component';
 @Component({
   selector: 'app-table-actions-toolbar',
   templateUrl: './table-actions-toolbar.component.html',
-  styles: [`
-  `],
   providers: [],
   imports: [
     RefreshButtonComponent,

@@ -16,8 +16,6 @@ import { IconsService } from '@services/icons.service';
   }
 </button>
   `,
-  styles: [`
-  `],
   imports: [
     ClipboardModule,
     MatIconModule,

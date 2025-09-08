@@ -12,8 +12,6 @@ import { IconsService } from '@services/icons.service';
   <span i18n>Refresh</span>
 </button>
   `,
-  styles: [`
-  `],
   imports: [
     MatButtonModule,
     MatTooltipModule,

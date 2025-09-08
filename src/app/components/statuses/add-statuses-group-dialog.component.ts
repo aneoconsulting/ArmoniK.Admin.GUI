@@ -15,8 +15,6 @@ import { AddStatusGroupDialogData, TasksStatusesGroup } from '../../dashboard/ty
   (submitChange)="onSubmit($event)"
 />
   `,
-  styles: [`
-  `],
   providers: [],
   imports: [
     FormStatusesGroupComponent,

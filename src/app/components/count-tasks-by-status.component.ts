@@ -19,8 +19,6 @@ import { Subject, switchMap } from 'rxjs';
 >
 </app-view-tasks-by-status>
   `,
-  styles: [`
-  `],
   providers: [
     TasksGrpcService,
     TasksFiltersService,

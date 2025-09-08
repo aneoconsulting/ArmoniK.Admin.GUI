@@ -17,8 +17,6 @@ import { ColumnsModifyDialogComponent } from './dialogs/columns-modify-dialog/co
   <span i18n="Open a dialog on click">Modify Columns</span>
 </button>
   `,
-  styles: [`
-  `],
   imports: [
     MatDialogModule,
     MatButtonModule,

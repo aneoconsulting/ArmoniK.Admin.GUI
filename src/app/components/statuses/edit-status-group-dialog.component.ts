@@ -15,8 +15,6 @@ import { EditStatusGroupDialogData, TasksStatusesGroup } from '../../dashboard/t
   (submitChange)="onSubmit($event)"
 />
   `,
-  styles: [`
-  `],
   providers: [],
   imports: [
     FormStatusesGroupComponent,
