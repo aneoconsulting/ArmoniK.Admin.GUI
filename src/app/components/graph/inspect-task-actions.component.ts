@@ -9,6 +9,9 @@ import { ArmoniKGraphNode } from '@app/types/graph.types';
 import { FiltersService } from '@services/filters.service';
 import { Subscription } from 'rxjs';
 
+/**
+ * Displays all actions available for a selected task on ArmoniK Graph.
+ */
 @Component({
   selector: 'app-graph-inspect-task-actions',
   templateUrl: 'inspect-task-actions.component.html',
@@ -40,16 +43,28 @@ export class InspectTaskActionsComponent<N extends ArmoniKGraphNode> implements 
     this.subscriptions.add(getSubscription);
   };
 
+  /**
+   * Navigates to the task inspection page
+   * @param task TaskDetailed
+   */
   seeTask(task: TaskDetailed) {
     this.router.navigate(['/tasks', task.id]);
   }
 
+  /**
+   * Navigates to the partition inspection page
+   * @param task TaskDetailed
+   */
   seePartition(task: TaskDetailed) {
     if (task.options) {
       this.router.navigate(['/partitions', task.options.partitionId]);
     }
   }
 
+  /**
+   * Navigates to the task table, filtered on all parent tasks ids.
+   * @param task TaskDetailed
+   */
   listParentTasks(task: TaskDetailed) {
     const queryParams = task.parentTaskIds
       .filter(parent => parent !== task.sessionId)
@@ -67,6 +82,10 @@ export class InspectTaskActionsComponent<N extends ArmoniKGraphNode> implements 
     });
   }
 
+  /**
+   * Navigates to the result table, filtered on all expected output ids.
+   * @param task 
+   */
   listResults(task: TaskDetailed) {
     const queryParams = task.expectedOutputIds
       .map((parent, index) => {

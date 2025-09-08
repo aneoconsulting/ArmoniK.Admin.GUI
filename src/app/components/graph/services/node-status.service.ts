@@ -6,6 +6,9 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service
 import { ArmoniKGraphNode } from '@app/types/graph.types';
 import { StatusLabelColor } from '@app/types/status';
 
+/**
+ * Service responsible to provide data on nodes statuses for the graph. 
+ */
 @Injectable()
 export class NodeStatusService<N extends ArmoniKGraphNode> {
   private readonly sessionsStatusesService = inject(SessionsStatusesService);

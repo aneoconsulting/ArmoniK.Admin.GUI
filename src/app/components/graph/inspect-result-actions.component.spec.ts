@@ -59,11 +59,6 @@ describe('InspectResultActionsComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/results', mockResult.resultId]);
   });
 
-  it('should redirect to the result session', () => {
-    component.seeSession(mockResult);
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/sessions', mockResult.sessionId]);
-  });
-
   it('should redirect to the owner task page', () => {
     component.seeOwnerTask(mockResult);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/tasks', mockResult.ownerTaskId]);

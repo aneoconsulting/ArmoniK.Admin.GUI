@@ -12,6 +12,10 @@ import { InspectResultActionsComponent } from './inspect-result-actions.componen
 import { InspectTaskActionsComponent } from './inspect-task-actions.component';
 import { NodeStatusService } from './services/node-status.service';
 
+/**
+ * Component displayed when a node (task, result) is clicked on the graph.
+ * Display its Id, status and some actions.
+ */
 @Component({
   selector: 'app-graph-inspect-node',
   templateUrl: 'inspect-node.component.html',

@@ -8,6 +8,9 @@ import { ResultsGrpcService } from '@app/results/services/results-grpc.service';
 import { ArmoniKGraphNode } from '@app/types/graph.types';
 import { Subscription } from 'rxjs';
 
+/**
+ * Displays all actions available for a selected result on ArmoniK Graph.
+ */
 @Component({
   selector: 'app-graph-inspect-result-actions',
   templateUrl: 'inspect-result-actions.component.html',
@@ -38,14 +41,18 @@ export class InspectResultActionsComponent<N extends ArmoniKGraphNode> implement
     this.subscriptions.add(getSubscription);
   };
 
+  /**
+   * Navigates to the result inspection page
+   * @param result ResultRaw
+   */
   seeResult(result: ResultRaw) {
     this.router.navigate(['/results', result.resultId]);
   }
 
-  seeSession(result: ResultRaw) {
-    this.router.navigate(['/sessions', result.sessionId]);
-  }
-
+  /**
+   * Navigates to the owner task inspection page
+   * @param result ResultRaw
+   */
   seeOwnerTask(result: ResultRaw) {
     this.router.navigate(['/tasks', result.ownerTaskId]);
   }
