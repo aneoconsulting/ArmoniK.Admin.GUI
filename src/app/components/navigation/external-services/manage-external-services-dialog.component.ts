@@ -11,7 +11,7 @@ import { FormExternalServiceComponent } from './form-external-service.component'
 @Component({
   selector: 'app-manage-external-services',
   templateUrl: './manage-external-services-dialog.component.html',
-  styleUrl: 'external-services.css',
+  styleUrl: 'external-services.scss',
   providers: [],
   imports: [
     DragDropModule,

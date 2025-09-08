@@ -66,8 +66,8 @@
                 "inject": false,
                 "input": "@angular/material/prebuilt-themes/purple-green.css"
               },
-              "src/styles.css",
-              "src/themes.css"
+              "src/styles.scss",
+              "src/themes.scss"
             ],
             "scripts": [],
             "browser": "src/main.ts",
