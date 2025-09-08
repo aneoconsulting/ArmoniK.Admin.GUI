@@ -30,11 +30,6 @@ import { JsonComponent } from './json.component';
     padding-left: 1rem;
   }
 
-  mat-toolbar {
-    display: flex;
-    justify-content: space-between;
-  }
-
   section {
     display: flex;
     align-items: center;

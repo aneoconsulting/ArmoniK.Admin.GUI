@@ -1,3 +1,5 @@
+@use "./assets/styles" as *;
+
 .mat-icon.deeppurple-amber svg .docs-theme-icon-background {
   fill: #fafafa
 }
@@ -36,17 +38,17 @@
 
 .purple-green .status.cdk-drag-preview,
 .pink-bluegrey .status.cdk-drag-preview {
-  color: rgba(255, 255, 255, 0.6);
+  color: $dark-theme-font-color;
 }
 
 .purple-green .task-status.cdk-drag-preview,
 .pink-bluegrey .task-status.cdk-drag-preview {
-  color: rgba(255, 255, 255, 0.6);
+  color: $dark-theme-font-color;
 }
 
 .purple-green .line.cdk-drag-preview,
 .pink-bluegrey .line.cdk-drag-preview {
-  color: rgba(255, 255, 255, 0.6);
+  color: $dark-theme-font-color;
 }
 
 .pink-bluegrey app-filters-dialog-or .filters,

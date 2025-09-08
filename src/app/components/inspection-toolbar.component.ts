@@ -21,18 +21,7 @@ import { IconsService } from '@services/icons.service';
     justify-content: space-between;
     align-items: center;
     width: 100%
-  }
-  
-  mat-toolbar {
-    justify-content: center;
-    gap: 1rem;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-  }
-
-  mat-toolbar-row {
-    height: fit-content;
-  }  
+  } 
   `]
 })
 export class InspectionToolbarComponent {

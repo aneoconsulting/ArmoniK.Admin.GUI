@@ -1,3 +1,4 @@
+@use "./assets/styles" as *;
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
@@ -13,28 +14,25 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   border: 0;
 }
 
-.mat-mdc-snack-bar-container.success {
-  --mat-snackbar-container-color: #4caf50;
+.mat-mdc-snack-bar-container {
   --mat-mdc-snack-bar-button-color: #000;
   --mat-snackbar-supporting-text-color: #000;
+}
+
+.mat-mdc-snack-bar-container.success {
+  --mat-snackbar-container-color: $success;
 }
 
 .mat-mdc-snack-bar-container.error {
-  --mat-snackbar-container-color: #f44336;
-  --mat-mdc-snack-bar-button-color: #000;
-  --mat-snackbar-supporting-text-color: #000;
+  --mat-snackbar-container-color: $error;
 }
 
 .mat-mdc-snack-bar-container.warning {
-  --mat-snackbar-container-color: #ff9800;
-  --mat-mdc-snack-bar-button-color: #000;
-  --mat-snackbar-supporting-text-color: #000;
+  --mat-snackbar-container-color: $warning;
 }
 
 .mat-mdc-snack-bar-container.info {
-  --mat-snackbar-container-color: #2196f3;
-  --mat-mdc-snack-bar-button-color: #000;
-  --mat-snackbar-supporting-text-color: #000;
+  --mat-snackbar-container-color: $info;
 }
 
 .mat-mdc-card-header-text {
@@ -42,7 +40,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .table-container {
-  max-height: 60vh;
+  max-height: $table-height;
 }
 
 .mat-mdc-menu-content {
@@ -78,11 +76,10 @@ app-table-index-actions-toolbar, app-table-dashboard-actions-toolbar {
 .filters {
   height: auto !important;
   min-height: 64px !important;
-  padding-bottom: 1rem !important;
 }
 
 .custom-file-upload {
-  border: 1px solid rgba(189, 189, 189, 0.6);
+  border: 1px solid $grey-background;
   border-radius: 0.4em;
   display: flex;
   justify-content: space-between;
@@ -96,7 +93,7 @@ app-table-index-actions-toolbar, app-table-dashboard-actions-toolbar {
 }
 
 .custom-file-upload:hover {
-  background-color: rgba(189, 189, 189, 0.3);
+  background-color: $grey-background;
 }
 
 [cdkDragHandle] {
@@ -122,8 +119,8 @@ input[type="file"] {
 }
 
 #error {
-  background-color: #f4433677;
-  border: 1px solid #f44336;
+  background-color: $error;
+  border: 1px solid $error-secondary;
   border-radius: 1rem;
   padding: 1.5rem;
 }

@@ -18,12 +18,6 @@ import { EditStatusesGroupDialogComponent } from './edit-status-group-dialog.com
 @Component({
   templateUrl: './manage-groups-dialog.component.html',
   styles: [`
-ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
 .groups {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

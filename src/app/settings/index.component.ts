@@ -60,10 +60,6 @@ main {
 }
 
 .storage ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-
   display: grid;
   grid-template-columns: min-content min-content min-content;
   column-gap: 0.5rem;

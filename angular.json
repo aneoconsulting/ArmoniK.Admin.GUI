@@ -73,7 +73,12 @@
             "browser": "src/main.ts",
             "polyfills": [
               "@angular/localize/init"
-            ]
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/assets"
+              ]
+            }
           },
           "configurations": {
             "en": {
@@ -154,7 +159,8 @@
   },
   "schematics": {
     "@schematics/angular:component": {
-      "type": "component"
+      "type": "component",
+      "style": "scss"
     },
     "@schematics/angular:directive": {
       "type": "directive"

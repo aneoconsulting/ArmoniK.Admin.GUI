@@ -40,10 +40,6 @@ import { Line } from '../types';
   gap: 0.5rem;
 }
 
-.cdk-drag-preview {
-  color: rgba(0, 0, 0, 0.6);
-}
-
 .cdk-drag-placeholder {
   opacity: 0;
 }

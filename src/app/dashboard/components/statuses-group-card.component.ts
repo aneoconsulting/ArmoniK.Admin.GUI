@@ -15,23 +15,6 @@ import { TasksStatusesGroup } from '../types';
   selector: 'app-statuses-group-card',
   templateUrl: './statuses-group-card.component.html',
   styles: [`
-mat-card {
-  height: 100%;
-}
-
-mat-card-title {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-
-ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
 ul li a {
   display: flex;
   flex-direction: row;

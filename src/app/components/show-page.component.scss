@@ -1,5 +1,5 @@
+@use "styles" as *;
+
 section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  @include flex-column(1rem);
 }
