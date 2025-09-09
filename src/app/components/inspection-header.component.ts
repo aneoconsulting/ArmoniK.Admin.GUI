@@ -14,7 +14,7 @@ import { StatusChipComponent } from './status-chip.component';
 @Component({
   selector: 'app-inspection-header',
   templateUrl: 'inspection-header.component.html',
-  styleUrl: 'inspection-header.component.css',
+  styleUrl: 'inspection-header.component.scss',
   imports: [
     MatToolbarModule,
     PageHeaderComponent,

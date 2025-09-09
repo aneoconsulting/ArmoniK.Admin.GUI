@@ -1,13 +1,4 @@
-mat-card {
-  height: fit-content;
-}
-
-mat-card-title {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
+@use 'styles' as *;
 
 ul {
   margin: 0;

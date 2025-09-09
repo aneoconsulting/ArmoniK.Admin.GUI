@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-page-section-header',
   templateUrl: 'page-section-header.component.html',
-  styleUrl: 'page-section-header.component.css',
+  styleUrl: 'page-section-header.component.scss',
   providers: [],
   imports: [
     MatIconModule

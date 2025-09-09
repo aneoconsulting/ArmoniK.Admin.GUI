@@ -9,7 +9,7 @@ import { NotificationService } from '@services/notification.service';
 @Component({
   selector: 'app-message',
   templateUrl: 'message.component.html',
-  styleUrl: 'message.component.css',
+  styleUrl: 'message.component.scss',
   imports: [
     MatCardModule,
     MatButtonModule,

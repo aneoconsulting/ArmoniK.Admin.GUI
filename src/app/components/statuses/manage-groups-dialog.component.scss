@@ -1,3 +1,5 @@
+@use 'styles' as *;
+
 ul {
   list-style: none;
   padding: 0;
@@ -15,24 +17,18 @@ ul {
 }
 
 .groups ul li {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
-
+  @include flex-row($gap: 0.5rem, $justify: start);
   padding: 0.5rem;
   border-radius: 0.5rem;
 }
 
 .addGroup {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include flex-row($justify: center);
+  height: 100% !important;
 }
 
 .addGroup button {
-  display: flex;
-  flex-direction: column;
+  @include flex-col(0.5rem);
   min-height: 5rem;
   width: 80%;
 }
@@ -48,11 +44,7 @@ ul {
 }
 
 .group-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
+  @include flex-row(1rem);
 }
 
 .group-header h3 {
@@ -62,22 +54,16 @@ ul {
 }
 
 .group-header-actions {
-  display: flex;
-  gap: 0.5rem;
+  @include flex-row(0.5rem);
 }
 
 .cdk-drag-preview {
+  @include flex-row($gap: 0.5rem, $justify: start);
   font-size: 1rem;
 
   list-style: none;
   padding: 0 0.5rem;
   border-radius: 0.5rem;
-
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
-  gap: 0.5rem;
 
   color: rgba(0, 0, 0, 0.6);
 }

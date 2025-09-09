@@ -25,7 +25,7 @@ import { ResultRaw } from './types';
 @Component({
   selector: 'app-result-show',
   templateUrl: 'show.component.html',
-  styleUrl: '../../inspections.css',
+  styleUrl: '../../inspections.scss',
   providers: [
     UtilsService,
     ShareUrlService,
