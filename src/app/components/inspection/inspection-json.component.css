@@ -1,0 +1,15 @@
+  mat-card {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 1rem;
+  }
+
+  mat-toolbar {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  section {
+    display: flex;
+    align-items: center;
+  }

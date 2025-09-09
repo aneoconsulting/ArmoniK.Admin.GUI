@@ -39,46 +39,7 @@ import { Line, LineType } from './types';
 @Component({
   selector: 'app-dashboard-index',
   templateUrl: './index.component.html',
-  styles: [`
-.fab {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-
-  z-index: 150;
-
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 1rem;
-}
-
-.fab-actions {
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.no-line {
-  margin-top: 2rem;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  gap: 2rem;
-}
-
-.lines {
-  display: grid;
-  gap: 4rem;
-
-  /* Allow user to view tasks even with the add button */
-  margin-bottom: 2rem
-}
-  `],
+  styleUrl: 'index.component.css',
   providers: [
     ShareUrlService,
     QueryParamsService,

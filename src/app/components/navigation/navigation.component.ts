@@ -26,47 +26,7 @@ import { VersionsMenuComponent } from './version-menu/versions-menu.component';
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
-  styles: [`
-.sidenav-container {
-  height: calc(100% - 64px);
-}
-
-.sidenav {
-  width: 200px;
-}
-
-.sidenav .mat-toolbar {
-  background: inherit;
-}
-
-.mat-toolbar.mat-primary {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-}
-
-.navbar-item-selected {
-  background-color: rgba(0, 0, 0, 0.2);
-}
-
-.spacer {
-  flex: 1 1 auto;
-}
-
-.greeting {
-  font-weight: normal;
-}
-
-.environment {
-  background: white;
-  padding: 0 1rem;
-  border-radius: 0.25rem;
-}
-
-main {
-  padding: 20px 50px;
-}
-  `],
+  styleUrl: 'navigation.component.css',
   providers: [
     StorageService,
     IconsService,
