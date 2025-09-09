@@ -13,35 +13,8 @@ import { TasksStatusesGroup } from '../types';
 
 @Component({
   selector: 'app-statuses-group-card',
-  templateUrl: './statuses-group-card.component.html',
-  styles: [`
-mat-card {
-  height: fit-content;
-}
-
-mat-card-title {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-
-ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-ul li a {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-
-  color: inherit;
-  text-decoration: none;
-}
-  `],
+  templateUrl: 'statuses-group-card.component.html',
+  styleUrl: 'statuses-group-card.component.css',
   providers: [
     DefaultConfigService,
     StorageService,

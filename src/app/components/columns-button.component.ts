@@ -12,8 +12,6 @@ import { ColumnsModifyDialogComponent } from './dialogs/columns-modify-dialog/co
 @Component({
   selector: 'app-columns-button',
   templateUrl: 'columns-button.component.html',
-  styles: [`
-  `],
   imports: [
     MatDialogModule,
     MatButtonModule,
