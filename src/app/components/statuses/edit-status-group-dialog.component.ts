@@ -6,8 +6,6 @@ import { EditStatusGroupDialogData, TasksStatusesGroup } from '../../dashboard/t
 @Component({
   selector: 'app-edit-statuses-group-dialog',
   templateUrl: 'edit-status-group-dialog.component.html',
-  styles: [`
-  `],
   providers: [],
   imports: [
     FormStatusesGroupComponent,
