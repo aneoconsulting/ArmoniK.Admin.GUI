@@ -7,7 +7,7 @@ import { ShowActionButton } from '@app/types/components/show';
 @Component({
   selector: 'app-show-action-area',
   templateUrl: './show-action-area.component.html',
-  styleUrl: 'show-action-area.component.css',
+  styleUrl: 'show-action-area.component.scss',
   imports: [
     RouterModule,
     MatButtonModule,

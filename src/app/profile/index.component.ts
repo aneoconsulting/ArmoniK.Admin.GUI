@@ -10,7 +10,7 @@ import { Group, PermissionGroup, isGroup } from './types';
 @Component({
   selector: 'app-profile-index',
   templateUrl: './index.component.html',
-  styleUrl: 'index.component.css',
+  styleUrl: 'index.component.scss',
   providers: [
     QueryParamsService,
   ],
