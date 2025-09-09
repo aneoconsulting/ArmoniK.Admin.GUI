@@ -15,7 +15,7 @@ import { IconsService } from '@services/icons.service';
   providers: [
     IconsService
   ],
-  styleUrl: 'inspection-toolbar.component.css',
+  styleUrl: 'inspection-toolbar.component.scss',
 })
 export class InspectionToolbarComponent {
   private readonly iconsService = inject(IconsService);

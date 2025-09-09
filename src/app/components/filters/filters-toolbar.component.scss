@@ -1,12 +1,11 @@
+@use 'styles' as *;
+
 .filters-toolbar {
-  display: flex;
-  flex-direction: row;
+  @include flex-row(0, $align: start);
 }
 
 .filters-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  @include flex-col(0.5rem);
 }
 
 .filters-list-text {
@@ -18,11 +17,7 @@
 }
 
 .filters-list-and {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
-  gap: 0.5rem;
+  @include flex-row(0.5rem, $justify: start);
 }
 
 button {
@@ -30,10 +25,8 @@ button {
 }
 
 .manage-filters {
-  height: 4rem;
-  display: flex;
-  flex-direction: column;
-  margin-top: 0.5rem;
+  @include flex-col();
+  padding: 0.5rem;
 }
 
 .manage-filters mat-icon {

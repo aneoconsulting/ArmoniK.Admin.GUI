@@ -1,7 +1,7 @@
+@use 'styles' as *;
+
 :host {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
+  @include flex-row(2rem);
 }
 
 span {
@@ -18,7 +18,5 @@ span {
 }
 
 .filters-and {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  @include flex-col(1rem);
 }

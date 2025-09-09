@@ -13,7 +13,7 @@ import { IconsService } from '@services/icons.service';
 @Component({
   selector: 'app-form-external-service',
   templateUrl: './form-external-service.component.html',
-  styleUrl: 'external-services.css',
+  styleUrl: 'external-services.scss',
   imports: [
     ReactiveFormsModule,
     MatIconModule,

@@ -8,7 +8,7 @@ import { UtilsService } from '@services/utils.service';
 @Component({
   selector: 'app-filters-chips',
   templateUrl: './filters-chips.component.html',
-  styleUrl: 'filters-chips.component.css',
+  styleUrl: 'filters-chips.component.scss',
   imports: [
     MatChipsModule,
   ],

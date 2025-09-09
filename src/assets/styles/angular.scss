@@ -1,0 +1,28 @@
+@use 'mixins.scss' as *;
+
+mat-card {
+  padding: 1rem;
+}
+
+mat-card-header {
+  padding: 0 !important;
+}
+
+mat-card-content {
+  padding: 0 !important;
+}
+
+mat-card-title {
+  @include flex-row();
+  width: 100%;
+}
+
+mat-toolbar {
+  @include flex-row(1rem);
+  padding: 1rem !important;
+}
+
+mat-toolbar-row {
+  padding: 0 !important;
+  @include flex-row();
+}

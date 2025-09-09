@@ -4,7 +4,7 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'app-json',
   templateUrl: 'json.component.html',
-  styleUrl: 'json.component.css',
+  styleUrl: 'json.component.scss',
   imports: [
     JsonPipe
   ],
