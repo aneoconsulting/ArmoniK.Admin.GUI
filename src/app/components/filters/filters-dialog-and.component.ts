@@ -10,7 +10,7 @@ import { FiltersDialogFilterFieldComponent } from './filters-dialog-filter-field
 @Component({
   selector: 'app-filters-dialog-and',
   templateUrl: './filters-dialog-and.component.html',
-  styleUrl: 'filters-dialog-and.component.css',
+  styleUrl: 'filters-dialog-and.component.scss',
   imports: [
     FiltersDialogFilterFieldComponent,
     MatButtonModule,

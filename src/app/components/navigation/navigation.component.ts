@@ -25,7 +25,7 @@ import { VersionsMenuComponent } from './version-menu/versions-menu.component';
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
-  styleUrl: 'navigation.component.css',
+  styleUrl: 'navigation.component.scss',
   providers: [
     StorageService,
     IconsService,

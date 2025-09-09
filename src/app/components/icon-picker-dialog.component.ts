@@ -11,7 +11,7 @@ import { IconsService } from '@services/icons.service';
 @Component({
   selector: 'app-icon-picker',
   templateUrl: './icon-picker-dialog.component.html',
-  styleUrl: 'icon-picker-dialog.component.css',
+  styleUrl: 'icon-picker-dialog.component.scss',
   providers: [
     IconsService
   ],

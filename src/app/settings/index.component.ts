@@ -25,7 +25,7 @@ import { ClearAllDialogComponent } from './component/clear-all-dialog.component'
 @Component({
   selector: 'app-settings-index',
   templateUrl: 'index.component.html',
-  styleUrl: 'index.component.css',
+  styleUrl: 'index.component.scss',
   providers: [
     QueryParamsService,
     NotificationService,
