@@ -1,6 +1,6 @@
+@use 'styles' as *;
+
 section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%
+  @include flex-row();
+  width: 100%;
 }

@@ -1,14 +1,13 @@
+@use 'styles' as *;
+
 .permissions {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.2rem;
 }
 
-.permission h3 {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
+.permission-title {
+  @include flex-row($gap: 0.5rem, $justify: start);
 
   text-transform: capitalize;
 

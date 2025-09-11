@@ -1,11 +1,9 @@
+@use 'styles' as *;
+
 :host {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  @include flex-row();
 }
 
 section {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  @include flex-row(1rem);
 }
