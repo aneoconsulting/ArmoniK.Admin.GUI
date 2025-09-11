@@ -1,7 +1,7 @@
+@use 'styles' as *;
+
 .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  @include flex-row();
 }
 
 .no-data {
@@ -15,14 +15,12 @@ button {
 }
 
 .item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  @include flex-row();
   margin: 0.5rem;
 }
 
 mat-divider {
-  margin-right: 0.5rem;
+  margin: 0 0.5rem 0 0.5rem;
 }
 
 mat-card {

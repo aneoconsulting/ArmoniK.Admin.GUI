@@ -1,3 +1,5 @@
+@use 'styles' as *;
+
 form {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -5,8 +7,7 @@ form {
 }
 
 section {
-  display: flex;
-  align-items: center;
+  @include flex-row();
   margin-bottom: 0.5rem;
 }
 
