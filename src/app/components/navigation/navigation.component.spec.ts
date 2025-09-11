@@ -9,8 +9,7 @@ import { UserService } from '@services/user.service';
 import { VersionsService } from '@services/versions.service';
 import { Subject, lastValueFrom, of } from 'rxjs';
 import { NavigationComponent } from './navigation.component';
-import { ComponentFixture } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
+
 
 
 // Creating a way to control the interval without having to fake the time.
