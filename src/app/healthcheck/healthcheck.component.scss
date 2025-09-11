@@ -1,8 +1,9 @@
+@use 'styles' as *;
+
 .health-color {
   font-size: 22px;
 }
 
 .health-status {
-  display: flex;
-  align-items: center;
+  @include flex-row();
 }

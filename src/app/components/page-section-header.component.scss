@@ -1,8 +1,7 @@
+@use 'styles' as *;
+
 section {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1rem;
+  @include flex-row($gap: 1rem, $justify: start);
   margin: 0.5rem;
 }
 

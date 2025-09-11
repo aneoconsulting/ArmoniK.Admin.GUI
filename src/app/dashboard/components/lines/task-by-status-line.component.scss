@@ -1,3 +1,5 @@
+@use 'styles' as *;
+
 .groups {
   margin-top: 1rem;
 
@@ -7,7 +9,5 @@
 }
 
 section {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  @include flex-row(1rem);
 }

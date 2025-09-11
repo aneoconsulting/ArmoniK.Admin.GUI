@@ -1,27 +1,21 @@
+@use 'styles' as *;
+
 .lines {
-  display: flex;
-  flex-direction: column;
+  @include flex-col();
 }
 
 .line {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  @include flex-row();
   cursor: move;
 }
 
 .line-name {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  @include flex-row(0.5rem);
   padding: 0.5rem;
 }
 
 .line-actions {
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
+  @include flex-row(0.5rem);
 }
 
 .cdk-drag-preview {
