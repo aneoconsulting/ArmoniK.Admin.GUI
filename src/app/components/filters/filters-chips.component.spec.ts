@@ -1,6 +1,6 @@
 import { FilterDateOperator, FilterDurationOperator, FilterStatusOperator, FilterStringOperator, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { TestBed } from '@angular/core/testing';
 import { ViewContainerRef } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { FilterDefinition } from '@app/types/filter-definition';
 import { DataFilterService } from '@app/types/services/data-filter.service';
 import { FiltersService } from '@services/filters.service';
