@@ -49,12 +49,6 @@ export class NavigationService {
       route: '/results',
     },
     {
-      type: 'link',
-      id: 'profile',
-      display: $localize`Profile`,
-      route: '/profile',
-    },
-    {
       type: 'divider',
       id: 'divider',
       display: $localize`Divider`,
@@ -68,11 +62,7 @@ export class NavigationService {
   currentSidebar: SidebarItem[];
 
   set sideBar(entry: SidebarItem[]) {
-    // Filter out profile if user is not connected
-    const filteredEntry = this.userConnectedGuard.canActivate() 
-      ? entry 
-      : entry.filter(item => item.id !== 'profile');
-    this.currentSidebar = filteredEntry;
+    this.currentSidebar = entry;
   }
 
   constructor() {

@@ -27,7 +27,7 @@
   <app-versions-menu />
   <app-theme-selector/>
   <button mat-icon-button [routerLink]="'/profile'" matTooltip="Profil" i18n-matTooltip="Profile button tooltip">
-    <mat-icon>person</mat-icon>
+    <mat-icon [fontIcon]="getIcon('profile')"></mat-icon>
   </button>
 </mat-toolbar>
 <mat-sidenav-container autosize class="sidenav-container">
