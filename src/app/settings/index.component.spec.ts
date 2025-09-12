@@ -440,7 +440,7 @@ describe('IndexComponent', () => {
       currentIndex: 1
     } as CdkDragDrop<SidebarItem[]>;
     component.drop(event);
-    expect(component.sidebar).toEqual(['dashboard', 'profile', 'sessions', 'tasks']);
+    expect(component.sidebar).toEqual(['sessions', 'dashboard', 'tasks']);
   });
 
   it('should retrieve the config file name', () => {
