@@ -26,3 +26,7 @@ mat-toolbar-row {
   padding: 0 !important;
   @include flex-row();
 }
+
+mat-form-field {
+  width: 100%;
+}
