@@ -52,19 +52,19 @@
             "styles": [
               {
                 "inject": false,
-                "input": "@angular/material/prebuilt-themes/deeppurple-amber.css"
+                "input": "@angular/material/prebuilt-themes/rose-red.css"
               },
               {
                 "inject": true,
-                "input": "@angular/material/prebuilt-themes/indigo-pink.css"
+                "input": "@angular/material/prebuilt-themes/azure-blue.css"
               },
               {
                 "inject": false,
-                "input": "@angular/material/prebuilt-themes/pink-bluegrey.css"
+                "input": "@angular/material/prebuilt-themes/magenta-violet.css"
               },
               {
                 "inject": false,
-                "input": "@angular/material/prebuilt-themes/purple-green.css"
+                "input": "@angular/material/prebuilt-themes/cyan-orange.css"
               },
               "src/styles.scss",
               "src/themes.scss"

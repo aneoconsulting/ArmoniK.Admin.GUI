@@ -26,10 +26,10 @@ export class ThemeSelectorComponent implements OnInit {
 
   currentTheme: Theme = this.defaultConfigService.defaultTheme;
   availableThemes: { name: Theme, displayName: string }[] = [
-    { name: 'deeppurple-amber', displayName: 'Deep Purple & Amber' },
-    { name: 'indigo-pink', displayName: 'Indigo & Pink' },
-    { name: 'pink-bluegrey', displayName: 'Pink & Blue-grey' },
-    { name: 'purple-green', displayName: 'Purple & Green' },
+    { name: 'azure-blue', displayName: 'Azure & Blue' },
+    { name: 'cyan-orange', displayName: 'Cyan & Orange' },
+    { name: 'rose-red', displayName: 'Rose & Red' },
+    { name: 'magenta-violet', displayName: 'Magenta & Violet' },
   ];
 
   themeSelectionToolTip = $localize`Select a theme`;
