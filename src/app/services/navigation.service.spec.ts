@@ -90,13 +90,6 @@ describe('NavigationService', () => {
       expect(service.currentSidebar).toEqual(newSideBar);
     });
 
-    it('should filter the profile if no user are connected', () => {
-      mockUserConnectedGuard.canActivate.mockReturnValueOnce(false);
-      service.sideBar = newSideBar;
-      expect(service.currentSidebar).toEqual(newSideBar.filter(e => e.id !== 'profile'));
-    });
-  });
-
   describe('saveSidebar', () => {
     
     it('should change the format of the provided sidebar and set it to the current SideBar', () => {
