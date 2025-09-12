@@ -1,10 +1,10 @@
 import { FilterDateOperator, FilterDurationOperator, FilterStatusOperator, FilterStringOperator, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
+import { DataFilterService } from '@app/types/services/data-filter.service';
 import { FilterDefinition } from '@app/types/filter-definition';
 import { FiltersService } from '@services/filters.service';
 import { UtilsService } from '@services/utils.service';
 import { FiltersChipsComponent } from './filters-chips.component';
-import { DataFilterService } from '@app/types/services/data-filter.service';
 
 describe('FiltersChipsComponent', () => {
   let component: FiltersChipsComponent<number, number | null>;
@@ -63,8 +63,8 @@ describe('FiltersChipsComponent', () => {
         FiltersChipsComponent,
         FiltersService,
         UtilsService,
-         { provide: DataFilterService, useValue: mockDataFilterService }
-             ]
+        { provide: DataFilterService, useValue: mockDataFilterService }
+      ]
     }).inject(FiltersChipsComponent);
   });
 
