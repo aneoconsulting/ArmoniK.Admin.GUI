@@ -12,7 +12,6 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service
 import { AddLineDialogData, AddLineDialogResult, ReorganizeLinesDialogData, ReorganizeLinesDialogResult, SplitLinesDialogData, SplitLinesDialogResult } from '@app/types/dialog';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
-import { PageSectionComponent } from '@components/page-section.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -98,7 +97,6 @@ import { Line, LineType } from './types';
   ],
   imports: [
     PageHeaderComponent,
-    PageSectionComponent,
     PageSectionHeaderComponent,
     MatIconModule,
     MatToolbarModule,
