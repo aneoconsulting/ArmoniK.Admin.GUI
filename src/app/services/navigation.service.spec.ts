@@ -89,6 +89,7 @@ describe('NavigationService', () => {
       service.sideBar = newSideBar;
       expect(service.currentSidebar).toEqual(newSideBar);
     });
+  });
 
   describe('saveSidebar', () => {
     
