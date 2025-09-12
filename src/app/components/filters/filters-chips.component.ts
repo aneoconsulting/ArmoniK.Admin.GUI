@@ -1,14 +1,10 @@
-import { Component, Input, Output, EventEmitter, ViewContainerRef, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CustomColumn } from '@app/types/data';
-import { FiltersDialogData, FiltersDialogResult } from '@app/types/dialog';
-import { Filter, FiltersAnd, FiltersEnums, FiltersOptionsEnums, FiltersOr } from '@app/types/filters';
+import { Filter, FiltersAnd, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
 import { DataFilterService } from '@app/types/services/data-filter.service';
 import { FiltersService } from '@services/filters.service';
 import { UtilsService } from '@services/utils.service';
-import { FiltersDialogComponent } from './filters-dialog.component';
-
 @Component({
   selector: 'app-filters-chips',
   templateUrl: './filters-chips.component.html',
@@ -23,17 +19,17 @@ import { FiltersDialogComponent } from './filters-dialog.component';
   margin-left: 8px;
 }
 
-.mat-chip-clickable {
+.mat-mdc-chip .mat-mdc-chip-action {
   cursor: pointer;
 }
 
-.mat-chip-clickable:hover {
+.mat-mdc-standard-chip:hover {
   opacity: 0.8;
+  transition: opacity 0.75s ease-in-out;
 }
   `],
   imports: [
     MatChipsModule,
-    MatDialogModule,
   ],
   providers: [
     FiltersService,
@@ -43,8 +39,6 @@ export class FiltersChipsComponent<F extends FiltersEnums, O extends FiltersOpti
   private readonly filtersService = inject(FiltersService);
   private readonly utilsService = inject(UtilsService<F, O>);
   private readonly dataFiltersService = inject(DataFilterService);
-  private readonly dialog = inject(MatDialog);
-  private readonly viewContainerRef = inject(ViewContainerRef);
 
   readonly filters = signal<string[]>([]);
   private _filtersAnd: FiltersAnd<F, O> = [];
@@ -55,22 +49,10 @@ export class FiltersChipsComponent<F extends FiltersEnums, O extends FiltersOpti
   }
 
   @Input() customColumns: CustomColumn[] = [];
-  @Output() filtersChange: EventEmitter<FiltersOr<F, O>> = new EventEmitter<FiltersOr<F, O>>();
+  @Output() openFilters: EventEmitter<void> = new EventEmitter<void>();
 
   openFiltersDialog(): void {
-    const dialogRef = this.dialog.open<FiltersDialogComponent<F, O>, FiltersDialogData<F, O>, FiltersDialogResult<F, O>>(FiltersDialogComponent, {
-      data: {
-        filtersOr: [Array.from(this._filtersAnd)],
-        customColumns: this.customColumns
-      },
-      viewContainerRef: this.viewContainerRef,
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if(result) {
-        this.filtersChange.emit(result);
-      }
-    });
+    this.openFilters.emit();
   }
 
   private toContent(filter: Filter<F, O>): string {
