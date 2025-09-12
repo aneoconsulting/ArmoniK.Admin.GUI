@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
-import { CustomColumn } from '@app/types/data';
 import { Filter, FiltersAnd, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
 import { DataFilterService } from '@app/types/services/data-filter.service';
 import { FiltersService } from '@services/filters.service';
@@ -41,14 +40,11 @@ export class FiltersChipsComponent<F extends FiltersEnums, O extends FiltersOpti
   private readonly dataFiltersService = inject(DataFilterService);
 
   readonly filters = signal<string[]>([]);
-  private _filtersAnd: FiltersAnd<F, O> = [];
-
+  
   @Input({ required: true }) set filtersAnd(entry: FiltersAnd<F, O>) {
-    this._filtersAnd = entry;
     this.filters.set(entry.map(filter => this.toContent(filter)));
   }
 
-  @Input() customColumns: CustomColumn[] = [];
   @Output() openFilters: EventEmitter<void> = new EventEmitter<void>();
 
   openFiltersDialog(): void {

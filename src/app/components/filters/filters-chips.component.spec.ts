@@ -1,5 +1,4 @@
 import { FilterDateOperator, FilterDurationOperator, FilterStatusOperator, FilterStringOperator, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { ViewContainerRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FilterDefinition } from '@app/types/filter-definition';
 import { DataFilterService } from '@app/types/services/data-filter.service';
@@ -64,9 +63,7 @@ describe('FiltersChipsComponent', () => {
         FiltersChipsComponent,
         FiltersService,
         UtilsService,
-        { provide: DataFilterService, useValue: mockDataFilterService },
-        { provide: ViewContainerRef, useValue: { element: { nativeElement: document.createElement('div') } } }
-      ]
+             ]
     }).inject(FiltersChipsComponent);
   });
 
@@ -165,6 +162,14 @@ describe('FiltersChipsComponent', () => {
         value: '12349000'
       }];
       expect(component.filters()).toEqual(['Invalid Filter Field']);
+    });
+  });
+
+  describe('openFiltersDialog', () => {
+    it('should emit openFilters event', () => {
+      const spy = jest.spyOn(component.openFilters, 'emit');
+      component.openFiltersDialog();
+      expect(spy).toHaveBeenCalled();
     });
   });
 });
