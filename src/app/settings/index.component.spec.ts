@@ -187,7 +187,7 @@ describe('IndexComponent', () => {
 
   it('should remove an item of the sidebar according to its index', () => {
     component.onRemoveSidebarItem(0);
-    expect(component.sidebar).toEqual(['dashboard', 'sessions', 'tasks']);
+    expect(component.sidebar).toEqual(['sessions', 'tasks']);
   });
 
   it('should add a sidebar item at the end of the set', () => {
