@@ -51,20 +51,12 @@
             ],
             "styles": [
               {
-                "inject": false,
-                "input": "@angular/material/prebuilt-themes/rose-red.css"
-              },
-              {
                 "inject": true,
-                "input": "@angular/material/prebuilt-themes/azure-blue.css"
+                "input": "src/assets/themes/dark-green.scss"
               },
               {
                 "inject": false,
-                "input": "@angular/material/prebuilt-themes/magenta-violet.css"
-              },
-              {
-                "inject": false,
-                "input": "@angular/material/prebuilt-themes/cyan-orange.css"
+                "input": "src/assets/themes/azure-blue.scss"
               },
               "src/styles.scss",
               "src/themes.scss"
@@ -159,8 +151,7 @@
   },
   "schematics": {
     "@schematics/angular:component": {
-      "type": "component",
-      "style": "scss"
+      "type": "component"
     },
     "@schematics/angular:directive": {
       "type": "directive"

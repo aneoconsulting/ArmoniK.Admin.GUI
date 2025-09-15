@@ -29,6 +29,10 @@ button {
   padding: 0.5rem;
 }
 
-.manage-filters mat-icon {
-  transform: scale(1.5);
+.manage-filters {
+  border-radius: 1rem;
+  mat-icon {
+    transform: scale(1.5);
+    margin: 0;
+  }
 }

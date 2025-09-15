@@ -14,7 +14,7 @@ import { Theme } from '@app/types/themes';
 
 @Injectable()
 export class DefaultConfigService {
-  readonly #defaultTheme: Theme = 'azure-blue';
+  readonly #defaultTheme: Theme = 'dark-green';
   readonly #defaultExternalServices: ExternalService[] = [];
 
   readonly #defaultDashboardLines: CountLine[] = [

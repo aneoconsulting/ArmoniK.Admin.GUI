@@ -1,4 +1,6 @@
 @use 'mixins.scss' as *;
+@use 'variables.scss' as var;
+@use '@angular/material' as mat;
 
 mat-card {
   padding: 1rem;
@@ -20,6 +22,9 @@ mat-card-title {
 mat-toolbar {
   @include flex-row(1rem);
   padding: 1rem !important;
+  background-color: light-dark(mat.get-theme-color(var.$theme, neutral-variant, 90), mat.get-theme-color(var.$theme, primary, 50)) !important;
+  border-radius: 1rem;
+  margin-bottom: 0.25rem !important;
 }
 
 mat-toolbar-row {
@@ -29,4 +34,18 @@ mat-toolbar-row {
 
 mat-form-field {
   width: 100%;
+}
+
+.cdk-overlay-pane { // Mat dialog container
+  max-width: 100% !important;
+}
+
+mat-sidenav {
+  margin: 0.5rem 0rem 0rem 0rem;
+  padding: 0.25rem;
+  background-color: light-dark(mat.get-theme-color(var.$theme, neutral-variant, 90), mat.get-theme-color(var.$theme, primary, 50)) !important;
+}
+
+mat-nav-list > mat-divider {
+  margin: 0.5rem !important;
 }

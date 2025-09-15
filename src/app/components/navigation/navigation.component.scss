@@ -1,5 +1,8 @@
+@use 'styles' as *;
+@use '@angular/material' as mat;
+
 .sidenav-container {
-  height: calc(100% - 64px);
+  height: calc(100% - 4rem);
 }
 
 .sidenav {
@@ -37,4 +40,8 @@
 
 main {
   padding: 20px 50px;
+}
+
+.mdc-icon-button > .mat-icon {
+  color: mat.get-theme-color($theme, primary, 90) !important;
 }

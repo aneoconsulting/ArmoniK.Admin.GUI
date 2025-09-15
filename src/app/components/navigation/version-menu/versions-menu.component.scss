@@ -1,16 +1,8 @@
 @use 'styles' as *;
 @use '@angular/material' as mat;
 
-.health-color {
-  font-size: 22px;
-}
-
-.health-status {
-  @include flex-row();
-}
-
-.open-healthcheck {
-  mat-icon {
+.version {
+  mat-icon, span {
     color: mat.get-theme-color($theme, primary, 90) !important;
   }
 }

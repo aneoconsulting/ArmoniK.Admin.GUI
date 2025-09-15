@@ -11,6 +11,7 @@ import { StorageService } from '@services/storage.service';
 @Component({
   selector: 'app-theme-selector',
   templateUrl: './theme-selector.component.html',
+  styleUrl: './navigation.component.scss',
   providers: [],
   imports: [
     MatButtonModule,
@@ -26,10 +27,8 @@ export class ThemeSelectorComponent implements OnInit {
 
   currentTheme: Theme = this.defaultConfigService.defaultTheme;
   availableThemes: { name: Theme, displayName: string }[] = [
-    { name: 'azure-blue', displayName: 'Azure & Blue' },
-    { name: 'cyan-orange', displayName: 'Cyan & Orange' },
-    { name: 'rose-red', displayName: 'Rose & Red' },
-    { name: 'magenta-violet', displayName: 'Magenta & Violet' },
+    { name: 'azure-blue', displayName: 'blue' },
+    { name: 'dark-green', displayName: 'Dark Green' },
   ];
 
   themeSelectionToolTip = $localize`Select a theme`;
@@ -91,7 +90,7 @@ export class ThemeSelectorComponent implements OnInit {
 
     themeElement.id = `theme-${theme.name}`;
     themeElement.rel = 'stylesheet';
-    themeElement.href = `${theme.name}.css`;
+    themeElement.href = `/assets/themes/${theme.name}.scss`;
 
     head.appendChild(themeElement);
 

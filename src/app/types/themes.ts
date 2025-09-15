@@ -1,1 +1,1 @@
-export type Theme = 'rose-red' | 'azure-blue' | 'magenta-violet' | 'cyan-orange';
+export type Theme = 'azure-blue' | 'dark-green';

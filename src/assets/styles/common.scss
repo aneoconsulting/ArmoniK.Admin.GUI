@@ -1,3 +1,20 @@
+@use '@angular/material' as mat;
+@use 'variables' as var;
+
 h1, h2, h3, h4, h5, h6, p {
   margin: 0 !important;
+}
+
+h1, h2, h3, strong {
+  font-weight: 500 !important;
+}
+
+.header-toolbar {
+  border-radius: 0 !important;
+  background-color: mat.get-theme-color(var.$theme, primary, 35) !important;
+  color: mat.get-theme-color(var.$theme, primary, 100) !important;
+}
+
+table {
+  background-color: light-dark(mat.get-theme-color(var.$theme, neutral, 96), mat.get-theme-color(var.$theme, neutral, 10)) !important;
 }

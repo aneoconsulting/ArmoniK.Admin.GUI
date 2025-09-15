@@ -1,2 +1,15 @@
+@use '@angular/material' as mat;
+@use '../themes' as theme;
+
+$theme: mat.define-theme(
+  (
+    color: (
+      theme-type: light,
+      primary: theme.$primary-palette,
+      tertiary: theme.$tertiary-palette,
+    ),
+  )
+);
+
 $grey-font: #8A8A8A;
 $grey: #D7D7D7;
