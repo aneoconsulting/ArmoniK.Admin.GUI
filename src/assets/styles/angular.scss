@@ -41,7 +41,6 @@ mat-form-field {
 }
 
 mat-sidenav {
-  margin: 0.5rem 0rem 0rem 0rem;
   padding: 0.25rem;
   background-color: light-dark(mat.get-theme-color(var.$theme, neutral-variant, 90), mat.get-theme-color(var.$theme, primary, 50)) !important;
 }

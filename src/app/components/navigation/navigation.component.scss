@@ -1,12 +1,13 @@
 @use 'styles' as *;
 @use '@angular/material' as mat;
 
-.sidenav-container {
-  height: calc(100% - 4rem);
+mat-sidenav-container {
+  height: calc(100% - 60px) !important;
 }
 
 .sidenav {
   width: 200px;
+  margin-bottom: 0.25rem;
 }
 
 .sidenav .mat-toolbar {
@@ -21,7 +22,7 @@
 }
 
 .navbar-item-selected {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: light-dark(mat.get-theme-color($theme, neutral-variant, 80), mat.get-theme-color($theme, primary, 60));
 }
 
 .spacer {
@@ -39,7 +40,7 @@
 }
 
 main {
-  padding: 20px 50px;
+  padding: 1rem 50px;
 }
 
 .mdc-icon-button > .mat-icon {
