@@ -112,21 +112,35 @@ describe('PartitionsFilterService', () => {
 
     it('should restore default showFilters if it cannot restore', () => {
       mockTableService.restoreShowFilters.mockReturnValueOnce(null);
-      expect(service.restoreShowFilters()).toBe(true);
+      expect(service.restoreShowFilters()).toBeTruthy();
     });
   });
 
   describe('retrieveLabel', () => {
+    let consoleSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      consoleSpy = jest.spyOn(console, 'error');
+      consoleSpy.mockImplementationOnce(() => {});
+    });
+
     it('should permit to retrieve label', () => {
       expect(service.retrieveLabel('root', PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID)).toEqual('ID');
     });
 
-    it('should throw an error for options cases', () => {
-      expect(() => service.retrieveLabel('options', PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID)).toThrow('Impossible case');
+    it('should return an empty string for options cases', () => {
+      expect(service.retrieveLabel('options', PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID)).toEqual('');
     });
 
-    it('should throw an error for unknown filter type', () => {
-      expect(() => service.retrieveLabel('custom', PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID)).toThrow(`Unknown filter type: custom ${PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID}`);
+    it('should return an empty string for unknown filter type', () => {
+      expect(service.retrieveLabel('custom', PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID)).toEqual('');
+    });
+
+    it('should log an error when filterFor is unknown', () => {
+      const field = PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID;
+      const _for = 'custom';
+      service.retrieveLabel(_for, field);
+      expect(consoleSpy).toHaveBeenCalledWith(`Unknown filter type: ${_for} ${field}`);
     });
   });
 

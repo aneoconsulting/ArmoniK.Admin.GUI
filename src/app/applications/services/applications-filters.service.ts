@@ -52,10 +52,9 @@ export class ApplicationsFiltersService extends DataFilterService<ApplicationRaw
     switch (filterFor) {
     case 'root':
       return this.rootField[filterField as ApplicationRawEnumField];
-    case 'options':
-      throw new Error('Impossible case');
     default:
-      throw new Error(`Unknown filter type: ${filterFor} ${filterField}}`);
+      console.error(`Unknown filter type: ${filterFor} ${filterField}`);
+      return '';
     }
   }
 
