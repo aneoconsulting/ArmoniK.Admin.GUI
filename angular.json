@@ -59,7 +59,9 @@
                 "input": "src/assets/themes/azure-blue.scss"
               },
               "src/styles.scss",
-              "src/themes.scss"
+              "src/themes.scss",
+              "src/assets/styles/angular.scss",
+              "src/assets/styles/common.scss"
             ],
             "scripts": [],
             "browser": "src/main.ts",

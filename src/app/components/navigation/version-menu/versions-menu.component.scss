@@ -1,7 +1,7 @@
 @use 'styles' as *;
 @use '@angular/material' as mat;
 
-.version {
+button.version {
   mat-icon, span {
     color: mat.get-theme-color($theme, primary, 90) !important;
   }
