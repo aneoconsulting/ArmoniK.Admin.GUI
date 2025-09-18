@@ -2,7 +2,6 @@ import { Component, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
-import { PageSectionComponent } from '@components/page-section.component';
 import { IconsService } from '@services/icons.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { UserService } from '@services/user.service';
@@ -44,7 +43,6 @@ import { Group, PermissionGroup, isGroup } from './types';
   ],
   imports: [
     PageHeaderComponent,
-    PageSectionComponent,
     PageSectionHeaderComponent,
     MatIconModule,
   ]
