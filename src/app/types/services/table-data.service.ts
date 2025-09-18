@@ -67,7 +67,7 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
         return this.grpcService.list$(options, filters)
           .pipe(
             catchError((error: GrpcStatusEvent) => {
-              this.error(error, 'An error occured while fetching data');
+              this.error(error, 'An error occurred while fetching data');
               return of(null);
             }),
           );

@@ -86,7 +86,7 @@ describe('TasksGrpcActionsService', () => {
       mockGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error()));
       action.click([task1]);
       expect(consoleErrorSpy).toHaveBeenCalled();
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occured.');
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred.');
     });
   });
 
@@ -100,7 +100,7 @@ describe('TasksGrpcActionsService', () => {
   
     it('should display a notification to the user', () => {
       service['handleError'](error);
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occured.');
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred.');
     });
       
     it('should display a notification to the user with a custom message', () => {

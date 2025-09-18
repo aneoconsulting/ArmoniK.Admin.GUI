@@ -137,7 +137,7 @@ describe('SessionsGrpcActionsService', () => {
       mockGrpcService.resume$.mockReturnValueOnce(throwError(() => new Error()));
       action.click([session1]);
       expect(consoleErrorSpy).toHaveBeenCalled();
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occured while resuming session ' + session1.sessionId);
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred while resuming session ' + session1.sessionId);
     });
   });
 
@@ -166,7 +166,7 @@ describe('SessionsGrpcActionsService', () => {
       mockGrpcService.purge$.mockReturnValueOnce(throwError(() => new Error()));
       action.click([session1]);
       expect(consoleErrorSpy).toHaveBeenCalled();
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occured while purging session ' + session1.sessionId);
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred while purging session ' + session1.sessionId);
     });
   });
 
@@ -195,7 +195,7 @@ describe('SessionsGrpcActionsService', () => {
       mockGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error()));
       action.click([session1]);
       expect(consoleErrorSpy).toHaveBeenCalled();
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occured while cancelling session ' + session1.sessionId);
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred while cancelling session ' + session1.sessionId);
     });
   });
 
@@ -224,7 +224,7 @@ describe('SessionsGrpcActionsService', () => {
       mockGrpcService.close$.mockReturnValueOnce(throwError(() => new Error()));
       action.click([session1]);
       expect(consoleErrorSpy).toHaveBeenCalled();
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occured while closing session ' + session1.sessionId);
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred while closing session ' + session1.sessionId);
     });
   });
 
@@ -259,7 +259,7 @@ describe('SessionsGrpcActionsService', () => {
       mockGrpcService.delete$.mockReturnValueOnce(throwError(() => new Error()));
       action.click([session1]);
       expect(consoleErrorSpy).toHaveBeenCalled();
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occured while deleting session ' + session1.sessionId);
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred while deleting session ' + session1.sessionId);
     });
   });
 
@@ -273,7 +273,7 @@ describe('SessionsGrpcActionsService', () => {
 
     it('should display a notification to the user', () => {
       service['handleError'](error);
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occured.');
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred.');
     });
     
     it('should display a notification to the user with a custom message', () => {
