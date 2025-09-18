@@ -80,126 +80,168 @@ export class SessionsGrpcActionsService extends GrpcActionsService<SessionRaw, S
 
   protected subscribeToActions(refresh?: Subject<void> | null): void {
     const deleteSessionSubscription = this.deleteSession$.pipe(
-      switchMap(sessions => combineLatest(
-        sessions.map(session => 
-          this.grpcService.delete$(session.sessionId).pipe(
-            catchError(error => this.handleError(error, $localize`An error occured while deleting session ` + session.sessionId))
-          )
-        )
-      )),
+      switchMap(sessions => {
+        if (sessions.length !== 0) {
+          return combineLatest(
+            sessions.map(session => 
+              this.grpcService.delete$(session.sessionId).pipe(
+                catchError(error => this.handleError(error, $localize`An error occurred while deleting session ` + session.sessionId))
+              )
+            )
+          );
+        }
+        return [];
+      }),
       switchMap(result => combineLatest([of(result), this.route.params])),
     ).subscribe(([result, params]) => {
-      const success = result.reduce((acc, session) => acc && session !== null, true);
-      if (success) {
-        if (params['id']) {
-          this.router.navigate(['/sessions']);
-        } else {
-          const plural = result.length > 1 ? $localize`Sessions` : $localize`Session`;
-          this.success(plural + $localize` deleted`);
+      if (result.length !== 0) {
+        const success = result.reduce((acc, session) => acc && session !== null, true);
+        if (success) {
+          if (params['id']) {
+            this.router.navigate(['/sessions']);
+          } else {
+            const plural = result.length > 1 ? $localize`Sessions` : $localize`Session`;
+            this.success(plural + $localize` deleted`);
+          }
         }
-      }
-      if (refresh) {
-        refresh.next();
+        if (refresh) {
+          refresh.next();
+        }
       }
     });
     this.subscriptions.add(deleteSessionSubscription);
 
     const closeSessionSubscription = this.closeSession$.pipe(
-      switchMap(sessions => combineLatest(
-        sessions.map(session => 
-          this.grpcService.close$(session.sessionId).pipe(
-            catchError(error => this.handleError(error, $localize`An error occured while closing session ` + session.sessionId))
-          )
-        )
-      ))
+      switchMap(sessions => {
+        if (sessions.length !== 0) {
+          return combineLatest(
+            sessions.map(session => 
+              this.grpcService.close$(session.sessionId).pipe(
+                catchError(error => this.handleError(error, $localize`An error occurred while closing session ` + session.sessionId))
+              )
+            )
+          );
+        }
+        return [];
+      })
     ).subscribe(result => {
-      const success = result.reduce((acc, session) => acc && session !== null, true);
-      if (success) {
-        const plural = result.length > 1 ? $localize`Sessions` : $localize`Session`;
-        this.success(plural + $localize` closed`);
-      }
-      if (refresh) {
-        refresh.next();
+      if (result.length !== 0) {
+        const success = result.reduce((acc, session) => acc && session !== null, true);
+        if (success) {
+          const plural = result.length > 1 ? $localize`Sessions` : $localize`Session`;
+          this.success(plural + $localize` closed`);
+        }
+        if (refresh) {
+          refresh.next();
+        }
       }
     });
     this.subscriptions.add(closeSessionSubscription);
 
     const cancelSessionSubscription = this.cancelSession$.pipe(
-      switchMap(sessions => combineLatest(
-        sessions.map(session => 
-          this.grpcService.cancel$(session.sessionId).pipe(
-            catchError(error => this.handleError(error, $localize`An error occured while cancelling session ` + session.sessionId))
-          )
-        )
-      ))
+      switchMap(sessions => {
+        if (sessions.length !== 0) {
+          return combineLatest(
+            sessions.map(session => 
+              this.grpcService.cancel$(session.sessionId).pipe(
+                catchError(error => this.handleError(error, $localize`An error occurred while cancelling session ` + session.sessionId))
+              )
+            )
+          );
+        }
+        return [];
+      })
     ).subscribe(result => {
-      const success = result.reduce((acc, session) => acc && session !== null, true);
-      if (success) {
-        const plural = result.length > 1 ? $localize`Sessions` : $localize`Session`;
-        this.success(plural + $localize` cancelled`);
-      }
-      if (refresh) {
-        refresh.next();
+      if (result.length !== 0) {
+        const success = result.reduce((acc, session) => acc && session !== null, true);
+        if (success) {
+          const plural = result.length > 1 ? $localize`Sessions` : $localize`Session`;
+          this.success(plural + $localize` cancelled`);
+        }
+        if (refresh) {
+          refresh.next();
+        }
       }
     });
     this.subscriptions.add(cancelSessionSubscription);
 
     const purgeSessionSubscription = this.purgeSession$.pipe(
-      switchMap(sessions => combineLatest(
-        sessions.map(session => 
-          this.grpcService.purge$(session.sessionId).pipe(
-            catchError(error => this.handleError(error, $localize`An error occured while purging session ` + session.sessionId))
-          )
-        )
-      ))
+      switchMap(sessions => {
+        if (sessions.length !== 0) {
+          return combineLatest(
+            sessions.map(session => 
+              this.grpcService.purge$(session.sessionId).pipe(
+                catchError(error => this.handleError(error, $localize`An error occurred while purging session ` + session.sessionId))
+              )
+            )
+          );
+        }
+        return [];
+      })
     ).subscribe(result => {
-      const success = result.reduce((acc, session) => acc && session !== null, true);
-      if (success) {
-        const plural = result.length > 1 ? $localize`Sessions` : $localize`Session`;
-        this.success(plural + $localize` purged`);
-      }
-      if (refresh) {
-        refresh.next();
+      if (result.length !== 0) {
+        const success = result.reduce((acc, session) => acc && session !== null, true);
+        if (success) {
+          const plural = result.length > 1 ? $localize`Sessions` : $localize`Session`;
+          this.success(plural + $localize` purged`);
+        }
+        if (refresh) {
+          refresh.next();
+        }
       }
     });
     this.subscriptions.add(purgeSessionSubscription);
 
     const resumeSessionSubscription = this.resumeSession$.pipe(
-      switchMap(sessions => combineLatest(
-        sessions.map(session => 
-          this.grpcService.resume$(session.sessionId).pipe(
-            catchError(error => this.handleError(error, $localize`An error occured while resuming session ` + session.sessionId))
-          )
-        )
-      ))
+      switchMap(sessions => {
+        if (sessions.length !== 0) {
+          return combineLatest(
+            sessions.map(session => 
+              this.grpcService.resume$(session.sessionId).pipe(
+                catchError(error => this.handleError(error, $localize`An error occurred while resuming session ` + session.sessionId))
+              )
+            )
+          );
+        }
+        return [];
+      })
     ).subscribe(result => {
-      const success = result.reduce((acc, session) => acc && session !== null, true);
-      if (success) {
-        const plural = result.length > 1 ? $localize`Sessions` : $localize`Session`;
-        this.success(plural + $localize` resumed`);
-      }
-      if (refresh) {
-        refresh.next();
+      if (result.length !== 0) {
+        const success = result.reduce((acc, session) => acc && session !== null, true);
+        if (success) {
+          const plural = result.length > 1 ? $localize`Sessions` : $localize`Session`;
+          this.success(plural + $localize` resumed`);
+        }
+        if (refresh) {
+          refresh.next();
+        }
       }
     });
     this.subscriptions.add(resumeSessionSubscription);
 
     const pauseSessionSubscription = this.pauseSession$.pipe(
-      switchMap(sessions => combineLatest(
-        sessions.map(session => 
-          this.grpcService.pause$(session.sessionId).pipe(
-            catchError(error => this.handleError(error, $localize`An error ocured while pausing session ` + session.sessionId))
-          )
-        )
-      ))
+      switchMap(sessions => {
+        if (sessions.length !== 0) {
+          return combineLatest(
+            sessions.map(session => 
+              this.grpcService.pause$(session.sessionId).pipe(
+                catchError(error => this.handleError(error, $localize`An error occurred while pausing session ` + session.sessionId))
+              )
+            )
+          );
+        }
+        return [];
+      })
     ).subscribe(result => {
-      const success = result.reduce((acc, session) => acc && session !== null, true);
-      if (success) {
-        const plural = result.length > 1 ? $localize`Sessions` : $localize`Session`;
-        this.success(plural + $localize` paused`);
-      }
-      if (refresh) {
-        refresh.next();
+      if (result.length !== 0) {
+        const success = result.reduce((acc, session) => acc && session !== null, true);
+        if (success) {
+          const plural = result.length > 1 ? $localize`Sessions` : $localize`Session`;
+          this.success(plural + $localize` paused`);
+        }
+        if (refresh) {
+          refresh.next();
+        }
       }
     });
     this.subscriptions.add(pauseSessionSubscription);

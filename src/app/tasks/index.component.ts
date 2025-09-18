@@ -47,7 +47,6 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
-    MatIconModule,
     MatSnackBarModule,
     TasksTableComponent,
   ],

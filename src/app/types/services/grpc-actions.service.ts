@@ -63,7 +63,7 @@ export abstract class GrpcActionsService<T extends DataRaw, S extends Status, F 
    * @returns 
    */
   protected handleError(error: GrpcStatusEvent, customMessage?: string) {
-    this.error(customMessage ?? $localize`An error occured.`);
+    this.error(customMessage ?? $localize`An error occurred.`);
     console.error(error);
     return of(null);
   }
