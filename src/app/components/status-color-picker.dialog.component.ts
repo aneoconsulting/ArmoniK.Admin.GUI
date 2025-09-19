@@ -66,7 +66,7 @@ export class StatusColorPickerDialogComponent<S extends Status> {
       this.clipboard.copy(value.replace('#', ''));
       this.notificationService.success($localize`Color copied !`);
     } else {
-      this.notificationService.error($localize`An error occured`);
+      this.notificationService.error($localize`An error occurred`);
     }
   }
 
