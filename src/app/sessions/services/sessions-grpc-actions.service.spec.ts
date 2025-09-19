@@ -108,7 +108,7 @@ describe('SessionsGrpcActionsService', () => {
       mockGrpcService.pause$.mockReturnValueOnce(throwError(() => new Error()));
       action.click([session1]);
       expect(consoleErrorSpy).toHaveBeenCalled();
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error ocured while pausing session ' + session1.sessionId);
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred while pausing session ' + session1.sessionId);
     });
   });
 
