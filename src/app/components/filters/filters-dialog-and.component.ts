@@ -10,15 +10,7 @@ import { FiltersDialogFilterFieldComponent } from './filters-dialog-filter-field
 @Component({
   selector: 'app-filters-dialog-and',
   templateUrl: './filters-dialog-and.component.html',
-  styles: [`
-:host {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
-  gap: 1rem;
-}
-  `],
+  styleUrl: 'filters-dialog-and.component.css',
   imports: [
     FiltersDialogFilterFieldComponent,
     MatButtonModule,

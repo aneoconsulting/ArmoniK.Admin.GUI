@@ -4,17 +4,10 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'app-json',
   templateUrl: 'json.component.html',
+  styleUrl: 'json.component.css',
   imports: [
     JsonPipe
   ],
-  styles: [`
-  section {
-    margin-left: 1rem;
-  }
-  p {
-    margin: 0;
-  }
-    `]
 })
 export class JsonComponent {
   private _data: object;

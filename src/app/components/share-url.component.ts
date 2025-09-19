@@ -8,8 +8,6 @@ import { IconsService } from '@services/icons.service';
 @Component({
   selector: 'app-share-url',
   templateUrl: 'share-url.component.html',
-  styles: [`
-  `],
   imports: [
     ClipboardModule,
     MatIconModule,

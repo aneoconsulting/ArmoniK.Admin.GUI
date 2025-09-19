@@ -11,9 +11,6 @@ import { StorageService } from '@services/storage.service';
 @Component({
   selector: 'app-theme-selector',
   templateUrl: './theme-selector.component.html',
-  styles: [`
-
-  `],
   providers: [],
   imports: [
     MatButtonModule,

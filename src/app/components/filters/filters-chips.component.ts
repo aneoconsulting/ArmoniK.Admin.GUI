@@ -7,26 +7,7 @@ import { UtilsService } from '@services/utils.service';
 @Component({
   selector: 'app-filters-chips',
   templateUrl: './filters-chips.component.html',
-  styles: [`
-.text {
-  font-size: 1rem;
-  font-weight: 400;
-
-  margin-top: auto;
-  margin-bottom: auto;
-
-  margin-left: 8px;
-}
-
-.mat-mdc-chip .mat-mdc-chip-action {
-  cursor: pointer;
-}
-
-.mat-mdc-standard-chip:hover {
-  opacity: 0.8;
-  transition: opacity 0.75s ease-in-out;
-}
-  `],
+  styleUrl: 'filters-chips.component.css',
   imports: [
     MatChipsModule,
   ],

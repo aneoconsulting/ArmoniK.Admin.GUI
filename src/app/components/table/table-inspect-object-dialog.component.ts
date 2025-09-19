@@ -11,8 +11,6 @@ export interface TableInspectObjectDialogData {
 @Component({
   selector: 'app-table-inspect-object-dialog',
   templateUrl: './table-inspect-object-dialog.component.html',
-  styles: [`
-  `],
   imports: [
     ShowCardContentComponent,
     MatDialogModule,

@@ -10,32 +10,7 @@ import { FiltersDialogAndComponent } from './filters-dialog-and.component';
 @Component({
   selector: 'app-filters-dialog-or',
   templateUrl: './filters-dialog-or.component.html',
-  styles: [`
-:host {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-}
-
-span {
-  padding-top: 1rem;
-  min-width: 3rem;
-  text-align: end;
-}
-
-.filters {
-  background-color: #f5f5f5;
-  border: 1px solid #e0e0e0;
-  border-radius: 0.5rem;
-  padding: 1rem;
-}
-
-.filters-and {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-  `],
+  styleUrl: 'filters-dialog-or.component.css',
   imports: [
     FiltersDialogAndComponent,
     MatButtonModule,

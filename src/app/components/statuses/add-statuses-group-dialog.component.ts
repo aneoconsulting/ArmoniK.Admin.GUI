@@ -6,8 +6,6 @@ import { AddStatusGroupDialogData, TasksStatusesGroup } from '../../dashboard/ty
 @Component({
   selector: 'app-add-statuses-group-dialog',
   templateUrl: 'add-statuses-group-dialog.component.html',
-  styles: [`
-  `],
   providers: [],
   imports: [
     FormStatusesGroupComponent,

@@ -34,27 +34,7 @@ import { StatusesGroupCardComponent } from '../statuses-group-card.component';
 @Component({
   selector: 'app-dashboard-task-status-line',
   templateUrl: './task-by-status-line.component.html',
-  styles: [`
-mat-toolbar-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.groups {
-  margin-top: 1rem;
-
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 1rem;
-}
-
-section {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-    `],
+  styleUrl: 'task-by-status-line.component.css',
   providers: [
     ShareUrlService,
     QueryParamsService,

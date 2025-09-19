@@ -11,11 +11,7 @@ import { SpinnerComponent } from './spinner.component';
 @Component({
   selector: 'app-view-tasks-by-status',
   templateUrl: 'view-tasks-by-status.component.html',
-  styles: [`
-.mdc-button {
-  min-width: 0;
-}
-    `],
+  styleUrl: 'view-tasks-by-status.component.css',
   imports: [
     RouterModule,
     SpinnerComponent,
