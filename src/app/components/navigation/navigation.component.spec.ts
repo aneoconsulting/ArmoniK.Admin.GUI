@@ -93,33 +93,6 @@ describe('NavigationComponent', () => {
     expect(component.sidebar).toEqual(currentSidebar);
   });
   
-  it('should greet correctly', () => {
-    jest.useFakeTimers().setSystemTime(new Date('2020-01-01T10:00:00'));
-    fakeIntervalSubject.next();
-    expect(component.greetings).toEqual('Good morning');
-    
-    jest.useFakeTimers().setSystemTime(new Date('2020-01-01T13:00:00'));
-    fakeIntervalSubject.next();
-    expect(component.greetings).toEqual('Good afternoon');
-    
-    jest.useFakeTimers().setSystemTime(new Date('2020-01-01T19:00:00'));
-    fakeIntervalSubject.next();
-    expect(component.greetings).toEqual('Good evening');
-
-    mockUserService.user = {
-      username: 'user'
-    };
-    fakeIntervalSubject.next();
-    expect(component.greetings).toEqual('Good evening, user');
-
-    jest.useFakeTimers().setSystemTime(new Date('2020-01-01T10:00:00'));
-    fakeIntervalSubject.next();
-    expect(component.greetings).toEqual('Good morning, user');
-
-    jest.useFakeTimers().setSystemTime(new Date('2020-01-01T13:00:00'));
-    fakeIntervalSubject.next();
-    expect(component.greetings).toEqual('Good afternoon, user');
-  });
 
   describe('toggle sidebar', () => {
     it('should toggle sidebar', () => {

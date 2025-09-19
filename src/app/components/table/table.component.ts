@@ -15,16 +15,15 @@ import { TableContainerComponent } from '@components/table-container.component';
 import { TableActionsComponent } from './table-actions.component';
 import { TableCellComponent } from './table-cell.component';
 import { TableColumnHeaderComponent } from './table-column-header.component';
-import { TableEmptyDataComponent } from './table-empty-data.component';
 
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
+  styleUrl: 'table.component.css',
   imports: [
     TableColumnHeaderComponent,
     TableCellComponent,
     MatPaginatorModule,
-    TableEmptyDataComponent,
     DragDropModule,
     MatTableModule,
     MatSortModule,
