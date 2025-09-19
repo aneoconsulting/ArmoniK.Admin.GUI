@@ -44,15 +44,9 @@ describe('IndexComponent', () => {
     error: jest.fn(),
   };
 
-  const mockSideBar: Sidebar[] = ['profile', 'dashboard', 'sessions', 'tasks'];
+  const mockSideBar: Sidebar[] = ['dashboard', 'sessions', 'tasks'];
 
   const mockSidebarItems: SidebarItem[] = [
-    {
-      type: 'link',
-      id: 'profile',
-      display: $localize`Profile`,
-      route: '/profile',
-    },
     {
       type: 'link',
       id: 'dashboard',
@@ -193,7 +187,7 @@ describe('IndexComponent', () => {
 
   it('should remove an item of the sidebar according to its index', () => {
     component.onRemoveSidebarItem(0);
-    expect(component.sidebar).toEqual(['dashboard', 'sessions', 'tasks']);
+    expect(component.sidebar).toEqual(['sessions', 'tasks']);
   });
 
   it('should add a sidebar item at the end of the set', () => {
@@ -446,7 +440,7 @@ describe('IndexComponent', () => {
       currentIndex: 1
     } as CdkDragDrop<SidebarItem[]>;
     component.drop(event);
-    expect(component.sidebar).toEqual(['dashboard', 'profile', 'sessions', 'tasks']);
+    expect(component.sidebar).toEqual(['sessions', 'dashboard', 'tasks']);
   });
 
   it('should retrieve the config file name', () => {
