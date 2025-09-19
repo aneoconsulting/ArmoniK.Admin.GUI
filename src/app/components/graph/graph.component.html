@@ -1,0 +1,39 @@
+<mat-card appearance="outlined">
+  <mat-card-content>
+    <section>
+      <h2>
+        <span i18n>Session:</span>
+        {{ sessionId }}
+      </h2>
+      <button mat-icon-button (click)="copySessionId()" i18n-matToolTip matTooltip="Copy the session Id">
+        <mat-icon [fontIcon]="getIcon('copy')" />
+      </button>
+    </section>
+    <section>
+      <a mat-flat-button color="primary" routerLink="/sessions">
+        <span i18n>Back to Sessions List</span> 
+      </a>
+      <a mat-flat-button color="primary" [routerLink]="'/sessions/' + sessionId">
+        <span i18n>See Session</span> 
+      </a>
+      <button mat-flat-button color="accent" (click)="redraw()">
+        <mat-icon>{{ getIcon('refresh') }}</mat-icon>
+        <span i18n-matToolTip matTooltip="Use this button in case the graph is not readable" i18n>Redraw</span>
+      </button>
+    </section>
+  </mat-card-content>
+  <mat-card-actions>
+    <app-autocomplete [options]="nodesIds" [label]="highlightLabel" (valueChange)="highlightNodes($event)" />
+    <mat-checkbox (change)="toggleHighlightParentNodes($event.checked)" [checked]="highlightParentNodes" i18n>
+      Highlight parent nodes
+    </mat-checkbox>
+    <mat-checkbox (change)="toggleHighlightChildrenNodes($event.checked)" [checked]="highlightChildrenNodes" i18n>
+      Highlight children nodes
+    </mat-checkbox>
+    <mat-checkbox (change)="setParticles($event.checked)" i18n>
+      Display Particles
+    </mat-checkbox>
+  </mat-card-actions>
+</mat-card>
+<app-graph-legend [links]="colorMap" />
+<div class="graph" #graph (window:resize)="onResize($event)"></div>
