@@ -85,8 +85,8 @@ mat-form-field {
 }
 
 .custom-file-upload {
-  border: 1px solid light-dark(mat.get-theme-color($theme, primary, 40), mat.get-theme-color($theme, primary, 90));
-  color: light-dark(mat.get-theme-color($theme, primary, 40), mat.get-theme-color($theme, primary, 90));
+  border: 1px solid var(--armonik-file-upload-color);
+  color: var(--armonik-file-upload-color);
   border-radius: 0.4em;
   display: flex;
   justify-content: space-between;
@@ -101,5 +101,5 @@ mat-form-field {
 }
 
 .custom-file-upload:hover {
-  background-color: light-dark(mat.get-theme-color($theme, neutral-variant, 90), mat.get-theme-color($theme, neutral-variant, 20));
+  background-color: var(--armonik-file-background);
 }

@@ -22,7 +22,7 @@ mat-card-title {
 mat-toolbar {
   @include flex-row(1rem);
   padding: 1rem !important;
-  background-color: light-dark(mat.get-theme-color(var.$theme, neutral-variant, 90), mat.get-theme-color(var.$theme, primary, 50)) !important;
+  background-color: var(--armonik-container-background) !important;
   border-radius: 1rem;
   margin-bottom: 0.25rem !important;
 }
@@ -42,7 +42,7 @@ mat-form-field {
 
 mat-sidenav {
   padding: 0.25rem;
-  background-color: light-dark(mat.get-theme-color(var.$theme, neutral-variant, 90), mat.get-theme-color(var.$theme, primary, 50)) !important;
+  background-color: var(--armonik-container-background) !important;
 }
 
 mat-nav-list > mat-divider {

@@ -11,10 +11,10 @@ h1, h2, h3, strong {
 
 .header-toolbar {
   border-radius: 0 !important;
-  background-color: mat.get-theme-color(var.$theme, primary, 35) !important;
-  color: mat.get-theme-color(var.$theme, primary, 100) !important;
+  background-color: var(--armonik-header-background) !important;
+  color: var(--armonik-header-color) !important;
 }
 
 table {
-  background-color: light-dark(mat.get-theme-color(var.$theme, neutral, 96), mat.get-theme-color(var.$theme, neutral, 10)) !important;
+  background-color: var(--armonik-table-background) !important;
 }

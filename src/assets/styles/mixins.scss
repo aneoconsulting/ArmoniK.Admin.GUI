@@ -1,3 +1,8 @@
+@use './variables.scss' as var;
+@use '@angular/material' as mat;
+@use '../themes/azure-blue.scss' as light-blue;
+@use '../themes/dark-green.scss' as dark-green;
+
 @mixin flex-row($gap: 0, $align: center, $justify: space-between, $wrap: wrap) {
   display: flex !important;
   flex-direction: row !important;
@@ -15,4 +20,42 @@
   height: fit-content;
 
   gap: $gap !important;
+}
+
+@mixin apply-blue-theme() {
+  @include mat.theme((
+    color: (
+      primary: light-blue.$primary-palette,
+      tertiary: light-blue.$tertiary-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+  --armonik-container-background: light-dark(#{mat.get-theme-color(var.$light-blue, neutral-variant, 90)}, #{mat.get-theme-color(var.$light-blue, primary, 50)});
+  --armonik-container-background-light: light-dark(#{mat.get-theme-color(var.$light-blue, neutral-variant, 90)}, #{mat.get-theme-color(var.$light-blue, primary, 35)});
+  --armonik-table-background: light-dark(#{mat.get-theme-color(var.$light-blue, neutral, 96)}, #{mat.get-theme-color(var.$light-blue, neutral, 10)});
+  --armonik-header-background: #{mat.get-theme-color(var.$light-blue, primary, 35)};
+  --armonik-header-color: #{mat.get-theme-color(var.$light-blue, primary, 90)};
+  --armonik-navbar-selected: light-dark(mat.get-theme-color(var.$light-blue, neutral-variant, 80), mat.get-theme-color(var.$light-blue, primary, 60));
+  --armonik-file-upload-color: light-dark(#{mat.get-theme-color(var.$light-blue, primary, 40)}, #{mat.get-theme-color(var.$light-blue, primary, 90)});
+  --armonik-file-background: light-dark(#{mat.get-theme-color(var.$light-blue, neutral-variant, 90)}, #{mat.get-theme-color(var.$light-blue, neutral-variant, 20)});
+}
+
+@mixin apply-green-theme() {
+  @include mat.theme((
+    color: (
+      primary: dark-green.$primary-palette,
+      tertiary: dark-green.$tertiary-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+  --armonik-container-background: light-dark(#{mat.get-theme-color(var.$dark-green, neutral-variant, 90)}, #{mat.get-theme-color(var.$dark-green, primary, 50)});
+  --armonik-container-background-light: light-dark(#{mat.get-theme-color(var.$dark-green, neutral-variant, 90)}, #{mat.get-theme-color(var.$dark-green, primary, 35)});
+  --armonik-table-background: light-dark(#{mat.get-theme-color(var.$dark-green, neutral, 96)}, #{mat.get-theme-color(var.$dark-green, neutral, 10)});
+  --armonik-header-background: #{mat.get-theme-color(var.$dark-green, primary, 35)};
+  --armonik-header-color: #{mat.get-theme-color(var.$dark-green, primary, 90)};
+  --armonik-navbar-selected: light-dark(mat.get-theme-color(var.$dark-green, neutral-variant, 80), mat.get-theme-color(var.$dark-green, primary, 60));
+  --armonik-file-upload-color: light-dark(#{mat.get-theme-color(var.$dark-green, primary, 40)}, #{mat.get-theme-color(var.$dark-green, primary, 90)});
+  --armonik-file-background: light-dark(#{mat.get-theme-color(var.$dark-green, neutral-variant, 90)}, #{mat.get-theme-color(var.$dark-green, neutral-variant, 20)});
 }

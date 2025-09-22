@@ -1,21 +1,20 @@
 @use 'assets/styles' as *;
-@use '@angular/material' as mat;
-@use 'assets/themes' as theme; // location of generated file
 
 html {
   color-scheme: light dark;
-  @include mat.theme((
-    color: (
-      primary: theme.$primary-palette,
-      tertiary: theme.$tertiary-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
+  @include apply-green-theme();
 }
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+body.light-blue {
+  @include apply-blue-theme();
+}
+
+body.dark-green {
+  @include apply-green-theme();
+}
 
 .sr-only {
   position: absolute;

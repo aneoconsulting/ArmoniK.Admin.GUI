@@ -1,6 +1,6 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, RendererFactory2, Renderer2 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
@@ -60,9 +60,13 @@ export class IndexComponent implements OnInit {
   private readonly httpClient = inject(HttpClient);
   readonly filtersCacheService = inject(FiltersCacheService);
 
+  private readonly rendererFactory = inject(RendererFactory2);
+  private renderer: Renderer2;
+
   ngOnInit(): void {
     this.keys = this.sortKeys(this.storageService.restoreKeys());
     this.sidebar = this.navigationService.restoreSidebar();
+    this.renderer = this.rendererFactory.createRenderer(null, null);
   }
 
   getIcon(name: string | null): string {
@@ -253,5 +257,15 @@ export class IndexComponent implements OnInit {
 
   clearFilterCache() {
     this.filtersCacheService.clear();
+  }
+
+  currentTheme = 'dark-green';
+  toggleTheme() {
+    const themes = ['light-blue', 'dark-green'];
+    themes.forEach(theme => this.renderer.removeClass(document.body, theme));
+    console.log(document.adoptedStyleSheets);
+
+    this.currentTheme = this.currentTheme === 'dark-green' ? 'light-blue' : 'dark-green';
+    this.renderer.addClass(document.body, this.currentTheme);
   }
 }

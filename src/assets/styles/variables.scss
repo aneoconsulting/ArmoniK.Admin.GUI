@@ -1,13 +1,24 @@
 @use '@angular/material' as mat;
-@use '../themes' as theme;
+@use '../themes/azure-blue.scss' as light-blue;
+@use '../themes/dark-green.scss' as dark-green;
 
-$theme: mat.define-theme(
+$dark-green: mat.define-theme(
   (
     color: (
-      theme-type: light,
-      primary: theme.$primary-palette,
-      tertiary: theme.$tertiary-palette,
-    ),
+      theme-type: color-scheme,
+      primary: dark-green.$primary-palette,
+      tertiary: dark-green.$tertiary-palette,
+    )
+  )
+);
+
+$light-blue: mat.define-theme(
+  (
+    color: (
+      theme-type: color-scheme,
+      primary: light-blue.$primary-palette,
+      tertiary: light-blue.$tertiary-palette,
+    )
   )
 );
 

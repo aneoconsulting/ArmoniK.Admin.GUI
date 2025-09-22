@@ -22,7 +22,7 @@ mat-sidenav-container {
 }
 
 .navbar-item-selected {
-  background-color: light-dark(mat.get-theme-color($theme, neutral-variant, 80), mat.get-theme-color($theme, primary, 60));
+  background-color: var(--armonik-navbar-selected);
 }
 
 .spacer {
@@ -44,5 +44,5 @@ main {
 }
 
 .mdc-icon-button > .mat-icon {
-  color: mat.get-theme-color($theme, primary, 90) !important;
+  color: var(--armonik-header-color) !important;
 }

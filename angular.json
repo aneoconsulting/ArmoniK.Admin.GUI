@@ -55,7 +55,7 @@
                 "input": "src/assets/themes/dark-green.scss"
               },
               {
-                "inject": false,
+                "inject": true,
                 "input": "src/assets/themes/azure-blue.scss"
               },
               "src/styles.scss",

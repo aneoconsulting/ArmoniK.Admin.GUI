@@ -29,7 +29,7 @@ button.external-services {
   margin-bottom: 0;
   
   mat-icon, span {
-    color: mat.get-theme-color($theme, primary, 90) !important;
+    color: var(--armonik-header-color) !important;
   }
 }
 

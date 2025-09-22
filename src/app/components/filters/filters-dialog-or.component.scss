@@ -12,8 +12,8 @@ span {
 }
 
 .filters {
-  background-color: light-dark(mat.get-theme-color($theme, neutral-variant, 90), mat.get-theme-color($theme, primary, 35)) !important;
-  border: 1px solid #e0e0e0;
+  background-color: var(--armonik-container-background-light) !important;
+  border: 1px solid var(--armonik-container-background);
   border-radius: 0.5rem;
   padding: 1rem;
 }

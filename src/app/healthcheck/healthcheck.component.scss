@@ -11,6 +11,6 @@
 
 .open-healthcheck {
   mat-icon {
-    color: mat.get-theme-color($theme, primary, 90) !important;
+    color: var(--armonik-header-color) !important;
   }
 }
