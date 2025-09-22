@@ -41,6 +41,7 @@
   --armonik-navbar-selected: light-dark(mat.get-theme-color(var.$light-blue, neutral-variant, 80), mat.get-theme-color(var.$light-blue, primary, 60));
   --armonik-file-upload-color: light-dark(#{mat.get-theme-color(var.$light-blue, primary, 40)}, #{mat.get-theme-color(var.$light-blue, primary, 90)});
   --armonik-file-background: light-dark(#{mat.get-theme-color(var.$light-blue, neutral-variant, 90)}, #{mat.get-theme-color(var.$light-blue, neutral-variant, 20)});
+  --armonik-error: light-dark(#{mat.get-theme-color(var.$light-blue, error, 50)}, #{mat.get-theme-color(var.$light-blue, error, 30)});
 }
 
 @mixin apply-green-theme() {
@@ -60,6 +61,7 @@
   --armonik-navbar-selected: light-dark(mat.get-theme-color(var.$dark-green, neutral-variant, 80), mat.get-theme-color(var.$dark-green, primary, 60));
   --armonik-file-upload-color: light-dark(#{mat.get-theme-color(var.$dark-green, primary, 40)}, #{mat.get-theme-color(var.$dark-green, primary, 90)});
   --armonik-file-background: light-dark(#{mat.get-theme-color(var.$dark-green, neutral-variant, 90)}, #{mat.get-theme-color(var.$dark-green, neutral-variant, 20)});
+  --armonik-error: light-dark(#{mat.get-theme-color(var.$dark-green, error, 50)}, #{mat.get-theme-color(var.$dark-green, error, 30)});
 }
 
 @mixin apply-pink-theme() {
@@ -79,6 +81,7 @@
   --armonik-navbar-selected: light-dark(mat.get-theme-color(var.$light-pink, neutral-variant, 80), mat.get-theme-color(var.$light-pink, primary, 60));
   --armonik-file-upload-color: light-dark(#{mat.get-theme-color(var.$light-pink, primary, 40)}, #{mat.get-theme-color(var.$light-pink, primary, 90)});
   --armonik-file-background: light-dark(#{mat.get-theme-color(var.$light-pink, neutral-variant, 90)}, #{mat.get-theme-color(var.$light-pink, neutral-variant, 20)});
+  --armonik-error: light-dark(#{mat.get-theme-color(var.$light-pink, error, 50)}, #{mat.get-theme-color(var.$light-pink, error, 30)});
 }
 
 @mixin apply-purple-theme() {
@@ -98,4 +101,5 @@
   --armonik-navbar-selected: light-dark(mat.get-theme-color(var.$dark-purple, neutral-variant, 80), mat.get-theme-color(var.$dark-purple, primary, 60));
   --armonik-file-upload-color: light-dark(#{mat.get-theme-color(var.$dark-purple, primary, 40)}, #{mat.get-theme-color(var.$dark-purple, primary, 90)});
   --armonik-file-background: light-dark(#{mat.get-theme-color(var.$dark-purple, neutral-variant, 90)}, #{mat.get-theme-color(var.$dark-purple, neutral-variant, 20)});
+  --armonik-error: light-dark(#{mat.get-theme-color(var.$dark-purple, error, 50)}, #{mat.get-theme-color(var.$dark-purple, error, 30)});
 }

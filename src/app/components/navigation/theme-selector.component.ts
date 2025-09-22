@@ -10,7 +10,7 @@ import { ThemeService } from '@services/theme.service';
 @Component({
   selector: 'app-theme-selector',
   templateUrl: './theme-selector.component.html',
-  styleUrl: './navigation.component.scss',
+  styleUrl: 'theme-selector.component.scss',
   providers: [],
   imports: [
     MatButtonModule,
@@ -24,13 +24,11 @@ export class ThemeSelectorComponent {
   private readonly iconsService = inject(IconsService);
 
   readonly availableThemes: { name: Theme, displayName: string }[] = [
-    { name: 'dark-green', displayName: 'Dark Green' },
-    { name: 'light-blue', displayName: 'Light Blue' },
-    { name: 'light-pink', displayName: 'Light Pink' },
-    { name: 'dark-purple', displayName: 'Dark Purple' },
+    { name: 'light-blue', displayName: $localize`Light Blue` },
+    { name: 'light-pink', displayName: $localize`Light Pink` },
+    { name: 'dark-green', displayName: $localize`Dark Green` },
+    { name: 'dark-purple', displayName: $localize`Dark Purple` },
   ];
-
-  themeSelectionToolTip = $localize`Select a theme`;
 
   getIcon(iconName: string) {
     return this.iconsService.getIcon(iconName);
