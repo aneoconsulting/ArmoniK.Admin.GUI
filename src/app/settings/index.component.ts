@@ -166,6 +166,7 @@ export class IndexComponent implements OnInit {
   isAddButtonDisabled = computed(() => !this.userConnected());
 
   ngOnInit(): void {
+    this.keys = this.storageService.restoreKeys();
     this.sidebar = Array.from(this.navigationService.restoreSidebar());
     this.getServerConfig();
     this.updateUserConnectionStatus();
