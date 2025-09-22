@@ -10,9 +10,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule} from '@angular/material/snack-bar';
+import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
 import { Key } from '@app/types/config';
 import { Sidebar, SidebarItem } from '@app/types/navigation';
-import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
@@ -163,7 +163,7 @@ export class IndexComponent implements OnInit {
   readonly filtersCacheService = inject(FiltersCacheService);
   private readonly userConnectedGuard = inject(UserConnectedGuard);
   private userConnected = signal(this.userConnectedGuard.canActivate());
-    isAddButtonDisabled = computed(() => !this.userConnected());
+  isAddButtonDisabled = computed(() => !this.userConnected());
 
   ngOnInit(): void {
     this.sidebar = Array.from(this.navigationService.restoreSidebar());
