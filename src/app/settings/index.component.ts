@@ -1,6 +1,6 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, computed, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule} from '@angular/material/snack-bar';
 import { Key } from '@app/types/config';
 import { Sidebar, SidebarItem } from '@app/types/navigation';
+import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
@@ -160,10 +161,18 @@ export class IndexComponent implements OnInit {
   private readonly storageService = inject(StorageService);
   private readonly httpClient = inject(HttpClient);
   readonly filtersCacheService = inject(FiltersCacheService);
+  private readonly userConnectedGuard = inject(UserConnectedGuard);
+  private userConnected = signal(this.userConnectedGuard.canActivate());
+    isAddButtonDisabled = computed(() => !this.userConnected());
 
   ngOnInit(): void {
-    this.keys = this.sortKeys(this.storageService.restoreKeys());
-    this.sidebar = this.navigationService.restoreSidebar();
+    this.sidebar = Array.from(this.navigationService.restoreSidebar());
+    this.getServerConfig();
+    this.updateUserConnectionStatus();
+  }
+
+  private updateUserConnectionStatus(): void {
+    this.userConnected.set(this.userConnectedGuard.canActivate());
   }
 
   getIcon(name: string | null): string {
@@ -197,7 +206,9 @@ export class IndexComponent implements OnInit {
   }
 
   onAddSidebarItem(): void {
-    this.sidebar.push('dashboard');
+    if (this.userConnectedGuard.canActivate()) {
+      this.sidebar.push('dashboard');
+    }
   }
 
   getSidebarItems(): { name: string, value: Sidebar }[] {
