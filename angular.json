@@ -55,8 +55,12 @@
                 "input": "src/assets/themes/dark-green.scss"
               },
               {
-                "inject": true,
-                "input": "src/assets/themes/azure-blue.scss"
+                "inject": false,
+                "input": "src/assets/themes/light-blue.scss"
+              },
+              {
+                "inject": false,
+                "input": "src/assets/themes/light-pink.scss"
               },
               "src/styles.scss",
               "src/themes.scss",

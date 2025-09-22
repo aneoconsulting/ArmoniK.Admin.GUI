@@ -14,7 +14,7 @@ import { Theme } from '@app/types/themes';
 
 @Injectable()
 export class DefaultConfigService {
-  readonly #defaultTheme: Theme = 'dark-green';
+  readonly #defaultTheme: Theme = 'light-blue';
   readonly #defaultExternalServices: ExternalService[] = [];
 
   readonly #defaultDashboardLines: CountLine[] = [

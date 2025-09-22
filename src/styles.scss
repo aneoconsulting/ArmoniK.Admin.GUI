@@ -2,7 +2,6 @@
 
 html {
   color-scheme: light dark;
-  @include apply-green-theme();
 }
 
 html, body { height: 100%; }
@@ -14,6 +13,14 @@ body.light-blue {
 
 body.dark-green {
   @include apply-green-theme();
+}
+
+body.light-pink {
+  @include apply-pink-theme();
+}
+
+body.dark-purple {
+  @include apply-purple-theme();
 }
 
 .sr-only {

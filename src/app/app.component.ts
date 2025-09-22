@@ -10,5 +10,4 @@ import { NavigationComponent } from '@components/navigation/navigation.component
   ],
   templateUrl: 'app.component.html',
 })
-export class AppComponent {
-}
+export class AppComponent {}
