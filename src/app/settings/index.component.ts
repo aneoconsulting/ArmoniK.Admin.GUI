@@ -1,6 +1,6 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, inject, computed, signal } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,7 +10,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule} from '@angular/material/snack-bar';
-import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
 import { Key } from '@app/types/config';
 import { Sidebar, SidebarItem } from '@app/types/navigation';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -161,19 +160,11 @@ export class IndexComponent implements OnInit {
   private readonly storageService = inject(StorageService);
   private readonly httpClient = inject(HttpClient);
   readonly filtersCacheService = inject(FiltersCacheService);
-  private readonly userConnectedGuard = inject(UserConnectedGuard);
-  private userConnected = signal(this.userConnectedGuard.canActivate());
-  isAddButtonDisabled = computed(() => !this.userConnected());
 
   ngOnInit(): void {
     this.keys = this.storageService.restoreKeys();
     this.sidebar = Array.from(this.navigationService.restoreSidebar());
     this.getServerConfig();
-    this.updateUserConnectionStatus();
-  }
-
-  private updateUserConnectionStatus(): void {
-    this.userConnected.set(this.userConnectedGuard.canActivate());
   }
 
   getIcon(name: string | null): string {
@@ -207,9 +198,7 @@ export class IndexComponent implements OnInit {
   }
 
   onAddSidebarItem(): void {
-    if (this.userConnectedGuard.canActivate()) {
-      this.sidebar.push('dashboard');
-    }
+    this.sidebar.push('dashboard');
   }
 
   getSidebarItems(): { name: string, value: Sidebar }[] {
