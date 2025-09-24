@@ -10,15 +10,7 @@ import { Subject, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-count-tasks-by-status',
-  template: `
-<app-view-tasks-by-status
-  [defaultQueryParams]="queryParams"
-  [loading]="loading"
-  [statusesGroups]="statusesGroups"
-  [statusesCount]="statusesCount()"
->
-</app-view-tasks-by-status>
-  `,
+  templateUrl: 'count-tasks-by-status.component.html',
   styles: [`
   `],
   providers: [

@@ -5,16 +5,7 @@ import { EditStatusGroupDialogData, TasksStatusesGroup } from '../../dashboard/t
 
 @Component({
   selector: 'app-edit-statuses-group-dialog',
-  template: `
-<h2 mat-dialog-title i18n="Dialog title">Edit a Group</h2>
-
-<app-form-statuses-group
-  [group]="group"
-  [statuses]="data.statuses"
-  (cancelChange)="onNoClick()"
-  (submitChange)="onSubmit($event)"
-/>
-  `,
+  templateUrl: 'edit-status-group-dialog.component.html',
   styles: [`
   `],
   providers: [],

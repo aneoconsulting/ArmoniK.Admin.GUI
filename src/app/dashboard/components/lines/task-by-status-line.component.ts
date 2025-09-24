@@ -12,8 +12,6 @@ import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
 import { EditNameLineData } from '@app/types/dialog';
 import { DataFilterService } from '@app/types/services/data-filter.service';
 import { StatusService } from '@app/types/status';
-import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
-import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { AutoRefreshButtonComponent } from '@components/auto-refresh-button.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { RefreshButtonComponent } from '@components/refresh-button.component';
@@ -37,8 +35,10 @@ import { StatusesGroupCardComponent } from '../statuses-group-card.component';
   selector: 'app-dashboard-task-status-line',
   templateUrl: './task-by-status-line.component.html',
   styles: [`
-app-actions-toolbar {
-  flex-grow: 1;
+mat-toolbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .groups {
@@ -47,6 +47,12 @@ app-actions-toolbar {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 1rem;
+}
+
+section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
     `],
   providers: [
@@ -71,10 +77,8 @@ app-actions-toolbar {
     }
   ],
   imports: [
-    ActionsToolbarComponent,
     RefreshButtonComponent,
     SpinnerComponent,
-    ActionsToolbarGroupComponent,
     AutoRefreshButtonComponent,
     FiltersToolbarComponent,
     MatToolbarModule,

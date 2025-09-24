@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,8 +16,7 @@ import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
-import { UserService } from '@services/user.service';
-import { Observable, Subscription, interval } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { ChangeLanguageButtonComponent } from './change-language-button.component';
 import { ExternalServicesComponent } from './external-services/external-services.component';
@@ -54,9 +53,6 @@ import { VersionsMenuComponent } from './version-menu/versions-menu.component';
   flex: 1 1 auto;
 }
 
-.greeting {
-  font-weight: normal;
-}
 
 .environment {
   background: white;
@@ -91,10 +87,9 @@ main {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NavigationComponent implements OnInit, OnDestroy {
+export class NavigationComponent implements OnInit {
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly navigationService = inject(NavigationService);
-  private readonly userService = inject(UserService);
   private readonly iconsService = inject(IconsService);
   private readonly environmentService = inject(EnvironmentService);
   private readonly userConnectedGuard = inject(UserConnectedGuard);
@@ -102,19 +97,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
   environment = this.environmentService.getEnvironment();
   settingsItem = $localize`Settings`;
 
-  checkGreetingsSubscription: Subscription;
-
-  private readonly _greetings = signal<string>('');
   private userConnected = signal(this.userConnectedGuard.canActivate());
   isProfileButtonDisabled = computed(() => !this.userConnected());
-
-  set greetings(value: string) {
-    this._greetings.set(value);
-  }
-
-  get greetings() {
-    return this._greetings();
-  }
 
   sidebar = this.navigationService.currentSidebar;
   sideBarOpened = true;
@@ -127,29 +111,11 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.sideBarOpened = this.navigationService.restoreSideBarOpened();
-    this.verifyGreetings();
-    this.checkGreetingsSubscription = interval(60000).subscribe(() => this.verifyGreetings());
     this.updateUserConnectionStatus();
-  }
-
-  ngOnDestroy(): void {
-    this.checkGreetingsSubscription.unsubscribe();
   }
 
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);
-  }
-
-  private verifyGreetings() {
-    const hour = new Date().getHours();
-    const username = this.userService.user ? this.userService.user.username : '';
-    if (hour <= 12) {
-      this.greetings = $localize`Good morning` + (username !== '' ? ', ' + username : '');
-    } else if (hour < 18) {
-      this.greetings = $localize`Good afternoon` + (username !== '' ? ', ' + username : '');
-    } else {
-      this.greetings = $localize`Good evening` + (username !== '' ? ', ' + username : '');
-    }
   }
 
   public updateUserConnectionStatus(): void {

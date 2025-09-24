@@ -1,10 +1,9 @@
-import { Component, Input, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { Filter, FiltersAnd, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
 import { DataFilterService } from '@app/types/services/data-filter.service';
 import { FiltersService } from '@services/filters.service';
 import { UtilsService } from '@services/utils.service';
-
 @Component({
   selector: 'app-filters-chips',
   templateUrl: './filters-chips.component.html',
@@ -17,6 +16,15 @@ import { UtilsService } from '@services/utils.service';
   margin-bottom: auto;
 
   margin-left: 8px;
+}
+
+.mat-mdc-chip .mat-mdc-chip-action {
+  cursor: pointer;
+}
+
+.mat-mdc-standard-chip:hover {
+  opacity: 0.8;
+  transition: opacity 0.75s ease-in-out;
 }
   `],
   imports: [
@@ -32,9 +40,15 @@ export class FiltersChipsComponent<F extends FiltersEnums, O extends FiltersOpti
   private readonly dataFiltersService = inject(DataFilterService);
 
   readonly filters = signal<string[]>([]);
-
+  
   @Input({ required: true }) set filtersAnd(entry: FiltersAnd<F, O>) {
     this.filters.set(entry.map(filter => this.toContent(filter)));
+  }
+
+  @Output() openFilters: EventEmitter<void> = new EventEmitter<void>();
+
+  openFiltersDialog(): void {
+    this.openFilters.emit();
   }
 
   private toContent(filter: Filter<F, O>): string {

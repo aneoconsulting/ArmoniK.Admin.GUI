@@ -15,7 +15,6 @@ import { Key } from '@app/types/config';
 import { Sidebar, SidebarItem } from '@app/types/navigation';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
-import { PageSectionComponent } from '@components/page-section.component';
 import { FiltersCacheService } from '@services/filters-cache.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
@@ -133,7 +132,6 @@ main {
   ],
   imports: [
     PageHeaderComponent,
-    PageSectionComponent,
     PageSectionHeaderComponent,
     MatIconModule,
     MatCheckboxModule,
