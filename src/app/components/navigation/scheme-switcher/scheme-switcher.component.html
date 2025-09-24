@@ -1,0 +1,11 @@
+<mat-button-toggle-group hideSingleSelectionIndicator>
+  <mat-button-toggle (click)="selectScheme('light dark')" [checked]="currentScheme === 'light dark'">
+    <mat-icon [fontIcon]="getIcon('automatic')" />
+  </mat-button-toggle>
+  <mat-button-toggle (click)="selectScheme('light')" [checked]="currentScheme === 'light'">
+    <mat-icon [fontIcon]="getIcon('light-mode')" />
+  </mat-button-toggle>
+  <mat-button-toggle (click)="selectScheme('dark')" [checked]="currentScheme === 'dark'">
+    <mat-icon [fontIcon]="getIcon('dark-mode')" />
+  </mat-button-toggle>
+</mat-button-toggle-group>

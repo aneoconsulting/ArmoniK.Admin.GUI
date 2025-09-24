@@ -19,6 +19,7 @@ import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { ChangeLanguageButtonComponent } from './change-language-button.component';
 import { ExternalServicesComponent } from './external-services/external-services.component';
+import { SchemeSwitcherComponent } from './scheme-switcher/scheme-switcher.component';
 import { ThemeSelectorComponent } from './theme-selector.component';
 import { VersionsMenuComponent } from './version-menu/versions-menu.component';
 
@@ -46,6 +47,7 @@ import { VersionsMenuComponent } from './version-menu/versions-menu.component';
     HealthCheckComponent,
     ExternalServicesComponent,
     VersionsMenuComponent,
+    SchemeSwitcherComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
