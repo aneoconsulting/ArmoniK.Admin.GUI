@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal, computed } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,6 +11,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { HealthCheckComponent } from '@app/healthcheck/healthcheck.component';
+import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
 import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
@@ -96,6 +97,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
   private readonly userService = inject(UserService);
   private readonly iconsService = inject(IconsService);
   private readonly environmentService = inject(EnvironmentService);
+  private readonly userConnectedGuard = inject(UserConnectedGuard);
 
   environment = this.environmentService.getEnvironment();
   settingsItem = $localize`Settings`;
@@ -103,6 +105,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
   checkGreetingsSubscription: Subscription;
 
   private readonly _greetings = signal<string>('');
+  private userConnected = signal(this.userConnectedGuard.canActivate());
+  isProfileButtonDisabled = computed(() => !this.userConnected());
 
   set greetings(value: string) {
     this._greetings.set(value);
@@ -125,6 +129,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
     this.sideBarOpened = this.navigationService.restoreSideBarOpened();
     this.verifyGreetings();
     this.checkGreetingsSubscription = interval(60000).subscribe(() => this.verifyGreetings());
+    this.updateUserConnectionStatus();
   }
 
   ngOnDestroy(): void {
@@ -145,6 +150,10 @@ export class NavigationComponent implements OnInit, OnDestroy {
     } else {
       this.greetings = $localize`Good evening` + (username !== '' ? ', ' + username : '');
     }
+  }
+
+  public updateUserConnectionStatus(): void {
+    this.userConnected.set(this.userConnectedGuard.canActivate());
   }
 
   toggleSideBar() {
