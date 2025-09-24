@@ -1,6 +1,7 @@
 import { Component, ElementRef, inject, OnInit } from '@angular/core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ColorScheme, isColorTheme } from '@app/types/themes';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
@@ -13,6 +14,7 @@ import { StorageService } from '@services/storage.service';
   imports: [
     MatButtonToggleModule,
     MatIconModule,
+    MatTooltipModule,
   ],
 })
 export class SchemeSwitcherComponent implements OnInit {
