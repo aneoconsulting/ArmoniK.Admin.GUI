@@ -16,7 +16,7 @@ import { TasksStatusesGroup } from '../types';
   templateUrl: './statuses-group-card.component.html',
   styles: [`
 mat-card {
-  height: 100%;
+  height: fit-content;
 }
 
 mat-card-title {
