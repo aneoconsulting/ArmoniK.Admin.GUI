@@ -160,9 +160,8 @@ export class IndexComponent implements OnInit {
   readonly filtersCacheService = inject(FiltersCacheService);
 
   ngOnInit(): void {
-    this.keys = this.storageService.restoreKeys();
-    this.sidebar = Array.from(this.navigationService.restoreSidebar());
-    this.getServerConfig();
+    this.keys = this.sortKeys(this.storageService.restoreKeys());
+    this.sidebar = this.navigationService.restoreSidebar();
   }
 
   getIcon(name: string | null): string {
