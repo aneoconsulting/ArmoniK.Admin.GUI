@@ -17,7 +17,7 @@ import { EditStatusesGroupDialogComponent } from './edit-status-group-dialog.com
 
 @Component({
   templateUrl: './manage-groups-dialog.component.html',
-  styleUrl: 'manage-groups-dialog.component.css',
+  styleUrl: 'manage-groups-dialog.component.scss',
   providers: [
     DefaultConfigService,
     StorageService,

@@ -10,11 +10,12 @@ import { ExportedDefaultConfig, ScopeConfig } from '@app/types/config';
 import { ExternalService } from '@app/types/external-service';
 import { Sidebar } from '@app/types/navigation';
 import { StatusLabelColor } from '@app/types/status';
-import { Theme } from '@app/types/themes';
+import { ColorScheme, Theme } from '@app/types/themes';
 
 @Injectable()
 export class DefaultConfigService {
-  readonly #defaultTheme: Theme = 'indigo-pink';
+  readonly #defaultTheme: Theme = 'light-blue';
+  readonly #defaultColorScheme: ColorScheme = 'light dark';
   readonly #defaultExternalServices: ExternalService[] = [];
 
   readonly #defaultDashboardLines: CountLine[] = [
@@ -56,7 +57,6 @@ export class DefaultConfigService {
   readonly #defaultSidebarOpened: boolean = true;
 
   readonly #defaultSidebar: Sidebar[] = [
-    'divider',
     'dashboard',
     'divider',
     'applications',
@@ -66,7 +66,6 @@ export class DefaultConfigService {
     'tasks',
     'results',
     'divider',
-    'divider'
   ];
 
   readonly #defaultApplications: ScopeConfig<ApplicationRaw, ApplicationRawEnumField> = {
@@ -352,6 +351,10 @@ export class DefaultConfigService {
     return structuredClone(this.#defaultTheme);
   }
 
+  get defaultColorScheme(): ColorScheme {
+    return structuredClone(this.#defaultColorScheme);
+  }
+
   get defaultExternalServices(): ExternalService[] {
     return structuredClone(this.#defaultExternalServices);
   }
@@ -413,6 +416,7 @@ export class DefaultConfigService {
     'navigation-sidebar': this.#defaultSidebar,
     'navigation-sidebar-opened': this.#defaultSidebarOpened,
     'navigation-theme': this.#defaultTheme,
+    'navigation-color-scheme': this.#defaultColorScheme,
     'navigation-external-services': this.#defaultExternalServices,
     'applications-tasks-by-status': this.#defaultTasksByStatus,
     'sessions-tasks-by-status': this.#defaultTasksByStatus,

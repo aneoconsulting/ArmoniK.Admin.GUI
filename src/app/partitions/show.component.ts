@@ -23,7 +23,7 @@ import { PartitionRaw } from './types';
 @Component({
   selector: 'app-partitions-show',
   templateUrl: 'show.component.html',
-  styleUrl: '../../inspections.css',
+  styleUrl: '../../inspections.scss',
   providers: [
     UtilsService,
     ShareUrlService,

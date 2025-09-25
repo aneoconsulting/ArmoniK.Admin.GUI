@@ -1,6 +1,6 @@
-<button mat-button [matMenuTriggerFor]="switchLanguage" i18n-matTooltip [disabled]="!data">
+<button mat-button class="open-healthcheck" [matMenuTriggerFor]="switchLanguage" i18n-matTooltip [disabled]="!data">
   <mat-icon matListItemIcon [fontIcon]="getIcon('healthcheck')" aria-hidden="true" />
-  <span class="health-color" [style]="{'color':getColor(globalStatus)}"
+  <span class="health-color" [style]="{'color':getColor(globalStatus)+' !important'}"
     [matTooltip]="getToolTip(globalStatus)">&#10687;</span>
 </button>
 <mat-menu #switchLanguage="matMenu">

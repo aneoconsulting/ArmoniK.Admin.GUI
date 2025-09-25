@@ -12,7 +12,7 @@ type Data = {
 @Component({
   selector: 'app-show-card-content',
   templateUrl: 'show-card-content.component.html',
-  styleUrl: 'show-card-content.component.css',
+  styleUrl: 'show-card-content.component.scss',
   imports: [
     DurationPipe,
     DatePipe,

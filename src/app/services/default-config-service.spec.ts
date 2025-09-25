@@ -26,7 +26,7 @@ describe('DefaultConfigService', () => {
   });
 
   it('should have the right default theme', () => {
-    expect(service.defaultTheme).toBe('indigo-pink');
+    expect(service.defaultTheme).toBe('light-blue');
   });
 
   it('should have a defined defaultExternalServices configuration', () => {

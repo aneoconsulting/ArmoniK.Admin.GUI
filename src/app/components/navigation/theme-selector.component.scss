@@ -1,0 +1,39 @@
+button.theme {
+  mat-icon {
+    color: var(--armonik-header-color) !important;
+  }
+}
+
+.docs-theme-icon-background {
+  fill: light-dark(white, #151216);
+}
+
+.mat-icon.dark-purple svg  {
+  .docs-theme-icon-toolbar {
+    fill: #67447a;
+  }
+  
+  .docs-theme-icon-button {
+    fill: #f5d9ff;
+  }
+}
+
+.mat-icon.dark-green svg  {
+  .docs-theme-icon-toolbar {
+    fill: #38594a;
+  }
+  
+  .docs-theme-icon-button {
+    fill: #c6ebd6;
+  }
+}
+
+.mat-icon.light-pink svg  {
+  .docs-theme-icon-toolbar {
+    fill: #981b6c;
+  }
+  
+  .docs-theme-icon-button {
+    fill: #ffd8e8;
+  }
+}

@@ -1,0 +1,24 @@
+@use 'styles' as *;
+
+mat-dialog-content {
+  padding-top: 0 !important;
+  overflow: visible !important;
+  @include flex-col(0.5rem);
+}
+
+.service-decoration {
+  @include flex-row($gap: 1rem, $justify: start, $align: start, $wrap: nowrap);
+
+  .preview {
+    @include flex-row($wrap: nowrap);
+    margin-top: 0.5rem;
+  }
+}
+
+.url-service {
+  width: 100%;
+}
+
+.manage-presentation {
+  max-width: 425px;
+}

@@ -84,6 +84,9 @@ export class IconsService {
     'retry': 'repeat_on',
     'pending': 'pending',
     'creating': 'create',
+    'automatic': 'auto_awesome',
+    'dark-mode': 'dark_mode',
+    'light-mode': 'light_mode',
   };
 
   getIcon(name: string | null | undefined): string {

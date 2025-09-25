@@ -1,0 +1,10 @@
+@use 'styles' as *;
+
+:host {
+  @include flex-row(1rem);
+}
+
+span {
+  min-width: 3rem;
+  text-align: end;
+}
