@@ -1,7 +1,3 @@
-:host {
-  grid-column-start: 1;
-}
-
 #byte-array-header {
   display: flex;
   align-items: center;
