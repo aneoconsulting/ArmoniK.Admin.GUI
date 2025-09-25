@@ -14,12 +14,6 @@ export class NavigationService {
   sidebarItems: SidebarItem[] = [
     {
       type: 'link',
-      id: 'profile',
-      display: $localize`Profile`,
-      route: '/profile',
-    },
-    {
-      type: 'link',
       id: 'dashboard',
       display: $localize`Dashboard`,
       route: '/dashboard',
@@ -68,11 +62,7 @@ export class NavigationService {
   currentSidebar: SidebarItem[];
 
   set sideBar(entry: SidebarItem[]) {
-    if (!this.userConnectedGuard.canActivate()) {
-      this.currentSidebar = entry.filter(element => element.id !== 'profile');
-    } else {
-      this.currentSidebar = entry;
-    }
+    this.currentSidebar = entry;
   }
 
   constructor() {

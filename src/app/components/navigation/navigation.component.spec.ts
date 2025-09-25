@@ -1,5 +1,7 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
 import { DefaultConfigService } from '@services/default-config.service';
 import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
@@ -40,6 +42,14 @@ describe('NavigationComponent', () => {
     observe: jest.fn(() => of({matches: true}))
   };
 
+  const mockUserConnectedGuard = {
+    canActivate: jest.fn(() => false)
+  };
+
+  const mockRouter = {
+    navigateByUrl: jest.fn(),
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -52,6 +62,8 @@ describe('NavigationComponent', () => {
         EnvironmentService,
         DefaultConfigService,
         { provide: StorageService, useValue: mockStorageService },
+        { provide: UserConnectedGuard, useValue: mockUserConnectedGuard },
+        { provide: Router, useValue: mockRouter },
       ]
     }).inject(NavigationComponent);
     component.ngOnInit();
@@ -105,5 +117,14 @@ describe('NavigationComponent', () => {
       component.toggleSideBar();
       expect(mockNavigationService.saveSideBarOpened).toHaveBeenCalledWith(component.sideBarOpened);
     });
+  });
+
+  describe('profile button', () => {
+    it('should disable profile button when user is not connected', () => {
+      mockUserConnectedGuard.canActivate.mockReturnValue(false);
+      component.updateUserConnectionStatus();
+      expect(component.isProfileButtonDisabled()).toBe(true);
+    });
+
   });
 });
