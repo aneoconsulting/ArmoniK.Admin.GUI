@@ -18,10 +18,14 @@
       (editNameLine)="onEditNameLine()"
     >
     <ng-container extra-buttons-right>
-      <button mat-flat-button color="accent" (click)="onCancelTasksSelection()" [disabled]="!selection.length">
-        <mat-icon matListIcon aria-hidden="true" fontIcon="stop"></mat-icon>
-        <span i18n> Cancel Tasks </span>
+    @if (selection) {
+      @for (action of grpcActionsService.actions; track $index) {
+      <button mat-flat-button color="accent" (click)="action.click(selection)"  [disabled]="selection.length === 0">
+        <span i18n>{{ action.label }}s</span>
+        <mat-icon [fontIcon]="this.getIcon(action.icon)" />
       </button>
+      }
+    }
     </ng-container>
     <ng-container extra-menu-items>
     <button mat-menu-item (click)="manageViewInLogs()">
