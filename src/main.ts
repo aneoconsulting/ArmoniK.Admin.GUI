@@ -1,6 +1,7 @@
 /// <reference types="@angular/localize" />
 
 import { bootstrapApplication } from '@angular/platform-browser';
+import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { Subscription, fromEvent } from 'rxjs';
 import { AppComponent } from './app/app.component';
 import { appConfig } from './app/app.config';
@@ -53,25 +54,20 @@ if (mouse) {
   }));
 }
 
-bootstrapApplication(AppComponent, appConfig)
-  .catch((err) => {
-    hasError = true;
-    const loading = document.getElementById('loading') as HTMLDivElement;
-    const error = document.getElementById('error') as HTMLDivElement;
-    const errorMessage = document.getElementById('error-message') as HTMLDivElement;
+try {
+  await bootstrapApplication(AppComponent, appConfig);
+} catch (err) {
+  hasError = true;
+  const loading = document.getElementById('loading') as HTMLDivElement;
+  const error = document.getElementById('error') as HTMLDivElement;
+  const errorMessage = document.getElementById('error-message') as HTMLDivElement;
 
-    loading.style.display = 'none';
-    error.style.display = 'block';
+  loading.style.display = 'none';
+  error.style.display = 'block';
 
-    if (err?.statusMessage) {
-      errorMessage.textContent = err.statusMessage;
-      return;
-    }
-
-    errorMessage.textContent = err.message || err;
-  })
-  .finally(() => {
-    if (!hasError) {
-      subscriptions.unsubscribe();
-    }
-  });
+  errorMessage.textContent = (err as GrpcStatusEvent).statusMessage ?? (err as Error).message ?? err;
+} finally {
+  if (!hasError) {
+    subscriptions.unsubscribe();
+  }
+}

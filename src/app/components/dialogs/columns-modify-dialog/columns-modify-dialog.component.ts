@@ -72,7 +72,7 @@ export class ColumnsModifyDialogComponent<T extends DataRaw, O extends TaskOptio
    * Unchecked: remove it
    */
   selectOne(event: CheckedColumn<T, O>): void {
-    const index = this.selectedColumns.value.findIndex((column) => event.column === column);
+    const index = this.selectedColumns.value.indexOf(event.column);
     if (event.checked) {
       if (index === -1) {
         this.selectedColumns.push(new FormControl(event.column, {nonNullable: true}));
@@ -84,7 +84,7 @@ export class ColumnsModifyDialogComponent<T extends DataRaw, O extends TaskOptio
   
   selectAll(columns: ColumnKey<T, O>[], event: boolean) {
     for (const column of columns) {
-      const index = this.selectedColumns.value.findIndex((col) => column === col);
+      const index = this.selectedColumns.value.indexOf(column);
       if (index !== -1 && !event) {
         this.selectedColumns.removeAt(index);
       } else if (index === -1) {

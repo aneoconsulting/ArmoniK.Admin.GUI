@@ -104,7 +104,7 @@ export class StorageService implements Storage {
     const parsedData = parse ? JSON.parse(data as string) as Record<string, string> : data as Record<string, string>;
 
     if (Array.isArray(parsedData)) {
-      const dataToImport = parsedData.filter(d => d['version'] && (d['version']).slice(0, -1) === pkg.version.slice(0, -1))[0] as Record<string, string>;
+      const dataToImport = parsedData.find(d => d['version'] && (d['version']).slice(0, -1) === pkg.version.slice(0, -1)) as Record<string, string>;
 
       if (dataToImport === undefined) {
         throw new Error('No data found for the current version');
