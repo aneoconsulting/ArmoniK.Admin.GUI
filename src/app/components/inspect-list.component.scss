@@ -1,0 +1,29 @@
+@use 'styles' as *;
+
+.header {
+  @include flex-row();
+}
+
+.no-data {
+  text-align: center;
+  margin: 1rem;
+  font-style: italic;
+}
+
+button {
+  width: fit-content; 
+}
+
+.item {
+  @include flex-row($wrap: nowrap);
+  margin: 0.5rem;
+}
+
+mat-divider {
+  margin: 0 0.5rem 0 0.5rem;
+}
+
+mat-card {
+  max-height: 25vh;
+  overflow-y: auto;
+}

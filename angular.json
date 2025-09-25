@@ -50,30 +50,18 @@
               "src/assets"
             ],
             "styles": [
-              {
-                "inject": false,
-                "input": "@angular/material/prebuilt-themes/deeppurple-amber.css"
-              },
-              {
-                "inject": true,
-                "input": "@angular/material/prebuilt-themes/indigo-pink.css"
-              },
-              {
-                "inject": false,
-                "input": "@angular/material/prebuilt-themes/pink-bluegrey.css"
-              },
-              {
-                "inject": false,
-                "input": "@angular/material/prebuilt-themes/purple-green.css"
-              },
-              "src/styles.css",
-              "src/themes.css"
+              "src/styles.scss"
             ],
             "scripts": [],
             "browser": "src/main.ts",
             "polyfills": [
               "@angular/localize/init"
-            ]
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/assets"
+              ]
+            }
           },
           "configurations": {
             "en": {
@@ -96,7 +84,7 @@
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumError": "5kb"
                 }
               ],
               "outputHashing": "all"
@@ -154,7 +142,8 @@
   },
   "schematics": {
     "@schematics/angular:component": {
-      "type": "component"
+      "type": "component",
+      "style": "scss"
     },
     "@schematics/angular:directive": {
       "type": "directive"

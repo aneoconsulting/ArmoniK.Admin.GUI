@@ -11,6 +11,7 @@ import { FiltersCacheService } from '@services/filters-cache.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
+import { ThemeService } from '@services/theme.service';
 import { UserGrpcService } from '@services/user-grpc.service';
 import { UserService } from '@services/user.service';
 import { VersionsGrpcService } from '@services/versions-grpc.service';
@@ -20,7 +21,9 @@ import { routes } from './app.routes';
 import { provideArmonikDateAdapter } from './initialisation/date-adapter';
 import { ExportedDefaultConfig } from './types/config';
 
-function initializeAppFactory(userGrpcService: UserGrpcService, userService: UserService, versionsGrpcService: VersionsGrpcService, versionsService: VersionsService, httpClient: HttpClient, environmentService: EnvironmentService, storageService: StorageService) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function initializeAppFactory(userGrpcService: UserGrpcService, userService: UserService, versionsGrpcService: VersionsGrpcService, versionsService: VersionsService, httpClient: HttpClient, environmentService: EnvironmentService, storageService: StorageService, _themeService: ThemeService) {
+
   return () => merge(
     versionsGrpcService.listVersions$().pipe(
       tap((data) => {
@@ -85,6 +88,7 @@ export const appConfig: ApplicationConfig = {
     VersionsGrpcService,
     VersionsService,
     StorageService,
+    ThemeService,
     NavigationService,
     EnvironmentService,
     CacheService,
@@ -98,7 +102,7 @@ export const appConfig: ApplicationConfig = {
       useValue: localStorage
     },
     provideAppInitializer(() => {
-      const initializerFn = (initializeAppFactory)(inject(UserGrpcService), inject(UserService), inject(VersionsGrpcService), inject(VersionsService), inject(HttpClient), inject(EnvironmentService), inject(StorageService));
+      const initializerFn = (initializeAppFactory)(inject(UserGrpcService), inject(UserService), inject(VersionsGrpcService), inject(VersionsService), inject(HttpClient), inject(EnvironmentService), inject(StorageService), inject(ThemeService));
       return initializerFn();
     }),
     provideArmonikDateAdapter(),

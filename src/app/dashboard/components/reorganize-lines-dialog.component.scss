@@ -1,0 +1,19 @@
+@use 'styles' as *;
+
+.lines {
+  @include flex-col();
+}
+
+.line:not(.cdk-drag-preview) {
+  @include flex-row();
+  cursor: move;
+}
+
+.line-name {
+  @include flex-row($gap: 0.5rem, $wrap: nowrap);
+  padding: 0.5rem;
+}
+
+.line-actions {
+  @include flex-row($gap: 0.5rem, $wrap: nowrap);
+}

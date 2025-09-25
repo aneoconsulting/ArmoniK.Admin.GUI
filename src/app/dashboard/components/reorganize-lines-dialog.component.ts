@@ -13,7 +13,7 @@ import { Line } from '../types';
 @Component({
   selector: 'app-dashboard-reorganize-lines-dialog',
   templateUrl: 'reorganize-lines-dialog.component.html',
-  styleUrl: 'reorganize-lines-dialog.component.css',
+  styleUrl: 'reorganize-lines-dialog.component.scss',
   providers: [
     IconsService,
   ],

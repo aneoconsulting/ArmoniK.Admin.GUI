@@ -1,0 +1,31 @@
+@use 'styles' as *;
+
+.fab {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+
+  z-index: 150;
+  @include flex-col(1rem);
+}
+
+.fab-actions {
+  @include flex-col(1rem);
+  align-items: center;
+  gap: 1rem;
+}
+
+.no-line {
+  margin-top: 2rem;
+
+  @include flex-col(2rem);
+  align-items: center;
+}
+
+.lines {
+  display: grid;
+  gap: 4rem;
+
+  /* Allow user to view tasks even with the add button */
+  margin-bottom: 2rem
+}

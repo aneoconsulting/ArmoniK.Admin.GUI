@@ -34,7 +34,7 @@ import { StatusesGroupCardComponent } from '../statuses-group-card.component';
 @Component({
   selector: 'app-dashboard-task-status-line',
   templateUrl: './task-by-status-line.component.html',
-  styleUrl: 'task-by-status-line.component.css',
+  styleUrl: 'task-by-status-line.component.scss',
   providers: [
     ShareUrlService,
     QueryParamsService,

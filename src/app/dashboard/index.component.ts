@@ -39,7 +39,7 @@ import { Line, LineType } from './types';
 @Component({
   selector: 'app-dashboard-index',
   templateUrl: './index.component.html',
-  styleUrl: 'index.component.css',
+  styleUrl: 'index.component.scss',
   providers: [
     ShareUrlService,
     QueryParamsService,

@@ -8,7 +8,7 @@ import { IconsService } from '../services/icons.service';
 @Component({
   selector: 'app-status-chip',
   templateUrl: 'status-chip.component.html',
-  styleUrl: 'status-chip.component.css',
+  styleUrl: 'status-chip.component.scss',
   imports: [
     MatChipsModule,
     MatIconModule,

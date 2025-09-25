@@ -1,0 +1,5 @@
+@use 'styles' as *;
+
+section {
+  @include flex-col(1rem);
+}
