@@ -45,7 +45,7 @@ export class ColumnsModifyDialogComponent<T extends DataRaw, O extends TaskOptio
   }
 
   private sortColumns(columns: TableColumn<T, O>[]) {
-    columns.forEach(column => {
+    for (const column of columns) {
       if (!this.isCustomColumn(column) && this.isOptionsColumn(column)) {
         this.optionsColumns.push(column.key);
       } else if (column.type === 'date' || column.type === 'duration') {
@@ -55,7 +55,7 @@ export class ColumnsModifyDialogComponent<T extends DataRaw, O extends TaskOptio
       } else {
         this.commonColumns.push(column.key);
       }
-    });
+    }
   }
 
   private isOptionsColumn(column: TableColumn<T, O>): boolean {
@@ -83,14 +83,14 @@ export class ColumnsModifyDialogComponent<T extends DataRaw, O extends TaskOptio
   }
   
   selectAll(columns: ColumnKey<T, O>[], event: boolean) {
-    columns.forEach(column => {
+    for (const column of columns) {
       const index = this.selectedColumns.value.findIndex((col) => column === col);
       if (index !== -1 && !event) {
         this.selectedColumns.removeAt(index);
       } else if (index === -1) {
         this.selectedColumns.push(new FormControl(column, { nonNullable: true }));
       }
-    });
+    }
   }
 
   onNoClick(): void {

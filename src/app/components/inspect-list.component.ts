@@ -53,20 +53,21 @@ export class InspectListComponent {
       this._queryParams = {};
       if (this.list.length > 50) {
         const splittedKey = entry.split('-');
-        this.list.forEach((value) => {
+        
+        for (const value of this.list) {
           this.filters.push([{
             for: splittedKey[1] as 'custom' | 'root' | 'options',
             field: Number(splittedKey[2]),
             operator: Number(splittedKey[3]),
             value: value,
           }]);
-        });
+        }
       } else {
         const paramsKey = entry.slice(1);
-        this.list.forEach((value, index) => {
+        for (const [index, value] of this.list.entries()) {
           const key = `${index}${paramsKey}`;
           this._queryParams[key] = value;
-        });
+        }
       }
     }
   }

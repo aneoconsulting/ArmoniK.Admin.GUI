@@ -174,7 +174,7 @@ export class IndexComponent implements OnInit {
     const blob = new Blob([data], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const date = new Date().toISOString().slice(0, 10);
-    const id = new Date().getTime();
+    const id = Date.now();
 
     const anchor = document.createElement('a');
     anchor.href = url;

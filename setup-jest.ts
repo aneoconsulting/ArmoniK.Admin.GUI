@@ -3,4 +3,4 @@ import '@angular/localize/init';
 import { TextEncoder } from 'util';
 
 setupZonelessTestEnv();
-global.TextEncoder = TextEncoder;
+globalThis.TextEncoder = TextEncoder;

@@ -35,14 +35,18 @@ export class ViewTasksByStatusComponent {
   }
 
   @Input() set statusesCount(entries: StatusCount[] | null) {
-    this.statusesGroups.forEach(group => group.statusCount = 0);
-    entries?.forEach((entry) => {
-      this.statusesGroups.forEach(group => {
-        if (group.statuses.includes(entry.status) && group.statusCount !== undefined) {
-          group.statusCount += entry.count;
+    for (const group of this.statusesGroups) {
+      group.statusCount = 0;
+    }
+    if (entries) {
+      for (const entry of entries) {
+        for (const group of this.statusesGroups) {
+          if (group.statuses.includes(entry.status) && group.statusCount !== undefined) {
+            group.statusCount += entry.count;
+          }
         }
-      });
-    });
+      }
+    }
   }
 
   createQueryParams(group: TasksStatusesGroup) {
@@ -52,22 +56,22 @@ export class ViewTasksByStatusComponent {
     const taskStatusQueryParams: Record<string, string> = {};
     let orGroups = 0;
 
-    if (queryOrs.length !== 0) {
-      queryOrs.forEach(or => {
-        group.statuses.forEach(status => {
+    if (queryOrs.length === 0) {
+      for (const [index, status] of group.statuses.entries()) {
+        taskStatusQueryParams[this.#createQueryParamKeyOr(index)] = status.toString();
+      }
+    } else {
+      for (const or of queryOrs) {
+        for (const status of group.statuses) {
           taskStatusQueryParams[this.#createQueryParamKeyOr(orGroups)] = status.toString();
-          queryParamsKeys.forEach((key, index) => {
+          for (const [index, key] of queryParamsKeys.entries()) {
             if (key.startsWith(or)) {
               taskStatusQueryParams[`${orGroups}${key.slice(1)}`] = queryParamsValues[index];
             }
-          });
+          }
           orGroups++;
-        });
-      });
-    } else {
-      group.statuses.forEach((status, index) => {
-        taskStatusQueryParams[this.#createQueryParamKeyOr(index)] = status.toString();
-      });
+        }
+      }
     }
     
     return taskStatusQueryParams;

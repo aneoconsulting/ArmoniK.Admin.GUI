@@ -106,11 +106,10 @@ export class StorageService implements Storage {
     if (Array.isArray(parsedData)) {
       const dataToImport = parsedData.filter(d => d['version'] && (d['version']).slice(0, -1) === pkg.version.slice(0, -1))[0] as Record<string, string>;
 
-      if (dataToImport !== undefined) {
-        this.importDataObject(dataToImport, override);
-      } else {
+      if (dataToImport === undefined) {
         throw new Error('No data found for the current version');
       }
+      this.importDataObject(dataToImport, override);
     }
     else if (parsedData['version'] && (parsedData['version']).slice(0, -1) === pkg.version.slice(0, -1)) {
       this.importDataObject(parsedData, override);

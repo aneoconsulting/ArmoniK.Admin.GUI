@@ -38,10 +38,10 @@ export default class ApplicationsDataService extends AbstractTableDataService<Ap
       };
     } else {
       const params: Record<string, string> = {};
-      this.filters.forEach((filterAnd, index) => {
+      for (const [index, filterAnd] of this.filters.entries()) {
         params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = name;
         params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = version;
-        filterAnd.forEach(filter => {
+        for (const filter of filterAnd) {
           if ((filter.field !== ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) && 
           (filter.field !== ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
             const filterLabel = this.createQueryParamFilterKey(filter, index);
@@ -49,9 +49,8 @@ export default class ApplicationsDataService extends AbstractTableDataService<Ap
               params[filterLabel] = filter.value.toString();
             }
           }
-        });
-
-      });
+        }
+      }
       return params;
     }
   }
