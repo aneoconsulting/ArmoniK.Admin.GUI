@@ -56,7 +56,6 @@ export class DefaultConfigService {
   readonly #defaultSidebarOpened: boolean = true;
 
   readonly #defaultSidebar: Sidebar[] = [
-    'divider',
     'dashboard',
     'divider',
     'applications',
