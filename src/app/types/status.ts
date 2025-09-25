@@ -44,9 +44,9 @@ export abstract class StatusService<S extends Status> {
    * @param statuses Record of a status and its color/label/icon
    */
   updateStatuses(statuses: Record<S, StatusLabelColor>) {
-    this.keys.forEach((status) => {
+    for (const status of this.keys) {
       this.statuses[status] = statuses[status];
-    });
+    }
     this.storageService.setItem(`${this.scope}-statuses`, this.statuses);
   }
 

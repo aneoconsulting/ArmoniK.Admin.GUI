@@ -11,7 +11,7 @@ const loadingApp = document.getElementById('loading-app');
 const subscriptions = new Subscription();
 let hasError = false;
 
-const theme = window.localStorage.getItem('navigation-theme');
+const theme = globalThis.localStorage.getItem('navigation-theme');
 
 function setDarkBackGroundColor() {
   if (loadingApp) {
@@ -43,8 +43,8 @@ if (mouse) {
     mouse.style.left = `${x}px`;
     mouse.style.top = `${y}px`;
 
-    const dx = Math.abs(x - window.innerWidth / 2);
-    const dy = Math.abs(y - window.innerHeight / 2);
+    const dx = Math.abs(x - globalThis.innerWidth / 2);
+    const dy = Math.abs(y - globalThis.innerHeight / 2);
     const distance = Math.sqrt(dx * dx + dy * dy);
     const size = Math.max(300 - distance, 125);
 

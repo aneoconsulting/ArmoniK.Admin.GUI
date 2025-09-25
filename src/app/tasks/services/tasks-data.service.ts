@@ -37,15 +37,15 @@ export default class TasksDataService extends AbstractTableDataService<TaskSumma
       };
     } else {
       const params: Record<string, string> = {};
-      this.filters.forEach((filterAnd, index) => {
-        filterAnd.forEach(filter => {
+      for (const [index, filterAnd] of this.filters.entries()) {
+        for (const filter of filterAnd) {
           if (!(filter.field === TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
             const filterLabel = this.#createResultFilterLabel(filter, index);
             if (filterLabel && filter.value) params[filterLabel] = filter.value.toString();
           }
-        });
+        }
         params[`${index}-root-${ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = taskId;
-      });
+      }
       return params;
     }
   }

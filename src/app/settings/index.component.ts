@@ -184,7 +184,7 @@ export class IndexComponent implements OnInit {
     this.notificationService.success('Settings exported');
   }
 
-  onSubmitImport(event: SubmitEvent): void {
+  async onSubmitImport(event: SubmitEvent): Promise<void> {
     event.preventDefault();
 
     const form = event.target as HTMLFormElement;
@@ -212,31 +212,26 @@ export class IndexComponent implements OnInit {
       return;
     }
 
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const data = reader.result as string;
-      try {
-        this.storageService.importData(data);
-        this.keys = this.sortKeys(this.storageService.restoreKeys());
+    try {
+      const fileContent = await file.text();
+      this.storageService.importData(fileContent, true, true);
+      this.keys = this.sortKeys(this.storageService.restoreKeys());
   
-        const hasSidebarKey = this.keys.has('navigation-sidebar');
+      const hasSidebarKey = this.keys.has('navigation-sidebar');
   
-        // Update sidebar
-        if (hasSidebarKey) {
-          this.sidebar = this.navigationService.restoreSidebar();
-          this.navigationService.updateSidebar(this.sidebar);
-        }
-  
-        this.notificationService.success('Settings imported');
-      } catch (e) {
-        console.warn(e);
-        this.notificationService.error('Settings could not be imported.');
+      // Update sidebar
+      if (hasSidebarKey) {
+        this.sidebar = this.navigationService.restoreSidebar();
+        this.navigationService.updateSidebar(this.sidebar);
       }
+  
+      this.notificationService.success('Settings imported');
+    } catch (e) {
+      console.warn(e);
+      this.notificationService.error('Settings could not be imported.');
+    }
 
-      form.reset();
-    };
-    reader.readAsText(file);
+    form.reset();
   }
 
   drop(event: CdkDragDrop<SidebarItem[]>) {
