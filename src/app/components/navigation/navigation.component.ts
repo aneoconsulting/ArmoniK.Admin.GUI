@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,6 +11,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { HealthCheckComponent } from '@app/healthcheck/healthcheck.component';
+import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
 import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
@@ -54,10 +55,13 @@ export class NavigationComponent implements OnInit {
   private readonly navigationService = inject(NavigationService);
   private readonly iconsService = inject(IconsService);
   private readonly environmentService = inject(EnvironmentService);
+  private readonly userConnectedGuard = inject(UserConnectedGuard);
 
   environment = this.environmentService.getEnvironment();
   settingsItem = $localize`Settings`;
 
+  private userConnected = signal(this.userConnectedGuard.canActivate());
+  isProfileButtonDisabled = computed(() => !this.userConnected());
 
   sidebar = this.navigationService.currentSidebar;
   sideBarOpened = true;
@@ -70,10 +74,15 @@ export class NavigationComponent implements OnInit {
 
   ngOnInit(): void {
     this.sideBarOpened = this.navigationService.restoreSideBarOpened();
+    this.updateUserConnectionStatus();
   }
 
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);
+  }
+
+  public updateUserConnectionStatus(): void {
+    this.userConnected.set(this.userConnectedGuard.canActivate());
   }
 
   toggleSideBar() {
