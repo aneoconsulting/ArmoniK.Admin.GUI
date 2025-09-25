@@ -59,27 +59,33 @@ export class StatusesGroupCardComponent {
   }
 
   createQueryParamManyStatuses() {
-    const params: { [key: string]: string | number | Date | boolean | null } = {};
-
     if (this.filters.length === 0) {
-      for (const [index, status] of this.group.statuses.entries()) {
-        params[this.#createQueryParamKeyOr(index)] = status;
-      }
-    } else {
-      let orGroup = 0;
-      for (const status of this.group.statuses) {
-        for (const filterAnd of this.filters) {
-          for (const filter of filterAnd) {
-            const filterLabel = this.#createQueryParamFilterKey(filter, orGroup);
-            if (filterLabel) params[filterLabel] = filter.value;
-          }
-          params[this.#createQueryParamKeyOr(orGroup)] = status;
-          orGroup++;
+      return this.createQueryParamManyStatusesSingleFilters();
+    } 
+    return this.createQueryParamManyStatusesManyFilters();
+  }
+
+  private createQueryParamManyStatusesSingleFilters() {
+    const params: { [key: string]: string | number | Date | boolean | null } = {};
+    for (const [index, status] of this.group.statuses.entries()) {
+      params[this.#createQueryParamKeyOr(index)] = status;
+    }
+    return params;
+  }
+
+  private createQueryParamManyStatusesManyFilters() {
+    const params: { [key: string]: string | number | Date | boolean | null } = {};
+    let orGroup = 0;
+    for (const status of this.group.statuses) {
+      for (const filterAnd of this.filters) {
+        for (const filter of filterAnd) {
+          const filterLabel = this.#createQueryParamFilterKey(filter, orGroup);
+          if (filterLabel) params[filterLabel] = filter.value;
         }
+        params[this.#createQueryParamKeyOr(orGroup)] = status;
+        orGroup++;
       }
     }
-
-    return params;
   }
 
   createQueryParam(status: TaskStatus) {

@@ -51,33 +51,40 @@ export class ViewTasksByStatusComponent {
 
   createQueryParams(group: TasksStatusesGroup) {
     const queryOrs = Object.keys(this.defaultQueryParams).map(key => key[0]).filter((key, index, self) => self.indexOf(key) === index);
-    const queryParamsKeys = Object.keys(this.defaultQueryParams);
-    const queryParamsValues = Object.values(this.defaultQueryParams);
-    const taskStatusQueryParams: Record<string, string> = {};
-    let orGroups = 0;
-
     if (queryOrs.length === 0) {
-      for (const [index, status] of group.statuses.entries()) {
-        taskStatusQueryParams[this.#createQueryParamKeyOr(index)] = status.toString();
-      }
-    } else {
-      for (const or of queryOrs) {
-        for (const status of group.statuses) {
-          taskStatusQueryParams[this.#createQueryParamKeyOr(orGroups)] = status.toString();
-          for (const [index, key] of queryParamsKeys.entries()) {
-            if (key.startsWith(or)) {
-              taskStatusQueryParams[`${orGroups}${key.slice(1)}`] = queryParamsValues[index];
-            }
-          }
-          orGroups++;
-        }
-      }
+      return this.createQueryParamsSingleFilter(group);
+    } 
+    return this.createQueryParamsManyFilters(group, queryOrs);    
+  }
+
+  private createQueryParamsSingleFilter(group: TasksStatusesGroup) {
+    const taskStatusQueryParams: Record<string, string> = {};
+    for (const [index, status] of group.statuses.entries()) {
+      taskStatusQueryParams[this.createQueryParamKeyOr(index)] = status.toString();
     }
-    
     return taskStatusQueryParams;
   }
 
-  #createQueryParamKeyOr(index: number) {
+  private createQueryParamsManyFilters(group: TasksStatusesGroup, queryOrs: string[]) {
+    const taskStatusQueryParams: Record<string, string> = {};
+    const queryParamsKeys = Object.keys(this.defaultQueryParams);
+    const queryParamsValues = Object.values(this.defaultQueryParams);
+    let orGroups = 0;
+    for (const or of queryOrs) {
+      for (const status of group.statuses) {
+        taskStatusQueryParams[this.createQueryParamKeyOr(orGroups)] = status.toString();
+        for (const [index, key] of queryParamsKeys.entries()) {
+          if (key.startsWith(or)) {
+            taskStatusQueryParams[`${orGroups}${key.slice(1)}`] = queryParamsValues[index];
+          }
+        }
+        orGroups++;
+      }
+    }
+    return taskStatusQueryParams;
+  }
+
+  private createQueryParamKeyOr(index: number) {
     return `${index}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS}-${FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL}`;
   }
 

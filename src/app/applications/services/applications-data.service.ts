@@ -32,13 +32,16 @@ export default class ApplicationsDataService extends AbstractTableDataService<Ap
    */
   private createTasksByStatusQueryParams(name: string, version: string) {
     if(this.filters.length === 0) {
-      return {
-        [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: name,
-        [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: version
-      };
-    } else {
-      return this.createTasksByStatusQueryParamsWithManyFilters(name, version);
+      return this.createTasksByStatusQueryParamsSingleFilter(name, version);
     }
+    return this.createTasksByStatusQueryParamsWithManyFilters(name, version);
+  }
+
+  private createTasksByStatusQueryParamsSingleFilter(name: string, version: string) {
+    return {
+      [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: name,
+      [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: version
+    };
   }
 
   private createTasksByStatusQueryParamsWithManyFilters(name: string, version: string) {

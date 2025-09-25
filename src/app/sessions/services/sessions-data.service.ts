@@ -89,9 +89,20 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
   }
 
   /**
+   * Create the queryParams used by the taskByStatus component to redirect to the task table.
+   * The partitionId filter is applied on top of every filter of the table.
+   */
+  createTasksByStatusQueryParams(sessionId: string) {
+    if(this.filters.length === 0) {
+      return this.createSessionIdQueryParams(sessionId);
+    }
+    return this.createTasksByStatusQueryParamsWithManyFilters(sessionId);
+  }
+
+  /**
    * Create a basic filter for the task table. 
    */
-  createSessionIdQueryParams(sessionId: string) {
+  private createSessionIdQueryParams(sessionId: string) {
     const keySession = this.filtersService.createQueryParamsKey<TaskSummaryEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
 
     return {
@@ -99,34 +110,26 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
     };
   }
 
-  /**
-   * Create the queryParams used by the taskByStatus component to redirect to the task table.
-   * The partitionId filter is applied on top of every filter of the table.
-   */
-  createTasksByStatusQueryParams(sessionId: string) {
-    if(this.filters.length === 0) {
-      return this.createSessionIdQueryParams(sessionId);
-    } else {
-      const params: Record<string, string> = {};
-      for (const [index, filterAnd] of this.filters.entries()) {
-        params[`${index}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = sessionId;
-        for (const filter of filterAnd) {
-          if (filter.field !== SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) {
-            const filterLabel = this.#createTaskByStatusLabel(filter, index);
-            if (filterLabel && filter.value) {
-              params[filterLabel] = filter.value.toString();
-            }
+  private createTasksByStatusQueryParamsWithManyFilters(sessionId: string) {
+    const params: Record<string, string> = {};
+    for (const [index, filterAnd] of this.filters.entries()) {
+      params[`${index}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = sessionId;
+      for (const filter of filterAnd) {
+        if (filter.field !== SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) {
+          const filterLabel = this.createTaskByStatusLabel(filter, index);
+          if (filterLabel && filter.value) {
+            params[filterLabel] = filter.value.toString();
           }
         }
       }
-      return params;
     }
+    return params;
   }
 
   /**
    * Create the filter key used by the query params.
    */
-  #createTaskByStatusLabel(filter: Filter<SessionRawEnumField, TaskOptionEnumField>, orGroup: number): string | null {
+  private createTaskByStatusLabel(filter: Filter<SessionRawEnumField, TaskOptionEnumField>, orGroup: number): string | null {
     if (filter.field !== null && filter.operator !== null) {
       if (filter.for === 'root' && filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID) {
         return this.filtersService.createQueryParamsKey<TaskSummaryEnumField>(orGroup, 'root', filter.operator, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
@@ -142,24 +145,31 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
    */
   createResultsQueryParams(sessionId: string) {
     if(this.filters.length === 0) {
-      const keySession = this.filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
-
-      return {
-        [keySession]: sessionId
-      };
-    } else {
-      const params: Record<string, string> = {};
-      for (const [index, filterAnd] of this.filters.entries()) {
-        for (const filter of filterAnd) {
-          if (filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID && filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL && filter.value !== null && filter.operator !== null) {
-            const filterLabel = this.filtersService.createQueryParamsKey<ResultRawEnumField>(index, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
-            if (filterLabel) params[filterLabel] = filter.value.toString();
-          }
-        }
-        params[`${index}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = sessionId;
-      }
-      return params;
+      return this.createResultsQueryParamsSingleFilter(sessionId);
     }
+    return this.createResultsQueryParamsManyFilters(sessionId);
+  }
+
+  private createResultsQueryParamsSingleFilter(sessionId: string) {
+    const keySession = this.filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+
+    return {
+      [keySession]: sessionId
+    };
+  }
+
+  private createResultsQueryParamsManyFilters(sessionId: string) {
+    const params: Record<string, string> = {};
+    for (const [index, filterAnd] of this.filters.entries()) {
+      for (const filter of filterAnd) {
+        if (filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID && filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL && filter.value !== null && filter.operator !== null) {
+          const filterLabel = this.filtersService.createQueryParamsKey<ResultRawEnumField>(index, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+          if (filterLabel) params[filterLabel] = filter.value.toString();
+        }
+      }
+      params[`${index}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = sessionId;
+    }
+    return params;
   }
 
   /**
@@ -210,22 +220,7 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
   private subscribeToDurationSubjects() {
     this.computeDuration$.subscribe(() => {
       if (this.dataRaw.length === this.sessionEndedDates.length && this.dataRaw.length === this.sessionCreationDates.length) {
-        const keys: string[] = this.sessionEndedDates.map(duration => duration.sessionId);
-        for (const key of keys) {
-          const sessionIndex = this.dataRaw.findIndex(session => session.sessionId === key);
-          if (sessionIndex !== -1) {
-            const lastDuration = this.sessionEndedDates.find(duration => duration.sessionId === key)?.date;
-            const firstDuration = this.sessionCreationDates.find(duration => duration.sessionId === key)?.date;
-            if (firstDuration && lastDuration) {
-              this.dataRaw[sessionIndex].duration = {
-                seconds: (Number(lastDuration.seconds) - Number(firstDuration.seconds)).toString(),
-                nanos: Math.abs(lastDuration.nanos - firstDuration.nanos)
-              } as Duration;
-            } else {
-              this.computationErrorNotification(key);
-            }
-          }
-        }
+        this.computeSessionDuration();
         if (this.isDurationSorted) {
           this.orderByDuration(this.dataRaw);
         } else {
@@ -259,6 +254,25 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
       }
     }).slice(0, this.options.pageSize);
     super.handleData(data);
+  }
+
+  private computeSessionDuration() {
+    const keys: string[] = this.sessionEndedDates.map(duration => duration.sessionId);
+    for (const key of keys) {
+      const sessionIndex = this.dataRaw.findIndex(session => session.sessionId === key);
+      if (sessionIndex !== -1) {
+        const lastDuration = this.sessionEndedDates.find(duration => duration.sessionId === key)?.date;
+        const firstDuration = this.sessionCreationDates.find(duration => duration.sessionId === key)?.date;
+        if (firstDuration && lastDuration) {
+          this.dataRaw[sessionIndex].duration = {
+            seconds: (Number(lastDuration.seconds) - Number(firstDuration.seconds)).toString(),
+            nanos: Math.abs(lastDuration.nanos - firstDuration.nanos)
+          } as Duration;
+        } else {
+          this.computationErrorNotification(key);
+        }
+      }
+    }
   }
 
   /**
