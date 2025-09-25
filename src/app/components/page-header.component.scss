@@ -1,0 +1,16 @@
+@use 'styles' as *;
+
+.page-header {
+  @include flex-row();
+  margin-bottom: 1rem;
+}
+
+.page-header h1 {
+  margin: 0;
+  @include flex-row();
+  gap: 1rem;
+}
+
+#header-right {
+  @include flex-row();
+}

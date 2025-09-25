@@ -1,0 +1,6 @@
+@use 'styles' as *;
+
+section {
+  @include flex-row();
+  width: 100%;
+}

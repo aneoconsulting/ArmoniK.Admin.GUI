@@ -15,7 +15,7 @@ import { InspectionObjectComponent } from './inspection-object.component';
     MatToolbarModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styleUrl: '../../../inspections.css'
+  styleUrl: '../../../inspections.scss'
 })
 export class InspectionComponent<T extends DataRaw, O extends TaskOptions | null = null> {
   private _data: T = {} as T;

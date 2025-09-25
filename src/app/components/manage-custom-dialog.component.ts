@@ -11,7 +11,6 @@ import { CustomColumn } from '@app/types/data';
 @Component({
   selector: 'app-add-custom-col-dialog',
   templateUrl: 'manage-custom-dialog.component.html',
-  styleUrl: 'manage-custom-dialog.component.css',
   imports: [
     MatDialogModule,
     MatFormFieldModule,
