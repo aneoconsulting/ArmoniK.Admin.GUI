@@ -13,29 +13,6 @@ import { StorageService } from '@services/storage.service';
 import { of } from 'rxjs';
 import { IndexComponent } from './index.component';
 
-class FakeFileReader extends FileReader {
-  _result: string;
-
-  override set result(entry: string) {
-    this._result = entry;
-  }
-
-  override get result() {
-    return this._result;
-  }
-  
-  constructor(result: string) {
-    super();
-    this.result = result;
-  }
-
-  override onload = jest.fn();
-
-  override readAsText() {
-    this.onload();
-  }
-}
-
 describe('IndexComponent', () => {
   let component: IndexComponent;
 
@@ -338,7 +315,10 @@ describe('IndexComponent', () => {
     const newSideBar: Sidebar[] = ['results', 'partitions'];
     const data = {'navigation-sidebar': newSideBar};
 
-    const file = new File([JSON.stringify(data)], 'settings', {type: 'application/json'});
+    const file = {
+      text: jest.fn(() => JSON.stringify(data)),
+      type: 'application/json',
+    };
     const target = {
       querySelector: jest.fn().mockReturnValue({files: [file]}),
       reset: jest.fn()
@@ -393,7 +373,7 @@ describe('IndexComponent', () => {
 
     it('should import data in storage', async () => {
       await component.onSubmitImport(event);
-      expect(mockStorageService.importData).toHaveBeenCalledWith(JSON.stringify(data));
+      expect(mockStorageService.importData).toHaveBeenCalledWith(JSON.stringify(data), true, true);
     });
 
     it('should set keys', async () => {

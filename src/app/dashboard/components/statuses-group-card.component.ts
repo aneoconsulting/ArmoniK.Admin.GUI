@@ -4,7 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { RouterModule } from '@angular/router';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
-import { Filter } from '@app/types/filters';
+import { Filter, FilterInputValue } from '@app/types/filters';
 import { StatusLabelColor, StatusService } from '@app/types/status';
 import { DefaultConfigService } from '@services/default-config.service';
 import { FiltersService } from '@services/filters.service';
@@ -66,7 +66,7 @@ export class StatusesGroupCardComponent {
   }
 
   private createQueryParamManyStatusesSingleFilters() {
-    const params: { [key: string]: string | number | Date | boolean | null } = {};
+    const params: { [key: string]: FilterInputValue } = {};
     for (const [index, status] of this.group.statuses.entries()) {
       params[this.#createQueryParamKeyOr(index)] = status;
     }
@@ -74,7 +74,7 @@ export class StatusesGroupCardComponent {
   }
 
   private createQueryParamManyStatusesManyFilters() {
-    const params: { [key: string]: string | number | Date | boolean | null } = {};
+    const params: { [key: string]: FilterInputValue } = {};
     let orGroup = 0;
     for (const status of this.group.statuses) {
       for (const filterAnd of this.filters) {
@@ -86,6 +86,7 @@ export class StatusesGroupCardComponent {
         orGroup++;
       }
     }
+    return params;
   }
 
   createQueryParam(status: TaskStatus) {
@@ -95,7 +96,7 @@ export class StatusesGroupCardComponent {
       };
     }
     else {
-      const params: { [key: string]: string | number | Date | boolean | null } = {};
+      const params: { [key: string]: FilterInputValue } = {};
       for (const [index, filterAnd] of this.filters.entries()) {
         params[this.#createQueryParamKeyOr(index)] = status;
         for (const filter of filterAnd) {
