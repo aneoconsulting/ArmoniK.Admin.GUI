@@ -4,7 +4,6 @@ import { Scope } from '@app/types/config';
 import { TaskData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { AbstractTableDataService } from '@app/types/services/table-data.service';
-import { catchError, of } from 'rxjs';
 import { TaskOptions, TaskSummary } from '../types';
 import { TasksGrpcService } from './tasks-grpc.service';
 
@@ -66,23 +65,5 @@ export default class TasksDataService extends AbstractTableDataService<TaskSumma
       }
     }
     return null;
-  }
-
-  cancelTasks(ids: string[]) {
-    this.grpcService.cancel$(ids)
-      .pipe(
-        catchError((error) => {
-          this.error(error, 'Could not cancel Tasks');
-          return of(null);
-        })
-      ).subscribe((data) => {
-        if (data) {
-          this.success('Tasks cancelled');
-        }
-      });
-  }
-
-  cancelTask(id: string) {
-    this.cancelTasks([id]);
   }
 }

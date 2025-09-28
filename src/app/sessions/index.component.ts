@@ -16,10 +16,12 @@ import { TaskOptions } from '@app/tasks/types';
 import { TableHandlerCustomValues } from '@app/types/components';
 import { ColumnKey } from '@app/types/data';
 import { DataFilterService } from '@app/types/services/data-filter.service';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { TableGrpcActionsComponent } from '@components/table/table-grpc-actions.component';
 import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
@@ -35,6 +37,7 @@ import { UtilsService } from '@services/utils.service';
 import { SessionsTableComponent } from './components/table.component';
 import { SessionsDataService } from './services/sessions-data.service';
 import { SessionsFiltersService } from './services/sessions-filters.service';
+import { SessionsGrpcActionsService } from './services/sessions-grpc-actions.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';
@@ -74,6 +77,10 @@ import { SessionRaw } from './types';
     NotificationService,
     TasksGrpcService,
     GrpcSortFieldService,
+    {
+      provide: GrpcActionsService,
+      useClass: SessionsGrpcActionsService,
+    },
   ],
   imports: [
     PageHeaderComponent,
@@ -84,7 +91,8 @@ import { SessionRaw } from './types';
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
-    SessionsTableComponent
+    SessionsTableComponent,
+    TableGrpcActionsComponent,
   ]
 })
 export class IndexComponent extends TableHandlerCustomValues<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
@@ -93,6 +101,8 @@ export class IndexComponent extends TableHandlerCustomValues<SessionRaw, Session
   readonly tableDataService = inject(SessionsDataService);
 
   tableType: TableType = 'Sessions';
+
+  selection: SessionRaw[] = [];
 
   ngOnInit() {
     this.initTableEnvironment();
