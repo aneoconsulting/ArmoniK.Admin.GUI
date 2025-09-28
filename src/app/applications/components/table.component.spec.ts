@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
+import { GrpcAction } from '@app/types/actions.type';
 import { TableColumn } from '@app/types/column.type';
 import { ApplicationData, ColumnKey } from '@app/types/data';
 import { IconsService } from '@services/icons.service';
@@ -14,7 +15,11 @@ import { ApplicationsTableComponent } from './table.component';
 import ApplicationsDataService from '../services/applications-data.service';
 import { ApplicationRaw } from '../types';
 
-describe('TasksTableComponent', () => {
+function getAction(actions: GrpcAction<ApplicationRaw>[], label: string) {
+  return actions.filter(action => action.label === label)[0];
+} 
+
+describe('ApplicationsTableComponent', () => {
   let component: ApplicationsTableComponent;
 
   const displayedColumns: TableColumn<ApplicationRaw>[] = [
@@ -187,8 +192,9 @@ describe('TasksTableComponent', () => {
       const data = {
         name: 'name',
         version: 'version'
-      };
-      component.actions[0].action$.next({raw: data} as ApplicationData);
+      } as unknown as ApplicationRaw;
+      const action = getAction(component.actions, 'See session');
+      action.click([data]);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/sessions'], { queryParams: component.createViewSessionsQueryParams(data.name, data.version) });
     });
   });
