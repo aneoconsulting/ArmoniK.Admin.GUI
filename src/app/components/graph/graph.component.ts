@@ -1,6 +1,6 @@
 import { ResultStatus, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -47,7 +47,7 @@ import { GraphLegendComponent } from './graph-legend.component';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> implements OnInit, AfterViewInit {
+export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> implements OnInit, AfterViewInit, OnDestroy {
   @Input({ required: true }) grpcObservable: Observable<GraphData<N, L>>;
   @Input({ required: true }) sessionId: string;
 
@@ -122,6 +122,10 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
         .pipe(switchMap(() => this.grpcObservable))
         .subscribe((result) => this.subscribeToData(result)));
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   /**
