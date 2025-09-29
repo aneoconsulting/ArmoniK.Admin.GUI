@@ -65,10 +65,9 @@ export class PartitionsFiltersService extends DataFilterService<PartitionRawEnum
     switch (filterFor) {
     case 'root':
       return this.rootField[filterField as PartitionRawEnumField];
-    case 'options':
-      throw new Error('Impossible case');
     default:
-      throw new Error(`Unknown filter type: ${filterFor} ${filterField}}`);
+      console.error(`Unknown filter type: ${filterFor} ${filterField}`);
+      return '';
     }
   }
 

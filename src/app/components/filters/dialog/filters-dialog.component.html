@@ -1,27 +1,34 @@
-<h2 mat-dialog-title i18n="Dialog title">Filters</h2>
+<h2 mat-dialog-title i18n>Manage Filters</h2>
 
 <mat-dialog-content>
-  <p i18n="Dialog description">Build your filters</p>
-
-  <div class="filters">
-    @for (filterOr of filtersOr; track filterOr) {
-      <app-filters-dialog-or
-        [first]="$first"
-        [filtersOr]="filterOr"
-        [customColumns]="customColumns"
-        (removeChange)="onRemoveOr($event)"
-      />
-    }
-    <div>
-      <button mat-button (click)="onAdd()">
-        <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
-        <span i18n>Add an Or Group</span>
-      </button>
-    </div>
-  </div>
+  @for (filter of form.controls; track $index) {
+    <section class="filter-and">
+      <app-filters-dialog-and [form]="filter" [customProperties]="customProperties" />      
+      <article>
+        <button mat-mini-fab color="primary" class="delete-button" (click)="remove($index)" i18n-matTooltip matTooltip="Delete this group of conditions">
+        <mat-icon [fontIcon]="getIcon('delete')" />
+        </button>
+        <button mat-mini-fab color="primary" class="add-button" (click)="add($index)" i18n-matTooltip matTooltip="Add a group of conditions">
+          <mat-icon [fontIcon]="getIcon('add')" />
+        </button>
+      </article>
+    </section>
+    <section class="filter-header">
+      <mat-divider />
+      @if (!$last) {
+        <span i18n>Or</span>
+      } @else {
+        <button mat-button (click)="add()" i18n-matTooltip matTooltip="Add a group of conditions">
+          <mat-icon [fontIcon]="getIcon('add')" />
+          <span i18n>Or</span>
+        </button>
+      }
+      <mat-divider />
+    </section>
+  }
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
-  <button mat-flat-button [mat-dialog-close]="filtersOr" color="primary" i18n="Dialog action"> Confirm </button>
+  <button mat-button mat-dialog-close>Close</button>
+  <button mat-flat-button color="primary" [disabled]="form.invalid" [mat-dialog-close]="form.value">Confirm</button>
 </mat-dialog-actions>

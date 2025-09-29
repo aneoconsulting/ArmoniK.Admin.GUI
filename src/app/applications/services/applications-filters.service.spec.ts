@@ -141,14 +141,14 @@ describe('ApplicationsFiltersService', () => {
       expect(service.retrieveLabel('root', ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME)).toEqual('Name');
     });
   
-    it('should not retrieve label in case of options property', () => {
-      expect(() => {service.retrieveLabel('options', ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME);})
-        .toThrow('Impossible case');
+    it('should return an empty string in case of options property', () => {
+      expect(service.retrieveLabel('options', ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME))
+        .toEqual('');
     });
 
-    it('should throw an error in case of an unknown filter for', () => {
-      expect(() => service.retrieveLabel('unexisting' as FilterFor<ApplicationRawEnumField, null>, ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME))
-        .toThrow('Unknown filter type: unexisting 1');
+    it('should return an empty string in case of an unknown filter for', () => {
+      expect(service.retrieveLabel('unexisting' as FilterFor<ApplicationRawEnumField, null>, ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME))
+        .toEqual('');
     });
   });
 

@@ -1,106 +1,100 @@
+import { FilterStringOperator, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FiltersAnd, FiltersOr } from '@app/types/filters';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FiltersDialogData } from '@app/types/dialog';
 import { IconsService } from '@services/icons.service';
 import { FiltersDialogComponent } from './filters-dialog.component';
 
 describe('FiltersDialogComponent', () => {
-  let component: FiltersDialogComponent<number, number>;
+  let component: FiltersDialogComponent<TaskSummaryEnumField, TaskOptionEnumField>;
 
-  const filterAnd1: FiltersAnd<number, number> = [{
-    field: 1,
-    for: 'root',
-    operator: 1,
-    value: 'someValue'
-  }];
-  const filterAnd2: FiltersAnd<number, number> = [{
-    field: 1,
-    for: 'root',
-    operator: 2,
-    value: 'otherValue'
-  }];
-
-  const filterOr: FiltersOr<number, number> = [
-    filterAnd1, filterAnd2
-  ];
-  const mockMatDialogData = {
-    filtersOr: [] as FiltersOr<number, number>
-  };
-  const mockDialogRef = {
-    close: jest.fn()
+  const mockData: FiltersDialogData<TaskSummaryEnumField, TaskOptionEnumField> = {
+    filtersOr: [
+      [
+        {
+          field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
+          for: 'root',
+          operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+          value: 'id'
+        }
+      ]
+    ],
+    customColumns: ['options.options.customColumns']
   };
 
-  beforeEach(async () => {
+  const mockEmptyData: FiltersDialogData<TaskSummaryEnumField, TaskOptionEnumField> = {
+    filtersOr: [],
+  };
+
+  beforeEach(() => {
     component = TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule],
       providers: [
         FiltersDialogComponent,
         IconsService,
-        { provide: MatDialogRef, useValue: mockDialogRef },
-        { provide: MAT_DIALOG_DATA, useValue: mockMatDialogData },
+        { provide: MAT_DIALOG_DATA, useValue: mockData }
       ]
-    }).inject(FiltersDialogComponent);
-    mockMatDialogData.filtersOr = filterOr;
-    component.ngOnInit();
+    }).inject(FiltersDialogComponent<TaskSummaryEnumField, TaskOptionEnumField>);
   });
 
-  it('should init', () => {
+  it('should run', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should init with empty filters', () => {
-    component.filtersOr = [];
-    mockMatDialogData.filtersOr = [];
+  describe('Initialisation', () => {
+    it('should patch the formArray with the values of the provided filters', () => {
+      expect(component.form.value).toEqual(mockData.filtersOr);
+    });
     
-    component.ngOnInit();
-    expect(component.filtersOr).toEqual([[{
-      for: null,
-      field: null,
-      operator: null,
-      value: null,
-    }]]);
-  });
-
-  it('should add empty FilterAnd on add', () => {
-    component.onAdd();
-    expect(component.filtersOr[2]).toEqual([
-      {
-        for: null,
-        field: null,
-        operator: null,
-        value: null,
-      }
-    ]);
-  });
-
-  describe('removeOr', () => {
-    it('should remove a filter from orFilter', () => {
-      const toRemove = component.filtersOr[0];
-      component.onRemoveOr(toRemove);
-      expect(component.filtersOr).toEqual([filterAnd2]);
+    it('should copy the custom columns', () => {
+      expect(component.customProperties).toEqual(mockData.customColumns);
     });
 
-    it('should push a new empty filter if the group is empty', () => {
-      component.onRemoveOr(component.filtersOr[0]);
-      component.onRemoveOr(component.filtersOr[0]);
-      expect(component.filtersOr).toEqual([
-        [{
-          for: null,
-          field: null,
-          operator: null,
-          value: null,
-        }]
-      ]);
+    it('should add an empty filter if none are provided', () => {
+      component.data = mockEmptyData;
+      const spy = jest.spyOn(component, 'add');
+      component['init']();
+      expect(spy).toHaveBeenCalled();
     });
-  });
 
-  it('should close on no click', () => {
-    component.onNoClick();
-    expect(mockDialogRef.close).toHaveBeenCalled();
+    it('should create an empty array of custom properties if none are provided', () => {
+      component.data = mockEmptyData;
+      component['init']();
+      expect(component.customProperties).toEqual([]);
+    });
   });
 
   it('should get icon', () => {
     expect(component.getIcon('heart')).toEqual('favorite');
+  });
+
+  describe('add', () => {
+    it('should add a filter', () => {
+      component.add();
+      expect(component.form.length).toEqual(2);
+    });
+
+    it('should add a filter at selected index', () => {
+      component.add(-1);
+      expect(component.form.value[0]).toEqual([{
+        for: null,
+        field: null,
+        operator: null,
+        value: null,
+      }]);
+    });
+  });
+
+  describe('remove', () => {
+    it('should remove the nth element from the formarray', () => {
+      component.add();
+      component.remove(0);
+      expect(component.form.length).toEqual(1);
+    });
+
+    it('should add an element back if the formArray is empty', () => {
+      const spy = jest.spyOn(component, 'add');
+      component.remove(0);
+      expect(spy).toHaveBeenCalled();
+    });
   });
 });

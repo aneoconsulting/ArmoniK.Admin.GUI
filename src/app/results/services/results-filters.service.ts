@@ -94,10 +94,9 @@ export class ResultsFiltersService extends DataFilterService<ResultRawEnumField>
     switch (filterFor) {
     case 'root':
       return this.rootField[filterField as ResultRawEnumField];
-    case 'options':
-      throw new Error('Impossible case');
     default:
-      throw new Error(`Unknown filter type: ${filterFor} ${filterField}}`);
+      console.error(`Unknown filter type: ${filterFor} ${filterField}`);
+      return '';
     }
   }
 

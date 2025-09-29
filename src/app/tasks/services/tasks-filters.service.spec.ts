@@ -112,7 +112,7 @@ describe('TasksFilterService', () => {
 
     it('should restore default showFilters if it cannot restore', () => {
       mockTableService.restoreShowFilters.mockReturnValueOnce(null);
-      expect(service.restoreShowFilters()).toBe(true);
+      expect(service.restoreShowFilters()).toBeTruthy();
     });
   });
 
@@ -125,15 +125,36 @@ describe('TasksFilterService', () => {
     expect(mockLabelFilterRoot).toEqual('Initial Task ID');
   });
 
-  test('the service must return the right label with filterFor options', () => {
-    const mockLabelFilterOptions = service.retrieveLabel(service.filtersDefinitions[18].for, (service.filtersDefinitions[18].field as TaskFilterField));
-    expect(mockLabelFilterOptions).toEqual('Application Namespace');
-  });
+  describe('retrieveLabel', () => {
+    let consoleSpy: jest.SpyInstance;
 
-  test('the service must throw an error ', () => {
-    const mockFilterFor = {for: 'dummy for'} as never;
-    const mockFilterField = service.filtersDefinitions[6].field; 
-    expect(() => {service.retrieveLabel(mockFilterFor , (mockFilterField as TaskFilterField) );}).toThrowError(`Unknown filter type: ${mockFilterFor} ${mockFilterField}`);
+    beforeEach(() => {
+      consoleSpy = jest.spyOn(console, 'error');
+      consoleSpy.mockImplementationOnce(() => {});
+    });
+
+    it('should return the right label with filterFor root', () => {
+      const mockLabelFilterRoot = service.retrieveLabel('root', TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_INITIAL_TASK_ID);
+      expect(mockLabelFilterRoot).toEqual('Initial Task ID');
+    });
+
+    it('should return the right label with filterFor options', () => {
+      const mockLabelFilterOptions = service.retrieveLabel('options', TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAMESPACE);
+      expect(mockLabelFilterOptions).toEqual('Application Namespace');
+    });
+
+    it('should return an empty string when filterFor is unknown', () => {
+      const _for = 'custom';
+      const field = TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT;
+      expect(service.retrieveLabel(_for , field)).toEqual('');
+    });
+
+    it('should log an error when filterFor is unknown', () => {
+      const _for = 'custom';
+      const field = TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT;
+      service.retrieveLabel(_for, field);
+      expect(consoleSpy).toHaveBeenCalledWith(`Unknown filter type: ${_for} ${field}`);
+    });
   });
 
   describe('retrieveField', () => {
