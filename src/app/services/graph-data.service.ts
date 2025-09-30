@@ -108,9 +108,9 @@ export class GraphDataService {
         this.addPayload(newTask);
       }
       if (newTask.dataDependencies.length !== 0) {
-        newTask.dataDependencies.forEach(dependencyId => {
+        for (const dependencyId of newTask.dataDependencies) {
           this.addDependency(newTask.taskId, dependencyId);
-        });
+        }
       }
     }
   }
@@ -158,7 +158,7 @@ export class GraphDataService {
    * @param type parent | dependency | output
    */
   private addLink(target: string, source: string, type: LinkType) {
-    if (!this.links.find(link => link.source === source && link.target === target)) {
+    if (!this.links.some(link => link.source === source && link.target === target)) {
       this.links.push({source, target, type});
     }
   }
