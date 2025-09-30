@@ -34,7 +34,7 @@ export class ByteArrayComponent {
     this.decodedData = this.byteArrayService.decode(this.byteArray);
     this.byteLength = this.byteArrayService.byteLengthToString(this.byteArray.byteLength);
     if (this.decodedData && this.decodedData.length > 128) {
-      this.gridColumnSize = 4;
+      this.flexBasis = '100%';
     }
   }
 
@@ -44,7 +44,7 @@ export class ByteArrayComponent {
   decodedData: string | null = null;
   byteLength: string | null = null;
 
-  @HostBinding('style.grid-column-end') gridColumnSize: number = 1;
+  @HostBinding('style.flex-basis') flexBasis: string = 'auto';
 
   private readonly byteArrayService = inject(ByteArrayService);
   private readonly iconsService = inject(IconsService);
