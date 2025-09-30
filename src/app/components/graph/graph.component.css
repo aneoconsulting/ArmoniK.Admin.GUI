@@ -1,4 +1,4 @@
-mat-card {
+#graph-session-header {
   position: absolute;
   z-index: 2;
   top: 1rem;
@@ -6,7 +6,7 @@ mat-card {
   width: fit-content;
 }
 
-mat-card-content {
+#graph-session-header > mat-card-content {
   min-width: 60vw;
   padding: 0.5rem !important;
   display: flex;
