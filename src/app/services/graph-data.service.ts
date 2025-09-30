@@ -183,7 +183,7 @@ export class GraphDataService {
    * @param taskOwnerId 
    */
   private addTaskOwner(resultId: string, taskOwnerId: string) {
-    if (taskOwnerId !== '') {
+    if (taskOwnerId && taskOwnerId !== '') {
       if (!this.getNodeById(taskOwnerId)) {
         this.createNode(taskOwnerId, TaskStatus.TASK_STATUS_UNSPECIFIED, 'task');
       }
