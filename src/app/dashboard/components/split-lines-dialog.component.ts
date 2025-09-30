@@ -6,29 +6,8 @@ import { SplitLinesDialogData, SplitLinesDialogResult } from '@app/types/dialog'
 
 @Component({
   selector: 'app-split-lines-dialog',
-  template: `
-<h2 mat-dialog-title i18n="Dialog title">Split lines</h2>
-
-<mat-dialog-content>
-  <p i18n="Dialog description">Indicate the number of columns for positioning lines.</p>
-
-  <!-- TODO: use a form control to handle error -->
-  <mat-form-field appearance="outline" subscriptSizing="dynamic">
-    <mat-label i18n="Label input">Number of columns</mat-label>
-    <input matInput type="number" i18n-placeholder="Placeholder" placeholder="Number of columns" [value]="columns" (input)="updateColumns($event)" min="1" max="20">
-  </mat-form-field>
-</mat-dialog-content>
-
-<mat-dialog-actions align="end">
-  <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
-  <button mat-flat-button [mat-dialog-close]="{ columns }" color="primary" i18n="Dialog action"> Confirm </button>
-</mat-dialog-actions>
-  `,
-  styles: [`
-mat-form-field {
-  width: 100%;
-}
-  `],
+  templateUrl: 'split-lines-dialog.component.html',
+  styleUrl: 'split-lines-dialog.component.css',
   providers: [],
   imports: [
     MatInputModule,
