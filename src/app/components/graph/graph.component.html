@@ -1,4 +1,4 @@
-<mat-card appearance="outlined">
+<mat-card id="graph-session-header" appearance="outlined">
   <mat-card-content>
     <section>
       <h2>
@@ -35,5 +35,9 @@
     </mat-checkbox>
   </mat-card-actions>
 </mat-card>
+@let node = selectedNode();
+@if (node) {
+  <app-graph-inspect-node [node]="node" (closePanel)="closeNodePanel()" />
+}
 <app-graph-legend [links]="colorMap" />
 <div class="graph" #graph (window:resize)="onResize($event)"></div>
