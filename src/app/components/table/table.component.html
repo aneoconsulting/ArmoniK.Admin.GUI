@@ -29,8 +29,8 @@
 
     <!-- Empty -->
     <tr *matNoDataRow>
-      <td [attr.colspan]="columns.length">
-        <app-table-empty-data />
+      <td [attr.colspan]="columns.length" id="empty">
+        <em i18n>No data found.</em>
       </td>
     </tr>
 

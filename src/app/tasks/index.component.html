@@ -12,6 +12,7 @@
       [columnsLabels]="columnsLabels"
       [displayedColumns]="displayedColumnsKeys"
       [availableColumns]="availableColumns"
+      [customColumns]="customColumns"
       [lockColumns]="lockColumns"
       (refresh)="refresh()"
       (intervalValueChange)="onIntervalValueChange($event)"
@@ -63,5 +64,6 @@
   [urlTemplate]="urlTemplate"
   (retries)="onRetries($event)"
   (optionsUpdate)="onOptionsChange()"
+  (selectionChange)="onSelectionChange($event)"
 />
   

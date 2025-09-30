@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@aneoconsultingfr/armonik.api.angular':
-        specifier: ^3.26.0
-        version: 3.26.0(@angular/common@20.0.3(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.2))(@ngx-grpc/core@3.1.2(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.2))(rxjs@7.8.2))(@ngx-grpc/well-known-types@3.1.2(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.2))(google-protobuf@3.21.2))(google-protobuf@3.21.2)(rxjs@7.8.2)
+        specifier: ^3.26.1
+        version: 3.26.1(@angular/common@20.0.3(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.2))(@ngx-grpc/core@3.1.2(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.2))(rxjs@7.8.2))(@ngx-grpc/well-known-types@3.1.2(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.2))(google-protobuf@3.21.2))(google-protobuf@3.21.2)(rxjs@7.8.2)
       '@angular/animations':
         specifier: ^20.0.3
         version: 20.0.3(@angular/common@20.0.3(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2))
@@ -170,8 +170,8 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@aneoconsultingfr/armonik.api.angular@3.26.0':
-    resolution: {integrity: sha512-iZcKqsHgk/j9LdS3QV81kJRb5PtA2aKLt0jDGxFRpSRVh4QaYvQRYCuPSnPOnDQnkljtX6P+cCfI2WjfUrevWw==}
+  '@aneoconsultingfr/armonik.api.angular@3.26.1':
+    resolution: {integrity: sha512-EInRqdXclZgG3ta6B6sqRYtbI0QX/988xD08tsEKiw29XKUPicB1zInPdWevmlSwJzaNy9O883j4TZppxkUlMw==}
     peerDependencies:
       '@angular/common': ^18.2.1
       '@angular/core': ^18.2.1
@@ -7183,7 +7183,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@aneoconsultingfr/armonik.api.angular@3.26.0(@angular/common@20.0.3(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.2))(@ngx-grpc/core@3.1.2(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.2))(rxjs@7.8.2))(@ngx-grpc/well-known-types@3.1.2(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.2))(google-protobuf@3.21.2))(google-protobuf@3.21.2)(rxjs@7.8.2)':
+  '@aneoconsultingfr/armonik.api.angular@3.26.1(@angular/common@20.0.3(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.2))(@ngx-grpc/core@3.1.2(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.2))(rxjs@7.8.2))(@ngx-grpc/well-known-types@3.1.2(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.2))(google-protobuf@3.21.2))(google-protobuf@3.21.2)(rxjs@7.8.2)':
     dependencies:
       '@angular/common': 20.0.3(@angular/core@20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 20.0.3(@angular/compiler@20.0.3)(rxjs@7.8.2)

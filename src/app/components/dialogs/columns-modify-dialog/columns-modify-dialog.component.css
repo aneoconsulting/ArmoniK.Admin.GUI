@@ -1,0 +1,23 @@
+h2 {
+  margin-top: 1rem;
+}
+
+h3 {
+  margin: 0.35rem 0;
+}
+
+article {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+article > div {
+  display: flex;
+}
+
+section {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-left: 2rem;
+}
