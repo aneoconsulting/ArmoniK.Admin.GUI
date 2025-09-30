@@ -1,0 +1,72 @@
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title i18n>Legend</mat-panel-title>
+  </mat-expansion-panel-header>
+  <main>
+    <article>
+      <div class="section-header">
+        <mat-icon>{{ getIcon('session-graph-icon') }}</mat-icon>
+        <h3 i18n>Sessions Statuses</h3>
+      </div>
+      <section>
+        @for (status of sessionsStatusesService.keys; track status) {
+          @let statusData = sessionsStatusesService.statusToLabel(status);
+          <mat-chip>
+            <mat-icon matChipAvatar [style]="'color: ' + statusData.color" [fontIcon]="getIcon('session-graph-icon')" />
+            <span>{{ statusData.label }}</span>
+          </mat-chip>
+        }
+      </section>
+    </article>
+
+    <mat-divider vertical/>
+  
+    <article>
+      <div class="section-header">
+        <mat-icon>{{ getIcon('task-graph-icon') }}</mat-icon>
+        <h3 i18n>Tasks Statuses</h3>
+      </div>
+      <section>
+        @for (status of tasksStatusesService.keys; track status) {
+          @let statusData = tasksStatusesService.statusToLabel(status);
+          <mat-chip>
+            <mat-icon matChipAvatar [style]="'color: ' + statusData.color" [fontIcon]="getIcon('task-graph-icon')" />
+            <span>{{ statusData.label }}</span>
+          </mat-chip>
+        }
+      </section>
+    </article>
+
+    <mat-divider vertical/>
+
+    <article>
+      <div class="section-header">
+        <mat-icon>{{ getIcon('result-graph-icon') }}</mat-icon>
+        <h3 i18n>Results Statuses</h3>
+      </div>
+      <section>
+        @for (status of resultsStatusesService.keys; track status) {
+          @let statusData = resultsStatusesService.statusToLabel(status);
+          <mat-chip>
+            <mat-icon matChipAvatar [style]="'color: ' + statusData.color" [fontIcon]="getIcon('result-graph-icon')" />
+            <span>{{ statusData.label }}</span>
+          </mat-chip>
+        }
+      </section>
+    </article>
+
+    <mat-divider vertical/>
+    
+    <article>
+      <h3 i18n>Links</h3>
+      <section>
+        @for (link of linksDescription; track link.label) {
+          <mat-chip>
+            <mat-icon matChipAvatar [style]="'color: ' + link.color" [fontIcon]="getIcon('line')" />
+            <span>{{ link.label | pretty }}</span>
+          </mat-chip>
+        }
+      </section>
+    </article>
+  </main>
+</mat-expansion-panel>
