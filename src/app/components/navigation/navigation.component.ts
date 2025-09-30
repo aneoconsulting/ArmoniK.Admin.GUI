@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,6 +11,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { HealthCheckComponent } from '@app/healthcheck/healthcheck.component';
+import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
 import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
@@ -25,44 +26,7 @@ import { VersionsMenuComponent } from './version-menu/versions-menu.component';
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
-  styles: [`
-.sidenav-container {
-  height: calc(100% - 64px);
-}
-
-.sidenav {
-  width: 200px;
-}
-
-.sidenav .mat-toolbar {
-  background: inherit;
-}
-
-.mat-toolbar.mat-primary {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-}
-
-.navbar-item-selected {
-  background-color: rgba(0, 0, 0, 0.2);
-}
-
-.spacer {
-  flex: 1 1 auto;
-}
-
-
-.environment {
-  background: white;
-  padding: 0 1rem;
-  border-radius: 0.25rem;
-}
-
-main {
-  padding: 20px 50px;
-}
-  `],
+  styleUrl: 'navigation.component.css',
   providers: [
     StorageService,
     IconsService,
@@ -91,10 +55,13 @@ export class NavigationComponent implements OnInit {
   private readonly navigationService = inject(NavigationService);
   private readonly iconsService = inject(IconsService);
   private readonly environmentService = inject(EnvironmentService);
+  private readonly userConnectedGuard = inject(UserConnectedGuard);
 
   environment = this.environmentService.getEnvironment();
   settingsItem = $localize`Settings`;
 
+  private userConnected = signal(this.userConnectedGuard.canActivate());
+  isProfileButtonDisabled = computed(() => !this.userConnected());
 
   sidebar = this.navigationService.currentSidebar;
   sideBarOpened = true;
@@ -107,10 +74,15 @@ export class NavigationComponent implements OnInit {
 
   ngOnInit(): void {
     this.sideBarOpened = this.navigationService.restoreSideBarOpened();
+    this.updateUserConnectionStatus();
   }
 
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);
+  }
+
+  public updateUserConnectionStatus(): void {
+    this.userConnected.set(this.userConnectedGuard.canActivate());
   }
 
   toggleSideBar() {
