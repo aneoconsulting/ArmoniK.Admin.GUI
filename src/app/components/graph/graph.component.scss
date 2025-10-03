@@ -1,3 +1,5 @@
+@use 'styles' as *;
+
 mat-card {
   position: absolute;
   z-index: 2;
@@ -7,18 +9,14 @@ mat-card {
 }
 
 mat-card-content {
+  @include flex-row();
   min-width: 60vw;
   padding: 0.5rem !important;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
 section {
+  @include flex-row(0.5rem);
   width: fit-content !important;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
 h2 {
@@ -27,15 +25,7 @@ h2 {
 }
 
 mat-card-actions {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-
-mat-card-actions > section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  @include flex-row($gap: 1rem, $justify: start);
 }
 
 app-graph-legend {

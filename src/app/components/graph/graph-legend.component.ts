@@ -13,7 +13,7 @@ import { IconsService } from '@services/icons.service';
 @Component({
   selector: 'app-graph-legend',
   templateUrl: 'graph-legend.component.html',
-  styleUrl: 'graph-legend.component.css',
+  styleUrl: 'graph-legend.component.scss',
   standalone: true,
   imports: [
     MatExpansionModule,

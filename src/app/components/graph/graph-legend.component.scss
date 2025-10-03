@@ -1,3 +1,5 @@
+@use 'styles' as *;
+
 section {
   display: grid;
   grid-template-rows: repeat(6, 1fr);
@@ -6,13 +8,10 @@ section {
 }
 
 main {
-  display: flex;
-  justify-content: space-evenly;
+  @include flex-row(1rem);
   width: 100%;
-  gap: 1rem;
 }
 
 .section-header {
-  display: flex;
-  flex-direction: row;
+  @include flex-row($gap: 0.5rem, $justify: start);
 }
