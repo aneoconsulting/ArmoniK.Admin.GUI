@@ -19,7 +19,7 @@ import { MessageComponent } from './message.component';
     MessageComponent,
     ByteArrayComponent
   ],
-  styleUrl: '../../../inspections.css',
+  styleUrl: '../../../inspections.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InspectionObjectComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null> {

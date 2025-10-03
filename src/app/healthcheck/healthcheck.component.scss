@@ -1,0 +1,9 @@
+@use 'styles' as *;
+
+.health-color {
+  font-size: 22px;
+}
+
+.health-status {
+  @include flex-row();
+}

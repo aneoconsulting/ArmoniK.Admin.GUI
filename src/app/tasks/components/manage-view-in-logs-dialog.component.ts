@@ -12,7 +12,7 @@ import { IconsService } from '@services/icons.service';
 @Component({
   selector: 'app-tasks-manage-view-in-logs-dialog',
   templateUrl: './manage-view-in-logs-dialog.component.html',
-  styleUrl: 'manage-view-in-logs-dialog.component.css',
+  styleUrl: 'manage-view-in-logs-dialog.component.scss',
   imports: [
     ReactiveFormsModule,
     MatFormFieldModule,
