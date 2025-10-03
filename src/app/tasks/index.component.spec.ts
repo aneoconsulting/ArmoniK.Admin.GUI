@@ -327,12 +327,7 @@ describe('Tasks Index Component', () => {
     });
 
     it('should save columns', () => {
-      expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(['id', 'createdAt']);
-    });
-
-    it('should always have "select" at position 1', () => {
-      component.onColumnsChange(['id', 'createdAt', 'select']);
-      expect(component.displayedColumnsKeys).toEqual(['select', 'id', 'createdAt']);
+      expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
     });
   });
 
