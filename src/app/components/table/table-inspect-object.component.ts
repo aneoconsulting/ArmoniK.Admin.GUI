@@ -10,8 +10,6 @@ import { TableInspectObjectDialogComponent, TableInspectObjectDialogData } from 
 @Component({
   selector: 'app-table-inspect-object',
   templateUrl: './table-inspect-object.component.html',
-  styles: [`
-  `],
   imports: [
     MatTooltipModule,
     MatDialogModule,

@@ -5,3 +5,9 @@
 .mat-mdc-table-sticky-border-elem-left {
   border-right: 1px solid rgba(255, 255, 255, 0.12);
 }
+
+em {
+  display: block;
+  margin: 1rem 0;
+  text-align: center;
+}

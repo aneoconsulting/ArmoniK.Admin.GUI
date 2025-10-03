@@ -1,5 +1,5 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -12,7 +12,6 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service
 import { AddLineDialogData, AddLineDialogResult, ReorganizeLinesDialogData, ReorganizeLinesDialogResult, SplitLinesDialogData, SplitLinesDialogResult } from '@app/types/dialog';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
-import { PageSectionComponent } from '@components/page-section.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -40,46 +39,7 @@ import { Line, LineType } from './types';
 @Component({
   selector: 'app-dashboard-index',
   templateUrl: './index.component.html',
-  styles: [`
-.fab {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-
-  z-index: 150;
-
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 1rem;
-}
-
-.fab-actions {
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.no-line {
-  margin-top: 2rem;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  gap: 2rem;
-}
-
-.lines {
-  display: grid;
-  gap: 4rem;
-
-  /* Allow user to view tasks even with the add button */
-  margin-bottom: 2rem
-}
-  `],
+  styleUrl: 'index.component.css',
   providers: [
     ShareUrlService,
     QueryParamsService,
@@ -98,7 +58,6 @@ import { Line, LineType } from './types';
   ],
   imports: [
     PageHeaderComponent,
-    PageSectionComponent,
     PageSectionHeaderComponent,
     MatIconModule,
     MatToolbarModule,
@@ -125,7 +84,7 @@ export class IndexComponent implements OnInit {
 
   lines: Line[];
   showFabActions = false;
-  hasOnlyOneLine = false;
+  hasOnlyOneLine = signal(false);
   columns = 1;
 
   sharableURL = '';
@@ -161,7 +120,7 @@ export class IndexComponent implements OnInit {
 
   openFab() {
     this.showFabActions = !this.showFabActions;
-    this.hasOnlyOneLine = this.lines.length === 1;
+    this.hasOnlyOneLine.set(this.lines.length === 1);
   }
 
   onAddLineDialog() {
@@ -257,7 +216,7 @@ export class IndexComponent implements OnInit {
   }
 
   onSaveChange() {
-    this.hasOnlyOneLine = this.lines.length === 1;
+    this.hasOnlyOneLine.set(this.lines.length === 1);
     this.#dashboardIndexService.saveLines(this.lines);
   }
 }

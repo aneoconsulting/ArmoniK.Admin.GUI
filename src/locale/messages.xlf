@@ -2316,14 +2316,6 @@
         <source>Finished</source>
       </segment>
     </unit>
-    <unit id="3856348061305553948">
-      <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:281</note>
-      </notes>
-      <segment>
-        <source>Good afternoon</source>
-      </segment>
-    </unit>
     <unit id="397321882298165326">
       <notes>
         <note category="location">src/app/components/auto-refresh-button.component.ts:13</note>
@@ -2541,22 +2533,7 @@
         <source>Service is Degraded</source>
       </segment>
     </unit>
-    <unit id="8772850684697870535">
-      <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:283</note>
-      </notes>
-      <segment>
-        <source>Good evening</source>
-      </segment>
-    </unit>
-    <unit id="8829540234129394429">
-      <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:279</note>
-      </notes>
-      <segment>
-        <source>Good morning</source>
-      </segment>
-    </unit>
+
     <unit id="8877382706249482557">
       <notes>
         <note category="location">src/app/components/auto-refresh-button.component.ts:41</note>

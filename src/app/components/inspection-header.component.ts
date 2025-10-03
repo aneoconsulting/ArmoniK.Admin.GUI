@@ -14,6 +14,7 @@ import { StatusChipComponent } from './status-chip.component';
 @Component({
   selector: 'app-inspection-header',
   templateUrl: 'inspection-header.component.html',
+  styleUrl: 'inspection-header.component.css',
   imports: [
     MatToolbarModule,
     PageHeaderComponent,
@@ -29,11 +30,6 @@ import { StatusChipComponent } from './status-chip.component';
     Clipboard,
     NotificationService,
   ],
-  styles: [`
-  #status {
-    font-size: 18px;
-  }
-  `]
 })
 export class InspectionHeaderComponent {
   private readonly iconsService = inject(IconsService);
