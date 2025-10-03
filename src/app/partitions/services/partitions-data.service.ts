@@ -36,9 +36,9 @@ export default class PartitionsDataService extends AbstractTableDataService<Part
       };
     }
     const params: Record<string, string> = {};
-    this.filters.forEach((filtersAnd, index) => {
+    for (const [index, filterAnd] of this.filters.entries()) {
       params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = partition;
-      filtersAnd.forEach((filter) => {
+      for (const filter of filterAnd) {
         if (filter.field !== PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) {
           const taskField = this.partitionToTaskFilter(filter.field as PartitionRawEnumField | null);
           if (taskField && filter.operator !== null && filter.value !== null) {
@@ -46,8 +46,8 @@ export default class PartitionsDataService extends AbstractTableDataService<Part
             params[key] = filter.value?.toString();
           }
         }
-      });
-    });
+      }
+    }
     return params;
   }
 

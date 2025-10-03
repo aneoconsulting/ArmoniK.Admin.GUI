@@ -4,7 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { RouterModule } from '@angular/router';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
-import { Filter } from '@app/types/filters';
+import { Filter, FilterInputValue } from '@app/types/filters';
 import { StatusLabelColor, StatusService } from '@app/types/status';
 import { DefaultConfigService } from '@services/default-config.service';
 import { FiltersService } from '@services/filters.service';
@@ -59,24 +59,33 @@ export class StatusesGroupCardComponent {
   }
 
   createQueryParamManyStatuses() {
-    const params: { [key: string]: string | number | Date | boolean | null } = {};
-    let orGroup = 0;
+    if (this.filters.length === 0) {
+      return this.createQueryParamManyStatusesSingleFilters();
+    } 
+    return this.createQueryParamManyStatusesManyFilters();
+  }
 
-    if (this.filters.length !== 0) {
-      this.group.statuses.forEach((status) => {
-        this.filters.forEach((filterAnd) => {
-          filterAnd.forEach(filter => {
-            const filterLabel = this.#createQueryParamFilterKey(filter, orGroup);
-            if (filterLabel) params[filterLabel] = filter.value;
-          });
-          params[this.#createQueryParamKeyOr(orGroup)] = status;
-          orGroup++;
-        });
-      });
-    } else {
-      this.group.statuses.forEach((status, index) => params[this.#createQueryParamKeyOr(index)] = status);
+  private createQueryParamManyStatusesSingleFilters() {
+    const params: { [key: string]: FilterInputValue } = {};
+    for (const [index, status] of this.group.statuses.entries()) {
+      params[this.#createQueryParamKeyOr(index)] = status;
     }
+    return params;
+  }
 
+  private createQueryParamManyStatusesManyFilters() {
+    const params: { [key: string]: FilterInputValue } = {};
+    let orGroup = 0;
+    for (const status of this.group.statuses) {
+      for (const filterAnd of this.filters) {
+        for (const filter of filterAnd) {
+          const filterLabel = this.#createQueryParamFilterKey(filter, orGroup);
+          if (filterLabel) params[filterLabel] = filter.value;
+        }
+        params[this.#createQueryParamKeyOr(orGroup)] = status;
+        orGroup++;
+      }
+    }
     return params;
   }
 
@@ -87,15 +96,16 @@ export class StatusesGroupCardComponent {
       };
     }
     else {
-      const params: { [key: string]: string | number | Date | boolean | null } = {};
-
-      this.filters.forEach((filterAnd, index) => {
+      const params: { [key: string]: FilterInputValue } = {};
+      for (const [index, filterAnd] of this.filters.entries()) {
         params[this.#createQueryParamKeyOr(index)] = status;
-        filterAnd.forEach(filter => {
+        for (const filter of filterAnd) {
           const filterLabel = this.#createQueryParamFilterKey(filter, index);
-          if (filterLabel) params[filterLabel] = filter.value;
-        });
-      });
+          if (filterLabel) {
+            params[filterLabel] = filter.value;
+          }
+        }
+      }
 
       return params;
     }

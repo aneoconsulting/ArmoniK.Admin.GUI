@@ -180,11 +180,11 @@ export abstract class GrpcTableService<T extends DataRaw, F extends FiltersEnums
    * Recover the field of a filter definition using the filter.
    */
   private recoverField(filter: Filter<F, FO>, filtersDefinitions: FilterDefinition<F, FO>[]): F | FO | string {
-    if(filter.for !== 'custom') {
+    if(filter.for === 'custom') {
+      return (filter.field as string);
+    } else {
       const filterDefinition = this.utilsService.recoverFilterDefinition(filter, filtersDefinitions);
       return filterDefinition.field;
-    } else {
-      return (filter.field as string);
     }
   }
 }

@@ -48,29 +48,29 @@ export class TableService {
     this.tableStorageService.save(key, options);
   }
 
+  private convertValueToNumber(value: string | null): number | null {
+    if (!value) {
+      return null;
+    }
+
+    const numberValue = Number(value);
+
+    if (Number.isNaN(numberValue)) {
+      return null;
+    }
+
+    return numberValue;
+  }
+
   /**
    * Restore options from the storage
    */
   restoreOptions<T extends DataRaw, O extends TaskOptions | null = null>(key: `${Scope}-options`, defaultOptions: ListOptions<T, O>): ListOptions<T, O> {
     const storageData = this.tableStorageService.restore<T>(key) as ListOptions<T> | null;
 
-    function convertValueToNumber(value: string | null): number | null {
-      if (!value) {
-        return null;
-      }
-
-      const numberValue = Number(value);
-
-      if (Number.isNaN(numberValue)) {
-        return null;
-      }
-
-      return numberValue;
-    }
-
     const options: ListOptions<T, O> = {
-      pageIndex: convertValueToNumber(this.tableURLService.getQueryParamsOptions('pageIndex')) ?? storageData?.pageIndex ?? defaultOptions?.pageIndex,
-      pageSize: convertValueToNumber(this.tableURLService.getQueryParamsOptions('pageSize')) ?? storageData?.pageSize ?? defaultOptions?.pageSize,
+      pageIndex: this.convertValueToNumber(this.tableURLService.getQueryParamsOptions('pageIndex')) ?? storageData?.pageIndex ?? defaultOptions?.pageIndex,
+      pageSize: this.convertValueToNumber(this.tableURLService.getQueryParamsOptions('pageSize')) ?? storageData?.pageSize ?? defaultOptions?.pageSize,
       sort: {
         active: this.tableURLService.getQueryParamsOptions<FieldKey<T & O>>('sortField') ?? storageData?.sort.active ?? defaultOptions?.sort.active,
         direction: this.tableURLService.getQueryParamsOptions<SortDirection>('sortDirection') ?? storageData?.sort.direction ?? defaultOptions?.sort.direction,
