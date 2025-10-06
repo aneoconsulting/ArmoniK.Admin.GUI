@@ -2637,33 +2637,6 @@
         <target>Changer la langue</target>
       </segment>
     </unit>
-    <unit id="8829540234129394429">
-      <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:279</note>
-      </notes>
-      <segment state="initial">
-        <source>Good morning</source>
-        <target>Bonjour</target>
-      </segment>
-    </unit>
-    <unit id="3856348061305553948">
-      <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:281</note>
-      </notes>
-      <segment state="initial">
-        <source>Good afternoon</source>
-        <target>Bonne après-midi</target>
-      </segment>
-    </unit>
-    <unit id="8772850684697870535">
-      <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:283</note>
-      </notes>
-      <segment state="initial">
-        <source>Good evening</source>
-        <target>Bonne soiréee</target>
-      </segment>
-    </unit>
     <unit id="3980864845655128791">
       <notes>
         <note category="location">src/app/components/navigation/theme-selector.component.ts:64</note>

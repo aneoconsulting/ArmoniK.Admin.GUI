@@ -11,20 +11,8 @@ type Data = {
 
 @Component({
   selector: 'app-show-card-content',
-  templateUrl: './show-card-content.component.html',
-  styles: [`
-app-show-card-content {
-  display: block;
-  margin-left: 1rem;
-
-  border-left: 1px solid #eee;
-  padding-left: 1rem;
-}
-
-.array-list {
-  margin: 0;
-}
-  `],
+  templateUrl: 'show-card-content.component.html',
+  styleUrl: 'show-card-content.component.scss',
   imports: [
     DurationPipe,
     DatePipe,

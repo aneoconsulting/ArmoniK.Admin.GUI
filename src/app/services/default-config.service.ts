@@ -8,6 +8,7 @@ import { SessionRaw } from '@app/sessions/types';
 import { TaskOptions, TaskSummary } from '@app/tasks/types';
 import { ExportedDefaultConfig, ScopeConfig } from '@app/types/config';
 import { ExternalService } from '@app/types/external-service';
+import { LinkType } from '@app/types/graph.types';
 import { Sidebar } from '@app/types/navigation';
 import { StatusLabelColor } from '@app/types/status';
 import { Theme } from '@app/types/themes';
@@ -56,7 +57,6 @@ export class DefaultConfigService {
   readonly #defaultSidebarOpened: boolean = true;
 
   readonly #defaultSidebar: Sidebar[] = [
-    'profile',
     'divider',
     'dashboard',
     'divider',
@@ -349,6 +349,16 @@ export class DefaultConfigService {
     }
   };
 
+  readonly #defaultGraphLinksColors: Record<LinkType, string> = {
+    parent: '#8A427AAA',
+    dependency: '#878adeDD',
+    payload: '#00a700ff',
+    output: '#f7b657',
+  };
+
+  readonly #defaultGraphHighlightParents: boolean = false;
+  readonly #defaultGraphHighlightChildren: boolean = false;
+
   // We use getters to be able to deep copy the default config and to access the default config from the outside
 
   get defaultTheme(): Theme {
@@ -414,6 +424,17 @@ export class DefaultConfigService {
   get environment() {
     return structuredClone(this.#environment);
   }
+  get defaultGraphLinksColors() {
+    return structuredClone(this.#defaultGraphLinksColors);
+  }
+
+  get defaultGraphHighlightParents() {
+    return structuredClone(this.#defaultGraphHighlightParents);
+  }
+
+  get defaultGraphHighlightChildren() {
+    return structuredClone(this.#defaultGraphHighlightChildren);
+  }
 
   readonly #exportedDefaultConfig: ExportedDefaultConfig = {
     'language': this.#defaultLanguage,
@@ -464,6 +485,9 @@ export class DefaultConfigService {
     'sessions-custom-columns': [],
     'environments': this.#environment,
     'host-config': null,
+    'graph-links-colors': this.#defaultGraphLinksColors,
+    'graph-highlight-parents': this.#defaultGraphHighlightParents,
+    'graph-highlight-children': this.#defaultGraphHighlightChildren,
   };
 
   get exportedDefaultConfig(): ExportedDefaultConfig {

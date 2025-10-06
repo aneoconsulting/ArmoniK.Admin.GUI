@@ -13,8 +13,6 @@
   </button>
   <div class="title">
     <span>ArmoniK</span>
-    <span> - </span>
-    <span class="greeting">{{ greetings }}</span>
   </div>
   <div class="spacer"></div>
   <app-environment />
@@ -24,6 +22,9 @@
   <app-external-services />
   <app-versions-menu />
   <app-theme-selector/>
+  <button mat-icon-button [routerLink]="'/profile'" [disabled]="isProfileButtonDisabled()" matTooltip="Profil" i18n-matTooltip="Profile button tooltip">
+    <mat-icon [fontIcon]="getIcon('profile')"></mat-icon>
+  </button>
 </mat-toolbar>
 <mat-sidenav-container autosize class="sidenav-container">
   <mat-sidenav #drawer class="sidenav"

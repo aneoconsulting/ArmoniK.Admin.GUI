@@ -5,18 +5,7 @@ import { AddStatusGroupDialogData, TasksStatusesGroup } from '../../dashboard/ty
 
 @Component({
   selector: 'app-add-statuses-group-dialog',
-  template: `
-<h2 mat-dialog-title i18n="Dialog title">Add a group</h2>
-
-<app-form-statuses-group
-  [group]="null"
-  [statuses]="data.statuses"
-  (cancelChange)="onNoClick()"
-  (submitChange)="onSubmit($event)"
-/>
-  `,
-  styles: [`
-  `],
+  templateUrl: 'add-statuses-group-dialog.component.html',
   providers: [],
   imports: [
     FormStatusesGroupComponent,

@@ -1,0 +1,13 @@
+@use 'styles' as *;
+
+.groups {
+  margin-top: 1rem;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 1rem;
+}
+
+section {
+  @include flex-row(1rem);
+}
