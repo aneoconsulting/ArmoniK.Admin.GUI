@@ -1,5 +1,4 @@
 @use 'styles' as *;
-@use '@angular/material' as mat;
 
 :host {
   @include flex-row(2rem);
