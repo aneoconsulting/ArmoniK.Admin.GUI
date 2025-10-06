@@ -12,7 +12,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { HealthCheckComponent } from '@app/healthcheck/healthcheck.component';
 import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
-import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
@@ -56,7 +55,6 @@ export class NavigationComponent implements OnInit {
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly navigationService = inject(NavigationService);
   private readonly iconsService = inject(IconsService);
-  private readonly environmentService = inject(EnvironmentService);
   private readonly userConnectedGuard = inject(UserConnectedGuard);
 
   settingsItem = $localize`Settings`;

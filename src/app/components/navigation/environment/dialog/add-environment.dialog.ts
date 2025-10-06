@@ -15,7 +15,7 @@ import { catchError, of, Subscription, switchMap } from 'rxjs';
 @Component({
   selector: 'app-add-environment-dialog',
   templateUrl: 'add-environment.dialog.html',
-  styleUrl: 'add-environment.dialog.css',
+  styleUrl: 'add-environment.dialog.scss',
   standalone: true,
   imports: [
     MatDialogModule,

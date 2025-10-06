@@ -17,7 +17,7 @@ import { AddEnvironmentDialogComponent } from './dialog/add-environment.dialog';
 @Component({
   selector: 'app-environment',
   templateUrl: 'environment.component.html',
-  styleUrl: 'environment.component.css',
+  styleUrl: 'environment.component.scss',
   standalone: true,
   imports: [
     MatTooltipModule,
