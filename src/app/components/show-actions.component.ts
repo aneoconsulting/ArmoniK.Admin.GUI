@@ -11,7 +11,7 @@ import { ShowActionAreaComponent } from './show-action-area.component';
 @Component({
   selector: 'app-show-actions',
   templateUrl: './show-actions.component.html',
-  styleUrl: 'show-actions.component.css',
+  styleUrl: 'show-actions.component.scss',
   imports: [
     CommonModule,
     MatIconModule,
