@@ -47,8 +47,15 @@ export class AddEnvironmentDialogComponent implements OnDestroy {
     this.subscription.add(this.formGroup.valueChanges.pipe(switchMap((value) => {
       if (this.formGroup.valid && value.host !== '') {
         this.loading.set(true);
-        return this.httpClient.get<Environment>(value.host + '/static/environment.json')
-          .pipe(catchError(() => of(null)));
+        return this.httpClient.get<Environment>(value.host + '/static/environment.json', {
+          headers: {
+            'Access-Control-Allow-Origin': 'http://localhost:4200/',
+          },
+        })
+          .pipe(catchError((content) => {
+            console.log(content);
+            return of(null);
+          }));
       }
       return of(undefined);
     })).subscribe((value) => {

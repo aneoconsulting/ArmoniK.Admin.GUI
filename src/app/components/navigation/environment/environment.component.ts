@@ -57,7 +57,11 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.host$.pipe(
       startWith(),
-      switchMap(() => this.httpClient.get<Partial<Environment>>(this.environmentService.currentHost ?? '' + '/static/environment.json')),
+      switchMap(() => this.httpClient.get<Partial<Environment>>(this.environmentService.currentHost ?? '' + '/static/environment.json', {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })),
       catchError((error) => {
         console.error(error);
         return of({} as Partial<Environment>); // Returns environment with undefined fields
