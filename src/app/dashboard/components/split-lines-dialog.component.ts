@@ -34,7 +34,7 @@ export class SplitLinesDialogComponent implements OnInit {
       return;
     }
 
-    this.columns = parseInt(value, 10);
+    this.columns = Number.parseInt(value, 10);
   }
 
   onNoClick(): void {

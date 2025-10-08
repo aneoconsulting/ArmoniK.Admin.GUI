@@ -34,7 +34,7 @@ export class FiltersChipsComponent<F extends FiltersEnums, O extends FiltersOpti
 
   private toContent(filter: Filter<F, O>): string {
     if (filter.field !== null && filter.field !== undefined) {
-      const label = filter.for !== 'custom' ? this.dataFiltersService.retrieveLabel(filter.for as 'root' | 'options', Number(filter.field)) : (filter.field as string);
+      const label = filter.for === 'custom' ? filter.field as string : this.dataFiltersService.retrieveLabel(filter.for as 'root' | 'options', Number(filter.field));
 
       if (filter.value === null) {
         return label + ' ' + $localize`has no value`;

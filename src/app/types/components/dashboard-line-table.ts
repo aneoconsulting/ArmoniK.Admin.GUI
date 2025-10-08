@@ -76,9 +76,9 @@ export abstract class DashboardLineTableComponent<T extends DataRaw, F extends F
     this.availableColumns = this.indexService.availableTableColumns;
     this.displayedColumnsKeys = this.line.displayedColumns ?? this.indexService.defaultColumns;
 
-    this.indexService.availableTableColumns.forEach(column => {
+    for (const column of this.indexService.availableTableColumns) {
       this.columnsLabels[column.key] = column.name;
-    });
+    }
     this.lockColumns = this.line.lockColumns ?? this.defaultConfig.lockColumns;
   }
 

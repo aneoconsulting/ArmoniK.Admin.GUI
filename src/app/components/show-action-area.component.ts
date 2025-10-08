@@ -25,12 +25,13 @@ export class ShowActionAreaComponent {
   }
   
   @Input({required: true}) set actions(entries : ShowActionButton[]) {
-    entries.filter(entry => entry.disabled !== undefined).forEach(entry => {
+    const filteredEntries = entries.filter(entry => entry.disabled !== undefined);
+    for (const entry of filteredEntries) {
       if (entry.disabled) {
         this.isDisabled[entry.id] = false;
         entry.disabled.subscribe(value => this.isDisabled[entry.id] = value);
       }
-    });
+    }
     this._actions = entries;
   }
 }
