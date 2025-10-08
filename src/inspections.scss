@@ -25,14 +25,15 @@
 }
 
 .object {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  column-gap: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 5rem;
   row-gap: 0.5rem;
 }
 
 mat-accordion, app-message {
-  grid-column: 1 / 4;
+  flex-basis: 100%;
 }
 
 .field {
@@ -44,10 +45,6 @@ mat-accordion, app-message {
 
 p, h2 {
   margin: 0;
-}
-
-app-inspection {
-  padding: 1rem;
 }
 
 mat-chip {

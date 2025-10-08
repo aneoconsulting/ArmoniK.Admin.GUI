@@ -1,3 +1,4 @@
+@use 'assets/styles' as *;
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
@@ -73,12 +74,6 @@ app-table-column-header {
 
 app-table-index-actions-toolbar, app-table-dashboard-actions-toolbar {
   flex-grow: 1;
-}
-
-.filters {
-  height: auto !important;
-  min-height: 64px !important;
-  padding-bottom: 1rem !important;
 }
 
 .custom-file-upload {

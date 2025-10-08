@@ -1,0 +1,10 @@
+@use 'styles' as *;
+
+section {
+  @include flex-row($gap: 1rem, $justify: start);
+  margin: 0.5rem;
+}
+
+h2 {
+  margin: 0;
+}

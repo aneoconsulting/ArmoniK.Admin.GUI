@@ -31,7 +31,7 @@ import { TaskOptions, TaskRaw } from './types';
 @Component({
   selector: 'app-tasks-show',
   templateUrl: 'show.component.html',
-  styleUrl: '../../inspections.css',
+  styleUrl: '../../inspections.scss',
   providers: [
     IconsService,
     UtilsService,

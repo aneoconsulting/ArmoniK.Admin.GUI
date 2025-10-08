@@ -12,6 +12,7 @@ import { JsonComponent } from './json.component';
 @Component({
   selector: 'app-json-inspection',
   templateUrl: 'inspection-json.component.html',
+  styleUrl: 'inspection-json.component.scss',
   providers: [
     IconsService,
   ],
@@ -23,23 +24,6 @@ import { JsonComponent } from './json.component';
     MatCardModule,
     MatTooltipModule,
   ],
-  styles: [`
-  mat-card {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding-left: 1rem;
-  }
-
-  mat-toolbar {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  section {
-    display: flex;
-    align-items: center;
-  }
-  `]
 })
 export class InspectionJsonComponent {
   @Input({ required: true }) data: object | null;

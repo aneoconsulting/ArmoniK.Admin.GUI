@@ -1,0 +1,22 @@
+@use 'styles' as *;
+
+:host {
+  @include flex-row(2rem);
+}
+
+span {
+  padding-top: 1rem;
+  min-width: 3rem;
+  text-align: end;
+}
+
+.filters {
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.filters-and {
+  @include flex-col(1rem);
+}

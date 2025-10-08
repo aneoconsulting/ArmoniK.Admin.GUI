@@ -12,50 +12,8 @@ import { FiltersDialogComponent } from './filters-dialog.component';
 
 @Component({
   selector: 'app-filters-toolbar',
-  templateUrl: './filters-toolbar.component.html',
-  styles: [`
-.filters-toolbar {
-  display: flex;
-  flex-direction: row;
-}
-
-.filters-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.filters-list-text {
-  font-size: 1rem;
-  font-weight: 400;
-
-  min-width: 3rem;
-  text-align: end;
-}
-
-.filters-list-and {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
-  gap: 0.5rem;
-}
-
-button {
-  align-self: flex-start;
-}
-
-.manage-filters {
-  height: 4rem;
-  display: flex;
-  flex-direction: column;
-  margin-top: 0.5rem;
-}
-
-.manage-filters mat-icon {
-  transform: scale(1.5);
-}
-  `],
+  templateUrl: 'filters-toolbar.component.html',
+  styleUrl: 'filters-toolbar.component.scss',
   imports: [
     FiltersChipsComponent,
     MatButtonModule,

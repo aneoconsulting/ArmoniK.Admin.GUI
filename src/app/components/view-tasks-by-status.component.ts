@@ -10,30 +10,8 @@ import { SpinnerComponent } from './spinner.component';
 
 @Component({
   selector: 'app-view-tasks-by-status',
-  template: `
-  @if (loading) {
-    <app-spinner />
-  } @else {
-    @for (group of statusesGroups; track group.name) {
-      <a mat-button
-        [matTooltip]="group.name"
-        [routerLink]="['/tasks']"
-        [queryParams]="group.queryParams"
-        [style]="'color: ' + group.color"
-      >
-        {{ group.statusCount ?? 0 }}
-      </a>
-      @if (!$last) {
-        <span>|</span>
-      }
-    }
-  }
-  `,
-  styles: [`
-.mdc-button {
-  min-width: 0;
-}
-    `],
+  templateUrl: 'view-tasks-by-status.component.html',
+  styleUrl: 'view-tasks-by-status.component.scss',
   imports: [
     RouterModule,
     SpinnerComponent,
