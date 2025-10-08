@@ -31,6 +31,7 @@ ul {
   @include flex-col(0.5rem);
   min-height: 5rem;
   width: 80%;
+  border-radius: 1rem;
 }
 
 .addGroup button mat-icon {
@@ -58,24 +59,7 @@ ul {
 }
 
 .cdk-drag-preview {
-  @include flex-row($gap: 0.5rem, $justify: start);
-  font-size: 1rem;
-
   list-style: none;
   padding: 0 0.5rem;
   border-radius: 0.5rem;
-
-  color: rgba(0, 0, 0, 0.6);
-}
-
-.cdk-drag-placeholder {
-  opacity: 0;
-}
-
-.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.groups ul.cdk-drop-list-dragging li:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }

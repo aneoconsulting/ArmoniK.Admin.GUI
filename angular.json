@@ -50,24 +50,7 @@
               "src/assets"
             ],
             "styles": [
-              {
-                "inject": false,
-                "input": "@angular/material/prebuilt-themes/deeppurple-amber.css"
-              },
-              {
-                "inject": true,
-                "input": "@angular/material/prebuilt-themes/indigo-pink.css"
-              },
-              {
-                "inject": false,
-                "input": "@angular/material/prebuilt-themes/pink-bluegrey.css"
-              },
-              {
-                "inject": false,
-                "input": "@angular/material/prebuilt-themes/purple-green.css"
-              },
-              "src/styles.scss",
-              "src/themes.scss"
+              "src/styles.scss"
             ],
             "scripts": [],
             "browser": "src/main.ts",
@@ -101,7 +84,7 @@
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumError": "5kb"
                 }
               ],
               "outputHashing": "all"

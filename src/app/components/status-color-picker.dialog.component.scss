@@ -7,7 +7,7 @@ form {
 }
 
 section {
-  @include flex-row();
+  @include flex-row($justify: start, $wrap: nowrap);
   margin-bottom: 0.5rem;
 }
 
@@ -15,14 +15,14 @@ p, h3 {
   margin: 0px;
 }
 
-input, .header > mat-icon {
+input, .status-header > mat-icon {
   margin-right: 1rem;
 }
 
 input[type=color] {
   padding: 0px;
-  height: 3rem;
-  width: 3rem;
+  min-height: 3rem;
+  min-width: 3rem;
   border-radius: 0.3rem;
   border: 0px;
   cursor: pointer;

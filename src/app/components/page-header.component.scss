@@ -1,7 +1,7 @@
 @use 'styles' as *;
 
 .page-header {
-  @include flex-row();
+  @include flex-row($wrap: nowrap);
   margin-bottom: 1rem;
 }
 

@@ -1,9 +1,17 @@
-.sidenav-container {
-  height: calc(100% - 64px);
+@use 'styles' as *;
+@use '@angular/material' as mat;
+
+mat-sidenav-container {
+  height: calc(100% - 56px) !important;
 }
 
 .sidenav {
   width: 200px;
+  margin: 0.25rem 0;
+}
+
+.mat-toolbar {
+  margin-bottom: 0 !important;
 }
 
 .sidenav .mat-toolbar {
@@ -18,7 +26,7 @@
 }
 
 .navbar-item-selected {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: var(--armonik-navbar-selected);
 }
 
 .spacer {
@@ -32,5 +40,9 @@
 }
 
 main {
-  padding: 20px 50px;
+  padding: 1rem 50px;
+}
+
+.mdc-icon-button > .mat-icon {
+  color: var(--armonik-header-color) !important;
 }

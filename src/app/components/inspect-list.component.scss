@@ -15,7 +15,7 @@ button {
 }
 
 .item {
-  @include flex-row();
+  @include flex-row($wrap: nowrap);
   margin: 0.5rem;
 }
 

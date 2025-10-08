@@ -7,10 +7,10 @@ mat-dialog-content {
 }
 
 .service-decoration {
-  @include flex-row($gap: 1rem, $justify: start, $align: start);
+  @include flex-row($gap: 1rem, $justify: start, $align: start, $wrap: nowrap);
 
   .preview {
-    @include flex-row();
+    @include flex-row($wrap: nowrap);
     margin-top: 0.5rem;
   }
 }

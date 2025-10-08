@@ -1,4 +1,17 @@
 @use 'styles' as *;
+@use '@angular/material' as mat;
+
+::ng-deep {
+  .services {
+    padding-right: 0 !important;
+    min-width: 10rem;
+
+    .mat-mdc-menu-item-text {
+      @include flex-row();
+      width: 100%;
+    }
+  }
+}
 
 .health-color {
   font-size: 22px;
@@ -6,4 +19,10 @@
 
 .health-status {
   @include flex-row();
+}
+
+.open-healthcheck {
+  mat-icon {
+    color: var(--armonik-header-color) !important;
+  }
 }

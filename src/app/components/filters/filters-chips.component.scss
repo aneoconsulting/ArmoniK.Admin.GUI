@@ -8,11 +8,13 @@
   margin-left: 8px;
 }
 
-.mat-mdc-chip .mat-mdc-chip-action {
-  cursor: pointer;
-}
+::ng-deep {
+  .mat-mdc-chip .mat-mdc-chip-action {
+    cursor: pointer;
+  }
 
-.mat-mdc-standard-chip:hover {
-  opacity: 0.8;
-  transition: opacity 0.75s ease-in-out;
+  .mat-mdc-standard-chip:hover {
+    opacity: 0.8;
+    transition: opacity 0.75s ease-in-out;
+  }
 }
