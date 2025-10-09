@@ -11,8 +11,8 @@
   @if (defaultEnvironment) {
     <article class="env-item">
       <section>
-        <button mat-icon-button (click)="selectEnvironment(-1)" [disabled]="environmentService.currentIndex === -1">
-          @if (environmentService.currentIndex === -1) {
+        <button mat-icon-button (click)="selectEnvironment(null)" [disabled]="environmentService.currentHost === null">
+          @if (environmentService.currentHost === null) {
             <mat-icon [fontIcon]="getIcon('checked')" />
           } @else {
             <mat-icon [fontIcon]="getIcon('unchecked')" />
@@ -25,25 +25,26 @@
       <mat-icon color="info" [fontIcon]="getIcon('info')" i18n-matTooltip matTooltip="This is the default environment and cannot be removed." />
     </article>
   }
-  @for (host of environmmentList; track $index) {
-    <article class="env-item">
+  @for (host of environmentService.hosts; track $index) {
+    @let env = environmentList.get(host);
+    <article class="env-item" [matTooltip]="host">
       <section>
-        <button mat-icon-button i18n-matTooltip matTooltip="Select environment" [disabled]="!host || environmentService.currentIndex === $index" (click)="selectEnvironment($index)">
-          @if (environmentService.currentIndex === $index) {
+        <button mat-icon-button i18n-matTooltip matTooltip="Select environment" [disabled]="!env || environmentService.currentHost === host" (click)="selectEnvironment(host)">
+          @if (environmentService.currentHost === host) {
             <mat-icon [fontIcon]="getIcon('checked')" />
           } @else {
             <mat-icon [fontIcon]="getIcon('unchecked')" />
           }
         </button>
-        @if (host) {
-          <div class="environment" [style]="'color:' + host.color + ';'" >
-            {{ host.name }} {{ host.version }}
+        @if (env) {
+          <div class="environment" [style]="'color:' + env.color + ';'">
+            <span>{{ env.name }} {{ env.version }}</span>
           </div>
         } @else {
           <p mat-menu-item disabled i18n>Could not find the environment.</p>
         }
       </section>
-      <button mat-icon-button (click)="deleteEnv($index)" color="warn">
+      <button mat-icon-button (click)="deleteEnv(host)" color="warn">
         <mat-icon [fontIcon]="getIcon('delete')" />
       </button>
     </article>

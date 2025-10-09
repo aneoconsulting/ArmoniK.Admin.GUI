@@ -11,7 +11,7 @@ import { ConfirmationDialogComponent } from '@components/dialogs/confirmation/co
 import { ConfirmationDialogData } from '@components/dialogs/confirmation/type';
 import { Environment, EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
-import { catchError, concatMap, from, mergeMap, Observable, of, startWith, Subject, Subscription, switchMap, tap } from 'rxjs';
+import { catchError, combineLatest, concatMap, from, mergeMap, Observable, of, startWith, Subject, Subscription, switchMap } from 'rxjs';
 import { AddEnvironmentDialogComponent } from './dialog/add-environment.dialog';
 
 @Component({
@@ -40,7 +40,7 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   defaultEnvironment: Environment | null = null;
 
   private readonly hostList$ = new Subject<void>();
-  environmmentList: (Environment | null)[] = [];
+  readonly environmentList: Map<string, Environment | null> = new Map();
 
   @ViewChild(MatMenuTrigger) private readonly trigger: MatMenuTrigger;
 
@@ -57,11 +57,7 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.host$.pipe(
       startWith(),
-      switchMap(() => this.httpClient.get<Partial<Environment>>(this.environmentService.currentHost ?? '' + '/static/environment.json', {
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
-      })),
+      switchMap(() => this.httpClient.get<Partial<Environment>>(`${this.environmentService.currentHost ?? ''}/static/environment.json`)),
       catchError((error) => {
         console.error(error);
         return of({} as Partial<Environment>); // Returns environment with undefined fields
@@ -72,11 +68,10 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.hostList$.pipe(
       startWith(),
-      tap(() => this.environmmentList = []),
       concatMap(() => from(this.environmentService.hosts)),
-      mergeMap((host) => this.hostToEnvironment(host))
-    ).subscribe((value) => {
-      this.environmmentList.push(value);
+      mergeMap((host) => combineLatest([of(host), this.hostToEnvironment(host)]))
+    ).subscribe(([host, value]) => {
+      this.environmentList.set(host, value);
     });
 
     this.httpClient.get<Partial<Environment>>('/static/environment.json').subscribe((value) => {
@@ -104,13 +99,21 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.iconsService.getIcon(name);
   }
 
-  selectEnvironment(index: number) {
-    this.environment.set(index !== -1 ? this.environmmentList[index] : this.defaultEnvironment);
-    this.environmentService.selectHost(index);
+  selectEnvironment(envHost: string | null) {
+    if (envHost && this.environmentService.hosts.includes(envHost)) {
+      const env = this.environmentList.get(envHost);
+      if (env) {
+        this.environment.set(env);
+        this.environmentService.selectHost(envHost);
+      }
+    } else {
+      this.environment.set(this.defaultEnvironment);
+      this.environmentService.selectHost(null);
+    }
   }
 
   private hostToEnvironment(envAdress: string): Observable<Environment | null> {
-    return this.httpClient.get<Environment>(envAdress + '/static/environment.json')
+    return this.httpClient.get<Environment>(`${envAdress}/static/environment.json`)
       .pipe(catchError(() => of(null)));
   }
 
@@ -125,7 +128,7 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  deleteEnv(index: number) {
+  deleteEnv(host: string) {
     const dialogRef = this.dialog.open<ConfirmationDialogComponent, ConfirmationDialogData>(ConfirmationDialogComponent, {
       data: {
         title: $localize`Removing an environment`,
@@ -135,17 +138,17 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
-        this.environmentService.removeEnvironment(index);
+        this.environmentService.removeEnvironment(host);
         this.hostList$.next();
 
-        if (index === this.environmentService.currentIndex) {
-          this.selectEnvironment(-1);
+        if (host === this.environmentService.currentHost) {
+          this.selectEnvironment(null);
         }
       }
     });
   }
 
-  partialToCompleteEnv(partial: Partial<Environment>) {
+  private partialToCompleteEnv(partial: Partial<Environment>) {
     return {
       color: partial.color || 'red',
       name: partial.name || 'Unknown',

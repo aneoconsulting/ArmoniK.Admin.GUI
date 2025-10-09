@@ -35,7 +35,7 @@ export class AddEnvironmentDialogComponent implements OnDestroy {
   readonly formGroup: FormGroup<{host: FormControl<string | null>}>;
 
   readonly loading = signal(false);
-  testedEnvironment: Environment | null | undefined;
+  testedEnvironment: Environment | null = null;
 
   private readonly subscription = new Subscription();
 
@@ -47,17 +47,12 @@ export class AddEnvironmentDialogComponent implements OnDestroy {
     this.subscription.add(this.formGroup.valueChanges.pipe(switchMap((value) => {
       if (this.formGroup.valid && value.host !== '') {
         this.loading.set(true);
-        return this.httpClient.get<Environment>(value.host + '/static/environment.json', {
-          headers: {
-            'Access-Control-Allow-Origin': 'http://localhost:4200/',
-          },
-        })
-          .pipe(catchError((content) => {
-            console.log(content);
+        return this.httpClient.get<Environment>(value.host + '/static/environment.json')
+          .pipe(catchError(() => {
             return of(null);
           }));
       }
-      return of(undefined);
+      return of(null);
     })).subscribe((value) => {
       this.testedEnvironment = value;
       this.loading.set(false);
