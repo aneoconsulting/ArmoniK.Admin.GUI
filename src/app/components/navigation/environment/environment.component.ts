@@ -55,7 +55,7 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly environmentService = inject(EnvironmentService);
 
   ngOnInit(): void {
-    this.host$.pipe(
+    const hostSubscription = this.host$.pipe(
       startWith(),
       switchMap(() => this.httpClient.get<Partial<Environment>>(`${this.environmentService.currentHost ?? ''}/static/environment.json`)),
       catchError((error) => {
@@ -66,7 +66,7 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
       this.environment.set(this.partialToCompleteEnv(environment));
     });
 
-    this.hostList$.pipe(
+    const hostListSubscription = this.hostList$.pipe(
       startWith(),
       concatMap(() => from(this.environmentService.hosts)),
       mergeMap((host) => combineLatest([of(host), this.hostToEnvironment(host)]))
@@ -77,6 +77,9 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
     this.httpClient.get<Partial<Environment>>('/static/environment.json').subscribe((value) => {
       this.defaultEnvironment = this.partialToCompleteEnv(value);
     });
+
+    this.subscription.add(hostSubscription);
+    this.subscription.add(hostListSubscription);
 
     this.host$.next();
     this.hostList$.next();
