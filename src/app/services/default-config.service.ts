@@ -275,7 +275,8 @@ export class DefaultConfigService {
     urlTemplate: null,
   };
 
-  readonly #environment: string[] = ['http://172.26.174.64:5000'];
+  readonly #hostConfig: string | null = null;
+  readonly #environments: string[] = [];
 
   readonly #defaultTaskStatuses: Record<string, StatusLabelColor> = {
     [TaskStatus.TASK_STATUS_COMPLETED]: {
@@ -421,9 +422,14 @@ export class DefaultConfigService {
     return structuredClone(this.#availableLanguages);
   }
 
-  get environment() {
-    return structuredClone(this.#environment);
+  get environments() {
+    return structuredClone(this.#environments);
   }
+
+  get hostConfig() {
+    return structuredClone(this.#hostConfig);
+  }
+
   get defaultGraphLinksColors() {
     return structuredClone(this.#defaultGraphLinksColors);
   }
@@ -483,7 +489,7 @@ export class DefaultConfigService {
     'tasks-statuses': this.#defaultTaskStatuses,
     'tasks-custom-columns': [],
     'sessions-custom-columns': [],
-    'environments': this.#environment,
+    'environments': this.#environments,
     'host-config': null,
     'graph-links-colors': this.#defaultGraphLinksColors,
     'graph-highlight-parents': this.#defaultGraphHighlightParents,

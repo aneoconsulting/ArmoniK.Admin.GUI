@@ -13,7 +13,7 @@ export interface Environment {
 
 @Injectable()
 export class EnvironmentService {
-  readonly hosts: string[];
+  hosts: string[];
   currentHost: string | null;
 
   private readonly storageService = inject(StorageService);
@@ -21,13 +21,24 @@ export class EnvironmentService {
   private readonly grpcInterceptor = inject(GRPC_INTERCEPTORS) as GrpcHostInterceptor;
 
   constructor() {
-    this.hosts = (this.storageService.getItem<string[]>('environments', true) ?? this.defaultConfigService.environment) as string[];
-    this.currentHost = this.storageService.getItem<string>('host-config') ?? null;
+    this.hosts = this.getHostLists();
+    this.currentHost = this.getHost();
+  }
+
+  private getHostLists() {
+    return (this.storageService.getItem<string[]>('environments', true) ?? this.defaultConfigService.environments) as string[];
+  }
+
+  private getHost() {
+    return this.storageService.getItem<string>('host-config') ?? this.defaultConfigService.hostConfig;
   }
 
   selectHost(host: string | null) {
     this.currentHost = host;
     this.grpcInterceptor.setHost(this.currentHost);
+    if (host === null) {
+      this.storageService.removeItem('host-config');
+    }
   }
 
   addEnvironment(environment: string): void {
@@ -37,8 +48,9 @@ export class EnvironmentService {
 
   removeEnvironment(host: string): void {
     const index = this.hosts.findIndex((h) => h === host);
+    console.log(index);
     if (index != -1) {
-      this.hosts.splice(index, 1);
+      this.hosts = this.hosts.splice(index, 1);
       this.saveEnvironments();
     }
   }

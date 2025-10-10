@@ -1,23 +1,30 @@
 import { TestBed } from '@angular/core/testing';
 import { GrpcMessage, GrpcRequest } from '@ngx-grpc/common';
 import { GrpcHandler } from '@ngx-grpc/core';
+import { DefaultConfigService } from '@services/default-config.service';
 import { StorageService } from '@services/storage.service';
 import { GrpcClientSettings, GrpcHostInterceptor } from './grpc.interceptor';
 
 describe('GrpcHostInterceptor', () => {
   let interceptor: GrpcHostInterceptor;
 
+  const storedHost = 'http://armonik.eu';
   const mockStorageService = {
     setItem: jest.fn(),
-    getItem: jest.fn(() => null),
+    getItem: jest.fn((): string | undefined => storedHost),
     removeItem: jest.fn(),
+  };
+
+  const mockDefaultConfigService = {
+    hostConfig: null,
   };
 
   beforeEach(() => {
     interceptor = TestBed.configureTestingModule({
       providers: [
         GrpcHostInterceptor,
-        { provide: StorageService, useValue: mockStorageService },    
+        { provide: StorageService, useValue: mockStorageService },
+        { provide: DefaultConfigService, useValue: mockDefaultConfigService }, 
       ]
     }).inject(GrpcHostInterceptor);
   });
@@ -29,6 +36,12 @@ describe('GrpcHostInterceptor', () => {
   describe('initialisation', () => {
     it('should get the host-config stored item', () => {
       expect(mockStorageService.getItem).toHaveBeenCalledWith('host-config');
+    });
+    
+    it('should set the default host if the stored item is undefined', () => {
+      mockStorageService.getItem.mockReturnValueOnce(undefined);
+      interceptor['initHost']();
+      expect(interceptor.host).toEqual(mockDefaultConfigService.hostConfig);
     });
   });
 
@@ -45,19 +58,27 @@ describe('GrpcHostInterceptor', () => {
       }
     } as unknown as GrpcRequest<GrpcMessage, GrpcMessage>;
 
-    const newHost = 'some-url';
+    describe('with custom host', () => {
+      beforeEach(() => {
+        interceptor.host = storedHost;
+        interceptor.intercept(request, grpcHandler);
+      });
 
-    beforeEach(() => {
-      interceptor.host = newHost;
-      interceptor.intercept(request, grpcHandler);
+      it('should update the request', () => {
+        expect((request.client as GrpcClientSettings).settings.host).toEqual(storedHost);
+      });
+
+      it('should handle the request', () => {
+        expect(grpcHandler.handle).toHaveBeenCalledWith(request);
+      });
     });
 
-    it('should update the request', () => {
-      expect((request.client as GrpcClientSettings).settings.host).toEqual(newHost);
-    });
-
-    it('should handle the request', () => {
-      expect(grpcHandler.handle).toHaveBeenCalledWith(request);
+    describe('with null host', () => {
+      it('should update the request', () => {
+        interceptor.host = null;
+        interceptor.intercept(request, grpcHandler);
+        expect((request.client as GrpcClientSettings).settings.host).toEqual('');
+      });
     });
   });
 
@@ -91,23 +112,5 @@ describe('GrpcHostInterceptor', () => {
   test('Clearing the host', () => {
     interceptor.clearHost();
     expect(mockStorageService.removeItem).toHaveBeenCalledWith('host-config');
-  });
-
-  describe('testing host configuration', () => {
-    const initialHostConfig = 'init-host';
-    const testedValue = 'test-host';
-    const testFn = jest.fn();
-    beforeEach(() => {
-      interceptor.host = initialHostConfig;
-      interceptor.test(testedValue, testFn);
-    });
-
-    it('should not update the host config', () => {
-      expect(interceptor.host).toEqual(initialHostConfig);
-    });
-
-    it('should call the test function', () => {
-      expect(testFn).toHaveBeenCalled();
-    });
   });
 });

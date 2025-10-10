@@ -2,6 +2,7 @@
 import { inject } from '@angular/core';
 import { GrpcMessage, GrpcRequest, GrpcEvent, GrpcClient } from '@ngx-grpc/common';
 import { GrpcHandler, GrpcInterceptor } from '@ngx-grpc/core';
+import { DefaultConfigService } from '@services/default-config.service';
 import { StorageService } from '@services/storage.service';
 import { Observable } from 'rxjs';
 
@@ -17,9 +18,14 @@ export class GrpcHostInterceptor implements GrpcInterceptor {
   host: string | null = null;
   readonly checkRegex = /(http(s)?:\/\/)([\w-]+\.)+[\w-]+[\w-]*/;
   private readonly storageService = inject(StorageService);
+  private readonly defaultConfigService = inject(DefaultConfigService);
 
   constructor() {
-    this.host = this.storageService.getItem('host-config');
+    this.initHost();
+  }
+
+  private initHost() {
+    this.host = this.storageService.getItem('host-config') ?? this.defaultConfigService.hostConfig;
   }
 
   /**
