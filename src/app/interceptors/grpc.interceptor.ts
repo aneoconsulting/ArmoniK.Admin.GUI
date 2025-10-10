@@ -42,12 +42,12 @@ export class GrpcHostInterceptor implements GrpcInterceptor {
    * @param entry string
    */
   setHost(entry: string | null) {
-    if (entry !== null) {
-      this.host = entry;
-      this.storageService.setItem('host-config', entry);
-    } else {
+    if (entry === null) {
       this.clearHost();
       this.host = null;
+    } else {
+      this.host = entry;
+      this.storageService.setItem('host-config', entry);
     }
   }
   
