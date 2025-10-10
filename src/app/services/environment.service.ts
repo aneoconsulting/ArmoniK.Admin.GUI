@@ -48,9 +48,8 @@ export class EnvironmentService {
 
   removeEnvironment(host: string): void {
     const index = this.hosts.findIndex((h) => h === host);
-    console.log(index);
     if (index != -1) {
-      this.hosts = this.hosts.splice(index, 1);
+      this.hosts.splice(index, 1);
       this.saveEnvironments();
     }
   }
