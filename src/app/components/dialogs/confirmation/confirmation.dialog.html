@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>{{ data.title ?? defaultTitle }}</h2>
+
+<mat-dialog-content>
+  @for (line of data.content; track $index) {
+    <p>{{ line }}</p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-flat-button [mat-dialog-close]="false">{{ data.actions?.cancel ?? defaultActions.cancel }}</button>
+  <button mat-flat-button [mat-dialog-close]="true" color="primary">{{ data.actions?.confirm ?? defaultActions.confirm }}</button>
+</mat-dialog-actions>

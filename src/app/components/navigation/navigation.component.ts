@@ -12,13 +12,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { HealthCheckComponent } from '@app/healthcheck/healthcheck.component';
 import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
-import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { ChangeLanguageButtonComponent } from './change-language-button.component';
+import { EnvironmentComponent } from './environment/environment.component';
 import { ExternalServicesComponent } from './external-services/external-services.component';
 import { ThemeSelectorComponent } from './theme-selector.component';
 import { VersionsMenuComponent } from './version-menu/versions-menu.component';
@@ -47,6 +47,7 @@ import { VersionsMenuComponent } from './version-menu/versions-menu.component';
     HealthCheckComponent,
     ExternalServicesComponent,
     VersionsMenuComponent,
+    EnvironmentComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -54,10 +55,8 @@ export class NavigationComponent implements OnInit {
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly navigationService = inject(NavigationService);
   private readonly iconsService = inject(IconsService);
-  private readonly environmentService = inject(EnvironmentService);
   private readonly userConnectedGuard = inject(UserConnectedGuard);
 
-  environment = this.environmentService.getEnvironment();
   settingsItem = $localize`Settings`;
 
   private userConnected = signal(this.userConnectedGuard.canActivate());
