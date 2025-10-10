@@ -1,14 +1,6 @@
-.environment {
-  background: white;
-  padding: 0 1rem;
-  border-radius: 0.25rem;
-  height: fit-content;
-}
-
-mat-dialog-actions {
+:host {
   width: 30vw !important;
-  display: flex;
-  justify-content: space-between;
+  display: block;
 }
 
 section {

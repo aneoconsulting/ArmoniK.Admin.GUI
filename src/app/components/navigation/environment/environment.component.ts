@@ -35,14 +35,13 @@ import { AddEnvironmentDialogComponent } from './dialog/add-environment.dialog';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
-  private readonly host$ = new Subject<void>();
   environment = signal<Environment | null>(null);
   defaultEnvironment: Environment | null = null;
-
+  private readonly host$ = new Subject<void>();
   private readonly hostList$ = new Subject<void>();
   readonly environmentList: Map<string, Environment | null> = new Map();
 
-  @ViewChild(MatMenuTrigger) private readonly trigger: MatMenuTrigger;
+  @ViewChild(MatMenuTrigger) private trigger: MatMenuTrigger;
 
   openedMenu = false;
 
@@ -51,17 +50,12 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly iconsService = inject(IconsService);
   private readonly dialog = inject(MatDialog);
   private readonly httpClient = inject(HttpClient);
-
   readonly environmentService = inject(EnvironmentService);
 
   ngOnInit(): void {
     const hostSubscription = this.host$.pipe(
       startWith(),
-      switchMap(() => this.httpClient.get<Partial<Environment>>(`${this.environmentService.currentHost ?? ''}/static/environment.json`)),
-      catchError((error) => {
-        console.error(error);
-        return of({} as Partial<Environment>); // Returns environment with undefined fields
-      })
+      switchMap(() => this.hostToEnvironment(this.environmentService.currentHost)),
     ).subscribe((environment) => {
       this.environment.set(this.partialToCompleteEnv(environment));
     });
@@ -115,8 +109,8 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  private hostToEnvironment(envAdress: string): Observable<Environment | null> {
-    return this.httpClient.get<Environment>(`${envAdress}/static/environment.json`)
+  private hostToEnvironment(envAdress: string | null): Observable<Environment | null> {
+    return this.httpClient.get<Environment>(`${envAdress ?? ''}/static/environment.json`)
       .pipe(catchError(() => of(null)));
   }
 
@@ -125,6 +119,10 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
+        value = value.trim();
+        if (value.at(-1) === '/') {
+          value = value.slice(0, -1);
+        }
         this.environmentService.addEnvironment(value);
         this.hostList$.next();
       }
@@ -151,12 +149,12 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  private partialToCompleteEnv(partial: Partial<Environment>) {
+  private partialToCompleteEnv(env: Partial<Environment> | null) {
     return {
-      color: partial.color || 'red',
-      name: partial.name || 'Unknown',
-      description: partial.description || 'Unknown',
-      version: partial.version || 'Unknown',
+      color: env?.color || 'red',
+      name: env?.name || 'Unknown',
+      description: env?.description || 'Unknown',
+      version: env?.version || 'Unknown',
     } satisfies Environment;
   }
 }
