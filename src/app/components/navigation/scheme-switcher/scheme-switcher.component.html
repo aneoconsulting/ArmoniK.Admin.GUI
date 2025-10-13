@@ -1,11 +1,11 @@
 <mat-button-toggle-group hideSingleSelectionIndicator>
-  <mat-button-toggle (click)="selectScheme('light dark')" [checked]="currentScheme === 'light dark'" i18n-matTooltip matTooltip="Automatic">
+  <mat-button-toggle (click)="selectScheme('light dark')" (keydown.enter)="selectScheme('light dark')" [checked]="currentScheme === 'light dark'" i18n-matTooltip matTooltip="Automatic">
     <mat-icon [fontIcon]="getIcon('automatic')" />
   </mat-button-toggle>
-  <mat-button-toggle (click)="selectScheme('light')" [checked]="currentScheme === 'light'" i18n-matTooltip matTooltip="Light mode">
+  <mat-button-toggle (click)="selectScheme('light')" (keydown.enter)="selectScheme('light')" [checked]="currentScheme === 'light'" i18n-matTooltip matTooltip="Light mode">
     <mat-icon [fontIcon]="getIcon('light-mode')" />
   </mat-button-toggle>
-  <mat-button-toggle (click)="selectScheme('dark')" [checked]="currentScheme === 'dark'" i18n-matTooltip matTooltip="Dark mode">
+  <mat-button-toggle (click)="selectScheme('dark')" (keydown.enter)="selectScheme('dark')" [checked]="currentScheme === 'dark'" i18n-matTooltip matTooltip="Dark mode">
     <mat-icon [fontIcon]="getIcon('dark-mode')" />
   </mat-button-toggle>
 </mat-button-toggle-group>
