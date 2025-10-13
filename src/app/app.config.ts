@@ -21,8 +21,7 @@ import { routes } from './app.routes';
 import { provideArmonikDateAdapter } from './initialisation/date-adapter';
 import { ExportedDefaultConfig } from './types/config';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function initializeAppFactory(userGrpcService: UserGrpcService, userService: UserService, versionsGrpcService: VersionsGrpcService, versionsService: VersionsService, httpClient: HttpClient, environmentService: EnvironmentService, storageService: StorageService, _themeService: ThemeService) {
+function initializeAppFactory(userGrpcService: UserGrpcService, userService: UserService, versionsGrpcService: VersionsGrpcService, versionsService: VersionsService, httpClient: HttpClient, environmentService: EnvironmentService, storageService: StorageService) {
 
   return () => merge(
     versionsGrpcService.listVersions$().pipe(
@@ -102,7 +101,7 @@ export const appConfig: ApplicationConfig = {
       useValue: localStorage
     },
     provideAppInitializer(() => {
-      const initializerFn = (initializeAppFactory)(inject(UserGrpcService), inject(UserService), inject(VersionsGrpcService), inject(VersionsService), inject(HttpClient), inject(EnvironmentService), inject(StorageService), inject(ThemeService));
+      const initializerFn = (initializeAppFactory)(inject(UserGrpcService), inject(UserService), inject(VersionsGrpcService), inject(VersionsService), inject(HttpClient), inject(EnvironmentService), inject(StorageService));
       return initializerFn();
     }),
     provideArmonikDateAdapter(),
