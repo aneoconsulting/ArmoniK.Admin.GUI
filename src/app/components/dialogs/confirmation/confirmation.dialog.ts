@@ -6,7 +6,6 @@ import { ConfirmationDialogData } from './type';
 @Component({
   selector: 'app-confirmation-dialog',
   templateUrl: 'confirmation.dialog.html',
-  styleUrl: 'confirmation.dialog.css',
   standalone: true,
   imports: [
     MatDialogModule,
