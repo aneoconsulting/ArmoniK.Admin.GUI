@@ -1,0 +1,8 @@
+@use 'styles' as *;
+@use '@angular/material' as mat;
+
+button.version {
+  mat-icon, span {
+    color: var(--armonik-header-color) !important;
+  }
+}
