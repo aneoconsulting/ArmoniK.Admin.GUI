@@ -27,9 +27,6 @@ button {
 .manage-filters {
   @include flex-col();
   padding: 0.5rem;
-}
-
-.manage-filters {
   border-radius: 1rem;
   mat-icon {
     transform: scale(1.5);

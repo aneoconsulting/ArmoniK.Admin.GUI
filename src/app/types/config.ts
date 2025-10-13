@@ -30,6 +30,9 @@ export type Key =
   'sessions-tasks-by-status' |
   'partitions-tasks-by-status' |
   'tasks-view-in-logs' |
+  'graph-links-colors' |
+  'graph-highlight-parents' |
+  'graph-highlight-children' |
   `${CustomScope}-custom-columns` |
   `${Scope}-${Element}` |
   `${Scope}-show-filters` |

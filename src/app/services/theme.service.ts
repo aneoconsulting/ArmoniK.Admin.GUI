@@ -35,11 +35,11 @@ export class ThemeService {
 
   private applyTheme(theme: Theme) {
     if (theme !== this.currentTheme) {
-      ALL_THEMES.forEach(themeToRemove => {
+      for (const themeToRemove of ALL_THEMES) {
         if (theme !== themeToRemove) {
           this.renderer.removeClass(document.body, themeToRemove);
         }
-      });
+      }
       this.renderer.addClass(document.body, theme);
       this.currentTheme = theme;
     }

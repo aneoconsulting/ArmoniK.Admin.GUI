@@ -2,7 +2,7 @@
 @use '@angular/material' as mat;
 
 mat-sidenav-container {
-  height: calc(100% - 60px) !important;
+  height: calc(100% - 56px) !important;
 }
 
 .sidenav {
@@ -45,21 +45,4 @@ main {
 
 .mdc-icon-button > .mat-icon {
   color: var(--armonik-header-color) !important;
-}
-
-::ng-deep {
-  .mat-drawer-inner-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .mdc-list {
-    width: 100%;
-  }
-}
-
-app-scheme-switcher {
-  margin-bottom: 1rem;
 }
