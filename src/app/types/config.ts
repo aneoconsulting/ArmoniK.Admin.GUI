@@ -22,6 +22,7 @@ export type Key =
   'navigation-sidebar' |
   'navigation-sidebar-opened' |
   'navigation-theme' |
+  'navigation-color-scheme' |
   'navigation-external-services' |
   'dashboard-lines'|
   'dashboard-split-lines' |
