@@ -34,7 +34,7 @@ export class SchemeSwitcherComponent implements OnInit {
     this.elementRef.nativeElement.ownerDocument.documentElement.style['color-scheme'] = scheme;
   }
 
-  selectScheme(scheme: ColorScheme | null) {
+  selectScheme(scheme: ColorScheme) {
     if (scheme && isColorTheme(scheme)) {
       this.currentScheme = scheme;
       this.storageService.setItem('navigation-color-scheme', scheme);

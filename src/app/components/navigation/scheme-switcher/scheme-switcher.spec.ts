@@ -94,7 +94,7 @@ describe('SchemeSwitcherComponent', () => {
     });
 
     it('should not accept nullish values', () => {
-      component.selectScheme(null);
+      component.selectScheme(null as unknown as ColorScheme);
       expect(component.currentScheme).toBe(mockStoredValue);
     });
 
