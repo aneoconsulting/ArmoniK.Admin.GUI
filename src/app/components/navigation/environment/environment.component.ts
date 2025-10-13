@@ -41,7 +41,7 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly hostList$ = new Subject<void>();
   readonly environmentList: Map<string, Environment | null> = new Map();
 
-  @ViewChild(MatMenuTrigger) private trigger: MatMenuTrigger;
+  @ViewChild(MatMenuTrigger) private readonly trigger: MatMenuTrigger | null = null;
 
   openedMenu = false;
 
@@ -80,12 +80,14 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.subscription.add(this.trigger.menuClosed.subscribe(() => {
-      this.openedMenu = false;
-    }));
-    this.subscription.add(this.trigger.menuOpened.subscribe(() => {
-      this.openedMenu = true;
-    }));
+    if (this.trigger) {
+      this.subscription.add(this.trigger.menuClosed.subscribe(() => {
+        this.openedMenu = false;
+      }));
+      this.subscription.add(this.trigger.menuOpened.subscribe(() => {
+        this.openedMenu = true;
+      }));
+    }
   }
 
   ngOnDestroy(): void {

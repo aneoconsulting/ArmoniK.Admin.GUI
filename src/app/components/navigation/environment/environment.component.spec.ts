@@ -57,7 +57,11 @@ describe('EnvironmentComponent', () => {
         { provide: IconsService, useValue: mockIconsService },
       ]
     }).inject(EnvironmentComponent);
-    component['trigger'] = mockTrigger;
+    jest.replaceProperty(
+      component,
+      'trigger' as unknown as keyof EnvironmentComponent,
+      mockTrigger as unknown as Environment // Since trigger is private, MatMenuTrigger is not accepted as a "valid" type.
+    );
     component.ngOnInit();
     component.ngAfterViewInit();
   });
