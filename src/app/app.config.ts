@@ -10,6 +10,7 @@ import { FiltersCacheService } from '@services/filters-cache.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
+import { ThemeService } from '@services/theme.service';
 import { UserGrpcService } from '@services/user-grpc.service';
 import { UserService } from '@services/user.service';
 import { VersionsGrpcService } from '@services/versions-grpc.service';
@@ -70,6 +71,7 @@ export const appConfig: ApplicationConfig = {
     VersionsGrpcService,
     VersionsService,
     StorageService,
+    ThemeService,
     NavigationService,
     CacheService,
     FiltersCacheService,

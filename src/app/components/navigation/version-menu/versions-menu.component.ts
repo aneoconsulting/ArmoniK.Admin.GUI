@@ -10,6 +10,7 @@ import pkg from '../../../../../package.json';
 @Component({
   selector: 'app-versions-menu',
   templateUrl: 'versions-menu.component.html',
+  styleUrl: 'versions-menu.component.scss',
   imports: [
     MatMenuModule,
     MatIconModule,

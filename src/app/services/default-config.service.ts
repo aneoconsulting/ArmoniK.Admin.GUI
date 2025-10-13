@@ -15,7 +15,7 @@ import { Theme } from '@app/types/themes';
 
 @Injectable()
 export class DefaultConfigService {
-  readonly #defaultTheme: Theme = 'indigo-pink';
+  readonly #defaultTheme: Theme = 'light-blue';
   readonly #defaultExternalServices: ExternalService[] = [];
 
   readonly #defaultDashboardLines: CountLine[] = [
@@ -57,7 +57,6 @@ export class DefaultConfigService {
   readonly #defaultSidebarOpened: boolean = true;
 
   readonly #defaultSidebar: Sidebar[] = [
-    'divider',
     'dashboard',
     'divider',
     'applications',
@@ -67,7 +66,6 @@ export class DefaultConfigService {
     'tasks',
     'results',
     'divider',
-    'divider'
   ];
 
   readonly #defaultApplications: ScopeConfig<ApplicationRaw, ApplicationRawEnumField> = {
