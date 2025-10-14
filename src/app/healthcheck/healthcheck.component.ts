@@ -17,7 +17,7 @@ import { Observable, Subject, catchError, of, startWith, switchMap } from 'rxjs'
 @Component({
   selector: 'app-healthcheck',
   templateUrl: './healthcheck.component.html',
-  styleUrl: 'healthcheck.component.css',
+  styleUrl: 'healthcheck.component.scss',
   imports: [
     MatIconModule,
     MatMenuModule,

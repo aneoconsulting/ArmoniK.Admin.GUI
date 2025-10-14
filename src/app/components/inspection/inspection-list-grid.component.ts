@@ -7,7 +7,7 @@ import { PrettyPipe } from '@pipes/pretty.pipe';
 @Component({
   selector: 'app-inspection-list-grid',
   templateUrl: 'inspection-list-grid.component.html',
-  styleUrl: '../../../inspections.css',
+  styleUrl: '../../../inspections.scss',
   imports: [
     InspectListComponent,
     PrettyPipe

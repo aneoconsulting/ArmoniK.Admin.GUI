@@ -1,0 +1,10 @@
+.container {
+  position: relative;
+}
+
+.table-container {
+  position: relative;
+  overflow: auto;
+  border-radius: 1rem !important;
+  max-height: 60vh;
+}

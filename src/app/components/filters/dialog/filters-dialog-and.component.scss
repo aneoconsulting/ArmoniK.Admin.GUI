@@ -1,0 +1,17 @@
+@use 'styles' as *;
+
+mat-card {
+  @include flex-col();
+  background-color: var(--armonik-container-background-light) !important;
+  border: 1px solid var(--armonik-container-background);
+}
+
+article {
+  @include flex-row($gap: 0.25rem, $wrap: nowrap);
+  padding: 0.5rem;
+}
+
+section {
+  @include flex-row(1rem);
+  width: 100%;
+}

@@ -11,7 +11,7 @@ import { LineType } from '../types';
 @Component({
   selector: 'app-add-line-dialog',
   templateUrl: 'add-line-dialog.component.html',
-  styleUrl: 'add-line-dialog.component.css',
+  styleUrl: 'add-line-dialog.component.scss',
   providers: [],
   imports: [
     MatDialogModule,

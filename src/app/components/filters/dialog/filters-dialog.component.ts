@@ -18,7 +18,7 @@ import { FilterInputValue, FormFilter, FormFilterType, FormFiltersAnd, FormFilte
 @Component({
   selector: 'app-filters-dialog',
   templateUrl: './filters-dialog.component.html',
-  styleUrl: './filters-dialog.component.css',
+  styleUrl: './filters-dialog.component.scss',
   standalone: true,
   imports: [
     FiltersDialogAndComponent,

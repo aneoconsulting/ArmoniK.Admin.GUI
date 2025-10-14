@@ -8,12 +8,12 @@ import { FiltersDialogData, FiltersDialogResult } from '@app/types/dialog';
 import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '@app/types/filters';
 import { FiltersChipsComponent } from '@components/filters/filters-chips.component';
 import { IconsService } from '@services/icons.service';
-import { FiltersDialogComponent } from './filters-dialog.component';
+import { FiltersDialogComponent } from './dialog/filters-dialog.component';
 
 @Component({
   selector: 'app-filters-toolbar',
   templateUrl: 'filters-toolbar.component.html',
-  styleUrl: 'filters-toolbar.component.css',
+  styleUrl: 'filters-toolbar.component.scss',
   imports: [
     FiltersChipsComponent,
     MatButtonModule,
