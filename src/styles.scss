@@ -1,0 +1,24 @@
+@use 'assets/styles' as *;
+
+html {
+  color-scheme: light dark;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+body.light-blue {
+  @include apply-blue-theme();
+}
+
+body.dark-green {
+  @include apply-green-theme();
+}
+
+body.light-pink {
+  @include apply-pink-theme();
+}
+
+body.dark-purple {
+  @include apply-purple-theme();
+}

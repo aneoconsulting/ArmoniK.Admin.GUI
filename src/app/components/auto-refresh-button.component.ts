@@ -8,7 +8,7 @@ import { IconsService } from '@services/icons.service';
 @Component({
   selector: 'app-auto-refresh-button',
   templateUrl: 'auto-refresh-button.component.html',
-  styleUrl: 'auto-refresh-button.component.css',
+  styleUrl: 'auto-refresh-button.component.scss',
   imports: [
     MatDialogModule,
     MatButtonModule,

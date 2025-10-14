@@ -18,8 +18,8 @@ import { TableColumnHeaderComponent } from './table-column-header.component';
 
 @Component({
   selector: 'app-table',
-  templateUrl: 'table.component.html',
-  styleUrl: 'table.component.css',
+  templateUrl: './table.component.html',
+  styleUrl: 'table.component.scss',
   imports: [
     TableColumnHeaderComponent,
     TableCellComponent,

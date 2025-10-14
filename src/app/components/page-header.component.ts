@@ -4,7 +4,7 @@ import { ShareUrlComponent } from './share-url.component';
 @Component({
   selector: 'app-page-header',
   templateUrl: './page-header.component.html',
-  styleUrl: 'page-header.component.css',
+  styleUrl: 'page-header.component.scss',
   providers: [],
   imports: [
     ShareUrlComponent

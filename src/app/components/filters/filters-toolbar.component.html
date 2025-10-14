@@ -37,7 +37,7 @@
           <span class="filters-list-text" i18n="Filter condition">
             Where
           </span>
-          <app-filters-chips [filtersAnd]="filters[0]"/>
+          <app-filters-chips [filtersAnd]="filters[0]" (openFilters)="openFiltersDialog()"/>
           @if(!hasOneOrFilter) {
             <span class="filters-list-text" i18n="Filter condition">
               Or ...

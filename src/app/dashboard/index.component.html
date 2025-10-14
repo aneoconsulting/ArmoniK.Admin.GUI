@@ -4,25 +4,26 @@
   </app-page-header>
   
   <div class="fab">
-    <button class="fab-activator" mat-fab color="primary" (click)="openFab()" matTooltip="Customize Dashboard">
-      <mat-icon [fontIcon]="getIcon('settings')"></mat-icon>
-    </button>
     <!-- TODO: add an animtation, https://angular.io/guide/animations -->
     @if (showFabActions) {
       <div class="fab-actions">
-        <button mat-mini-fab matTooltip="Add a Line" i18n-matTooltip (click)="onAddLineDialog()">
-          <mat-icon [fontIcon]="getIcon('add')"></mat-icon>
+        <button mat-mini-fab matTooltip="Split Lines" i18n-matTooltip (click)="onSplitLinesDialog()">
+          <mat-icon [fontIcon]="getIcon('vertical-split')"></mat-icon>
         </button>
         @if (!hasOnlyOneLine()) {
           <button mat-mini-fab matTooltip="Reorganize Lines" i18n-matTooltip (click)="onReorganizeLinesDialog()">
             <mat-icon [fontIcon]="getIcon('list')"></mat-icon>
           </button>
         }
-        <button mat-mini-fab matTooltip="Split Lines" i18n-matTooltip (click)="onSplitLinesDialog()">
-          <mat-icon [fontIcon]="getIcon('vertical-split')"></mat-icon>
+
+        <button mat-mini-fab matTooltip="Add a Line" i18n-matTooltip (click)="onAddLineDialog()">
+          <mat-icon [fontIcon]="getIcon('add')"></mat-icon>
         </button>
       </div>
     }
+    <button class="fab-activator" mat-fab color="primary" (click)="openFab()" matTooltip="Customize Dashboard">
+      <mat-icon [fontIcon]="getIcon('settings')"></mat-icon>
+    </button>
   </div>
   
   @if (lines.length === 0) {
