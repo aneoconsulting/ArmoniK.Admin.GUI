@@ -33,7 +33,7 @@
   --armonik-navbar-selected: light-dark(mat.get-theme-color($theme, neutral-variant, 80), mat.get-theme-color($theme, primary, 60));
   --armonik-file-upload-color: light-dark(#{mat.get-theme-color($theme, primary, 40)}, #{mat.get-theme-color($theme, primary, 90)});
   --armonik-file-background: light-dark(#{mat.get-theme-color($theme, neutral-variant, 90)}, #{mat.get-theme-color($theme, neutral-variant, 20)});
-  --armonik-error: light-dark(#{mat.get-theme-color($theme, error, 50)}, #{mat.get-theme-color(var.$dark-purple, error, 30)});
+  --armonik-error: light-dark(#{mat.get-theme-color($theme, error, 50)}, #{mat.get-theme-color($theme, error, 30)});
   --armonik-neutral-color: #{mat.get-theme-color($theme, neutral, 30)};
   --armonik-neutral-background-color: #{mat.get-theme-color($theme, neutral, 80)};
 }
