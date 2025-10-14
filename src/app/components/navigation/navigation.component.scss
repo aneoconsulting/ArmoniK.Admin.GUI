@@ -40,3 +40,20 @@ main {
 .mdc-icon-button > .mat-icon {
   color: var(--armonik-header-color) !important;
 }
+
+::ng-deep {
+  .mat-drawer-inner-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .mdc-list {
+    width: 100%;
+  }
+}
+
+app-scheme-switcher {
+  margin-bottom: 1rem;
+}
