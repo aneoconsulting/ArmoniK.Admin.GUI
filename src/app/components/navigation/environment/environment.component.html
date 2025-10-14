@@ -7,6 +7,9 @@
 <button id="menu-trigger" mat-icon-button #menuTrigger [matMenuTriggerFor]="menu">
   <mat-icon aria-hidden="true" [fontIcon]="getIcon('arrow-down')" [@rotateFull]="openedMenu" />
 </button>
+@if (defaultEnvironmentError && environmentService.currentHost === null) {
+  <mat-icon [fontIcon]="getIcon('error')" i18n-matTooltip matTooltip="Your default ArmoniK host does not work. Please try to use another valid ArmoniK host." />
+}
 <mat-menu #menu xPosition="before">
   @if (defaultEnvironment) {
     <article class="env-item">

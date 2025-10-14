@@ -37,6 +37,7 @@ import { AddEnvironmentDialogComponent } from './dialog/add-environment.dialog';
 export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   environment = signal<Environment | null>(null);
   defaultEnvironment: Environment | null = null;
+  defaultEnvironmentError = false;
   private readonly host$ = new Subject<void>();
   private readonly hostList$ = new Subject<void>();
   readonly environmentList: Map<string, Environment | null> = new Map();
@@ -68,8 +69,9 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
       this.environmentList.set(host, value);
     });
 
-    this.httpClient.get<Partial<Environment>>('/static/environment.json').subscribe((value) => {
+    this.hostToEnvironment(null).subscribe((value) => {
       this.defaultEnvironment = this.partialToCompleteEnv(value);
+      this.defaultEnvironmentError = value === null;
     });
 
     this.subscription.add(hostSubscription);

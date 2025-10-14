@@ -83,6 +83,16 @@ describe('EnvironmentComponent', () => {
       expect(component.defaultEnvironment).toEqual(mockEnv);
     });
 
+    it('should not set the defaultEnvironmentError to true if there is no error', () => {
+      expect(component.defaultEnvironmentError).toBeFalsy();
+    });
+
+    it('should set the defaultEnvironmentError to true if there is an error', () => {
+      mockHttpClient.get.mockReturnValueOnce(throwError(() => new Error()));
+      component.ngOnInit();
+      expect(component.defaultEnvironmentError).toBeTruthy();
+    });
+
     it('should have made a call the default environment URL', () => {
       expect(mockHttpClient.get).toHaveBeenCalledWith('/static/environment.json');
     });
