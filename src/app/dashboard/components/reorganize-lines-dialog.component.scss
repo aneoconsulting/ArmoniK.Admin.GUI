@@ -4,32 +4,16 @@
   @include flex-col();
 }
 
-.line {
+.line:not(.cdk-drag-preview) {
   @include flex-row();
   cursor: move;
 }
 
 .line-name {
-  @include flex-row(0.5rem);
+  @include flex-row($gap: 0.5rem, $wrap: nowrap);
   padding: 0.5rem;
 }
 
 .line-actions {
-  @include flex-row(0.5rem);
-}
-
-.cdk-drag-preview {
-  color: rgba(0, 0, 0, 0.6);
-}
-
-.cdk-drag-placeholder {
-  opacity: 0;
-}
-
-.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.lines.cdk-drop-list-dragging .line:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  @include flex-row($gap: 0.5rem, $wrap: nowrap);
 }
