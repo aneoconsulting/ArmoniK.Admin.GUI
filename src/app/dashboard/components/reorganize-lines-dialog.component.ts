@@ -12,50 +12,8 @@ import { Line } from '../types';
 
 @Component({
   selector: 'app-dashboard-reorganize-lines-dialog',
-  templateUrl: './reorganize-lines-dialog.component.html',
-  styles: [`
-.lines {
-  display: flex;
-  flex-direction: column;
-}
-
-.line {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  cursor: move;
-}
-
-.line-name {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-}
-
-.line-actions {
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-}
-
-.cdk-drag-preview {
-  color: rgba(0, 0, 0, 0.6);
-}
-
-.cdk-drag-placeholder {
-  opacity: 0;
-}
-
-.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.lines.cdk-drop-list-dragging .line:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-  `],
+  templateUrl: 'reorganize-lines-dialog.component.html',
+  styleUrl: 'reorganize-lines-dialog.component.scss',
   providers: [
     IconsService,
   ],

@@ -165,4 +165,12 @@ describe('FiltersChipsComponent', () => {
       expect(component.filters()).toEqual(['Invalid Filter Field']);
     });
   });
+
+  describe('openFiltersDialog', () => {
+    it('should emit openFilters event', () => {
+      const spy = jest.spyOn(component.openFilters, 'emit');
+      component.openFiltersDialog();
+      expect(spy).toHaveBeenCalled();
+    });
+  });
 });

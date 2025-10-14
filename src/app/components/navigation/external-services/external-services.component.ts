@@ -23,7 +23,7 @@ import { ManageExternalServicesDialogComponent } from './manage-external-service
   providers: [
     IconsService,
   ],
-  styleUrl: 'external-services.css',
+  styleUrl: 'external-services.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExternalServicesComponent implements OnInit {

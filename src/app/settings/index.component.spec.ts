@@ -44,15 +44,9 @@ describe('IndexComponent', () => {
     error: jest.fn(),
   };
 
-  const mockSideBar: Sidebar[] = ['profile', 'dashboard', 'sessions', 'tasks'];
+  const mockSideBar: Sidebar[] = ['dashboard', 'sessions', 'tasks'];
 
   const mockSidebarItems: SidebarItem[] = [
-    {
-      type: 'link',
-      id: 'profile',
-      display: $localize`Profile`,
-      route: '/profile',
-    },
     {
       type: 'link',
       id: 'dashboard',

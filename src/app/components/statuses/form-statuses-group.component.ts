@@ -12,26 +12,7 @@ import { TasksStatusesGroup } from '../../dashboard/types';
 @Component({
   selector: 'app-form-statuses-group',
   templateUrl: './form-statuses-group.component.html',
-  styles: [`
-mat-dialog-content {
-  padding-top: 0!important;
-  overflow: visible!important;
-
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
-
-.statuses {
-  grid-column: 1 / span 2;
-}
-
-.statuses .inputs {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-}
-  `],
+  styleUrl: 'form-statuses-group.component.scss',
   providers: [],
   imports: [
     MatDialogModule,

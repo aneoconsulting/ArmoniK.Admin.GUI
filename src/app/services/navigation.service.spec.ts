@@ -16,6 +16,7 @@ describe('NavigationService', () => {
 
   const mockDefaultConfigService = {
     defaultSidebar: ['applications', 'divider', 'partitions'],
+    defaultSidebarOpened: true,
   };
 
   const mockUserConnectedGuard = {
@@ -106,12 +107,6 @@ describe('NavigationService', () => {
     it('should set the whole sidebar', () => {
       service.sidebar = newSideBar;
       expect(service.currentSidebar).toEqual(newSideBar);
-    });
-
-    it('should filter the profile if no user are connected', () => {
-      mockUserConnectedGuard.canActivate.mockReturnValueOnce(false);
-      service.sidebar = newSideBar;
-      expect(service.currentSidebar).toEqual(newSideBar.filter(e => e.id !== 'profile'));
     });
   });
 
@@ -221,6 +216,19 @@ describe('NavigationService', () => {
 
     it('should store the toggled sidebar', () => {
       expect(mockStorageService.setItem).toHaveBeenCalledWith('navigation-sidebar-opened', service.sideBarOpened());
+    });
+  });
+
+  describe('restoreSidebarOpened', () => {
+    it('should restore the stored sidebarOpened', () => {
+      const sidebarOpened = false;
+      mockStorageService.getItem.mockReturnValueOnce(sidebarOpened);
+      expect(service.restoreSideBarOpened()).toBe(sidebarOpened);
+    });
+
+    it('should restore the defaultSidebarOpened if nothing is stored', () => {
+      mockStorageService.getItem.mockReturnValueOnce(null);
+      expect(service.restoreSideBarOpened()).toBe(mockDefaultConfigService.defaultSidebarOpened);
     });
   });
 

@@ -1,0 +1,110 @@
+@use 'mixins.scss' as *;
+@use '@angular/material' as mat;
+
+mat-card {
+  padding: 1rem;
+}
+
+mat-card-header {
+  padding: 0 !important;
+}
+
+mat-card-content {
+  padding: 0 !important;
+}
+
+mat-card-title {
+  @include flex-row();
+  width: 100%;
+}
+
+mat-toolbar {
+  @include flex-row(1rem);
+  padding: 1rem !important;
+  background-color: var(--armonik-container-background) !important;
+  border-radius: 1rem;
+  margin-bottom: 0.25rem !important;
+}
+
+mat-toolbar-row {
+  padding: 0 !important;
+  @include flex-row();
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.cdk-overlay-pane { // Mat dialog container
+  max-width: 100% !important;
+}
+
+mat-sidenav {
+  padding: 0.25rem;
+  background-color: var(--armonik-container-background) !important;
+}
+
+mat-nav-list > ul > li > mat-divider {
+  margin: 0.5rem !important;
+  width: 100%;
+}
+
+.mat-mdc-card-header-text {
+  width: 100%;
+}
+
+.mat-mdc-menu-content {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+
+article > .mat-mdc-menu-item-text {
+  min-width: 20em !important;
+}
+
+// Drag components
+[cdkDragHandle] {
+  cursor: move;
+}
+
+.cdk-drag-preview {
+  @include flex-row($gap: 1rem, $justify: start, $wrap: nowrap);
+  }
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drop-list-dragging li:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+// Notifications
+.mat-mdc-snackbar-surface {
+  color: white !important;
+  button {
+    color: white !important;
+  }
+}
+
+.error {
+  .mat-mdc-snackbar-surface {
+    background-color: var(--armonik-error) !important;
+  }
+}
+
+.warning {
+  .mat-mdc-snackbar-surface {
+    background-color: light-dark(#FF9D5C, #FF6000) !important;
+  }
+}
+
+.success {
+  .mat-mdc-snackbar-surface {
+    background-color: light-dark(#446555, #2c4d3e) !important;
+  }
+}

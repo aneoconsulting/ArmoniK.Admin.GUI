@@ -16,14 +16,8 @@ import { FiltersDialogOrComponent } from './filters-dialog-or.component';
 
 @Component({
   selector: 'app-filters-dialog',
-  templateUrl: './filters-dialog.component.html',
-  styles: [`
-.filters {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-  `],
+  templateUrl: 'filters-dialog.component.html',
+  styleUrl: 'filters-dialog.component.scss',
   imports: [
     FiltersDialogOrComponent,
     MatDialogModule,

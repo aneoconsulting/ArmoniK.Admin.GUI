@@ -1,5 +1,4 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
 import { ExternalService } from '@app/types/external-service';
 import { Sidebar, SidebarItem, isSideBar } from '@app/types/navigation';
 import { DefaultConfigService } from './default-config.service';
@@ -9,18 +8,11 @@ import { StorageService } from './storage.service';
 export class NavigationService {
   private readonly defaultConfigService = inject(DefaultConfigService);
   private readonly storageService = inject(StorageService);
-  private readonly userConnectedGuard = inject(UserConnectedGuard);
 
   readonly edit = signal(false);
 
   readonly sideBarOpened = signal(true);
   sidebarItems: SidebarItem[] = [
-    {
-      type: 'link',
-      id: 'profile',
-      display: $localize`Profile`,
-      route: '/profile',
-    },
     {
       type: 'link',
       id: 'dashboard',
@@ -69,11 +61,7 @@ export class NavigationService {
   currentSidebar: SidebarItem[];
 
   set sidebar(entry: SidebarItem[]) {
-    if (!this.userConnectedGuard.canActivate()) {
-      this.currentSidebar = entry.filter(element => element.id !== 'profile');
-    } else {
-      this.currentSidebar = entry;
-    }
+    this.currentSidebar = entry;
   }
 
   constructor() {
@@ -159,10 +147,12 @@ export class NavigationService {
       if (sidebarItem) {
         acc.push(sidebarItem);
       }
-
       return acc;
     }, [] as SidebarItem[]);
+  }
 
+  restoreSideBarOpened(): boolean {
+    return this.storageService.getItem('navigation-sidebar-opened', true) as boolean ?? this.defaultConfigService.defaultSidebarOpened;
   }
 
   /**

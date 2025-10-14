@@ -9,7 +9,7 @@ import { AddSideBarItemDialogResult } from './types';
 @Component({
   selector: 'app-add-sidebar-item-dialog',
   templateUrl: 'add-sidebar-item.dialog.component.html',
-  styleUrl: 'add-sidebar-item.dialog.component.css',
+  styleUrl: 'add-sidebar-item.dialog.component.scss',
   imports: [
     MatDialogModule,
     AutoCompleteComponent,

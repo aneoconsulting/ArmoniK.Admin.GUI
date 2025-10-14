@@ -8,7 +8,7 @@
 </p>
 
 <main>
-  <app-page-section class="sidebar">
+  <article class="sidebar">
     <app-page-section-header icon="format_list_bulleted">
       <span i18n="Section title"> Sidebar </span>
     </app-page-section-header>
@@ -28,10 +28,10 @@
       }
       <button mat-stroked-button (click)="resetToDefaultSideBar()" type="button" i18n="Form">Reset to default</button>
     </div>
-  </app-page-section>
+  </article>
 
-  <section>
-    <app-page-section>
+  <article>
+    <section class="filters-cache">
       <app-page-section-header [icon]="getIcon('filter')">
         <span i18n> Filters Cache </span>
       </app-page-section-header>
@@ -43,9 +43,9 @@
       </p>
       
       <button mat-flat-button color="primary" [disabled]="!filtersCacheService.isDataCached" (click)="clearFilterCache()" i18n>Clear cached filters</button>
-    </app-page-section>
+    </section>
 
-    <app-page-section class="storage">
+    <section class="storage">
       <app-page-section-header [icon]="getIcon('storage')">
         <span i18n="Section title"> Storage </span>
       </app-page-section-header>
@@ -86,9 +86,9 @@
           </button>
         </div>
       </form>
-    </app-page-section>
+    </section>
 
-    <app-page-section class="export">
+    <section class="export">
       <app-page-section-header [icon]="getIcon('download')">
         <span i18n="Section title"> Export your data </span>
       </app-page-section-header>
@@ -100,9 +100,9 @@
       <div class="actions">
         <button mat-flat-button color="primary" (click)="exportData()" i18n>Export</button>
       </div>
-    </app-page-section>
+    </section>
 
-    <app-page-section class="import">
+    <section class="import">
       <app-page-section-header [icon]="getIcon('upload')">
         <span i18n="Section title"> Import your data </span>
       </app-page-section-header>
@@ -126,6 +126,6 @@
           <button mat-flat-button color="primary" type="submit" i18n="Form">Import</button>
         </div>
       </form>
-    </app-page-section>
-  </section>
+    </section>
+  </article>
 </main>
