@@ -4,7 +4,7 @@
     {{ env.name }} {{ env.version }}
   </section>
 }
-<button mat-icon-button #menuTrigger [matMenuTriggerFor]="menu">
+<button id="menu-trigger" mat-icon-button #menuTrigger [matMenuTriggerFor]="menu">
   <mat-icon aria-hidden="true" [fontIcon]="getIcon('arrow-down')" [@rotateFull]="openedMenu" />
 </button>
 <mat-menu #menu xPosition="before">
