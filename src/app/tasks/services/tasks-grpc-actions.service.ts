@@ -39,7 +39,7 @@ export class TasksGrpcActionsService extends GrpcActionsService<TaskSummary | Ta
       catchError(error => this.handleError(error)),
     ).subscribe((result) => {
       if (result?.tasks) {
-        this.success(result.tasks.length !== 1 ? $localize`Tasks cancelled` : $localize`Task cancelled`);
+        this.success(result.tasks.length === 1 ? $localize`Task cancelled` : $localize`Tasks cancelled`);
         if (refresh) {
           refresh.next();
         }
