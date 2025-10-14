@@ -15,16 +15,15 @@ import { TableContainerComponent } from '@components/table-container.component';
 import { TableActionsComponent } from './table-actions.component';
 import { TableCellComponent } from './table-cell.component';
 import { TableColumnHeaderComponent } from './table-column-header.component';
-import { TableEmptyDataComponent } from './table-empty-data.component';
 
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
+  styleUrl: 'table.component.scss',
   imports: [
     TableColumnHeaderComponent,
     TableCellComponent,
     MatPaginatorModule,
-    TableEmptyDataComponent,
     DragDropModule,
     MatTableModule,
     MatSortModule,
@@ -46,7 +45,8 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
       const selection = entries.filter(entry => this.isSelected(entry.raw)).map(entry => entry.raw);
       this.selection.clear();
       this.selection.select(...selection);
-      this._isAllSelected = this.selection.selected.length === entries.length;
+      this._isAllSelected = this.selection.selected.length === entries.length && entries.length > 0;
+      this.emitSelectionChange();
     }
   }
 

@@ -11,7 +11,6 @@ import { Moment } from 'moment';
 @Component({
   selector: 'app-filters-dialog-input',
   templateUrl: './filters-dialog-input.component.html',
-  styleUrl: 'filters-dialog-input.component.css',
   imports: [
     MatFormFieldModule,
     MatInputModule,

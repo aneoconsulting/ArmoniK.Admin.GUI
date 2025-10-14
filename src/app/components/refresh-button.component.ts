@@ -6,14 +6,7 @@ import { IconsService } from '@services/icons.service';
 
 @Component({
   selector: 'app-refresh-button',
-  template: `
-<button mat-flat-button color="primary" (click)="onClick()" [matTooltip]="tooltip">
-  <mat-icon aria-hidden="true" [fontIcon]="getIcon('refresh')"></mat-icon>
-  <span i18n>Refresh</span>
-</button>
-  `,
-  styles: [`
-  `],
+  templateUrl: 'refresh-button.component.html',
   imports: [
     MatButtonModule,
     MatTooltipModule,

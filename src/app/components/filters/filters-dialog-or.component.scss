@@ -1,0 +1,22 @@
+@use 'styles' as *;
+
+:host {
+  @include flex-row(2rem);
+}
+
+span {
+  padding-top: 1rem;
+  min-width: 3rem;
+  text-align: end;
+}
+
+.filters {
+  background-color: var(--armonik-container-background-light) !important;
+  border: 1px solid var(--armonik-container-background);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.filters-and {
+  @include flex-col(1rem);
+}

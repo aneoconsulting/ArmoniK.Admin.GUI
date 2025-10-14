@@ -1,12 +1,12 @@
-<app-page-section-header [icon]="getIcon('filter')">
+<app-page-section-header [icon]="getIcon('fill')">
   <span i18n>Theme</span>
 </app-page-section-header>
 
 <p>Choose how you want your application to look.</p>
 
 <section>
-  @for (theme of availableThemes; track theme) {
-  <button mat-button (click)="updateTheme(theme.name)" [ngClass]="[currentTheme === theme.name ? 'selected' : '']">
+@for (theme of availableThemes; track theme) {
+  <button mat-button mat-menu-item (click)="updateTheme(theme.name)" [ngClass]="[themeService.currentTheme === theme.name ? 'selected' : '']">
     <span>{{ theme.displayName }}</span>
     <mat-icon class="mat-icon mat-icon-no-color" [class]="theme.name" aria-hidden="true" data-mat-icon-type="svg">
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0 0 80 80" fit="" preserveAspectRatio="xMidYMid meet" focusable="false">
@@ -16,8 +16,8 @@
           <path d="M0 0h80v17.24H0V0z" id="c"></path>
         </defs>
         <use xlink:href="#a" fill="#fff" class="docs-theme-icon-background"></use>
-        <use xlink:href="#b" fill="#ff4081" class="docs-theme-icon-button"></use>
-        <use xlink:href="#c" fill="#3f51b5" class="docs-theme-icon-toolbar"></use>
+        <use xlink:href="#b" fill="#dde1ff" class="docs-theme-icon-button"></use>
+        <use xlink:href="#c" fill="#394d9a" class="docs-theme-icon-toolbar"></use>
       </svg>
     </mat-icon>
   </button>

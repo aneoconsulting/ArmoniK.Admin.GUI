@@ -8,7 +8,7 @@
 </p>
 
 <main>
-  <app-page-section class="sidebar">
+  <article class="sidebar">
     <app-page-section-header icon="format_list_bulleted">
       <span i18n="Section title"> Sidebar </span>
     </app-page-section-header>
@@ -18,49 +18,23 @@
     </p>
 
     <div class="actions navbar between">
-      <div class="actions">
-        <button mat-flat-button (click)="onSaveSidebar()" color="primary" type="button" i18n="Form">Save</button>
-        <button mat-stroked-button (click)="onRestoreSidebar()" type="button" i18n="Form">Reset</button>
-      </div>
-      <button mat-stroked-button (click)="onClearSideBar()" type="button" i18n="Form">Reset to default</button>
+      @if (navigationService.edit()) {
+        <div class="actions">
+          <button mat-flat-button (click)="onSaveSidebar()" color="primary" type="button" i18n="Form">Save</button>
+          <button mat-stroked-button (click)="resetSidebar()" type="button" i18n="Form">Reset</button>
+        </div>
+      } @else {
+        <button mat-flat-button (click)="startEditSideBar()" color="primary" type="button" i18n="Form">Edit sidebar</button>
+      }
+      <button mat-stroked-button (click)="resetToDefaultSideBar()" type="button" i18n="Form">Reset to default</button>
     </div>
 
-    <ul class="sidebar-items" cdkDropList (cdkDropListDropped)="drop($event)">
-      @for (item of sidebar; track item+$index) {
-        <li cdkDrag>
-          <div class="sidebar-item-drag">
-            <mat-icon cdkDragHandle aria-hidden="true" [fontIcon]="getIcon(findSidebarItem(item).id)"></mat-icon>
-          </div>
-  
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
-            <mat-label i18n="Sidebar item label"> Sidebar item </mat-label>
-            <mat-select [value]="item" (valueChange)="onSidebarItemChange($index, $event)">
-              @for (sidebarItem of getSidebarItems(); track sidebarItem.name) {
-                <mat-option [value]="sidebarItem.value">
-                  {{ sidebarItem.name }}
-                </mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-  
-          <button mat-icon-button (click)="onRemoveSidebarItem($index)">
-            <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"/>
-          </button>
-        </li>
-      }
-      <button class="add-sidebar-item" mat-stroked-button (click)="onAddSidebarItem()">
-        <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
-        <span i18n> Add an item </span>
-      </button>
-    </ul>
-  </app-page-section>
+    
+    <app-theme-selector />
+  </article>
 
-  <section>
-    <app-page-section>
-      <app-theme-selector />
-    </app-page-section>
-
-    <app-page-section>
+  <article>
+    <section class="filters-cache">
       <app-page-section-header [icon]="getIcon('filter')">
         <span i18n> Filters Cache </span>
       </app-page-section-header>
@@ -72,9 +46,9 @@
       </p>
       
       <button mat-flat-button color="primary" [disabled]="!filtersCacheService.isDataCached" (click)="clearFilterCache()" i18n>Clear cached filters</button>
-    </app-page-section>
+    </section>
 
-    <app-page-section class="storage">
+    <section class="storage">
       <app-page-section-header [icon]="getIcon('storage')">
         <span i18n="Section title"> Storage </span>
       </app-page-section-header>
@@ -115,9 +89,9 @@
           </button>
         </div>
       </form>
-    </app-page-section>
+    </section>
 
-    <app-page-section class="export">
+    <section class="export">
       <app-page-section-header [icon]="getIcon('download')">
         <span i18n="Section title"> Export your data </span>
       </app-page-section-header>
@@ -129,9 +103,9 @@
       <div class="actions">
         <button mat-flat-button color="primary" (click)="exportData()" i18n>Export</button>
       </div>
-    </app-page-section>
+    </section>
 
-    <app-page-section class="import">
+    <section class="import">
       <app-page-section-header [icon]="getIcon('upload')">
         <span i18n="Section title"> Import your data </span>
       </app-page-section-header>
@@ -155,6 +129,6 @@
           <button mat-flat-button color="primary" type="submit" i18n="Form">Import</button>
         </div>
       </form>
-    </app-page-section>
-  </section>
+    </section>
+  </article>
 </main>
