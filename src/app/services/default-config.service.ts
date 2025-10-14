@@ -274,6 +274,9 @@ export class DefaultConfigService {
     urlTemplate: null,
   };
 
+  readonly #hostConfig: string | null = null;
+  readonly #environments: string[] = [];
+
   readonly #defaultTaskStatuses: Record<string, StatusLabelColor> = {
     [TaskStatus.TASK_STATUS_COMPLETED]: {
       label: 'Completed',
@@ -422,6 +425,14 @@ export class DefaultConfigService {
     return structuredClone(this.#availableLanguages);
   }
 
+  get environments() {
+    return structuredClone(this.#environments);
+  }
+
+  get hostConfig() {
+    return structuredClone(this.#hostConfig);
+  }
+
   get defaultGraphLinksColors() {
     return structuredClone(this.#defaultGraphLinksColors);
   }
@@ -482,6 +493,8 @@ export class DefaultConfigService {
     'tasks-statuses': this.#defaultTaskStatuses,
     'tasks-custom-columns': [],
     'sessions-custom-columns': [],
+    'environments': this.#environments,
+    'host-config': null,
     'graph-links-colors': this.#defaultGraphLinksColors,
     'graph-highlight-parents': this.#defaultGraphHighlightParents,
     'graph-highlight-children': this.#defaultGraphHighlightChildren,

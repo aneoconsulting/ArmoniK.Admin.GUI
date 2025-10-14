@@ -1,0 +1,14 @@
+section {
+  display: flex;
+  justify-content: space-between;
+}
+
+.host-form {
+  display: flex;
+  gap: 1rem;
+}
+
+#host-test {
+  display: flex;
+  flex-direction: column;
+}

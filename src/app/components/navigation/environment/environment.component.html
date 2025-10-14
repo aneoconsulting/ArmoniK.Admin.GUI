@@ -1,0 +1,60 @@
+@let env = environment();
+@if (env) {
+  <section class="environment" [style]="'color:' + env.color + ';'" [matTooltip]="env.description">
+    {{ env.name }} {{ env.version }}
+  </section>
+}
+<button id="menu-trigger" mat-icon-button #menuTrigger [matMenuTriggerFor]="menu">
+  <mat-icon aria-hidden="true" [fontIcon]="getIcon('arrow-down')" [@rotateFull]="openedMenu" />
+</button>
+@if (defaultEnvironmentError && environmentService.currentHost === null) {
+  <mat-icon [fontIcon]="getIcon('error')" i18n-matTooltip matTooltip="Your default ArmoniK host does not work. Please try to use another valid ArmoniK host." />
+}
+<mat-menu #menu xPosition="before">
+  @if (defaultEnvironment) {
+    <article class="env-item">
+      <section>
+        <button mat-icon-button (click)="selectEnvironment(null)" [disabled]="environmentService.currentHost === null">
+          @if (environmentService.currentHost === null) {
+            <mat-icon [fontIcon]="getIcon('checked')" />
+          } @else {
+            <mat-icon [fontIcon]="getIcon('unchecked')" />
+          }
+        </button>
+        <div class="environment" [style]="'color:' + defaultEnvironment.color + ';'">
+          {{ defaultEnvironment.name }} {{ defaultEnvironment.version }}
+        </div>
+      </section>
+      <mat-icon color="info" [fontIcon]="getIcon('info')" i18n-matTooltip matTooltip="This is the default environment and cannot be removed." />
+    </article>
+  }
+  @for (host of environmentService.hosts; track $index) {
+    @let env = environmentList.get(host);
+    <article class="env-item" [matTooltip]="host">
+      <section>
+        <button mat-icon-button i18n-matTooltip matTooltip="Select environment" [disabled]="!env || environmentService.currentHost === host" (click)="selectEnvironment(host)">
+          @if (environmentService.currentHost === host) {
+            <mat-icon [fontIcon]="getIcon('checked')" />
+          } @else {
+            <mat-icon [fontIcon]="getIcon('unchecked')" />
+          }
+        </button>
+        @if (env) {
+          <div class="environment" [style]="'color:' + env.color + ';'">
+            <span>{{ env.name }} {{ env.version }}</span>
+          </div>
+        } @else {
+          <p mat-menu-item disabled i18n>Could not find the environment.</p>
+        }
+      </section>
+      <button mat-icon-button (click)="deleteEnv(host)" color="warn">
+        <mat-icon [fontIcon]="getIcon('delete')" />
+      </button>
+    </article>
+  }
+  <mat-divider />
+  <button mat-menu-item (click)="openNewEnvDialog()">
+    <mat-icon [fontIcon]="getIcon('add')" />
+    <span i18n>Add an environment</span>
+  </button>
+</mat-menu>
