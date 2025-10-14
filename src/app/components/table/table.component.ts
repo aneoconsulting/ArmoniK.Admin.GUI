@@ -35,6 +35,14 @@ import { TableColumnHeaderComponent } from './table-column-header.component';
 export class TableComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null> implements AfterViewInit, OnDestroy {
   // Required inputs
   @Input({ required: true }) set columns(entries: TableColumn<T, O>[]) {
+    const selectColumn = entries.find(column => column.key === 'select');
+    if (selectColumn) {
+      entries = [selectColumn, ...entries.filter(column => column.key !== 'select')];
+    }
+    const actionsColumn = entries.find(column => column.key === 'actions');
+    if (actionsColumn) {
+      entries = [...entries.filter(column => column.key !== 'actions'), actionsColumn];
+    }
     this._columns = entries;
     this._columnsKeys = entries.map((entry) => entry.key);
   }
@@ -69,7 +77,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   @Output() columnDrop = new EventEmitter<ColumnKey<T, O>[]>();
   @Output() optionsChange = new EventEmitter<never>();
   @Output() selectionChange = new EventEmitter<T[]>();
-  @Output() personnalizeTasksByStatus = new EventEmitter<void>();
+  @Output() personalizeTasksByStatus = new EventEmitter<void>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -161,7 +169,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
     this.emitSelectionChange();
   }
 
-  onPersonnalizeTasksByStatus(): void {
-    this.personnalizeTasksByStatus.emit();
+  onPersonalizeTasksByStatus(): void {
+    this.personalizeTasksByStatus.emit();
   }
 }

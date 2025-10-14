@@ -124,9 +124,6 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
   }
 
   onColumnsChange(columns: ColumnKey<T, O>[]) {
-    if ((columns as string[]).includes('select')) {
-      columns = ['select' as ColumnKey<T, O>, ...columns.filter(column => column !== 'select')];
-    }
     this.displayedColumnsKeys = [...columns];
     this.updateDisplayedColumns();
     this.indexService.saveColumns(columns);
