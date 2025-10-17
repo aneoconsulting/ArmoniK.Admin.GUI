@@ -403,4 +403,9 @@ describe('GraphComponent', () => {
       expect(spy).toHaveBeenCalled();
     });
   });
+
+  it('should unsubscribe on destroy', () => {
+    component.ngOnDestroy();
+    expect(component['subscription'].closed).toBeTruthy();
+  });
 });

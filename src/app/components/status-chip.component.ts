@@ -22,7 +22,7 @@ export class StatusChipComponent {
   @Input({ required: false }) set status(entry: StatusLabelColor) {
     this.label = entry.label ?? 'Unknown';
     this.color = entry.color ?? 'grey';
-    this.icon = entry.icon !== undefined && entry.icon.length !== 1 ? this.iconsService.getIcon(entry.icon) : undefined;
+    this.icon = entry.icon !== undefined && entry.icon.length !== 0 ? this.iconsService.getIcon(entry.icon) : undefined;
   }
 
   label: string = '-';
