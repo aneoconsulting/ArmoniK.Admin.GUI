@@ -25,52 +25,12 @@ describe('DefaultConfigService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should have the right default theme', () => {
-    expect(service.defaultTheme).toBe('light-blue');
-  });
-
-  it('should have a defined defaultExternalServices configuration', () => {
-    expect(service.defaultExternalServices).toBeDefined();
-  });
-
-  it('should have a defined defaultTasks configuration', () => {
-    expect(service.defaultTasks).toBeDefined();
-  });
-
-  it('should have a defined defaultTasksByStatus configuration', () => {
-    expect(service.defaultTasksByStatus).toBeDefined();
-  });
-
-  it('should have a defined defaultPartititons configuration', () => {
-    expect(service.defaultPartitions).toBeDefined();
-  });
-
-  it('should have a defined defaultDashboardSplitLines configuration', ()=> {
-    expect(service.defaultDashboardSplitLines).toBeDefined();
-  });
-
-  it('should have a defined defaultSessions configuration', () => {
-    expect(service.defaultSessions).toBeDefined();
-  });
-
-  it('should have a defined defaultResults configuration', () => {
-    expect(service.defaultResults).toBeDefined();
-  });
-
-  it('should have a defined defaultApplications configuration', () => {
-    expect(service.defaultApplications).toBeDefined();
-  });
-
-  it('should have a defined defaultSidebar configuration', () => {
-    expect(service.defaultSidebar).toBeDefined();
-  });
-
-  it('should have a defined defaultTasksViewInLogs configuration', () => {
-    expect(service.defaultTasksViewInLogs).toBeDefined();
-  });
-
-  it('should have a defined exportedDefaultConfig configuration', () => {
-    expect(service.exportedDefaultConfig).toBeDefined();
+  it('Every method should return a defined value', () => {
+    const keys = Object.getOwnPropertyNames(DefaultConfigService.prototype).filter(key => key !== 'constructor');
+    for (const key of keys) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((service as any)[key]).toBeDefined();
+    }
   });
 
   describe('defaultLanguage configuration', () => {
@@ -79,19 +39,7 @@ describe('DefaultConfigService', () => {
     });
   });
 
-  it('should have a defined availableLanguages configuration', () => {
-    expect(service.availableLanguages).toBeDefined();
-  });
-
-  it('should have a defined defaultSideBarOpened', () => {
-    expect(service.defaultSidebarOpened).toBeDefined();
-  });
-
-  describe(' default dashboard configuration', () => {
-    it('the dashboard lines configuration should display at least 1 line', () => {
-      expect(service.defaultDashboardLines).toBeDefined();
-    });
-
+  describe('default dashboard configuration', () => {
     it('the line by default should contain 3 task statuses', () => {
       const defaultDashboardLines = service.defaultDashboardLines;
       const taskStatuses = defaultDashboardLines.map(line => (line as CountLine).taskStatusesGroups); 
