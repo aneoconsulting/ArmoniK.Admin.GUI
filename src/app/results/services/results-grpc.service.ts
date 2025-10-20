@@ -1,4 +1,4 @@
-import { GetResultRequest, GetResultResponse, ListResultsRequest, ListResultsResponse, ResultFilterField, ResultRawEnumField, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { GetResultRequest, GetResultResponse, ListResultsRequest, ListResultsResponse, ResultFilterField, ResultRawEnumField, ResultsClient, DownloadResultDataRequest } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { Filter, FilterType } from '@app/types/filters';
 import { GrpcGetInterface, GrpcTableService, ListDefaultSortField } from '@app/types/services/grpcService';
@@ -9,7 +9,7 @@ import { ResultRaw, ResultRawFieldKey, ResultRawFilters, ResultRawListOptions } 
 
 @Injectable()
 export class ResultsGrpcService extends GrpcTableService<ResultRaw, ResultRawEnumField>
-  implements GrpcGetInterface<GetResultResponse> {
+  implements GrpcGetInterface<GetResultResponse> { 
 
   readonly filterService = inject(ResultsFiltersService);
   readonly grpcClient = inject(ResultsClient);
@@ -31,6 +31,13 @@ export class ResultsGrpcService extends GrpcTableService<ResultRaw, ResultRawEnu
   list$(options: ResultRawListOptions, filters: ResultRawFilters): Observable<ListResultsResponse> {
     const listResultRequest = new ListResultsRequest(this.createListRequest(options, filters) as ListResultsRequest);
     return this.grpcClient.listResults(listResultRequest);
+  }
+
+  downloadResultData$(resultId: string): Observable<any> {
+    const downloadResultDataRequest = new DownloadResultDataRequest({
+      resultId
+    });
+    return this.grpcClient.downloadResultData(downloadResultDataRequest);
   }
 
   get$(resultId: string): Observable<GetResultResponse> {

@@ -21,4 +21,13 @@ export default class ResultsDataService extends AbstractTableDataService<ResultR
       raw: entry,
     };
   }
+
+  onDownload(resultId: string) {
+    this.grpcService.downloadResultData$(resultId).subscribe(
+      {
+        error: (error: any) => this.error(error, 'Unable to download result'),
+        complete: () => this.refresh$.next()
+      }
+    );
+  }
 }
