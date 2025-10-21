@@ -37,7 +37,7 @@ import { NodeStatusService } from './services/node-status.service';
 @Component({
   selector: 'app-graph',
   templateUrl: 'graph.component.html',
-  styleUrl: 'graph.component.css',
+  styleUrl: 'graph.component.scss',
   standalone: true,
   imports: [
     MatCardModule,

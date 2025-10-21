@@ -4,8 +4,8 @@
   @for(status of statuses; track status) {
     @let control = getControl(status);
     @if (control) {
-      <article>
-      <section class="header">
+    <article>
+      <section class="status-header">
         @let icon = statusesDefault[status].icon;
         @if(icon) {
           <mat-icon [fontIcon]="getIcon(icon)" />
