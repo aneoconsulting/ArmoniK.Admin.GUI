@@ -25,7 +25,8 @@ import { ResultRaw } from './types';
 @Component({
   selector: 'app-result-show',
   templateUrl: 'show.component.html',
-  styleUrl: '../../inspections.scss',
+  styleUrls: ['../../inspections.scss'],
+  standalone: true,
   providers: [
     UtilsService,
     ShareUrlService,
@@ -42,21 +43,18 @@ import { ResultRaw } from './types';
     StorageService,
     {
       provide: StatusService,
-      useClass: ResultsStatusesService
-    }
+      useClass: ResultsStatusesService,
+    },
   ],
-  imports: [
-    ShowPageComponent,
-    MatIconModule,
-    MatButtonModule,
-    RouterModule,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [ShowPageComponent, MatIconModule, MatButtonModule, RouterModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse> implements OnInit, OnDestroy {
+export class ShowComponent
+  extends AppShowComponent<ResultRaw, GetResultResponse>
+  implements OnInit, OnDestroy
+{
   readonly grpcService = inject(ResultsGrpcService);
   readonly inspectionService = inject(ResultsInspectionService);
-
   private readonly resultsStatusesService = inject(StatusService) as ResultsStatusesService;
 
   private _status: StatusLabelColor | undefined;
@@ -64,11 +62,9 @@ export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse
   set status(status: ResultStatus | undefined) {
     this._status = status ? this.statuses[status] : undefined;
   }
-
   get status(): StatusLabelColor | undefined {
     return this._status;
   }
-
   get statuses() {
     return this.resultsStatusesService.statuses;
   }
@@ -76,13 +72,11 @@ export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse
   ngOnInit(): void {
     this.initInspection();
   }
-
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.unsubscribe();
   }
 
   getDataFromResponse(data: GetResultResponse): ResultRaw | undefined {
-    console.log('data.result : ', data.result);
     return data.result;
   }
 
@@ -90,15 +84,26 @@ export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse
     this.status = this.data()?.status;
   }
 
-  downloadResult(resultId: string | undefined, data: any): void {
-    const fileName = resultId + '_result.json';
-    if (!data) return;
-    const json = JSON.stringify(this.toPlainDeep(data), null, 2);
-    this.downloadAs(json, fileName, 'application/json');
+  downloadResult(resultId: string | undefined, data: ResultRaw | null): void {
+    if (data == null) return;
+    const base = resultId?.trim() || new Date().toISOString();
+    const fileName = `${base}_result.json`;
+
+    const json = JSON.stringify(data, null, 2);
+
+    ShowComponent.downloadAs(json, fileName, 'application/json');
   }
 
-  downloadAs(content: string, filename: string, mime: string): void {
-    const url = URL.createObjectURL(new Blob([content], { type: mime }));
+  private static downloadAs(
+    content: string,
+    filename: string,
+    mime: 'application/json' | 'text/plain' | 'application/octet-stream'
+  ): void {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+
     try {
       const a = document.createElement('a');
       a.href = url;
@@ -109,40 +114,9 @@ export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse
       a.click();
       a.remove();
     } finally {
-      URL.revokeObjectURL(url);
+      setTimeout(() => URL.revokeObjectURL(url), 0);
     }
   }
-
-  toPlainDeep(obj: any, seen = new WeakSet()): any {
-    if (obj === null || typeof obj !== 'object') return obj;
-    if (seen.has(obj)) return '[circular]';
-    seen.add(obj);
-  
-    if (typeof obj.toJSON === 'function') return obj.toJSON();
-    if (typeof obj.toDate === 'function') return obj.toDate().toISOString();
-    if (obj instanceof Date) return obj.toISOString();
-
-    if (obj.seconds !== undefined && typeof obj.seconds === 'number') {
-      const ms = obj.seconds * 1000 + Math.floor((obj.nanoseconds || 0) / 1e6);
-      return new Date(ms).toISOString();
-    }
-
-    if (obj instanceof Uint8Array) return Array.from(obj);
-    if (obj.type === 'Buffer' && Array.isArray(obj.data)) return obj.data;
-
-    if (obj instanceof Map) return Object.fromEntries([...obj.entries()].map(([k, v]) => [k, this.toPlainDeep(v, seen)]));
-    if (obj instanceof Set) return [...obj].map(v => this.toPlainDeep(v, seen));
-
-    if (Array.isArray(obj)) return obj.map(v => this.toPlainDeep(v, seen));
-
-    const out: any = {};
-    for (const key of Reflect.ownKeys(obj)) {
-      try {
-        out[key as any] = this.toPlainDeep((obj as any)[key as any], seen);
-      } catch {
-      }
-    }
-    return out;
-  }
-
 }
+
+ 

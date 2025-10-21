@@ -33,7 +33,7 @@ export class ResultsGrpcService extends GrpcTableService<ResultRaw, ResultRawEnu
     return this.grpcClient.listResults(listResultRequest);
   }
 
-  downloadResultData$(resultId: string): Observable<any> {
+  downloadResultData$(resultId: string): Observable<object> {
     const downloadResultDataRequest = new DownloadResultDataRequest({
       resultId
     });
