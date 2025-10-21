@@ -82,10 +82,67 @@ export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse
   }
 
   getDataFromResponse(data: GetResultResponse): ResultRaw | undefined {
+    console.log('data.result : ', data.result);
     return data.result;
   }
 
   afterDataFetching(): void {
     this.status = this.data()?.status;
   }
+
+  downloadResult(resultId: string | undefined, data: any): void {
+    const fileName = resultId + '_result.json';
+    if (!data) return;
+    const json = JSON.stringify(this.toPlainDeep(data), null, 2);
+    this.downloadAs(json, fileName, 'application/json');
+  }
+
+  downloadAs(content: string, filename: string, mime: string): void {
+    const url = URL.createObjectURL(new Blob([content], { type: mime }));
+    try {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.rel = 'noopener';
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }
+
+  toPlainDeep(obj: any, seen = new WeakSet()): any {
+    if (obj === null || typeof obj !== 'object') return obj;
+    if (seen.has(obj)) return '[circular]';
+    seen.add(obj);
+  
+    if (typeof obj.toJSON === 'function') return obj.toJSON();
+    if (typeof obj.toDate === 'function') return obj.toDate().toISOString();
+    if (obj instanceof Date) return obj.toISOString();
+
+    if (obj.seconds !== undefined && typeof obj.seconds === 'number') {
+      const ms = obj.seconds * 1000 + Math.floor((obj.nanoseconds || 0) / 1e6);
+      return new Date(ms).toISOString();
+    }
+
+    if (obj instanceof Uint8Array) return Array.from(obj);
+    if (obj.type === 'Buffer' && Array.isArray(obj.data)) return obj.data;
+
+    if (obj instanceof Map) return Object.fromEntries([...obj.entries()].map(([k, v]) => [k, this.toPlainDeep(v, seen)]));
+    if (obj instanceof Set) return [...obj].map(v => this.toPlainDeep(v, seen));
+
+    if (Array.isArray(obj)) return obj.map(v => this.toPlainDeep(v, seen));
+
+    const out: any = {};
+    for (const key of Reflect.ownKeys(obj)) {
+      try {
+        out[key as any] = this.toPlainDeep((obj as any)[key as any], seen);
+      } catch {
+      }
+    }
+    return out;
+  }
+
 }

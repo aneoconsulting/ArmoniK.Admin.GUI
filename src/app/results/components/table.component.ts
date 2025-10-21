@@ -6,11 +6,10 @@ import { StatusService } from '@app/types/status';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { NotificationService } from '@services/notification.service';
+import { Subject } from 'rxjs';
 import ResultsDataService from '../services/results-data.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
 import { ResultRaw } from '../types';
-import { TaskOptions } from '@app/tasks/types';
-import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-results-table',
@@ -27,10 +26,10 @@ export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, Res
   readonly tableDataService = inject(ResultsDataService);
   readonly statusesService: ResultsStatusesService = inject(StatusService);
 
-    downloadResult$ = new Subject<ArmonikData<ResultRaw>>();
-    downloadResultSubscription = this.downloadResult$.subscribe(data => this.onDownload(data.raw.resultId));
+  downloadResult$ = new Subject<ArmonikData<ResultRaw>>();
+  downloadResultSubscription = this.downloadResult$.subscribe(data => this.onDownload(data.raw.resultId));
 
-    actions: ActionTable<ResultRaw>[] = [
+  actions: ActionTable<ResultRaw>[] = [
     {
       label: 'Download result data',
       icon: 'download',
