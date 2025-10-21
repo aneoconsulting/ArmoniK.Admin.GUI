@@ -63,6 +63,7 @@ describe('ShowComponent', () => {
         ResultsInspectionService,
       ],
     }).inject(ShowComponent);
+
     component.ngOnInit();
   });
 
@@ -100,7 +101,7 @@ describe('ShowComponent', () => {
     it('should return undefined if there is no data', () => {
       mockResultsGrpcService.get$.mockReturnValueOnce(of(null));
       component.refresh.next();
-      expect(component.status).toEqual(undefined);
+      expect(component.status).toBeUndefined();
     });
   });
 
@@ -128,7 +129,7 @@ describe('ShowComponent', () => {
     it('should not update data if there is none', () => {
       mockResultsGrpcService.get$.mockImplementationOnce(() => of({}));
       component.refresh.next();
-      expect(component.data()).toEqual(null);
+      expect(component.data()).toBeNull();
     });
 
     it('should catch errors', () => {
@@ -173,12 +174,22 @@ describe('ShowComponent', () => {
     expect(component.statuses).toEqual(mockStatusService.statuses);
   });
 
+  // ---------- DOWNLOAD TESTS ----------
   describe('downloadResult', () => {
+    // Signature forte de la méthode statique privée
+    type DownloadAsSig = (
+      content: string,
+      filename: string,
+      mime: 'application/json' | 'text/plain' | 'application/octet-stream'
+    ) => void;
+
+    // Alias typé (sans any) pour autoriser spyOn sur la méthode privée statique
+    const ShowComponentForSpy = ShowComponent as unknown as {
+      downloadAs: DownloadAsSig;
+    };
+
     it('should call downloadAs with provided resultId in filename', () => {
-      // espionne la méthode statique privée
-      const spy = jest
-        .spyOn(ShowComponent as any, 'downloadAs')
-        .mockImplementation(() => {});
+      const spy = jest.spyOn(ShowComponentForSpy, 'downloadAs').mockImplementation(() => {});
 
       const resultId = 'res-123';
       const data = { resultId, foo: 'bar' } as unknown as ResultRaw;
@@ -195,9 +206,7 @@ describe('ShowComponent', () => {
     });
 
     it('should use ISO date as filename base when resultId is undefined', () => {
-      const spy = jest
-        .spyOn(ShowComponent as any, 'downloadAs')
-        .mockImplementation(() => {});
+      const spy = jest.spyOn(ShowComponentForSpy, 'downloadAs').mockImplementation(() => {});
       const fixed = new Date('2020-01-02T03:04:05.000Z');
       jest.useFakeTimers().setSystemTime(fixed);
 
@@ -206,17 +215,15 @@ describe('ShowComponent', () => {
 
       const expectedJson = JSON.stringify(data, null, 2);
       expect(spy).toHaveBeenCalledTimes(1);
-      const [json, filename, mime] = (spy.mock.calls[0] as unknown[]) as [string, string, string];
-
-      expect(json).toBe(expectedJson);
-      expect(filename).toBe('2020-01-02T03:04:05.000Z_result.json');
-      expect(mime).toBe('application/json');
+      // inspecte les arguments du premier appel sans utiliser `any`
+      const firstCallArgs = spy.mock.calls[0] as unknown[];
+      expect(firstCallArgs[0]).toBe(expectedJson);
+      expect(firstCallArgs[1]).toBe('2020-01-02T03:04:05.000Z_result.json');
+      expect(firstCallArgs[2]).toBe('application/json');
     });
 
     it('should not call downloadAs when data is null', () => {
-      const spy = jest
-        .spyOn(ShowComponent as any, 'downloadAs')
-        .mockImplementation(() => {});
+      const spy = jest.spyOn(ShowComponentForSpy, 'downloadAs').mockImplementation(() => {});
       component.downloadResult('whatever', null);
       expect(spy).not.toHaveBeenCalled();
     });
