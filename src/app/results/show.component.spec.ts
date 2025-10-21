@@ -34,26 +34,19 @@ describe('ShowComponent', () => {
 
   const returnedResult = {
     id: 'resultId-12345',
-    options: {
-      partitionId: 'partitionId'
-    },
-    status: ResultStatus.RESULT_STATUS_CREATED
+    options: { partitionId: 'partitionId' },
+    status: ResultStatus.RESULT_STATUS_CREATED,
   } as unknown as ResultRaw;
+
   const mockResultsGrpcService = {
-    get$: jest.fn((): Observable<unknown> => of({result: returnedResult} as GetResultResponse)),
+    get$: jest.fn((): Observable<unknown> => of({ result: returnedResult } as GetResultResponse)),
   };
 
   const mockStatusService = {
     statuses: {
-      [ResultStatus.RESULT_STATUS_ABORTED]: {
-        label: 'Cancelled',
-        color: 'red',
-      },
-      [ResultStatus.RESULT_STATUS_CREATED]: {
-        label: 'Created',
-        color: 'green',
-      },
-    }
+      [ResultStatus.RESULT_STATUS_ABORTED]: { label: 'Cancelled', color: 'red' },
+      [ResultStatus.RESULT_STATUS_CREATED]: { label: 'Created', color: 'green' },
+    },
   };
 
   beforeEach(() => {
@@ -68,9 +61,14 @@ describe('ShowComponent', () => {
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: ResultsGrpcService, useValue: mockResultsGrpcService },
         ResultsInspectionService,
-      ]
+      ],
     }).inject(ShowComponent);
     component.ngOnInit();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    jest.clearAllMocks();
   });
 
   it('should create', () => {
@@ -87,14 +85,16 @@ describe('ShowComponent', () => {
     });
 
     it('should set fields', () => {
-      expect(component.fields).toEqual((new ResultsInspectionService).fields);
+      expect(component.fields).toEqual(new ResultsInspectionService().fields);
     });
   });
 
   describe('get status', () => {
     it('should return the status label if there is data', () => {
       component.refresh.next();
-      expect(component.status).toEqual(mockStatusService.statuses[ResultStatus.RESULT_STATUS_CREATED]);
+      expect(component.status).toEqual(
+        mockStatusService.statuses[ResultStatus.RESULT_STATUS_CREATED]
+      );
     });
 
     it('should return undefined if there is no data', () => {
@@ -144,13 +144,13 @@ describe('ShowComponent', () => {
     it('should log errors', () => {
       const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
       const errorMessage = 'ErrorMessage';
-      component.handleError({statusMessage: errorMessage} as GrpcStatusEvent);
+      component.handleError({ statusMessage: errorMessage } as GrpcStatusEvent);
       expect(errorSpy).toHaveBeenCalled();
     });
 
     it('should notify the error', () => {
       const errorMessage = 'ErrorMessage';
-      component.handleError({statusMessage: errorMessage} as GrpcStatusEvent);
+      component.handleError({ statusMessage: errorMessage } as GrpcStatusEvent);
       expect(mockNotificationService.error).toHaveBeenCalledWith('Could not retrieve data.');
     });
   });
@@ -172,4 +172,56 @@ describe('ShowComponent', () => {
   it('should get statuses', () => {
     expect(component.statuses).toEqual(mockStatusService.statuses);
   });
+
+  // ---------- DOWNLOAD TESTS ----------
+  describe('downloadResult', () => {
+    it('should call downloadAs with provided resultId in filename', () => {
+      // espionne la méthode statique privée
+      const spy = jest
+        .spyOn(ShowComponent as any, 'downloadAs')
+        .mockImplementation(() => {});
+
+      const resultId = 'res-123';
+      const data = { resultId, foo: 'bar' } as unknown as ResultRaw;
+
+      component.downloadResult(resultId, data);
+
+      const expectedJson = JSON.stringify(data, null, 2);
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(
+        expectedJson,
+        'res-123_result.json',
+        'application/json'
+      );
+    });
+
+    it('should use ISO date as filename base when resultId is undefined', () => {
+      const spy = jest
+        .spyOn(ShowComponent as any, 'downloadAs')
+        .mockImplementation(() => {});
+      const fixed = new Date('2020-01-02T03:04:05.000Z');
+      jest.useFakeTimers().setSystemTime(fixed);
+
+      const data = { value: 42 } as unknown as ResultRaw;
+      component.downloadResult(undefined, data);
+
+      const expectedJson = JSON.stringify(data, null, 2);
+      expect(spy).toHaveBeenCalledTimes(1);
+      const [json, filename, mime] = (spy.mock.calls[0] as unknown[]) as [string, string, string];
+
+      expect(json).toBe(expectedJson);
+      expect(filename).toBe('2020-01-02T03:04:05.000Z_result.json');
+      expect(mime).toBe('application/json');
+    });
+
+    it('should not call downloadAs when data is null', () => {
+      const spy = jest
+        .spyOn(ShowComponent as any, 'downloadAs')
+        .mockImplementation(() => {});
+      component.downloadResult('whatever', null);
+      expect(spy).not.toHaveBeenCalled();
+    });
+  });
 });
+
+ 

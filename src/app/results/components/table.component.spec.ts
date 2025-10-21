@@ -58,6 +58,7 @@ describe('ResultsTableComponent', () => {
     refresh$: {
       next: jest.fn()
     },
+    onDownload: jest.fn()
   };
 
   const mockStatusService = {
@@ -148,4 +149,15 @@ describe('ResultsTableComponent', () => {
   it('should get displayedColumns', () => {
     expect(component.columns).toEqual(displayedColumns);
   });
+
+  it('should call onDownload with the correct resultId', () => {
+    const spy = jest.spyOn((component as ResultsTableComponent).tableDataService, 'onDownload');
+    const resultId = 'test-result-id';
+ 
+    component.onDownload(resultId);
+ 
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(resultId);
+  });
+
 });
