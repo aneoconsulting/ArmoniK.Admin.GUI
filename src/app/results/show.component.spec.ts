@@ -173,7 +173,6 @@ describe('ShowComponent', () => {
     expect(component.statuses).toEqual(mockStatusService.statuses);
   });
 
-  // ---------- DOWNLOAD TESTS ----------
   describe('downloadResult', () => {
     it('should call downloadAs with provided resultId in filename', () => {
       // espionne la méthode statique privée
