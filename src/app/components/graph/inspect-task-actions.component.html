@@ -1,0 +1,19 @@
+<mat-card-actions>
+  @let taskData = task();
+  @if (taskData) {
+  <button mat-flat-button color="primary" (click)="seeTask(taskData)" i18n>
+    See Task
+  </button>
+  <button mat-flat-button color="primary" (click)="seePartition(taskData)" i18n>
+    See Partition
+  </button>
+  <button mat-flat-button color="primary" (click)="listResults(taskData)" i18n>
+    List Results
+  </button>
+  @if (taskData.parentTaskIds.length !== 0) {
+    <button mat-flat-button color="primary" (click)="listParentTasks(taskData)" i18n>
+      List Parent tasks
+    </button>
+  }
+  }
+</mat-card-actions>
