@@ -88,9 +88,7 @@ export class ShowComponent
     if (data == null) return;
     const base = resultId?.trim() || new Date().toISOString();
     const fileName = `${base}_result.json`;
-
     const json = JSON.stringify(data, null, 2);
-
     ShowComponent.downloadAs(json, fileName, 'application/json');
   }
 
@@ -118,5 +116,3 @@ export class ShowComponent
     }
   }
 }
-
- 
