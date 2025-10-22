@@ -174,14 +174,12 @@ describe('ShowComponent', () => {
   });
 
   describe('downloadResult', () => {
-    // Signature forte de la méthode statique privée
     type DownloadAsSig = (
       content: string,
       filename: string,
       mime: 'application/json' | 'text/plain' | 'application/octet-stream'
     ) => void;
 
-    // Alias typé (sans any) pour autoriser spyOn sur la méthode privée statique
     const ShowComponentForSpy = ShowComponent as unknown as {
       downloadAs: DownloadAsSig;
     };
@@ -213,7 +211,7 @@ describe('ShowComponent', () => {
 
       const expectedJson = JSON.stringify(data, null, 2);
       expect(spy).toHaveBeenCalledTimes(1);
-      // inspecte les arguments du premier appel sans utiliser `any`
+
       const firstCallArgs = spy.mock.calls[0] as unknown[];
       expect(firstCallArgs[0]).toBe(expectedJson);
       expect(firstCallArgs[1]).toBe('2020-01-02T03:04:05.000Z_result.json');

@@ -55,6 +55,7 @@ export class ShowComponent
 {
   readonly grpcService = inject(ResultsGrpcService);
   readonly inspectionService = inject(ResultsInspectionService);
+
   private readonly resultsStatusesService = inject(StatusService) as ResultsStatusesService;
 
   private _status: StatusLabelColor | undefined;
@@ -62,9 +63,11 @@ export class ShowComponent
   set status(status: ResultStatus | undefined) {
     this._status = status ? this.statuses[status] : undefined;
   }
+
   get status(): StatusLabelColor | undefined {
     return this._status;
   }
+
   get statuses() {
     return this.resultsStatusesService.statuses;
   }
@@ -72,6 +75,7 @@ export class ShowComponent
   ngOnInit(): void {
     this.initInspection();
   }
+
   ngOnDestroy(): void {
     this.unsubscribe();
   }
