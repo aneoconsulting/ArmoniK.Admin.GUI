@@ -34,19 +34,26 @@ describe('ShowComponent', () => {
 
   const returnedResult = {
     id: 'resultId-12345',
-    options: { partitionId: 'partitionId' },
-    status: ResultStatus.RESULT_STATUS_CREATED,
+    options: {
+      partitionId: 'partitionId'
+    },
+    status: ResultStatus.RESULT_STATUS_CREATED
   } as unknown as ResultRaw;
-
   const mockResultsGrpcService = {
-    get$: jest.fn((): Observable<unknown> => of({ result: returnedResult } as GetResultResponse)),
+    get$: jest.fn((): Observable<unknown> => of({result: returnedResult} as GetResultResponse)),
   };
 
   const mockStatusService = {
     statuses: {
-      [ResultStatus.RESULT_STATUS_ABORTED]: { label: 'Cancelled', color: 'red' },
-      [ResultStatus.RESULT_STATUS_CREATED]: { label: 'Created', color: 'green' },
-    },
+      [ResultStatus.RESULT_STATUS_ABORTED]: {
+        label: 'Cancelled',
+        color: 'red',
+      },
+      [ResultStatus.RESULT_STATUS_CREATED]: {
+        label: 'Created',
+        color: 'green',
+      },
+    }
   };
 
   beforeEach(() => {
@@ -61,15 +68,9 @@ describe('ShowComponent', () => {
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: ResultsGrpcService, useValue: mockResultsGrpcService },
         ResultsInspectionService,
-      ],
+      ]
     }).inject(ShowComponent);
-
     component.ngOnInit();
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
-    jest.clearAllMocks();
   });
 
   it('should create', () => {
@@ -86,22 +87,20 @@ describe('ShowComponent', () => {
     });
 
     it('should set fields', () => {
-      expect(component.fields).toEqual(new ResultsInspectionService().fields);
+      expect(component.fields).toEqual((new ResultsInspectionService).fields);
     });
   });
 
   describe('get status', () => {
     it('should return the status label if there is data', () => {
       component.refresh.next();
-      expect(component.status).toEqual(
-        mockStatusService.statuses[ResultStatus.RESULT_STATUS_CREATED]
-      );
+      expect(component.status).toEqual(mockStatusService.statuses[ResultStatus.RESULT_STATUS_CREATED]);
     });
 
     it('should return undefined if there is no data', () => {
       mockResultsGrpcService.get$.mockReturnValueOnce(of(null));
       component.refresh.next();
-      expect(component.status).toBeUndefined();
+      expect(component.status).toEqual(undefined);
     });
   });
 
@@ -129,7 +128,7 @@ describe('ShowComponent', () => {
     it('should not update data if there is none', () => {
       mockResultsGrpcService.get$.mockImplementationOnce(() => of({}));
       component.refresh.next();
-      expect(component.data()).toBeNull();
+      expect(component.data()).toEqual(null);
     });
 
     it('should catch errors', () => {
@@ -145,13 +144,13 @@ describe('ShowComponent', () => {
     it('should log errors', () => {
       const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
       const errorMessage = 'ErrorMessage';
-      component.handleError({ statusMessage: errorMessage } as GrpcStatusEvent);
+      component.handleError({statusMessage: errorMessage} as GrpcStatusEvent);
       expect(errorSpy).toHaveBeenCalled();
     });
 
     it('should notify the error', () => {
       const errorMessage = 'ErrorMessage';
-      component.handleError({ statusMessage: errorMessage } as GrpcStatusEvent);
+      component.handleError({statusMessage: errorMessage} as GrpcStatusEvent);
       expect(mockNotificationService.error).toHaveBeenCalledWith('Could not retrieve data.');
     });
   });
@@ -174,7 +173,6 @@ describe('ShowComponent', () => {
     expect(component.statuses).toEqual(mockStatusService.statuses);
   });
 
-  // ---------- DOWNLOAD TESTS ----------
   describe('downloadResult', () => {
     // Signature forte de la méthode statique privée
     type DownloadAsSig = (
@@ -229,5 +227,3 @@ describe('ShowComponent', () => {
     });
   });
 });
-
- 

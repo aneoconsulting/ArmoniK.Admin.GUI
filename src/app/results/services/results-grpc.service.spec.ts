@@ -85,8 +85,7 @@ describe('ResultsGrpcService', () => {
       { for: 'root', field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID, type: 'array' },
     ],
   };
- 
-  // mock ResultsClient (inclut downloadResultData)
+
   const mockResultsClient = {
     listResults: jest.fn(),
     getResult: jest.fn(),
@@ -165,16 +164,16 @@ describe('ResultsGrpcService', () => {
   });
  
   it('should have a default sort field', () => {
-    const opts: ResultRawListOptions = {
+    const options: ResultRawListOptions = {
       pageIndex: 2,
       pageSize: 10,
       sort: { active: null, direction: 'asc' } as unknown as ListOptionsSort<ResultRaw>,
     };
-    service.list$(opts, []);
+    service.list$(options, []);
     expect(mockResultsClient.listResults).toHaveBeenCalledWith(
       new ListResultsRequest({
-        page: opts.pageIndex,
-        pageSize: opts.pageSize,
+        page: options.pageIndex,
+        pageSize: options.pageSize,
         sort: {
           direction: 1,
           field: { resultRawField: { field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID } },

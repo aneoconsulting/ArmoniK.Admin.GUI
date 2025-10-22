@@ -9,7 +9,7 @@ import { ResultRaw, ResultRawFieldKey, ResultRawFilters, ResultRawListOptions } 
 
 @Injectable()
 export class ResultsGrpcService extends GrpcTableService<ResultRaw, ResultRawEnumField>
-  implements GrpcGetInterface<GetResultResponse> { 
+  implements GrpcGetInterface<GetResultResponse> {
 
   readonly filterService = inject(ResultsFiltersService);
   readonly grpcClient = inject(ResultsClient);
