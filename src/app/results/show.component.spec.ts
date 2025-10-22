@@ -172,4 +172,56 @@ describe('ShowComponent', () => {
   it('should get statuses', () => {
     expect(component.statuses).toEqual(mockStatusService.statuses);
   });
+
+  describe('downloadResult', () => {
+    type DownloadAsSig = (
+      content: string,
+      filename: string,
+      mime: 'application/json' | 'text/plain' | 'application/octet-stream'
+    ) => void;
+
+    const ShowComponentForSpy = ShowComponent as unknown as {
+      downloadAs: DownloadAsSig;
+    };
+
+    it('should call downloadAs with provided resultId in filename', () => {
+      const spy = jest.spyOn(ShowComponentForSpy, 'downloadAs').mockImplementation(() => {});
+
+      const resultId = 'res-123';
+      const data = { resultId, foo: 'bar' } as unknown as ResultRaw;
+
+      component.downloadResult(resultId, data);
+
+      const expectedJson = JSON.stringify(data, null, 2);
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(
+        expectedJson,
+        'res-123_result.json',
+        'application/json'
+      );
+    });
+
+    it('should use ISO date as filename base when resultId is undefined', () => {
+      const spy = jest.spyOn(ShowComponentForSpy, 'downloadAs').mockImplementation(() => {});
+      const fixed = new Date('2020-01-02T03:04:05.000Z');
+      jest.useFakeTimers().setSystemTime(fixed);
+
+      const data = { value: 42 } as unknown as ResultRaw;
+      component.downloadResult(undefined, data);
+
+      const expectedJson = JSON.stringify(data, null, 2);
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      const firstCallArgs = spy.mock.calls[0] as unknown[];
+      expect(firstCallArgs[0]).toBe(expectedJson);
+      expect(firstCallArgs[1]).toBe('2020-01-02T03:04:05.000Z_result.json');
+      expect(firstCallArgs[2]).toBe('application/json');
+    });
+
+    it('should not call downloadAs when data is null', () => {
+      const spy = jest.spyOn(ShowComponentForSpy, 'downloadAs').mockImplementation(() => {});
+      component.downloadResult('whatever', null);
+      expect(spy).not.toHaveBeenCalled();
+    });
+  });
 });

@@ -25,7 +25,8 @@ import { ResultRaw } from './types';
 @Component({
   selector: 'app-result-show',
   templateUrl: 'show.component.html',
-  styleUrl: '../../inspections.scss',
+  styleUrls: ['../../inspections.scss'],
+  standalone: true,
   providers: [
     UtilsService,
     ShareUrlService,
@@ -42,18 +43,16 @@ import { ResultRaw } from './types';
     StorageService,
     {
       provide: StatusService,
-      useClass: ResultsStatusesService
-    }
+      useClass: ResultsStatusesService,
+    },
   ],
-  imports: [
-    ShowPageComponent,
-    MatIconModule,
-    MatButtonModule,
-    RouterModule,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [ShowPageComponent, MatIconModule, MatButtonModule, RouterModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse> implements OnInit, OnDestroy {
+export class ShowComponent
+  extends AppShowComponent<ResultRaw, GetResultResponse>
+  implements OnInit, OnDestroy
+{
   readonly grpcService = inject(ResultsGrpcService);
   readonly inspectionService = inject(ResultsInspectionService);
 
@@ -77,7 +76,7 @@ export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse
     this.initInspection();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.unsubscribe();
   }
 
@@ -87,5 +86,37 @@ export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse
 
   afterDataFetching(): void {
     this.status = this.data()?.status;
+  }
+
+  downloadResult(resultId: string | undefined, data: ResultRaw | null): void {
+    if (data == null) return;
+    const base = resultId?.trim() || new Date().toISOString();
+    const fileName = `${base}_result.json`;
+    const json = JSON.stringify(data, null, 2);
+    ShowComponent.downloadAs(json, fileName, 'application/json');
+  }
+
+  private static downloadAs(
+    content: string,
+    filename: string,
+    mime: 'application/json' | 'text/plain' | 'application/octet-stream'
+  ): void {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+
+    try {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.rel = 'noopener';
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } finally {
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+    }
   }
 }
