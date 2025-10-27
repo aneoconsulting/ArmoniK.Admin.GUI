@@ -41,39 +41,39 @@ export class SessionsGrpcActionsService extends GrpcActionsService<SessionRaw, S
         label: $localize`Pause session`,
         icon: 'pause',
         click: (sessions) => this.pauseSession$.next(sessions),
-        condition: (sessions) => sessions.reduce((acc, session) => acc || this.statusesService.canPause(session.status), false),
+        condition: (sessions) => sessions.some(session => this.statusesService.canPause(session.status)),
         key: 'pause',
       },
       {
         label: $localize`Resume session`,
         icon: 'play',
         click: (sessions) => this.resumeSession$.next(sessions),
-        condition: (sessions) => sessions.reduce((acc, session) => acc || this.statusesService.canResume(session.status), false),
+        condition: (sessions) => sessions.some(session => this.statusesService.canResume(session.status)),
         key: 'resume',
       },
       {
         label: $localize`Cancel session`,
         icon: 'cancel',
         click: (sessions) => this.cancelSession$.next(sessions),
-        condition: (sessions) => sessions.reduce((acc, session) => acc || this.statusesService.canCancel(session.status), false),
+        condition: (sessions) => sessions.some(session => this.statusesService.canCancel(session.status)),
       },
       {
         label: $localize`Purge session`,
         icon: 'purge',
         click: (sessions) => this.purgeSession$.next(sessions),
-        condition: (sessions) => sessions.reduce((acc, session) => acc || this.statusesService.canPurge(session.status), false),
+        condition: (sessions) => sessions.some(session => this.statusesService.canPurge(session.status)),
       },
       {
         label: $localize`Close session`,
         icon: 'close',
         click: (sessions) => this.closeSession$.next(sessions),
-        condition: (sessions) => sessions.reduce((acc, session) => acc || this.statusesService.canClose(session.status), false),
+        condition: (sessions) => sessions.some(session => this.statusesService.canClose(session.status)),
       },
       {
         label: $localize`Delete session`,
         icon: 'delete',
         click: (sessions) => this.deleteSession$.next(sessions),
-        condition: (sessions) => sessions.reduce((acc, session) => acc || this.statusesService.canDelete(session.status), false),
+        condition: (sessions) => sessions.some(session => this.statusesService.canDelete(session.status)),
       }
     );
   }
