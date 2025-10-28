@@ -24,7 +24,6 @@ export default class ResultsDataService extends AbstractTableDataService<ResultR
   }
 
   onDownload(resultId: string) {
-    console.log('RESULT DATA SERVICE')
     this.grpcService.downloadResultData$(resultId).subscribe(
       { 
         error: (error: GrpcStatusEvent) => this.error(error, 'Unable to download result'),

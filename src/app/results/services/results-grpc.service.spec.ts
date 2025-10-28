@@ -183,7 +183,7 @@ describe('ResultsGrpcService', () => {
     );
   });
  
-   it('should throw an error if the filter type is not supported', () => {
+  it('should throw an error if the filter type is not supported', () => {
     const filter: ResultRawFilters = [
       [
         {
