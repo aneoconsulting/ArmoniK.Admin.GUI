@@ -7,7 +7,7 @@ import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError, Subject } from 'rxjs';
 import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsInspectionService } from './services/results-inspection.service';
 import { ShowComponent } from './show.component';
@@ -35,12 +35,15 @@ describe('ShowComponent', () => {
   const returnedResult = {
     id: 'resultId-12345',
     options: {
-      partitionId: 'partitionId'
+      partitionId: 'partitionId',
     },
-    status: ResultStatus.RESULT_STATUS_CREATED
+    status: ResultStatus.RESULT_STATUS_CREATED,
   } as unknown as ResultRaw;
-  const mockResultsGrpcService = {
-    get$: jest.fn((): Observable<unknown> => of({result: returnedResult} as GetResultResponse)),
+
+  const mockResultsGrpcService: Partial<ResultsGrpcService> = {
+    get$: jest.fn((): Observable<GetResultResponse> =>
+      of({ result: returnedResult } as GetResultResponse)
+    ),
   };
 
   const mockStatusService = {
@@ -53,7 +56,7 @@ describe('ShowComponent', () => {
         label: 'Created',
         color: 'green',
       },
-    }
+    },
   };
 
   beforeEach(() => {
@@ -68,8 +71,9 @@ describe('ShowComponent', () => {
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: ResultsGrpcService, useValue: mockResultsGrpcService },
         ResultsInspectionService,
-      ]
+      ],
     }).inject(ShowComponent);
+
     component.ngOnInit();
   });
 
@@ -87,18 +91,20 @@ describe('ShowComponent', () => {
     });
 
     it('should set fields', () => {
-      expect(component.fields).toEqual((new ResultsInspectionService).fields);
+      expect(component.fields).toEqual(new ResultsInspectionService().fields);
     });
   });
 
   describe('get status', () => {
     it('should return the status label if there is data', () => {
       component.refresh.next();
-      expect(component.status).toEqual(mockStatusService.statuses[ResultStatus.RESULT_STATUS_CREATED]);
+      expect(component.status).toEqual(
+        mockStatusService.statuses[ResultStatus.RESULT_STATUS_CREATED]
+      );
     });
 
     it('should return undefined if there is no data', () => {
-      mockResultsGrpcService.get$.mockReturnValueOnce(of(null));
+      (mockResultsGrpcService.get$ as jest.Mock).mockReturnValueOnce(of(null as unknown as GetResultResponse));
       component.refresh.next();
       expect(component.status).toEqual(undefined);
     });
@@ -126,14 +132,18 @@ describe('ShowComponent', () => {
     });
 
     it('should not update data if there is none', () => {
-      mockResultsGrpcService.get$.mockImplementationOnce(() => of({}));
+      (mockResultsGrpcService.get$ as jest.Mock).mockImplementationOnce(() =>
+        of({} as GetResultResponse)
+      );
       component.refresh.next();
       expect(component.data()).toEqual(null);
     });
 
     it('should catch errors', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
-      mockResultsGrpcService.get$.mockReturnValueOnce(throwError(() => new Error()));
+      (mockResultsGrpcService.get$ as jest.Mock).mockReturnValueOnce(
+        throwError(() => new Error())
+      );
       const spy = jest.spyOn(component, 'handleError');
       component.refresh.next();
       expect(spy).toHaveBeenCalled();
@@ -144,13 +154,13 @@ describe('ShowComponent', () => {
     it('should log errors', () => {
       const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
       const errorMessage = 'ErrorMessage';
-      component.handleError({statusMessage: errorMessage} as GrpcStatusEvent);
+      component.handleError({ statusMessage: errorMessage } as GrpcStatusEvent);
       expect(errorSpy).toHaveBeenCalled();
     });
 
     it('should notify the error', () => {
       const errorMessage = 'ErrorMessage';
-      component.handleError({statusMessage: errorMessage} as GrpcStatusEvent);
+      component.handleError({ statusMessage: errorMessage } as GrpcStatusEvent);
       expect(mockNotificationService.error).toHaveBeenCalledWith('Could not retrieve data.');
     });
   });
@@ -171,5 +181,62 @@ describe('ShowComponent', () => {
 
   it('should get statuses', () => {
     expect(component.statuses).toEqual(mockStatusService.statuses);
+  });
+
+  describe('downloadResult', () => {
+    let subject: Subject<{ _dataChunk?: Uint8Array; dataChunk?: Uint8Array; foo?: string }>;
+
+    beforeEach(() => {
+      subject = new Subject<{ _dataChunk?: Uint8Array; dataChunk?: Uint8Array; foo?: string }>();
+      (mockResultsGrpcService as Partial<ResultsGrpcService>).downloadResultData$ = jest
+        .fn()
+        .mockReturnValue(subject.asObservable());
+    });
+
+    it('should call downloadAs with merged Uint8Array and correct filename/mime', async () => {
+      const spy = jest.spyOn(component, 'downloadAs').mockImplementation(() => {});
+
+      const resultId = 'res-123';
+      const ret = await component.downloadResult(resultId);
+      expect(ret).toBe(true);
+
+      const c1 = new Uint8Array([1, 2, 3]);
+      const c2 = new Uint8Array([4, 5]);
+      subject.next({ _dataChunk: c1 });
+      subject.next({ _dataChunk: c2 });
+      subject.complete();
+
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      const [mergedArg, filenameArg, mimeArg] = spy.mock.calls[0] as [Uint8Array, string, string];
+
+      expect(filenameArg).toBe('res-123.bin');
+      expect(mimeArg).toBe('application/octet-stream');
+      expect(mergedArg).toBeInstanceOf(Uint8Array);
+      expect(Array.from(mergedArg)).toEqual([1, 2, 3, 4, 5]);
+    });
+
+    it('should return false and not call downloadAs when resultId is undefined', async () => {
+      const spy = jest.spyOn(component, 'downloadAs').mockImplementation(() => {});
+      const ret = await component.downloadResult(undefined);
+      expect(ret).toBe(false);
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should not call downloadAs when stream completes with no chunks', async () => {
+      const spy = jest.spyOn(component, 'downloadAs').mockImplementation(() => {});
+      const ret = await component.downloadResult('id-without-chunks');
+      expect(ret).toBe(true);
+      subject.complete();
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should ignore non-Uint8Array chunks', async () => {
+      const spy = jest.spyOn(component, 'downloadAs').mockImplementation(() => {});
+      await component.downloadResult('weird-chunks');
+      subject.next({ foo: 'bar' });
+      subject.complete();
+      expect(spy).not.toHaveBeenCalled();
+    });
   });
 });

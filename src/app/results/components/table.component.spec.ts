@@ -7,7 +7,21 @@ import { StatusService } from '@app/types/status';
 import { NotificationService } from '@services/notification.service';
 import { ResultsTableComponent } from './table.component';
 import ResultsDataService from '../services/results-data.service';
+import { ResultsGrpcService } from '../services/results-grpc.service';
 import { ResultRaw } from '../types';
+
+Object.defineProperty(globalThis, 'URL', {
+  value: {
+    createObjectURL: jest.fn(() => 'mock-url'),
+  },
+});
+
+type DownloadNext =
+  | Uint8Array
+  | { dataChunk?: Uint8Array; _dataChunk?: Uint8Array };
+type SubscribeNext = (value: DownloadNext) => void;
+type SubscribeError = (err: unknown) => void;
+type SubscribeComplete = () => void;
 
 describe('ResultsTableComponent', () => {
   let component: ResultsTableComponent;
@@ -43,6 +57,7 @@ describe('ResultsTableComponent', () => {
   const mockNotificationService = {
     success: jest.fn(),
     error: jest.fn(),
+    warning: jest.fn(),
   };
 
   const mockClipBoard = {
@@ -58,6 +73,11 @@ describe('ResultsTableComponent', () => {
     refresh$: {
       next: jest.fn()
     },
+    onDownload: jest.fn(),
+  };
+
+  const mockResultsGrpcService = {
+    downloadResultData$: jest.fn(),
   };
 
   const mockStatusService = {
@@ -71,7 +91,6 @@ describe('ResultsTableComponent', () => {
     },
   };
 
-
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -79,12 +98,27 @@ describe('ResultsTableComponent', () => {
         { provide: StatusService, useValue: mockStatusService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
-        { provide: ResultsDataService, useValue: mockResultsDataService }
-      ]
+        { provide: ResultsDataService, useValue: mockResultsDataService },
+        { provide: ResultsGrpcService, useValue: mockResultsGrpcService },
+      ],
     }).inject(ResultsTableComponent);
 
     component.displayedColumns = displayedColumns;
     component.ngOnInit();
+    jest.clearAllMocks();
+
+    mockResultsGrpcService.downloadResultData$.mockReturnValue({
+      subscribe: ({
+        next,
+        complete,
+      }: {
+        next: SubscribeNext;
+        complete: SubscribeComplete;
+      }) => {
+        next(new Uint8Array([1, 2, 3]));
+        complete();
+      },
+    });
   });
 
   it('should run', () => {
@@ -142,10 +176,28 @@ describe('ResultsTableComponent', () => {
   });
 
   it('should get column keys', () => {
-    expect(component.columnKeys).toEqual(displayedColumns.map(c => c.key));
+    expect(component.columnKeys).toEqual(displayedColumns.map((c) => c.key));
   });
 
   it('should get displayedColumns', () => {
     expect(component.columns).toEqual(displayedColumns);
+  });
+
+  it('should call grpc download with the correct resultId', async () => {
+    const resultId = 'test-result-id';
+    await component.onDownload(resultId);
+    expect(mockResultsGrpcService.downloadResultData$).toHaveBeenCalledTimes(1);
+    expect(mockResultsGrpcService.downloadResultData$).toHaveBeenCalledWith(resultId);
+  });
+
+  it('should notify user when grpc download emits an error', async () => {
+    mockResultsGrpcService.downloadResultData$.mockReturnValue({
+      subscribe: ({ error }: { error: SubscribeError }) => {
+        error(new Error('Simulated gRPC error'));
+      },
+    });
+    await component.onDownload('result-err');
+    expect(mockResultsGrpcService.downloadResultData$).toHaveBeenCalledWith('result-err');
+    expect(mockNotificationService.warning).toHaveBeenCalledWith('Result Not Found');
   });
 });
