@@ -54,7 +54,7 @@ export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, Res
     return value.resultId === entry.resultId;
   }
 
-  async onDownload(resultId: string): Promise<boolean> {
+  onDownload(resultId: string): boolean {
     if (!resultId) {
       console.error('[downloadResult] No resultId provided');
       return false;

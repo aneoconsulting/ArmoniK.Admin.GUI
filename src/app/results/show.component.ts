@@ -93,7 +93,7 @@ export class ShowComponent
     this.status = this.data()?.status;
   }
  
-  async downloadResult(resultId?: string): Promise<boolean> {
+  downloadResult(resultId?: string): boolean {
     if (!resultId) {
       console.error('[downloadResult] No resultId provided');
       return false;

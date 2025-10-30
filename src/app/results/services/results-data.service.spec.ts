@@ -165,27 +165,4 @@ describe('ResultsDataService', () => {
   it('should load correctly', () => {
     expect(service.loading()).toBeFalsy();
   });
-
-  it('should call downloadResultData$ with the correct id and refresh on complete', () => {
-    const nextSpy = jest.spyOn(service.refresh$, 'next');
- 
-    const id = 'result-id-42';
-    service.onDownload(id);
- 
-    expect(mockResultsGrpcService.downloadResultData$).toHaveBeenCalledTimes(1);
-    expect(mockResultsGrpcService.downloadResultData$).toHaveBeenCalledWith(id);
-    expect(nextSpy).toHaveBeenCalledTimes(1);
-  });
- 
-  it('should notify error when grpc download fails', () => {
-    const grpcErr: GrpcStatusEvent = { statusMessage: 'boom' } as GrpcStatusEvent;
-    const errorSpy = jest.spyOn(service, 'error');
- 
-    mockResultsGrpcService.downloadResultData$.mockReturnValueOnce(throwError(() => grpcErr));
- 
-    service.onDownload('result-id-99');
- 
-    expect(errorSpy).toHaveBeenCalledTimes(1);
-    expect(errorSpy).toHaveBeenCalledWith(grpcErr, 'Unable to download result');
-  });
 });

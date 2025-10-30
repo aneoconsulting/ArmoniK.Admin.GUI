@@ -13,6 +13,7 @@ import { ResultRaw } from '../types';
 Object.defineProperty(globalThis, 'URL', {
   value: {
     createObjectURL: jest.fn(() => 'mock-url'),
+    revokeObjectURL: jest.fn(),
   },
 });
 
@@ -199,5 +200,121 @@ describe('ResultsTableComponent', () => {
     await component.onDownload('result-err');
     expect(mockResultsGrpcService.downloadResultData$).toHaveBeenCalledWith('result-err');
     expect(mockNotificationService.warning).toHaveBeenCalledWith('Result Not Found');
+  });
+
+  it('should return false and not call grpc when no resultId is provided', () => {
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const ok = component.onDownload('');
+    expect(ok).toBe(false);
+    expect(mockResultsGrpcService.downloadResultData$).not.toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith('[downloadResult] No resultId provided');
+    spy.mockRestore();
+  });
+
+  it('should merge multiple chunk shapes and call downloadAs with the merged buffer', async () => {
+    const mergedSpy = jest.spyOn(component as ResultsTableComponent, 'downloadAs').mockImplementation(() => {});
+    mockResultsGrpcService.downloadResultData$.mockReturnValue({
+      subscribe: ({ next, complete }: { next: SubscribeNext; complete: SubscribeComplete }) => {
+        next(new Uint8Array([1, 2]));
+        next({ dataChunk: new Uint8Array([3]) });
+        next({ _dataChunk: new Uint8Array([4, 5]) });
+        complete();
+      },
+    });
+
+    const ok = component.onDownload('rid-123');
+    expect(ok).toBe(true);
+
+    const expected = new Uint8Array([1, 2, 3, 4, 5]);
+    expect(mergedSpy).toHaveBeenCalledWith(expected, 'rid-123.bin', 'application/octet-stream');
+
+    mergedSpy.mockRestore();
+  });
+
+  it('should ignore non-typed chunks and still download valid ones', async () => {
+    const mergedSpy = jest.spyOn(component as ResultsTableComponent, 'downloadAs').mockImplementation(() => {});
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    mockResultsGrpcService.downloadResultData$.mockReturnValue({
+      subscribe: ({ next, complete }: { next: SubscribeNext; complete: SubscribeComplete }) => {
+        next({} as object);
+        next(new Uint8Array([9]));
+        next({ other: 'x' } as object);
+        complete();
+      },
+    });
+
+    component.onDownload('rid-ignored');
+    expect(warnSpy).toHaveBeenCalledWith('[downloadResult] Chunk not a Uint8Array:', {});
+    expect(warnSpy).toHaveBeenCalledWith('[downloadResult] Chunk not a Uint8Array:', { other: 'x' });
+    expect(mergedSpy).toHaveBeenCalledWith(new Uint8Array([9]), 'rid-ignored.bin', 'application/octet-stream');
+
+    mergedSpy.mockRestore();
+    warnSpy.mockRestore();
+  });
+
+  it('should warn and not call downloadAs when no chunks are received', async () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const mergedSpy = jest.spyOn(component as ResultsTableComponent, 'downloadAs').mockImplementation(() => {});
+
+    mockResultsGrpcService.downloadResultData$.mockReturnValue({
+      subscribe: ({ complete }: { complete: SubscribeComplete }) => {
+        complete();
+      },
+    });
+
+    component.onDownload('rid-empty');
+    expect(warnSpy).toHaveBeenCalledWith('[downloadResult] No chunks received');
+    expect(mergedSpy).not.toHaveBeenCalled();
+
+    warnSpy.mockRestore();
+    mergedSpy.mockRestore();
+  });
+
+  describe('downloadAs', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+    afterEach(() => {
+      jest.useRealTimers();
+      (URL.createObjectURL as jest.Mock).mockClear();
+      (URL.revokeObjectURL as jest.Mock).mockClear();
+    });
+
+    it('should create a blob URL, click an anchor, and revoke the URL', () => {
+      const appendSpy = jest.spyOn(document.body, 'appendChild');
+      const removeSpy = jest.spyOn(Element.prototype, 'remove');
+      const clickSpy = jest.spyOn(HTMLAnchorElement.prototype, 'click');
+
+      const originalCreate = document.createElement.bind(document);
+      const createSpy = jest.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
+        return originalCreate(tagName);
+      });
+
+      component.downloadAs('hello', 'file.bin', 'application/octet-stream');
+      expect(URL.createObjectURL).toHaveBeenCalledTimes(1);
+      const blobArg = (URL.createObjectURL as jest.Mock).mock.calls[0][0];
+      expect(blobArg).toBeInstanceOf(Blob);
+      expect((blobArg as Blob).type).toBe('application/octet-stream');
+
+      expect(createSpy).toHaveBeenCalledWith('a');
+      expect(appendSpy).toHaveBeenCalledTimes(1);
+      expect(clickSpy).toHaveBeenCalledTimes(1);
+      expect(removeSpy).toHaveBeenCalledTimes(1);
+
+      const anchorEl = appendSpy.mock.calls[0][0] as HTMLAnchorElement;
+      expect(anchorEl.href).toBe('http://localhost/mock-url');
+      expect(anchorEl.download).toBe('file.bin');
+      expect(anchorEl.rel).toBe('noopener');
+      expect(anchorEl.style.display).toBe('none');
+
+      jest.runAllTimers();
+      expect(URL.revokeObjectURL).toHaveBeenCalledWith('mock-url');
+
+      appendSpy.mockRestore();
+      removeSpy.mockRestore();
+      clickSpy.mockRestore();
+      createSpy.mockRestore();
+    });
   });
 });
