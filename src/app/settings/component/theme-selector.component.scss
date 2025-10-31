@@ -1,7 +1,16 @@
-button.theme {
-  mat-icon {
-    color: var(--armonik-header-color) !important;
-  }
+section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+button {
+  width: fit-content;
+}
+
+.selected {
+  background-color: var(--armonik-header-color);
+  color: var(--armonik-header-background);
 }
 
 .docs-theme-icon-background {
