@@ -72,12 +72,10 @@ export class StorageService implements Storage {
 
     for (const key of this.keys) {
       const item = this.getItem(key, true);
-
-      if (item) {
+      if (item !== null && item !== undefined) {
         data[key] = item;
       }
     }
-
     return data;
   }
 

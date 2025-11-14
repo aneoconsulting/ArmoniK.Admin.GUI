@@ -84,6 +84,15 @@ export class IconsService {
     'retry': 'repeat_on',
     'pending': 'pending',
     'creating': 'create',
+    'automatic': 'auto_awesome',
+    'dark-mode': 'dark_mode',
+    'light-mode': 'light_mode',
+    'session-graph-icon': 'change_history',
+    'task-graph-icon': 'circle',
+    'result-graph-icon': 'rectangle',
+    'line': 'remove',
+    'back': 'arrow_back_ios_new',
+    'graph': 'insights',
   };
 
   getIcon(name: string | null | undefined): string {

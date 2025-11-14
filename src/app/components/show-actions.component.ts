@@ -11,15 +11,7 @@ import { ShowActionAreaComponent } from './show-action-area.component';
 @Component({
   selector: 'app-show-actions',
   templateUrl: './show-actions.component.html',
-  styles: [`
-  .spacer {
-    flex: 1 1 auto;
-  }
-  .smallSpace {
-    margin-left: 5px;
-    margin-right: 5px;
-  }
-  `],
+  styleUrl: 'show-actions.component.scss',
   imports: [
     CommonModule,
     MatIconModule,

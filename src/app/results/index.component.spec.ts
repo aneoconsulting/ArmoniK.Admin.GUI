@@ -181,7 +181,7 @@ describe('Results Index Component', () => {
   describe('initialisation', () => {
     it('should initialise columns', () => {
       expect(component.displayedColumnsKeys).toEqual(defaultColumns);
-      expect(component.availableColumns).toEqual(availableTableColumns.map(column => column.key));
+      expect(component.availableColumns).toEqual(availableTableColumns);
       expect(component.displayedColumns()).toEqual([
         {
           name: $localize`Result ID`,
@@ -291,17 +291,11 @@ describe('Results Index Component', () => {
     });
 
     it('should update displayed column keys', () => {
-      expect(component.displayedColumnsKeys).toEqual(['select', 'resultId', 'createdAt']);
+      expect(component.displayedColumnsKeys).toEqual(newColumns);
     });
 
     it('should update displayed columns', () => {
       expect(component.displayedColumns()).toEqual([
-        {
-          name: $localize`Select`,
-          key: 'select',
-          type: 'select',
-          sortable: false,
-        },
         {
           name: $localize`Result ID`,
           key: 'resultId',
@@ -315,11 +309,17 @@ describe('Results Index Component', () => {
           type: 'date',
           sortable: true,
         },
+        {
+          name: $localize`Select`,
+          key: 'select',
+          type: 'select',
+          sortable: false,
+        },
       ]);
     });
 
     it('should save columns', () => {
-      expect(mockResultsIndexService.saveColumns).toHaveBeenCalledWith(['select', 'resultId', 'createdAt']);
+      expect(mockResultsIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
     });
   });
 

@@ -15,25 +15,7 @@ import { IconsService } from '@services/icons.service';
   providers: [
     IconsService
   ],
-  styles: [`
-  section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%
-  }
-  
-  mat-toolbar {
-    justify-content: center;
-    gap: 1rem;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-  }
-
-  mat-toolbar-row {
-    height: fit-content;
-  }  
-  `]
+  styleUrl: 'inspection-toolbar.component.scss',
 })
 export class InspectionToolbarComponent {
   private readonly iconsService = inject(IconsService);

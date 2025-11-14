@@ -36,7 +36,7 @@ export class FiltersDialogFieldComponent<F extends FiltersEnums, O extends Filte
 
   ngOnInit(): void {
     this.labelledProperties = [
-      ...this.dataFiltersService.filtersDefinitions.map(property => this.retrieveLabel(property)),
+      ...this.dataFiltersService.filtersDefinitions.map(property => this.retrieveLabel(property) ?? ''),
       ...this.customProperties.map(custom => custom.replace('options.options.', ''))
     ];
   }
@@ -46,30 +46,32 @@ export class FiltersDialogFieldComponent<F extends FiltersEnums, O extends Filte
   }
 
   writeValue(value: string): void {
-    if (!isNaN(Number(value))) {
-      value = this.retrieveLabel({ for: this.filter.value.for, field: Number(value) } as FilterDefinition<F, O>) ;
-    }
-    this.value = value;
-
-    const field = this.dataFiltersService.retrieveField(value) as { for: FilterFor<F, O>; index: number };
-    let change: FilterFieldValue<F, O> = null;
-    if (field.index === -1) {
-      const isCustom = this.customProperties.find(col => col.toLowerCase() === `options.options.${value.toLowerCase()}`);
-      if (isCustom) {
-        change = value;
-        this.emitFor('custom');
+    if (this.filter.value.for) {
+      if (!isNaN(Number(value))) {
+        value = this.retrieveLabel({ for: this.filter.value.for, field: Number(value) } as FilterDefinition<F, O>);
       }
-    } else {
-      change = field.index as F | O;
-      this.emitFor(field.for);
-    }
+      this.value = value;
 
-    if (this.registeredOnChange) {
-      this.registeredOnChange(change);
-    }
+      const field = this.dataFiltersService.retrieveField(value) as { for: FilterFor<F, O>; index: number };
+      let change: FilterFieldValue<F, O> = null;
+      if (field.index === -1) {
+        const isCustom = this.customProperties.find(col => col.toLowerCase() === `options.options.${value.toLowerCase()}`);
+        if (isCustom) {
+          change = value;
+          this.emitFor('custom');
+        }
+      } else {
+        change = field.index as F | O;
+        this.emitFor(field.for);
+      }
 
-    if (this.registeredOnTouched) {
-      this.registeredOnTouched(change);
+      if (this.registeredOnChange) {
+        this.registeredOnChange(change);
+      }
+
+      if (this.registeredOnTouched) {
+        this.registeredOnTouched(change);
+      }
     }
   }
 
