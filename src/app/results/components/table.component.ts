@@ -6,6 +6,7 @@ import { StatusService } from '@app/types/status';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { NotificationService } from '@services/notification.service';
+import { UserService } from '@services/user.service';
 import { Subject } from 'rxjs';
 import ResultsDataService from '../services/results-data.service';
 import { ResultsGrpcService } from '../services/results-grpc.service';
@@ -34,6 +35,7 @@ export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, Res
   readonly statusesService: ResultsStatusesService = inject(StatusService);
   readonly grpcService = inject(ResultsGrpcService);
   readonly resultsNotificationService = inject(NotificationService);
+  private readonly userService = inject(UserService);
 
   downloadResult$ = new Subject<ArmonikData<ResultRaw>>();
   downloadResultSubscription = this.downloadResult$.subscribe(data => this.onDownload(data.raw.resultId));
@@ -43,6 +45,10 @@ export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, Res
       label: 'Download result data',
       icon: 'download',
       action$: this.downloadResult$,
+      condition: (_data: ArmonikData<ResultRaw>) => {
+        const permissions = this.userService.user?.permissions ?? [];
+        return permissions.includes('Results:DownloadResultData');
+      },
     },
   ];
 
@@ -52,6 +58,12 @@ export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, Res
 
   isDataRawEqual(value: ResultRaw, entry: ResultRaw): boolean {
     return value.resultId === entry.resultId;
+  }
+
+  hasDownloadPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    console.log('permissions :', permissions);
+    return permissions.includes('downloadResultData');
   }
 
   onDownload(resultId: string): boolean {

@@ -15,6 +15,7 @@ import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
+import { UserService } from '@services/user.service';
 import { UtilsService } from '@services/utils.service';
 import { ResultsFiltersService } from './services/results-filters.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
@@ -62,6 +63,7 @@ export class ShowComponent
   readonly grpcService = inject(ResultsGrpcService);
   readonly inspectionService = inject(ResultsInspectionService);
   private readonly resultsStatusesService = inject(StatusService) as ResultsStatusesService;
+  private readonly userService = inject(UserService);
 
   private _status: StatusLabelColor | undefined;
 
@@ -75,6 +77,11 @@ export class ShowComponent
 
   get statuses() {
     return this.resultsStatusesService.statuses;
+  }
+
+  get hasDownloadPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Results:DownloadResultData');
   }
 
   ngOnInit(): void {

@@ -18,7 +18,11 @@
   </button>
   </div>
   <div class="actions" bonus-actions>
-    <button mat-flat-button color="accent" (click)="downloadResult(data()?.resultId)">
+    <button mat-flat-button 
+            [color]="hasDownloadPermission ? 'accent' : ''"
+            [disabled]="!hasDownloadPermission"
+            [class.disabled-button]="!hasDownloadPermission"
+            (click)="downloadResult(data()?.resultId)">
       <span i18n>Download Result</span>
       <mat-icon [fontIcon]="this.getIcon('download')" />
     </button>

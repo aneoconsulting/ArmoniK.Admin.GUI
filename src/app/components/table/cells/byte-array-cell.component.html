@@ -14,7 +14,7 @@
       <mat-icon [fontIcon]="getIcon('copy')" />
     </button>
   }
-  @if (decodedData || byteLength) {
+  @if ((decodedData || byteLength) && hasDownloadPermission) {
     <button mat-icon-button (click)="download()" [matTooltip]="downloadTip + label">
       <mat-icon [fontIcon]="getIcon('download')" />
     </button>

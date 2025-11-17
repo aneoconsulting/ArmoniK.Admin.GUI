@@ -6,6 +6,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ByteArrayService } from '@services/byte-array.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { UserService } from '@services/user.service';
 
 /**
  * Displays a byte array in armonik tables.
@@ -51,6 +52,7 @@ export class ByteArrayComponent {
   private readonly iconsService = inject(IconsService);
   readonly clipboard = inject(Clipboard);
   private readonly notificationService = inject(NotificationService);
+  private readonly userService = inject(UserService);
 
   /**
    * Download the byteArray in a binary file. 
@@ -89,5 +91,10 @@ export class ByteArrayComponent {
    */
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);
+  }
+
+  get hasDownloadPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Results:DownloadResultData');
   }
 }

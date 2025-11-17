@@ -8,6 +8,7 @@ import { PrettyPipe } from '@pipes/pretty.pipe';
 import { ByteArrayService } from '@services/byte-array.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { UserService } from '@services/user.service';
 
 /**
  * Displays a byte array in armonik inspection pages.
@@ -50,6 +51,7 @@ export class ByteArrayComponent {
   private readonly iconsService = inject(IconsService);
   private readonly clipboard = inject(Clipboard);
   private readonly notificationService = inject(NotificationService);
+  private readonly userService = inject(UserService);
 
   /**
    * Returns the icon associated with that name.
@@ -89,5 +91,10 @@ export class ByteArrayComponent {
       this.clipboard.copy(this.decodedData);
       this.notificationService.success('Copied to clipboard');
     }
+  }
+
+  get hasDownloadPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Results:DownloadResultData');
   }
 }

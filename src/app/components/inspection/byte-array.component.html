@@ -7,7 +7,7 @@
   } @else {
     <span class="binary-indicator" i18n>- Binary</span>
   }
-  @if (byteLength) {
+  @if (byteLength && hasDownloadPermission) {
     <button mat-icon-button (click)="download()">
       <mat-icon [fontIcon]="getIcon('download')" />
     </button>
