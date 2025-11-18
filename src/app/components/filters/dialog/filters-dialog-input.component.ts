@@ -12,7 +12,7 @@ import { FilterInputValue } from './types';
 
 @Component({
   selector: 'app-filters-dialog-input',
-  templateUrl: './filters-dialog-input.component.html',
+  templateUrl: 'filters-dialog-input.component.html',
   standalone: true,
   imports: [
     MatFormFieldModule,

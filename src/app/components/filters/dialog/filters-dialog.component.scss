@@ -1,13 +1,11 @@
+@use 'styles' as *;
+
 mat-dialog-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  @include flex-col(1rem);
 }
 
 section {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
+  @include flex-row($gap: 1rem, $justify: center, $align: start, $wrap: nowrap);
 }
 
 .filter-header {
@@ -15,10 +13,7 @@ section {
 }
 
 article {
-  display: flex;
-  flex-direction: column;
-  justify-content: s;
-  gap: 0.5rem;
+  @include flex-col(0.5rem);
 }
 
 .mat-divider {

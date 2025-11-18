@@ -55,7 +55,7 @@ export class FiltersDialogFieldComponent<F extends FiltersEnums, O extends Filte
       const field = this.dataFiltersService.retrieveField(value) as { for: FilterFor<F, O>; index: number };
       let change: FilterFieldValue<F, O> = null;
       if (field.index === -1) {
-        const isCustom = this.customProperties.find(col => col.toLowerCase() === `options.options.${value.toLowerCase()}`);
+        const isCustom = this.customProperties.some(col => col.toLowerCase() === `options.options.${value.toLowerCase()}`);
         if (isCustom) {
           change = value;
           this.emitFor('custom');

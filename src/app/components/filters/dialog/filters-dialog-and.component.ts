@@ -18,8 +18,8 @@ import { FilterInputValue, FormFilter, FormFilterType, FormFiltersAnd } from './
 
 @Component({
   selector: 'app-filters-dialog-and',
-  templateUrl: './filters-dialog-and.component.html',
-  styleUrl: './filters-dialog-and.component.css',
+  templateUrl: 'filters-dialog-and.component.html',
+  styleUrl: 'filters-dialog-and.component.scss',
   standalone: true,
   imports: [
     FiltersDialogInputComponent,
@@ -78,9 +78,11 @@ export class FiltersDialogAndComponent<F extends FiltersEnums, O extends Filters
   }
 
   remove(index: number) {
-    this.filterAnd.removeAt(index);
-    if (this.filterAnd.length === 0) {
-      this.add();
+    if (index >= 0 && index < this.filterAnd.length) {
+      this.filterAnd.removeAt(index);
+      if (this.filterAnd.length === 0) {
+        this.add();
+      }
     }
   }
 
