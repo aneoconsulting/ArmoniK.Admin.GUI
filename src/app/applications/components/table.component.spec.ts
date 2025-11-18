@@ -158,7 +158,7 @@ describe('ApplicationsTableComponent', () => {
     expect(spy).toHaveBeenCalledWith(newColumns);
   });
 
-  describe('personnalizeTasksByStatus', () => {
+  describe('personalizeTasksByStatus', () => {
     beforeEach(() => {
       component.personalizeTasksByStatus();
     });
