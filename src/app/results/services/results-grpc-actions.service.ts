@@ -1,5 +1,5 @@
 import { ResultRawEnumField, ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { catchError, combineLatest, of, Subject, switchMap } from 'rxjs';
@@ -7,6 +7,7 @@ import { ResultsGrpcService } from './results-grpc.service';
 import { ResultsStatusesService } from './results-statuses.service';
 import { ResultRaw } from '../types';
 
+@Injectable()
 export class ResultsGrpcActionsService extends GrpcActionsService<ResultRaw, ResultStatus, ResultRawEnumField> {
   protected readonly statusesService = inject(StatusService) as ResultsStatusesService;
   protected readonly grpcService = inject(ResultsGrpcService);
@@ -27,13 +28,13 @@ export class ResultsGrpcActionsService extends GrpcActionsService<ResultRaw, Res
   }
   
   protected override subscribeToActions(): void {
-    this.downloadResultData$.pipe(
+    const downloadSubscription = this.downloadResultData$.pipe(
       switchMap(results => {
         if (results.length !== 0) {
           return combineLatest(
             results.map(result => 
               combineLatest([of(result.resultId), this.grpcService.downloadResultData$(result.resultId).pipe(
-                catchError(error => this.handleError(error, $localize`An error occurred while downloading results`))
+                catchError(error => this.handleError(error, $localize`An error occurred while downloading result ${result.resultId}`))
               )])
             )
           );
@@ -48,30 +49,30 @@ export class ResultsGrpcActionsService extends GrpcActionsService<ResultRaw, Res
         }
       }
     });
+    this.subscriptions.add(downloadSubscription);
   }
 
-  private downloadAs(
-    content: BlobPart | BlobPart[],
+  downloadAs(
+    content: Uint8Array,
     filename: string,
     mime: 'application/json' | 'text/plain' | 'application/octet-stream'
   ): void {
-    if (typeof window === 'undefined' || typeof document === 'undefined') return;
- 
-    const parts = Array.isArray(content) ? content : [content];
-    const blob = new Blob(parts, { type: mime });
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      const blob = new Blob([content], { type: mime });
 
-    const url = URL.createObjectURL(blob);
-    try {
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.rel = 'noopener';
-      a.style.display = 'none';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    } finally {
-      setTimeout(() => URL.revokeObjectURL(url), 0);
+      const url = URL.createObjectURL(blob);
+      try {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.rel = 'noopener';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } finally {
+        setTimeout(() => URL.revokeObjectURL(url), 0);
+      }
     }
   }
 }

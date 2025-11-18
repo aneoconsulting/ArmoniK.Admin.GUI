@@ -9,7 +9,7 @@ import { TasksGrpcActionsService } from './tasks-grpc-actions.service';
 import { TasksGrpcService } from './tasks-grpc.service';
 
 function getAction(actions: GrpcAction<TaskSummary>[], label: string) {
-  return actions.filter(action => action.label === label)[0];
+  return actions.find(action => action.label === label) as GrpcAction<TaskSummary>;
 } 
 
 describe('TasksGrpcActionsService', () => {
@@ -108,5 +108,10 @@ describe('TasksGrpcActionsService', () => {
       service['handleError'](error, message);
       expect(mockNotificationService.error).toHaveBeenCalledWith(message);
     });
+  });
+
+  it('should unsubscribe', () => {
+    service.ngOnDestroy();
+    expect(service['subscriptions'].closed).toBeTruthy();
   });
 });

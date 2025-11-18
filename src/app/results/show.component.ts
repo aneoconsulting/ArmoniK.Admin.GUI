@@ -96,9 +96,9 @@ export class ShowComponent
  
   afterDataFetching(): void {
     const data = this.data();
+    this.status = data?.status;
     if (data) {
       this.result = data;
-      this.status = this.data()?.status;
     }
   }
 }

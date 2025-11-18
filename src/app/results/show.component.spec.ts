@@ -1,13 +1,15 @@
 import { GetResultResponse, ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { GrpcAction } from '@app/types/actions.type';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
-import { BehaviorSubject, Observable, of, throwError, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsInspectionService } from './services/results-inspection.service';
 import { ShowComponent } from './show.component';
@@ -47,6 +49,15 @@ describe('ShowComponent', () => {
     ),
   };
 
+  const mockResultsGrpcActionsService = {
+    actions: [
+      {
+        key: 'mock-action'
+      },
+    ] as unknown as GrpcAction<ResultRaw>[],
+    refresh: {}
+  };
+
   const mockStatusService = {
     statuses: {
       [ResultStatus.RESULT_STATUS_ABORTED]: {
@@ -72,6 +83,7 @@ describe('ShowComponent', () => {
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: ResultsGrpcService, useValue: mockResultsGrpcService },
+        { provide: GrpcActionsService, useValue: mockResultsGrpcActionsService },
         ResultsInspectionService,
       ],
     }).inject(ShowComponent);
@@ -89,6 +101,9 @@ describe('ShowComponent', () => {
     });
     it('should set fields', () => {
       expect(component.fields).toEqual(new ResultsInspectionService().fields);
+    });
+    it('should set the grpc action refresh as the dataService refresh', () => {
+      expect(mockResultsGrpcActionsService.refresh).toBe(component.refresh);
     });
   });
   describe('get status', () => {
@@ -169,67 +184,5 @@ describe('ShowComponent', () => {
   });
   it('should get statuses', () => {
     expect(component.statuses).toEqual(mockStatusService.statuses);
-  });
-  describe('downloadResult', () => {
-    let subject: Subject<{ _dataChunk?: Uint8Array; dataChunk?: Uint8Array; foo?: string }>;
-    beforeEach(() => {
-      subject = new Subject<{ _dataChunk?: Uint8Array; dataChunk?: Uint8Array; foo?: string }>();
-      (mockResultsGrpcService as Partial<ResultsGrpcService>).downloadResultData$ = jest
-        .fn()
-        .mockReturnValue(subject.asObservable());
-    });
-    it('should call downloadAs with merged Uint8Array and correct filename/mime', async () => {
-      const spy = jest.spyOn(component, 'downloadAs').mockImplementation(() => { });
-      const resultId = 'res-123';
-      const ret = await component.downloadResult(resultId);
-      expect(ret).toBe(true);
-      const c1 = new Uint8Array([1, 2, 3]);
-      const c2 = new Uint8Array([4, 5]);
-      subject.next({ _dataChunk: c1 });
-      subject.next({ _dataChunk: c2 });
-      subject.complete();
-      expect(spy).toHaveBeenCalledTimes(1);
-      const [mergedArg, filenameArg, mimeArg] = spy.mock.calls[0] as [
-        Uint8Array,
-        string,
-        string
-      ];
-      expect(filenameArg).toBe('res-123.bin');
-      expect(mimeArg).toBe('application/octet-stream');
-      expect(mergedArg).toBeInstanceOf(Uint8Array);
-      expect(Array.from(mergedArg)).toEqual([1, 2, 3, 4, 5]);
-    });
-    it('should return false and not call downloadAs when resultId is undefined', async () => {
-      const spy = jest.spyOn(component, 'downloadAs').mockImplementation(() => { });
-      const ret = await component.downloadResult(undefined);
-      expect(ret).toBe(false);
-      expect(spy).not.toHaveBeenCalled();
-    });
-    it('should not call downloadAs when stream completes with no chunks', async () => {
-      const spy = jest.spyOn(component, 'downloadAs').mockImplementation(() => { });
-      const ret = await component.downloadResult('id-without-chunks');
-      expect(ret).toBe(true);
-      subject.complete();
-      expect(spy).not.toHaveBeenCalled();
-    });
-    it('should ignore non-Uint8Array chunks', async () => {
-      const spy = jest.spyOn(component, 'downloadAs').mockImplementation(() => { });
-      await component.downloadResult('weird-chunks');
-      subject.next({ foo: 'bar' });
-      subject.complete();
-      expect(spy).not.toHaveBeenCalled();
-    });
-
-    it('should log error and warn when stream errors', async () => {
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
-      const warningSpy = mockNotificationService.warning;
-      await component.downloadResult('res-error');
-      subject.error(new Error('boom'));
-      expect(consoleSpy).toHaveBeenCalledWith(
-        '[downloadResult] download error:',
-        expect.any(Error)
-      );
-      expect(warningSpy).toHaveBeenCalledWith('Result Not Found');
-    });
   });
 });
