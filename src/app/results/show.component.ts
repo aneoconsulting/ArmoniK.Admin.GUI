@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { AppShowComponent } from '@app/types/components/show';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusLabelColor, StatusService } from '@app/types/status';
 import { ShowPageComponent } from '@components/show-page.component';
 import { DefaultConfigService } from '@services/default-config.service';
@@ -17,16 +18,12 @@ import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { ResultsFiltersService } from './services/results-filters.service';
+import { ResultsGrpcActionsService } from './services/results-grpc-actions.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsInspectionService } from './services/results-inspection.service';
 import { ResultsStatusesService } from './services/results-statuses.service';
 import { ResultRaw } from './types';
- 
-interface ResultChunk {
-  _dataChunk?: Uint8Array;
-  dataChunk?: Uint8Array;
-}
- 
+
 @Component({
   selector: 'app-result-show',
   templateUrl: 'show.component.html',
@@ -50,6 +47,10 @@ interface ResultChunk {
       provide: StatusService,
       useClass: ResultsStatusesService,
     },
+    {
+      provide: GrpcActionsService,
+      useClass: ResultsGrpcActionsService,
+    }
   ],
   imports: [ShowPageComponent, MatIconModule, MatButtonModule, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -61,8 +62,11 @@ export class ShowComponent
   readonly resultsNotificationService = inject(NotificationService);
   readonly grpcService = inject(ResultsGrpcService);
   readonly inspectionService = inject(ResultsInspectionService);
+  readonly grpcActionsService = inject(GrpcActionsService);
+
   private readonly resultsStatusesService = inject(StatusService) as ResultsStatusesService;
 
+  result: ResultRaw;
   private _status: StatusLabelColor | undefined;
 
   set status(status: ResultStatus | undefined) {
@@ -79,6 +83,7 @@ export class ShowComponent
 
   ngOnInit(): void {
     this.initInspection();
+    this.grpcActionsService.refresh = this.refresh;
   }
 
   ngOnDestroy(): void {
@@ -90,76 +95,10 @@ export class ShowComponent
   }
  
   afterDataFetching(): void {
-    this.status = this.data()?.status;
-  }
- 
-  downloadResult(resultId?: string): boolean {
-    if (!resultId) {
-      console.error('[downloadResult] No resultId provided');
-      return false;
-    }
-    const chunks: Uint8Array[] = [];
-    this.grpcService.downloadResultData$(resultId).subscribe({
-      next: (chunk: ResultChunk | Uint8Array) => {
-        const data: Uint8Array | undefined =
-          chunk instanceof Uint8Array
-            ? chunk
-            : chunk?._dataChunk ?? chunk?.dataChunk;
- 
-        if (!data) {
-          console.warn('[downloadResult] Chunk not a Uint8Array:', chunk);
-          return;
-        }
-        chunks.push(data);
-      },
-      error: (err: Error) => {
-        console.error('[downloadResult] download error:', err);
-        this.resultsNotificationService.warning('Result Not Found');
-      },
-      complete: () => {
-        if (!chunks.length) {
-          console.warn('[downloadResult] No chunks received');
-          return;
-        }
- 
-        const total = chunks.reduce((n, c) => n + c.byteLength, 0);
-        const merged = new Uint8Array(total);
-        let offset = 0;
-        for (const c of chunks) {
-          merged.set(c, offset);
-          offset += c.byteLength;
-        }
- 
-        const fileName = `${resultId}.bin`;
-        this.downloadAs(merged, fileName, 'application/octet-stream');
-      },
-    });
- 
-    return true;
-  }
- 
-  downloadAs(
-    content: BlobPart | BlobPart[],
-    filename: string,
-    mime: 'application/json' | 'text/plain' | 'application/octet-stream'
-  ): void {
-    if (typeof window === 'undefined' || typeof document === 'undefined') return;
- 
-    const parts = Array.isArray(content) ? content : [content];
-    const blob = new Blob(parts, { type: mime });
-
-    const url = URL.createObjectURL(blob);
-    try {
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.rel = 'noopener';
-      a.style.display = 'none';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    } finally {
-      setTimeout(() => URL.revokeObjectURL(url), 0);
+    const data = this.data();
+    if (data) {
+      this.result = data;
+      this.status = this.data()?.status;
     }
   }
 }

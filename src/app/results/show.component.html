@@ -18,10 +18,14 @@
   </button>
   </div>
   <div class="actions" bonus-actions>
-    <button mat-flat-button color="accent" (click)="downloadResult(data()?.resultId)">
-      <span i18n>Download Result</span>
-      <mat-icon [fontIcon]="this.getIcon('download')" />
-    </button>
+    @if (result) {
+      @for (action of grpcActionsService.actions; track $index) {
+        <button mat-flat-button color="accent" (click)="action.click([result])" [disabled]="action.condition ? !action.condition([result]) : false">
+          <span i18n>{{ action.label }}</span>
+          <mat-icon [fontIcon]="this.getIcon(action.icon)" />
+        </button>
+      }
+    }
   </div>
 </app-show-page>
 
