@@ -19,6 +19,7 @@ import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
+import { UserService } from '@services/user.service';
 import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './services/tasks-filters.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
@@ -68,6 +69,7 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
 
   private readonly tasksStatusesService = inject(StatusService) as TasksStatusesService;
   private readonly filtersService = inject(FiltersService);
+  private readonly userService = inject(UserService);
 
   private _status: StatusLabelColor | undefined;
 
@@ -81,6 +83,11 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
 
   get status(): StatusLabelColor | undefined {
     return this._status;
+  }
+
+  get hasCancelTaskPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Tasks:CancelTask');
   }
 
   set status(value: TaskStatus | undefined) {
@@ -106,7 +113,7 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
     if (data) {
       data.parentTaskIds = data.parentTaskIds.filter(taskId => taskId !== data.sessionId);
       this.createResultQueryParams();
-      this.canCancel = !this.tasksStatusesService.taskNotEnded(data.status);
+      this.canCancel = !this.tasksStatusesService.taskNotEnded(data.status) && this.hasCancelTaskPermission;
     }
   }
 

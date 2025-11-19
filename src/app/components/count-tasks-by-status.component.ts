@@ -6,6 +6,7 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
 import { StatusService } from '@app/types/status';
 import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.component';
+import { UserService } from '@services/user.service';
 import { Subject, switchMap } from 'rxjs';
 
 @Component({
@@ -25,10 +26,16 @@ import { Subject, switchMap } from 'rxjs';
 })
 export class CountTasksByStatusComponent implements OnInit {
   private readonly tasksGrpcService = inject(TasksGrpcService);
+  private readonly userService = inject(UserService);
 
   id: string | undefined;
   statusesCount: WritableSignal<StatusCount[]> = signal([]);
   loading = true;
+
+  get hasCountPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Tasks:CountTasksByStatus');
+  }
 
   private _statusesGroups: TasksStatusesGroup[] = [];
   private _filters: TaskSummaryFilters;
@@ -59,6 +66,10 @@ export class CountTasksByStatusComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (!this.hasCountPermission) {
+      this.loading = false;
+      return;
+    }
     this.initId();
   }
 
@@ -67,6 +78,11 @@ export class CountTasksByStatusComponent implements OnInit {
   }
 
   initRefresh() {
+    if (!this.hasCountPermission) {
+      this.loading = false;
+      return;
+    }
+    
     this._refresh$.pipe(
       switchMap(() => this.tasksGrpcService.countByStatus$(this.filters)),
     ).subscribe(response => {

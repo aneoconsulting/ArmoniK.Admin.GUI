@@ -13,6 +13,7 @@ import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
+import { UserService } from '@services/user.service';
 import { of } from 'rxjs';
 import { SessionsTableComponent } from './table.component';
 import { SessionsDataService } from '../services/sessions-data.service';
@@ -132,11 +133,9 @@ describe('SessionsTableComponent', () => {
 
   const mockStatusService = {
     statuses: {
-      [SessionStatus.SESSION_STATUS_CANCELLED]: {
-        label: 'Cancelled',
-      },
-      [SessionStatus.SESSION_STATUS_CLOSED]: {
-        label: 'Closed'
+      [SessionStatus.SESSION_STATUS_RUNNING]: {
+        label: 'Running',
+        color: 'green'
       },
     },
     canPause: jest.fn((s: SessionStatus) => s !== SessionStatus.SESSION_STATUS_PAUSED),
@@ -145,6 +144,12 @@ describe('SessionsTableComponent', () => {
     canPurge: jest.fn((s: SessionStatus) => s !== SessionStatus.SESSION_STATUS_RUNNING),
     canClose: jest.fn((s: SessionStatus) => s !== SessionStatus.SESSION_STATUS_CLOSED),
     canDelete: jest.fn((s: SessionStatus) => s !== SessionStatus.SESSION_STATUS_DELETED),
+  };
+
+  const mockUserService = {
+    user: {
+      permissions: ['Sessions:PauseSession', 'Sessions:ResumeSession', 'Sessions:CancelSession', 'Sessions:PurgeSession', 'Sessions:CloseSession', 'Sessions:DeleteSession']
+    }
   };
 
   beforeEach(() => {
@@ -159,8 +164,9 @@ describe('SessionsTableComponent', () => {
         { provide: Clipboard, useValue: mockClipBoard },
         { provide: TasksByStatusService, useValue: mockTasksByStatusService},
         { provide: MatDialog, useValue: mockMatDialog },
-        { provide: Router, useValue: mockRouter }
-      ]
+        { provide: Router, useValue: mockRouter },
+        { provide: UserService, useValue: mockUserService }
+      ],
     }).inject(SessionsTableComponent);
 
     component.displayedColumns = displayedColumns;

@@ -25,6 +25,7 @@ import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
+import { UserService } from '@services/user.service';
 import { UtilsService } from '@services/utils.service';
 import { Observable, Subject, Subscription, catchError, merge, of, startWith, switchMap, tap } from 'rxjs';
 import { CountLine, ManageGroupsDialogData, ManageGroupsDialogResult } from '../../types';
@@ -75,8 +76,14 @@ export class TaskByStatusLineComponent implements AfterViewInit,OnDestroy {
   readonly iconsService = inject(IconsService);
   readonly taskGrpcService = inject(TasksGrpcService);
   private readonly notificationService = inject(NotificationService);
+  private readonly userService = inject(UserService);
 
   @Input({ required: true }) line: CountLine;
+
+  get hasCountPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Tasks:CountTasksByStatus');
+  }
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
   @Output() lineDelete: EventEmitter<CountLine> = new EventEmitter<CountLine>();
 
@@ -91,6 +98,11 @@ export class TaskByStatusLineComponent implements AfterViewInit,OnDestroy {
   interval$: Observable<number> = this.autoRefreshService.createInterval(this.interval, this.stopInterval);
 
   ngAfterViewInit() {
+    if (!this.hasCountPermission) {
+      this.loading.set(false);
+      return;
+    }
+
     const mergeSubscription = merge(this.refresh, this.interval$).pipe(
       startWith(0),
       tap(() => (this.loading.set(true))),

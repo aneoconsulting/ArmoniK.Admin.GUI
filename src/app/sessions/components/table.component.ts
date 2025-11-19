@@ -10,6 +10,7 @@ import { StatusService } from '@app/types/status';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
+import { UserService } from '@services/user.service';
 import { Subject } from 'rxjs';
 import { SessionsDataService } from '../services/sessions-data.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
@@ -33,8 +34,14 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   readonly statusesService = inject(StatusService) as SessionsStatusesService;
   readonly router = inject(Router);
   readonly copyService = inject(Clipboard);
+  private readonly userService = inject(UserService);
 
   readonly tableDataService = inject(SessionsDataService);
+
+  get hasCreateSessionPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Sessions:CreateSession');
+  }
 
   table: TableTasksByStatus = 'sessions';
 
@@ -95,37 +102,61 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
       label: 'Pause session',
       icon: 'pause',
       action$: this.pauseSession$,
-      condition: (element: ArmonikData<SessionRaw, TaskOptions>) => this.statusesService.canPause(element.raw.status)
+      condition: (element: ArmonikData<SessionRaw, TaskOptions>) => {
+        const permissions = this.userService.user?.permissions ?? [];
+        const hasPermission = permissions.includes('Sessions:PauseSession');
+        return this.statusesService.canPause(element.raw.status) && hasPermission;
+      }
     },
     {
       label: 'Resume session',
-      icon: 'play',
+      icon: 'play_arrow',
       action$: this.resumeSession$,
-      condition: (element: ArmonikData<SessionRaw, TaskOptions>) => this.statusesService.canResume(element.raw.status)
+      condition: (element: ArmonikData<SessionRaw, TaskOptions>) => {
+        const permissions = this.userService.user?.permissions ?? [];
+        const hasPermission = permissions.includes('Sessions:ResumeSession');
+        return this.statusesService.canResume(element.raw.status) && hasPermission;
+      }
     },
     {
       label: 'Cancel session',
       icon: 'cancel',
       action$: this.cancelSession$,
-      condition: (element: ArmonikData<SessionRaw, TaskOptions>) => this.statusesService.canCancel(element.raw.status)
+      condition: (element: ArmonikData<SessionRaw, TaskOptions>) => {
+        const permissions = this.userService.user?.permissions ?? [];
+        const hasPermission = permissions.includes('Sessions:CancelSession');
+        return this.statusesService.canCancel(element.raw.status) && hasPermission;
+      }
     },
     {
       label: 'Purge session',
       icon: 'purge',
       action$: this.purgeSession$,
-      condition: (element: ArmonikData<SessionRaw, TaskOptions>) => this.statusesService.canPurge(element.raw.status)
+      condition: (element: ArmonikData<SessionRaw, TaskOptions>) => {
+        const permissions = this.userService.user?.permissions ?? [];
+        const hasPermission = permissions.includes('Sessions:PurgeSession');
+        return this.statusesService.canPurge(element.raw.status) && hasPermission;
+      }
     },
     {
       label: 'Close session',
       icon: 'close',
       action$: this.closeSession$,
-      condition: (element: ArmonikData<SessionRaw, TaskOptions>) => this.statusesService.canClose(element.raw.status)
+      condition: (element: ArmonikData<SessionRaw, TaskOptions>) => {
+        const permissions = this.userService.user?.permissions ?? [];
+        const hasPermission = permissions.includes('Sessions:CloseSession');
+        return this.statusesService.canClose(element.raw.status) && hasPermission;
+      }
     },
     {
       label: 'Delete session',
       icon: 'delete',
       action$: this.deleteSession$,
-      condition: (element: ArmonikData<SessionRaw, TaskOptions>) => this.statusesService.canDelete(element.raw.status)
+      condition: (element: ArmonikData<SessionRaw, TaskOptions>) => {
+        const permissions = this.userService.user?.permissions ?? [];
+        const hasPermission = permissions.includes('Sessions:DeleteSession');
+        return this.statusesService.canDelete(element.raw.status) && hasPermission;
+      }
     }
   ];
 

@@ -40,14 +40,74 @@ export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, Res
   downloadResult$ = new Subject<ArmonikData<ResultRaw>>();
   downloadResultSubscription = this.downloadResult$.subscribe(data => this.onDownload(data.raw.resultId));
 
+  deleteResultData$ = new Subject<ArmonikData<ResultRaw>>();
+  deleteResultDataSubscription = this.deleteResultData$.subscribe(data => this.onDeleteResultData(data.raw.resultId));
+
+  getServiceConfiguration$ = new Subject<ArmonikData<ResultRaw>>();
+  getServiceConfigurationSubscription = this.getServiceConfiguration$.subscribe(data => this.onGetServiceConfiguration(data.raw.resultId));
+
+  uploadResultData$ = new Subject<ArmonikData<ResultRaw>>();
+  uploadResultDataSubscription = this.uploadResultData$.subscribe(data => this.onUploadResultData(data.raw.resultId));
+
+  getResult$ = new Subject<ArmonikData<ResultRaw>>();
+  getResultSubscription = this.getResult$.subscribe(data => this.onGetResult(data.raw.resultId));
+
+  importResultsData$ = new Subject<ArmonikData<ResultRaw>>();
+  importResultsDataSubscription = this.importResultsData$.subscribe(data => this.onImportResultsData(data.raw.resultId));
+
   actions: ActionTable<ResultRaw>[] = [
     {
       label: 'Download result data',
       icon: 'download',
       action$: this.downloadResult$,
-      condition: (_data: ArmonikData<ResultRaw>) => {
+      condition: () => {
         const permissions = this.userService.user?.permissions ?? [];
         return permissions.includes('Results:DownloadResultData');
+      },
+    },
+    {
+      label: 'Delete result data',
+      icon: 'delete',
+      action$: this.deleteResultData$,
+      condition: () => {
+        const permissions = this.userService.user?.permissions ?? [];
+        return permissions.includes('Results:DeleteResultsData');
+      },
+    },
+    {
+      label: 'Get service configuration',
+      icon: 'settings',
+      action$: this.getServiceConfiguration$,
+      condition: () => {
+        const permissions = this.userService.user?.permissions ?? [];
+        return permissions.includes('Results:GetServiceConfiguration');
+      },
+    },
+    {
+      label: 'Upload result data',
+      icon: 'upload',
+      action$: this.uploadResultData$,
+      condition: () => {
+        const permissions = this.userService.user?.permissions ?? [];
+        return permissions.includes('Results:UploadResultData');
+      },
+    },
+    {
+      label: 'Get result',
+      icon: 'visibility',
+      action$: this.getResult$,
+      condition: () => {
+        const permissions = this.userService.user?.permissions ?? [];
+        return permissions.includes('Results:GetResult');
+      },
+    },
+    {
+      label: 'Import results data',
+      icon: 'file_download',
+      action$: this.importResultsData$,
+      condition: () => {
+        const permissions = this.userService.user?.permissions ?? [];
+        return permissions.includes('Results:ImportResultsData');
       },
     },
   ];
@@ -62,8 +122,42 @@ export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, Res
 
   hasDownloadPermission(): boolean {
     const permissions = this.userService.user?.permissions ?? [];
-    console.log('permissions :', permissions);
-    return permissions.includes('downloadResultData');
+    return permissions.includes('Results:DownloadResultData');
+  }
+
+  hasCreateMetaDataPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Results:CreateResultsMetaData');
+  }
+
+  hasCreateResultsPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Results:CreateResults');
+  }
+
+  hasDeleteResultsDataPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Results:DeleteResultsData');
+  }
+
+  hasGetServiceConfigurationPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Results:GetServiceConfiguration');
+  }
+
+  hasUploadResultDataPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Results:UploadResultData');
+  }
+
+  hasGetResultPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Results:GetResult');
+  }
+
+  hasImportResultsDataPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Results:ImportResultsData');
   }
 
   onDownload(resultId: string): boolean {
@@ -133,6 +227,51 @@ export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, Res
     } finally {
       setTimeout(() => URL.revokeObjectURL(url), 0);
     }
+  }
+
+  onDeleteResultData(resultId: string): void {
+    if (!resultId) {
+      console.error('[deleteResultData] No resultId provided');
+      return;
+    }
+    this.resultsNotificationService.success('Result data deletion requested for: ' + resultId);
+    console.log('Delete result data requested for:', resultId);
+  }
+
+  onGetServiceConfiguration(resultId: string): void {
+    if (!resultId) {
+      console.error('[getServiceConfiguration] No resultId provided');
+      return;
+    }
+    this.resultsNotificationService.success('Service configuration requested for result: ' + resultId);
+    console.log('Get service configuration requested for result:', resultId);
+  }
+
+  onUploadResultData(resultId: string): void {
+    if (!resultId) {
+      console.error('[uploadResultData] No resultId provided');
+      return;
+    }
+    this.resultsNotificationService.success('Result data upload requested for: ' + resultId);
+    console.log('Upload result data requested for:', resultId);
+  }
+
+  onGetResult(resultId: string): void {
+    if (!resultId) {
+      console.error('[getResult] No resultId provided');
+      return;
+    }
+    this.resultsNotificationService.success('Get result requested for: ' + resultId);
+    console.log('Get result requested for:', resultId);
+  }
+
+  onImportResultsData(resultId: string): void {
+    if (!resultId) {
+      console.error('[importResultsData] No resultId provided');
+      return;
+    }
+    this.resultsNotificationService.success('Results data import requested for: ' + resultId);
+    console.log('Import results data requested for:', resultId);
   }
 
   trackBy(index: number, item: ArmonikData<ResultRaw>): string | number {

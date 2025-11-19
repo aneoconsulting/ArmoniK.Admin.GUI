@@ -3,19 +3,21 @@ import { TableColumn } from '@app/types/column.type';
 import { IndexServiceInterface } from '@app/types/services/indexService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
+import { UserService } from '@services/user.service';
 import { ResultRaw, ResultRawColumnKey, ResultRawListOptions } from '../types';
 
 @Injectable()
 export class ResultsIndexService implements IndexServiceInterface<ResultRaw> {
   defaultConfigService = inject(DefaultConfigService);
   tableService = inject(TableService);
+  userService = inject(UserService);
 
   readonly defaultColumns: ResultRawColumnKey[] = this.defaultConfigService.defaultResults.columns;
   readonly defaultLockColumns: boolean = this.defaultConfigService.defaultResults.lockColumns;
   readonly defaultOptions: ResultRawListOptions = this.defaultConfigService.defaultResults.options;
   readonly defaultIntervalValue: number = this.defaultConfigService.defaultResults.interval;
 
-  readonly availableTableColumns: TableColumn<ResultRaw>[] = [
+  private readonly _allTableColumns: TableColumn<ResultRaw>[] = [
     {
       name: $localize`Name`,
       key: 'name',
@@ -82,6 +84,18 @@ export class ResultsIndexService implements IndexServiceInterface<ResultRaw> {
       sortable: false,
     },
   ];
+
+  get availableTableColumns(): TableColumn<ResultRaw>[] {
+    const permissions = this.userService.user?.permissions ?? [];
+    const hasOwnerTaskPermission = permissions.includes('Results:GetOwnerTaskId');
+    
+    return this._allTableColumns.filter(column => {
+      if (column.key === 'ownerTaskId') {
+        return hasOwnerTaskPermission;
+      }
+      return true;
+    });
+  }
 
   /**
    * Interval

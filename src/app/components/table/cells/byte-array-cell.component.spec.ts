@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { ByteArrayService } from '@services/byte-array.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { UserService } from '@services/user.service';
 import { ByteArrayComponent } from './byte-array-cell.component';
 
 describe('ByteArrayComponent', () => {
@@ -25,6 +26,12 @@ describe('ByteArrayComponent', () => {
     success: jest.fn(),
   };
 
+  const mockUserService = {
+    user: {
+      permissions: ['Results:DownloadResultData']
+    }
+  };
+
 
   let dataContent = '';
   for(let i = 0; i !== 128; i++) {
@@ -45,6 +52,7 @@ describe('ByteArrayComponent', () => {
         { provide: IconsService, useValue: mockIconsService },
         { provide: Clipboard, useValue: mockClipboard },
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: UserService, useValue: mockUserService },
       ]
     }).inject(ByteArrayComponent);
 

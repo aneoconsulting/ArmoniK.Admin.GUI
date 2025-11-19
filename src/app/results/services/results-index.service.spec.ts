@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
+import { UserService } from '@services/user.service';
 import { ResultsIndexService } from './results-index.service';
 import { ResultRawColumnKey, ResultRawListOptions } from '../types';
 
@@ -26,6 +27,12 @@ describe('ResultsIndexService', () => {
   const defaultIntervalValue = defaultConfig.defaultResults.interval;
   const defaultLockColumnsValue = defaultConfig.defaultResults.lockColumns;
 
+  const mockUserService = {
+    user: {
+      permissions: ['Results:GetOwnerTaskId'] // Include the permission for test
+    }
+  };
+
   const mockTableService = {
     saveIntervalValue: jest.fn(),
     restoreIntervalValue: jest.fn((): number | null => 100),
@@ -44,7 +51,8 @@ describe('ResultsIndexService', () => {
       providers: [
         ResultsIndexService,
         DefaultConfigService,
-        { provide: TableService, useValue: mockTableService }
+        { provide: TableService, useValue: mockTableService },
+        { provide: UserService, useValue: mockUserService }
       ]
     }).inject(ResultsIndexService);
   });
@@ -94,6 +102,15 @@ describe('ResultsIndexService', () => {
           'actions',
         ]),
       );
+    });
+
+    it('should filter ownerTaskId column based on GetOwnerTaskId permission', () => {
+      expect(service.availableTableColumns.find(c => c.key === 'ownerTaskId')).toBeDefined();
+
+      mockUserService.user.permissions = ['SomeOtherPermission'];
+      expect(service.availableTableColumns.find(c => c.key === 'ownerTaskId')).toBeUndefined();
+
+      mockUserService.user.permissions = ['Results:GetOwnerTaskId'];
     });
   });
 

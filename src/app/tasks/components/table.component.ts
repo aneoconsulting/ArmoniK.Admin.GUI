@@ -8,6 +8,7 @@ import { ArmonikData, TaskData } from '@app/types/data';
 import { StatusService } from '@app/types/status';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
+import { UserService } from '@services/user.service';
 import { Subject } from 'rxjs';
 import TasksDataService from '../services/tasks-data.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
@@ -53,6 +54,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   readonly router = inject(Router);
   readonly clipboard = inject(Clipboard);
   readonly tasksStatusesService = inject(StatusService) as TasksStatusesService;
+  readonly userService = inject(UserService);
 
   private _serviceIcon: string = '';
   private _serviceName: string = '';
@@ -130,7 +132,9 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   }
 
   canCancelTask(task: TaskSummary): boolean {
-    return this.tasksStatusesService.taskNotEnded(task.status);
+    const permissions = this.userService.user?.permissions ?? [];
+    const hasCancelPermission = permissions.includes('Tasks:CancelTask');
+    return this.tasksStatusesService.taskNotEnded(task.status) && hasCancelPermission;
   }
 
   onRetries(task: TaskSummary) {

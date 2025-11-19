@@ -5,6 +5,7 @@ import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, ResultData } from '@app/types/data';
 import { StatusService } from '@app/types/status';
 import { NotificationService } from '@services/notification.service';
+import { UserService } from '@services/user.service';
 import { ResultsTableComponent } from './table.component';
 import ResultsDataService from '../services/results-data.service';
 import { ResultsGrpcService } from '../services/results-grpc.service';
@@ -92,6 +93,12 @@ describe('ResultsTableComponent', () => {
     },
   };
 
+  const mockUserService = {
+    user: {
+      permissions: ['Results:DownloadResultData', 'Results:GetResult']
+    }
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -101,6 +108,7 @@ describe('ResultsTableComponent', () => {
         { provide: Clipboard, useValue: mockClipBoard },
         { provide: ResultsDataService, useValue: mockResultsDataService },
         { provide: ResultsGrpcService, useValue: mockResultsGrpcService },
+        { provide: UserService, useValue: mockUserService },
       ],
     }).inject(ResultsTableComponent);
 

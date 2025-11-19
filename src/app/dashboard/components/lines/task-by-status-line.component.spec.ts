@@ -8,6 +8,7 @@ import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { UserService } from '@services/user.service';
 import { Observable, of, throwError } from 'rxjs';
 import { TaskByStatusLineComponent } from './task-by-status-line.component';
 import { TasksStatusesGroup } from '../../types';
@@ -49,6 +50,12 @@ describe('TaskByStatusLineComponent', () => {
 
   const mockTasksIndexService = {};
 
+  const mockUserService = {
+    user: {
+      permissions: ['Tasks:ListTasks', 'Tasks:CountTasksByStatus']
+    }
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -58,7 +65,8 @@ describe('TaskByStatusLineComponent', () => {
         IconsService,
         { provide: TasksGrpcService, useValue: mockTasksGrpcService },
         { provide: TasksIndexService, useValue: mockTasksIndexService },
-        { provide: NotificationService, useValue: mockNotificationService }
+        { provide: NotificationService, useValue: mockNotificationService },
+        { provide: UserService, useValue: mockUserService }
       ]
     }).inject(TaskByStatusLineComponent);
     component.line = {

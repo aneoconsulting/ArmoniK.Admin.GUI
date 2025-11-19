@@ -23,6 +23,7 @@ import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
+import { UserService } from '@services/user.service';
 import { UtilsService } from '@services/utils.service';
 import { Subject, map, switchMap } from 'rxjs';
 import { SessionsFiltersService } from './services/sessions-filters.service';
@@ -78,6 +79,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
 
   readonly grpcService = inject(SessionsGrpcService);
   readonly inspectionService = inject(SessionsInspectionService);
+  private readonly userService = inject(UserService);
   readonly tasksInspectionService = inject(TasksInspectionService);
 
   private readonly sessionsStatusesService = inject(StatusService) as SessionsStatusesService;
@@ -97,6 +99,46 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
 
   resultsKey: string = '';
   resultsQueryParams: Params = {};
+
+  get hasCancelSessionPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Sessions:CancelSession');
+  }
+
+  get hasCreateSessionPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Sessions:CreateSession');
+  }
+
+  get hasPauseSessionPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Sessions:PauseSession');
+  }
+
+  get hasCloseSessionPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Sessions:CloseSession');
+  }
+
+  get hasPurgeSessionPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Sessions:PurgeSession');
+  }
+
+  get hasDeleteSessionPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Sessions:DeleteSession');
+  }
+
+  get hasResumeSessionPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Sessions:ResumeSession');
+  }
+
+  get hasStopSubmissionPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Sessions:StopSubmission');
+  }
 
   optionsFields: Field<TaskOptions>[];
 
@@ -136,11 +178,11 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
       this.createResultsQueryParams();
       this.createTasksQueryParams();
       this.partitionsQueryParams = this.filtersService.createFilterPartitionQueryParams(data.partitionIds);
-      this.disablePause = !this.sessionsStatusesService.canPause(data.status);
+      this.disablePause = !this.sessionsStatusesService.canPause(data.status) || !this.hasPauseSessionPermission;
       this.disableResume = !this.sessionsStatusesService.canResume(data.status);
-      this.disableCancel = !this.sessionsStatusesService.canCancel(data.status);
-      this.disableClose = !this.sessionsStatusesService.canClose(data.status);
-      this.disablePurge = !this.sessionsStatusesService.canPurge(data.status);
+      this.disableCancel = !this.sessionsStatusesService.canCancel(data.status) || !this.hasCancelSessionPermission;
+      this.disableClose = !this.sessionsStatusesService.canClose(data.status) || !this.hasCloseSessionPermission;
+      this.disablePurge = !this.sessionsStatusesService.canPurge(data.status) || !this.hasPurgeSessionPermission;
       this.lowerDuration$.next();
       this.upperDuration$.next();
     }  

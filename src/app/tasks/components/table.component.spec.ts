@@ -6,6 +6,7 @@ import { TableColumn } from '@app/types/column.type';
 import { ArmonikData, ColumnKey, TaskData } from '@app/types/data';
 import { StatusService } from '@app/types/status';
 import { NotificationService } from '@services/notification.service';
+import { UserService } from '@services/user.service';
 import { TasksTableComponent } from './table.component';
 import TasksDataService from '../services/tasks-data.service';
 import { TaskOptions, TaskSummary } from '../types';
@@ -79,6 +80,12 @@ describe('TasksTableComponent', () => {
     taskNotEnded: jest.fn((s: TaskStatus) => s !== TaskStatus.TASK_STATUS_COMPLETED)
   };
 
+  const mockUserService = {
+    user: {
+      permissions: ['Tasks:CancelTask', 'Results:GetResult']
+    }
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -87,7 +94,8 @@ describe('TasksTableComponent', () => {
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
         { provide: Router, useValue: mockRouter },
-        { provide: TasksDataService, useValue: mockTasksDataService }
+        { provide: TasksDataService, useValue: mockTasksDataService },
+        { provide: UserService, useValue: mockUserService }
       ]
     }).inject(TasksTableComponent);
 

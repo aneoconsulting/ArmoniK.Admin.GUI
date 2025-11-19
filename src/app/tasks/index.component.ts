@@ -24,6 +24,7 @@ import { ShareUrlService } from '@services/share-url.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
+import { UserService } from '@services/user.service';
 import { UtilsService } from '@services/utils.service';
 import { ManageViewInLogsDialogComponent } from './components/manage-view-in-logs-dialog.component';
 import { TasksTableComponent } from './components/table.component';
@@ -81,6 +82,7 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSu
   readonly indexService = inject(TasksIndexService);
   readonly filtersService = inject(TasksFiltersService);
   readonly tableDataService = inject(TasksDataService);
+  readonly userService = inject(UserService);
 
   tableType: TableType = 'Tasks';
 
@@ -90,7 +92,21 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSu
   serviceName: string | null = null;
   urlTemplate: string | null = null;
 
+  get hasListTasksPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Tasks:ListTasks') || permissions.includes('Tasks:ListTasksDetailed') || permissions.includes('Tasks:GetResultId');
+  }
+
+  get hasCancelTaskPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Tasks:CancelTask');
+  }
+
   ngOnInit(): void {
+    if (!this.hasListTasksPermission) {
+      return;
+    }
+    
     this.initTableEnvironment();
 
     const viewInLogs = this.indexService.restoreViewInLogs();

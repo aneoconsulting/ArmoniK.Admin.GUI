@@ -13,6 +13,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { UserService } from '@services/user.service';
 import { of } from 'rxjs';
 import { SessionsLineComponent } from './sessions-line.component';
 import { TableLine } from '../../types';
@@ -114,6 +115,11 @@ describe('SessionsLineComponent', () => {
     error: jest.fn(),
   };
 
+  const mockUserService = {
+    hasPermission: jest.fn().mockReturnValue(true),
+    user: undefined
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -125,6 +131,7 @@ describe('SessionsLineComponent', () => {
         { provide: SessionsIndexService, useValue: mockSessionsIndexService },
         DefaultConfigService,
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: UserService, useValue: mockUserService },
       ]
     }).inject(SessionsLineComponent);
     component.line = line;

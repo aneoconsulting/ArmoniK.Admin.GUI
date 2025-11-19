@@ -19,29 +19,53 @@
   </div>
   <div class="actions" bonus-actions>
     @if (!disableResume) {
-      <button mat-flat-button color="accent" (click)="resume()" [disabled]="disableResume">
+      <button mat-flat-button 
+              [color]="hasResumeSessionPermission ? 'accent' : ''"
+              (click)="resume()" 
+              [disabled]="disableResume || !hasResumeSessionPermission"
+              [class.disabled-button]="!hasResumeSessionPermission">
         <span i18n>Resume Session</span>
         <mat-icon [fontIcon]="this.getIcon('play')" />
       </button>
     } @else {
-      <button mat-flat-button color="accent" (click)="pause()" [disabled]="disablePause">
+      <button mat-flat-button 
+              [color]="hasPauseSessionPermission ? 'accent' : ''"
+              (click)="pause()" 
+              [disabled]="disablePause"
+              [class.disabled-button]="!hasPauseSessionPermission">
         <span i18n>Pause Session</span>
         <mat-icon [fontIcon]="this.getIcon('pause')" />
       </button>
     }
-    <button mat-flat-button color="accent" (click)="cancel()" [disabled]="disableCancel">
+    <button mat-flat-button 
+            [color]="hasCancelSessionPermission ? 'accent' : ''"
+            (click)="cancel()" 
+            [disabled]="disableCancel"
+            [class.disabled-button]="!hasCancelSessionPermission">
       <span i18n>Cancel Session</span>
       <mat-icon [fontIcon]="this.getIcon('cancel')" />
     </button>
-    <button mat-flat-button color="accent" (click)="close()" [disabled]="disableClose">
+    <button mat-flat-button 
+            [color]="hasCloseSessionPermission ? 'accent' : ''"
+            (click)="close()" 
+            [disabled]="disableClose"
+            [class.disabled-button]="!hasCloseSessionPermission">
       <span i18n>Close Session</span>
       <mat-icon [fontIcon]="this.getIcon('close')" />
     </button>
-    <button mat-flat-button color="accent" (click)="purge()" [disabled]="disablePurge">
+    <button mat-flat-button 
+            [color]="hasPurgeSessionPermission ? 'accent' : ''"
+            (click)="purge()" 
+            [disabled]="disablePurge"
+            [class.disabled-button]="!hasPurgeSessionPermission">
       <span i18n>Purge Session</span>
       <mat-icon [fontIcon]="this.getIcon('purge')" />
     </button>
-    <button mat-flat-button color="accent" (click)="deleteSession()">
+    <button mat-flat-button 
+            [color]="hasDeleteSessionPermission ? 'accent' : ''"
+            (click)="deleteSession()"
+            [disabled]="!hasDeleteSessionPermission"
+            [class.disabled-button]="!hasDeleteSessionPermission">
       <span i18n>Delete Session</span>
       <mat-icon [fontIcon]="this.getIcon('delete')" />
     </button>

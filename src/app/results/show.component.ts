@@ -84,6 +84,46 @@ export class ShowComponent
     return permissions.includes('Results:DownloadResultData');
   }
 
+  get hasOwnerTaskPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Results:GetOwnerTaskId');
+  }
+
+  get hasCreateMetaDataPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Results:CreateResultsMetaData');
+  }
+
+  get hasCreateResultsPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Results:CreateResults');
+  }
+
+  get hasDeleteResultsDataPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Results:DeleteResultsData');
+  }
+
+  get hasGetServiceConfigurationPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Results:GetServiceConfiguration');
+  }
+
+  get hasUploadResultDataPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Results:UploadResultData');
+  }
+
+  get hasGetResultPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Results:GetResult');
+  }
+
+  get hasImportResultsDataPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Results:ImportResultsData');
+  }
+
   ngOnInit(): void {
     this.initInspection();
   }

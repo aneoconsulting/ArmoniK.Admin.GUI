@@ -5,6 +5,7 @@ import { Sidebar, SidebarItem } from '@app/types/navigation';
 import { DefaultConfigService } from './default-config.service';
 import { NavigationService } from './navigation.service';
 import { StorageService } from './storage.service';
+import { UserService } from './user.service';
 
 describe('NavigationService', () => {
   let service: NavigationService;
@@ -16,6 +17,12 @@ describe('NavigationService', () => {
 
   const mockUserConnectedGuard = {
     canActivate: jest.fn(() => true),
+  };
+
+  const mockUserService = {
+    user: {
+      permissions: ['Applications:ListApplications', 'Partitions:GetPartition', 'Partitions:ListPartitions', 'Tasks:GetTask', 'Tasks:ListTasks', 'Tasks:ListTasksDetailed', 'Tasks:GetResultId', 'Sessions:ListSessions', 'Sessions:GetSession']
+    }
   };
 
   const sidebar: Sidebar[] = ['applications', 'divider', 'sessions', 'sessions'];
@@ -57,7 +64,8 @@ describe('NavigationService', () => {
         NavigationService,
         DefaultConfigService,
         { provide: StorageService, useValue: mockStorageService },
-        { provide: UserConnectedGuard, useValue: mockUserConnectedGuard }
+        { provide: UserConnectedGuard, useValue: mockUserConnectedGuard },
+        { provide: UserService, useValue: mockUserService }
       ]
     }).inject(NavigationService);
   });

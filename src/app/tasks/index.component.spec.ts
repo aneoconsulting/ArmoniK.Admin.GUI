@@ -12,6 +12,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { UserService } from '@services/user.service';
 import { of } from 'rxjs';
 import { IndexComponent } from './index.component';
 import TasksDataService from './services/tasks-data.service';
@@ -148,6 +149,12 @@ describe('Tasks Index Component', () => {
     warning: jest.fn(),
   };
 
+  const mockUserService = {
+    user: {
+      permissions: ['Tasks:ListTasks', 'Tasks:CancelTasks']
+    }
+  };
+
   const mockTasksDataService = {
     data: [],
     total: 0,
@@ -174,6 +181,7 @@ describe('Tasks Index Component', () => {
         { provide: TasksFiltersService, useValue: mockTaskFiltersService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: UserService, useValue: mockUserService },
       ]
     }).inject(IndexComponent);
     component.ngOnInit();

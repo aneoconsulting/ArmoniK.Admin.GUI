@@ -31,6 +31,7 @@ import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
+import { UserService } from '@services/user.service';
 import { UtilsService } from '@services/utils.service';
 import { SessionsTableComponent } from './components/table.component';
 import { SessionsDataService } from './services/sessions-data.service';
@@ -91,6 +92,12 @@ export class IndexComponent extends TableHandlerCustomValues<SessionRaw, Session
   readonly filtersService = inject(SessionsFiltersService);
   readonly indexService = inject(SessionsIndexService);
   readonly tableDataService = inject(SessionsDataService);
+  private readonly userService = inject(UserService);
+
+  get hasCreateSessionPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Sessions:CreateSession');
+  }
 
   tableType: TableType = 'Sessions';
 

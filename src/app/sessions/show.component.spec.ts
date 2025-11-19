@@ -9,6 +9,7 @@ import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { UserService } from '@services/user.service';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsInspectionService } from './services/sessions-inspection.service';
@@ -25,6 +26,12 @@ describe('AppShowComponent', () => {
 
   const mockShareUrlService = {
     generateSharableURL: jest.fn(),
+  };
+
+  const mockUserService = {
+    user: {
+      permissions: ['Sessions:GetSession', 'Sessions:CancelSession', 'Sessions:PauseSession', 'Sessions:ResumeSession', 'Sessions:CloseSession', 'Sessions:PurgeSession', 'Sessions:DeleteSession', 'Sessions:CreateSession', 'Sessions:StopSubmission']
+    }
   };
 
   const paramId = 'paramId-12345';
@@ -99,6 +106,7 @@ describe('AppShowComponent', () => {
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: SessionsGrpcService, useValue: mockSessionsGrpcService },
         { provide: Router, useValue: mockRouter },
+        { provide: UserService, useValue: mockUserService },
         SessionsInspectionService,
         TasksInspectionService,
       ]
