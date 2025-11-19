@@ -21,7 +21,7 @@ import { routes } from './app.routes';
 import { provideArmonikDateAdapter } from './initialisation/date-adapter';
 import { ExportedDefaultConfig } from './types/config';
 
-function initializeAppFactory(userGrpcService: UserGrpcService, userService: UserService, versionsGrpcService: VersionsGrpcService, versionsService: VersionsService, httpClient: HttpClient, environmentService: EnvironmentService, storageService: StorageService) {
+function initializeAppFactory(userGrpcService: UserGrpcService, userService: UserService, versionsGrpcService: VersionsGrpcService, versionsService: VersionsService, httpClient: HttpClient, environmentService: EnvironmentService, storageService: StorageService, navigationService: NavigationService) {
 
   return () => merge(
     versionsGrpcService.listVersions$().pipe(
@@ -42,6 +42,7 @@ function initializeAppFactory(userGrpcService: UserGrpcService, userService: Use
           throw new Error('No user');
         }
         userService.user = data.user;
+        navigationService.refreshSidebar();
       }),
       catchError((err) => {
         console.error(err);
@@ -101,7 +102,7 @@ export const appConfig: ApplicationConfig = {
       useValue: localStorage
     },
     provideAppInitializer(() => {
-      const initializerFn = (initializeAppFactory)(inject(UserGrpcService), inject(UserService), inject(VersionsGrpcService), inject(VersionsService), inject(HttpClient), inject(EnvironmentService), inject(StorageService));
+      const initializerFn = (initializeAppFactory)(inject(UserGrpcService), inject(UserService), inject(VersionsGrpcService), inject(VersionsService), inject(HttpClient), inject(EnvironmentService), inject(StorageService), inject(NavigationService));
       return initializerFn();
     }),
     provideArmonikDateAdapter(),

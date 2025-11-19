@@ -23,6 +23,7 @@ import { TableDashboardActionsToolbarComponent } from '@components/table-dashboa
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { NotificationService } from '@services/notification.service';
+import { UserService } from '@services/user.service';
 
 @Component({
   selector: 'app-dashboard-sessions-line',
@@ -61,6 +62,12 @@ export class SessionsLineComponent extends DashboardLineCustomColumnsComponent<S
   readonly indexService = inject(SessionsIndexService);
   readonly defaultConfig = this.defaultConfigService.defaultSessions;
   readonly tableDataService = inject(SessionsDataService);
+  private readonly userService = inject(UserService);
+
+  get hasSessionsPermission(): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    return permissions.includes('Sessions:ListSessions') || permissions.includes('Sessions:GetSession');
+  }
 
   ngOnInit(): void {
     this.initLineEnvironment();

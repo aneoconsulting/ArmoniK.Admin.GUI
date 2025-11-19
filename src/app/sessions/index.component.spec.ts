@@ -13,6 +13,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { UserService } from '@services/user.service';
 import { of } from 'rxjs';
 import { IndexComponent } from './index.component';
 import { SessionsDataService } from './services/sessions-data.service';
@@ -162,6 +163,12 @@ describe('Sessions Index Component', () => {
     warning: jest.fn(),
   };
 
+  const mockUserService = {
+    user: {
+      permissions: ['Sessions:ListSessions', 'Sessions:CreateSession']
+    }
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -176,6 +183,7 @@ describe('Sessions Index Component', () => {
         { provide: SessionsFiltersService, useValue: mockSessionFiltersService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: UserService, useValue: mockUserService },
       ]
     }).inject(IndexComponent);
     component.ngOnInit();

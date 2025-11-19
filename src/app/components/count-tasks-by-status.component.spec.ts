@@ -4,6 +4,7 @@ import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
+import { UserService } from '@services/user.service';
 import { Observable, Subject, of } from 'rxjs';
 import { CountTasksByStatusComponent } from './count-tasks-by-status.component';
 
@@ -43,12 +44,20 @@ describe('CountTasksByStatusComponent', () => {
   const refresh$ = new Subject<void>();
   const refreshSpy = jest.spyOn(refresh$, 'next');
 
+  const mockUserService = {
+    user: {
+      permissions: ['Tasks:CountTasksByStatus']
+    }
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         CountTasksByStatusComponent,
         { provide: TasksGrpcService, useValue: mockTasksGrpcService },
-        TasksFiltersService
+        TasksFiltersService,
+        { provide: UserService, useValue: mockUserService },
+        { provide: UserService, useValue: mockUserService }
       ]
     }).inject(CountTasksByStatusComponent);
 

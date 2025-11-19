@@ -4,12 +4,14 @@ import { CustomColumn } from '@app/types/data';
 import { IndexServiceCustomInterface } from '@app/types/services/indexService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
+import { UserService } from '@services/user.service';
 import { TaskOptions, TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions } from '../types';
 
 @Injectable()
 export class TasksIndexService implements IndexServiceCustomInterface<TaskSummary, TaskOptions> {
   defaultConfigService = inject(DefaultConfigService);
   tableService = inject(TableService);
+  userService = inject(UserService);
 
   readonly defaultColumns: TaskSummaryColumnKey[] = this.defaultConfigService.defaultTasks.columns;
   readonly defaultLockColumns: boolean = this.defaultConfigService.defaultTasks.lockColumns;
@@ -17,7 +19,7 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
   readonly defaultIntervalValue: number = this.defaultConfigService.defaultTasks.interval;
   readonly defaultViewInLogs = this.defaultConfigService.defaultTasksViewInLogs;
 
-  readonly availableTableColumns: TableColumn<TaskSummary, TaskOptions>[] = [
+  private readonly _allTableColumns: TableColumn<TaskSummary, TaskOptions>[] = [
     {
       name: $localize`Task ID`,
       key: 'id',
@@ -239,6 +241,25 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
       sortable: true,
     }
   ];
+
+  private readonly detailedColumns: string[] = [
+    'acquiredAt', 'endedAt', 'initialTaskId', 'ownerPodId', 'podHostname', 
+    'podTtl', 'receivedAt', 'startedAt', 'statusMessage', 'submittedAt',
+    'creationToEndDuration', 'processingToEndDuration', 'receivedToEndDuration',
+    'countDataDependencies', 'countExpectedOutputIds', 'countParentTaskIds', 
+    'countRetryOfIds', 'error', 'fetchedAt', 'processedAt', 'payloadId'
+  ];
+
+  get availableTableColumns(): TableColumn<TaskSummary, TaskOptions>[] {
+    const permissions = this.userService.user?.permissions ?? [];
+    const hasDetailedPermission = permissions.includes('Tasks:ListTasksDetailed');
+    
+    if (hasDetailedPermission) {
+      return this._allTableColumns;
+    }
+
+    return this._allTableColumns.filter(column => !this.detailedColumns.includes(column.key as string));
+  }
 
   customField(column: TaskSummaryColumnKey) {
     return column.replace('options.options.', '');

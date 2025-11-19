@@ -4,12 +4,14 @@ import { ExternalService } from '@app/types/external-service';
 import { Sidebar, SidebarItem, isSideBar } from '@app/types/navigation';
 import { DefaultConfigService } from './default-config.service';
 import { StorageService } from './storage.service';
+import { UserService } from './user.service';
 
 @Injectable()
 export class NavigationService {
   private readonly defaultConfigService = inject(DefaultConfigService);
   private readonly storageService = inject(StorageService);
   private readonly userConnectedGuard = inject(UserConnectedGuard);
+  private readonly userService = inject(UserService);
 
   sidebarItems: SidebarItem[] = [
     {
@@ -66,7 +68,16 @@ export class NavigationService {
   }
 
   constructor() {
+    this.refreshSidebar();
+  }
+
+  refreshSidebar() {
     this.sideBar = this.formatSidebar(this.restoreSidebar());
+  }
+
+  canAccessRoute(route: string): boolean {
+    const routeId = route.replace(/^\//, '');
+    return this.hasPermissionForItem(routeId);
   }
 
   restoreSidebar(): Sidebar[] {
@@ -93,13 +104,31 @@ export class NavigationService {
     return this.storageService.getItem('navigation-sidebar-opened') !== 'false';
   }
 
+  private hasPermissionForItem(itemId: string): boolean {
+    const permissions = this.userService.user?.permissions ?? [];
+    const permissionMap: { [key: string]: string[] } = {
+      'applications': ['Applications:ListApplications'],
+      'partitions': ['Partitions:GetPartition', 'Partitions:ListPartitions'],
+      'results': ['Results:ListResults'],
+      'sessions': ['Sessions:ListSessions', 'Sessions:GetSession'],
+      'tasks': ['Tasks:GetTask', 'Tasks:ListTasks', 'Tasks:ListTasksDetailed', 'Tasks:GetResultIds'],
+    };
+
+    const requiredPermissions = permissionMap[itemId];
+    if (!requiredPermissions) {
+      return true;
+    }
+
+    return requiredPermissions.some(permission => permissions.includes(permission));
+  }
+
   /**
    * Change the format of a simple sidebar to a [SidebarItem](../types/navigation.ts)
    */
   formatSidebar(sidebarItems: Sidebar[]): SidebarItem[] {
     const sidebar = sidebarItems.reduce((acc, item) => {
       const sidebarItem = this.sidebarItems.find(sidebarItem => sidebarItem.id === item);
-      if (sidebarItem) {
+      if (sidebarItem && this.hasPermissionForItem(sidebarItem.id)) {
         acc.push(sidebarItem);
       }
 

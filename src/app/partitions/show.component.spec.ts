@@ -6,6 +6,7 @@ import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { UserService } from '@services/user.service';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
 import { PartitionsInspectionService } from './services/partitions-inspection.service';
@@ -22,6 +23,12 @@ describe('ShowComponent', () => {
 
   const mockShareUrlService = {
     generateSharableURL: jest.fn(),
+  };
+
+  const mockUserService = {
+    user: {
+      permissions: ['Partitions:GetPartition']
+    }
   };
 
   const paramId = 'paramId-12345';
@@ -52,6 +59,7 @@ describe('ShowComponent', () => {
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: PartitionsGrpcService, useValue: mockPartitionsGrpcService },
+        { provide: UserService, useValue: mockUserService },
         PartitionsInspectionService,
       ]
     }).inject(ShowComponent);

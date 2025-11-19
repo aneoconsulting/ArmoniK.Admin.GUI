@@ -10,6 +10,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { UserService } from '@services/user.service';
 import { of } from 'rxjs';
 import { ResultsLineComponent } from './results-line.component';
 import { TableLine } from '../../types';
@@ -110,6 +111,12 @@ describe('ResultsLineComponent', () => {
     error: jest.fn(),
   };
 
+  const mockUserService = {
+    user: {
+      permissions: ['Results:DownloadResultData', 'Results:GetResult']
+    }
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -120,7 +127,8 @@ describe('ResultsLineComponent', () => {
         { provide: ResultsDataService, useValue: mockResultsDataService },
         { provide: ResultsIndexService, useValue: mockResultsIndexService },
         DefaultConfigService,
-        { provide: NotificationService, useValue: mockNotificationService }
+        { provide: NotificationService, useValue: mockNotificationService },
+        { provide: UserService, useValue: mockUserService }
       ]
     }).inject(ResultsLineComponent);
     component.line = line;

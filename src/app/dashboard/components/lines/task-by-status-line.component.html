@@ -1,11 +1,12 @@
-<mat-toolbar>
-  <mat-toolbar-row>
-    <section>
-      <app-refresh-button [tooltip]="autoRefreshTooltip()" (refreshChange)="onRefresh()"/>
-      @if (loading()) {
-        <app-spinner/>
-      }
-    </section>
+@if (hasCountPermission) {
+  <mat-toolbar>
+    <mat-toolbar-row>
+      <section>
+        <app-refresh-button [tooltip]="autoRefreshTooltip()" (refreshChange)="onRefresh()"/>
+        @if (loading()) {
+          <app-spinner/>
+        }
+      </section>
 
     <section>
       <app-auto-refresh-button [intervalValue]="line.interval" (intervalValueChange)="onIntervalValueChange($event)"/>
@@ -63,4 +64,4 @@
     />
   }
 </div>
-  
+} 

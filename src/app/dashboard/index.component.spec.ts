@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddLineDialogResult, ReorganizeLinesDialogResult, SplitLinesDialogResult } from '@app/types/dialog';
 import { IconsService } from '@services/icons.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { UserService } from '@services/user.service';
 import { Observable, of } from 'rxjs';
 import { IndexComponent } from './index.component';
 import { DashboardIndexService } from './services/dashboard-index.service';
@@ -63,6 +64,13 @@ describe('IndexComponent', () => {
     saveSplitLines: jest.fn()
   };
 
+  const mockUserService = {
+    hasPermission: jest.fn().mockReturnValue(true),
+    user: {
+      permissions: ['Dashboard:View']
+    }
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -70,7 +78,8 @@ describe('IndexComponent', () => {
         { provide: MatDialog, useValue: mockMatDialog },
         IconsService,
         { provide: ShareUrlService, useValue: mockShareUrlService },
-        { provide: DashboardIndexService, useValue: mockDashboardIndexService }
+        { provide: DashboardIndexService, useValue: mockDashboardIndexService },
+        { provide: UserService, useValue: mockUserService }
       ]
     }).inject(IndexComponent);
     component.ngOnInit();

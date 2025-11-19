@@ -21,6 +21,7 @@ import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
+import { IUserService, UserService } from '@services/user.service';
 import { UtilsService } from '@services/utils.service';
 import { AddLineDialogComponent } from './components/add-line-dialog.component';
 import { ApplicationsLineComponent } from './components/lines/applications-line.component';
@@ -81,6 +82,7 @@ export class IndexComponent implements OnInit {
   readonly #dialog = inject(MatDialog);
   readonly #shareURLService = inject(ShareUrlService);
   readonly #dashboardIndexService = inject(DashboardIndexService);
+  readonly #userService: IUserService = inject(UserService);
 
   lines: Line[];
   showFabActions = false;
@@ -218,5 +220,33 @@ export class IndexComponent implements OnInit {
   onSaveChange() {
     this.hasOnlyOneLine.set(this.lines.length === 1);
     this.#dashboardIndexService.saveLines(this.lines);
+  }
+
+  private getUserService(): IUserService {
+    return this.#userService;
+  }
+
+  get hasCountStatusPermission(): boolean {
+    return this.getUserService().hasPermission('Tasks:CountTasksByStatus');
+  }
+
+  get hasApplicationsPermission(): boolean {
+    return this.getUserService().hasPermission('Applications:ListApplications') || this.getUserService().hasPermission('Applications:GetApplication');
+  }
+
+  get hasResultsPermission(): boolean {
+    return this.getUserService().hasPermission('Results:ListResults') || this.getUserService().hasPermission('Results:GetResult');
+  }
+
+  get hasPartitionsPermission(): boolean {
+    return this.getUserService().hasPermission('Partitions:ListPartitions') || this.getUserService().hasPermission('Partitions:GetPartition');
+  }
+
+  get hasSessionsPermission(): boolean {
+    return this.getUserService().hasPermission('Sessions:ListSessions') || this.getUserService().hasPermission('Sessions:GetSession');
+  }
+
+  get hasTasksPermission(): boolean {
+    return this.getUserService().hasPermission('Tasks:ListTasks') || this.getUserService().hasPermission('Tasks:GetTask');
   }
 }

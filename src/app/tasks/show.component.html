@@ -18,7 +18,11 @@
     </button>
   </div>
   <div bonus-actions>
-    <button mat-flat-button color="accent" (click)="cancel()" [disabled]="canCancel">
+    <button mat-flat-button 
+            [color]="canCancel ? 'accent' : ''" 
+            (click)="cancel()" 
+            [disabled]="!canCancel"
+            [class.disabled-button]="!canCancel">
       <span i18n>Cancel Task</span>
       <mat-icon [fontIcon]="this.getIcon('cancel')" />
     </button>

@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { CustomColumn } from '@app/types/data';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
+import { UserService } from '@services/user.service';
 import { TasksIndexService } from './tasks-index.service';
 import { TaskSummaryColumnKey, TaskSummaryListOptions } from '../types';
 
@@ -48,13 +49,20 @@ describe('TasksIndexService', () => {
     restoreViewInLogs: jest.fn((): { serviceIcon: string, serviceName: string, urlTemplate: string } | null => storedViewInLogs)
   };
 
+  const mockUserService = {
+    user: {
+      permissions: ['Tasks:ListTasks', 'Tasks:GetTask']
+    }
+  };
+
 
   beforeEach(() => {
     service = TestBed.configureTestingModule({
       providers: [
         TasksIndexService,
         DefaultConfigService,
-        { provide: TableService, useValue: mockTableService }
+        { provide: TableService, useValue: mockTableService },
+        { provide: UserService, useValue: mockUserService }
       ]
     }).inject(TasksIndexService);
   });
