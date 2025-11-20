@@ -20,7 +20,8 @@ describe('InspectionObjectComponent', () => {
     output: {
       error: 'error message',
       success: false,
-    }
+    },
+    retryOfIds: {},
   } as TaskRaw;
 
   const fields: Field<TaskRaw>[] = [
@@ -45,6 +46,10 @@ describe('InspectionObjectComponent', () => {
     {
       key: 'options',
       type: 'object'
+    },
+    {
+      key: 'retryOfIds', // Change the type of this property for tests purposes
+      type: 'byte-array',
     },
   ];
 
@@ -79,12 +84,16 @@ describe('InspectionObjectComponent', () => {
     it('should set data keys as fields if none are provided', () => {
       component.fields = [];
       component.data = data;
-      expect(component.fields).toEqual([{ key: 'id' }, { key: 'options' }, { key: 'output' }, { key: 'statusMessage' }]);
+      expect(component.fields).toEqual([{ key: 'id' }, { key: 'options' }, { key: 'output' }, { key: 'retryOfIds' }, { key: 'statusMessage' }]);
     });
   });
 
   it('should get an object', () => {
     expect(component.getObject(findField('options', fields)!)).toEqual(data.options);
+  });
+
+  it('should get the byteArray', () => {
+    expect(component.getByteArray(findField('retryOfIds', fields)!)).toEqual(data.retryOfIds);
   });
 
   it('should get the output error', () => {

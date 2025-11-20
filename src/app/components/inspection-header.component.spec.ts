@@ -17,11 +17,15 @@ describe('InspectionHeaderComponent', () => {
     copy: jest.fn()
   };
 
+  const mockIconsService = {
+    getIcon: jest.fn()
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         InspectionHeaderComponent,
-        IconsService,
+        { provide: IconsService, useValue: mockIconsService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipboard }
       ]
@@ -60,8 +64,16 @@ describe('InspectionHeaderComponent', () => {
     expect(component.sharableURL).toEqual(url);
   });
 
-  it('should get icons', () => {
-    expect(component.getIcon('share')).toBeDefined();
+  describe('getIcon', () => {
+    it('should get icons', () => {
+      const icon = 'share';
+      component.getIcon(icon);
+      expect(mockIconsService.getIcon).toHaveBeenCalledWith(icon);
+    });
+
+    it('should return an empty string when undefined is provided', () => {
+      expect(component.getIcon(undefined)).toEqual('');
+    });
   });
 
   describe('onCopyId', () => {

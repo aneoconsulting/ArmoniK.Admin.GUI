@@ -118,9 +118,7 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
 
       this.subscription.add(this.grpcObservable.subscribe((result) => this.subscribeToData(result)));
 
-      this.subscription.add(this.redrawGraph$
-        .pipe(switchMap(() => this.grpcObservable))
-        .subscribe((result) => this.subscribeToData(result)));
+      this.subscription.add(this.redrawGraph$.pipe(switchMap(() => this.grpcObservable)).subscribe((result) => this.subscribeToData(result)));
     }
   }
 
