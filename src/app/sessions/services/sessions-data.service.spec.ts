@@ -39,12 +39,6 @@ describe('SessionsDataService', () => {
         });
       }
     }),
-    cancel$: jest.fn(() => of({})),
-    pause$: jest.fn(() => of({})),
-    resume$: jest.fn(() => of({})),
-    close$: jest.fn(() => of({})),
-    delete$: jest.fn(() => of({})),
-    purge$: jest.fn(() => of({})),
   };
 
   const mockNotificationService = {
@@ -414,90 +408,6 @@ describe('SessionsDataService', () => {
         { pageIndex: 0, pageSize: 0, sort: { active: 'createdAt', direction: 'asc'}},
         [[arrayFilter, stringFilter, appliedFilter], [dateFilter]]
       );
-    });
-  });
-
-  describe('on Pause', () => {
-    it('should refresh on success', () => {
-      const spy = jest.spyOn(service.refresh$, 'next');
-      service.onPause('sessionId');
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it('should notify on error', () => {
-      mockSessionsGrpcService.pause$.mockReturnValueOnce(throwError(() => new Error()));
-      service.onPause('sessionId');
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to pause session');
-    });
-  });
-
-  describe('on Resume', () => {
-    it('should refresh on success', () => {
-      const spy = jest.spyOn(service.refresh$, 'next');
-      service.onResume('sessionId');
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it('should notify on error', () => {
-      mockSessionsGrpcService.resume$.mockReturnValueOnce(throwError(() => new Error()));
-      service.onResume('sessionId');
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to resume session');
-    });
-  });
-
-  describe('on purge', () => {
-    it('should refresh on success', () => {
-      const spy = jest.spyOn(service.refresh$, 'next');
-      service.onPurge('sessionId');
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it('should notify on error', () => {
-      mockSessionsGrpcService.purge$.mockReturnValueOnce(throwError(() => new Error()));
-      service.onPurge('sessionId');
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to purge session');
-    });
-  });
-
-  describe('on Cancel', () => {
-    it('should refresh on success', () => {
-      const spy = jest.spyOn(service.refresh$, 'next');
-      service.onCancel('sessionId');
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it('should notify on error', () => {
-      mockSessionsGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error()));
-      service.onCancel('sessionId');
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to cancel session');
-    });
-  });
-
-  describe('on Close', () => {
-    it('should refresh on success', () => {
-      const spy = jest.spyOn(service.refresh$, 'next');
-      service.onClose('sessionId');
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it('should notify on error', () => {
-      mockSessionsGrpcService.close$.mockReturnValueOnce(throwError(() => new Error()));
-      service.onClose('sessionId');
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to close session');
-    });
-  });
-
-  describe('on Delete', () => {
-    it('should refresh on success', () => {
-      const spy = jest.spyOn(service.refresh$, 'next');
-      service.onDelete('sessionId');
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it('should notify on error', () => {
-      mockSessionsGrpcService.delete$.mockReturnValueOnce(throwError(() => new Error()));
-      service.onDelete('sessionId');
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to delete session');
     });
   });
 });

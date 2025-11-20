@@ -1,14 +1,16 @@
 import { SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
+import { GrpcAction } from '@app/types/actions.type';
 import { TableColumn } from '@app/types/column.type';
-import { ColumnKey, SessionData } from '@app/types/data';
+import { ArmonikData, ColumnKey, SessionData } from '@app/types/data';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
-import { ActionTable } from '@app/types/table';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
@@ -18,7 +20,7 @@ import { SessionsTableComponent } from './table.component';
 import { SessionsDataService } from '../services/sessions-data.service';
 import { SessionRaw } from '../types';
 
-function getAction(actions: ActionTable<SessionRaw, TaskOptions>[], label: string) {
+function getAction(actions: GrpcAction<SessionRaw>[], label: string) {
   return actions.filter(action => action.label === label)[0];
 } 
 
@@ -54,7 +56,7 @@ describe('SessionsTableComponent', () => {
   ];
 
   const mockSessionsDataService = {
-    data: [],
+    data: signal([] as ArmonikData<SessionRaw, TaskOptions>[]),
     total: 0,
     loading: false,
     options: {},
@@ -62,12 +64,6 @@ describe('SessionsTableComponent', () => {
     refresh$: {
       next: jest.fn()
     },
-    onPause: jest.fn(),
-    onResume: jest.fn(),
-    onCancel: jest.fn(),
-    onPurge: jest.fn(),
-    onClose: jest.fn(),
-    onDelete: jest.fn(),
   };
 
   const mockNotificationService = {
@@ -147,6 +143,10 @@ describe('SessionsTableComponent', () => {
     canDelete: jest.fn((s: SessionStatus) => s !== SessionStatus.SESSION_STATUS_DELETED),
   };
 
+  const mockGrpcService = {
+    actions: [],
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -159,7 +159,8 @@ describe('SessionsTableComponent', () => {
         { provide: Clipboard, useValue: mockClipBoard },
         { provide: TasksByStatusService, useValue: mockTasksByStatusService},
         { provide: MatDialog, useValue: mockMatDialog },
-        { provide: Router, useValue: mockRouter }
+        { provide: Router, useValue: mockRouter },
+        { provide: GrpcActionsService, useValue: mockGrpcService },
       ]
     }).inject(SessionsTableComponent);
 
@@ -190,10 +191,8 @@ describe('SessionsTableComponent', () => {
 
   it('should send a notification on copy', () => {
     component.onCopiedSessionId({
-      raw: {
-        sessionId: 'sessionId'
-      }
-    } as unknown as SessionData);
+      sessionId: 'sessionId'
+    } as unknown as SessionRaw);
     expect(mockClipBoard.copy).toHaveBeenCalledWith('sessionId');
     expect(mockNotificationService.success).toHaveBeenCalledWith('Session ID copied to clipboard');
   });
@@ -213,125 +212,39 @@ describe('SessionsTableComponent', () => {
   });
 
   describe('actions', () => {
-    const sessionData = {
-      raw: {
-        sessionId: 'sessionId',
-        status: SessionStatus.SESSION_STATUS_RUNNING
-      },
-      resultsQueryParams: {
-        '0-root-1-0': 'sessionId'
-      }
-    } as unknown as SessionData;
+    const session = {
+      sessionId: 'sessionId',
+      status: SessionStatus.SESSION_STATUS_RUNNING
+    } as SessionRaw;
 
     it('should copy', () => {
       const spy = jest.spyOn(component, 'onCopiedSessionId');
       const action = getAction(component.actions, 'Copy session ID');
-      action.action$.next(sessionData);
-      expect(spy).toHaveBeenCalledWith(sessionData);
+      action.click([session]);
+      expect(spy).toHaveBeenCalledWith(session);
     });
 
     it('should permit to see session', () => {
       const spy = jest.spyOn(component.router, 'navigate');
       const action = getAction(component.actions, 'See session');
-      action.action$.next(sessionData);
-      expect(spy).toHaveBeenCalledWith(['/sessions', sessionData.raw.sessionId]);
+      action.click([session]);
+      expect(spy).toHaveBeenCalledWith(['/sessions', session.sessionId]);
     });
 
     it('should permit to see results', () => {
+      const mockSession = {
+        raw: {
+          sessionId: 'sessionId',
+        },
+        resultsQueryParams: {
+          '0-root-1-0': 'sessionId'
+        }
+      } as unknown as SessionData;
+      mockSessionsDataService.data.set([mockSession]);
       const spy = jest.spyOn(component.router, 'navigate');
       const action = getAction(component.actions, 'See results');
-      action.action$.next(sessionData);
-      expect(spy).toHaveBeenCalledWith(['/results'], { queryParams: sessionData.resultsQueryParams });
-    });
-
-    describe('Pause', () => {
-      it('should check if a session can be paused', () => {
-        const action = getAction(component.actions, 'Pause session');
-        if (action.condition) {
-          expect(action.condition(sessionData)).toBe(true);
-        }
-      });
-  
-      it('should pause a session', () => {
-        const action = getAction(component.actions, 'Pause session');
-        action.action$.next(sessionData);
-        expect(mockSessionsDataService.onPause).toHaveBeenCalledWith(sessionData.raw.sessionId);
-      });
-    });
-
-    describe('Resume', () => {
-      it('should check if a session can be resumed', () => {
-        const action = getAction(component.actions, 'Resume session');
-        if (action.condition) {
-          expect(action.condition(sessionData)).toBe(false);
-        }
-      });
-  
-      it('should resume a session', () => {
-        const action = getAction(component.actions, 'Resume session');
-        action.action$.next(sessionData);
-        expect(mockSessionsDataService.onResume).toHaveBeenCalledWith(sessionData.raw.sessionId);
-      });
-    });
-
-    describe('Purge', () => {
-      it('should check if a session can be purged', () => {
-        const action = getAction(component.actions, 'Purge session');
-        if (action.condition) {
-          expect(action.condition(sessionData)).toBe(false);
-        }
-      });
-  
-      it('should purge a session', () => {
-        const action = getAction(component.actions, 'Purge session');
-        action.action$.next(sessionData);
-        expect(mockSessionsDataService.onPurge).toHaveBeenCalledWith(sessionData.raw.sessionId);
-      });
-    });
-
-    describe('Cancel', () => {
-      it('should check if a session can be cancelled', () => {
-        const action = getAction(component.actions, 'Cancel session');
-        if (action.condition) {
-          expect(action.condition(sessionData)).toBe(true);
-        }
-      });
-  
-      it('should cancel a session', () => {
-        const action = getAction(component.actions, 'Cancel session');
-        action.action$.next(sessionData);
-        expect(mockSessionsDataService.onCancel).toHaveBeenCalledWith(sessionData.raw.sessionId);
-      });
-    });
-
-    describe('Close', () => {
-      it('should check if a session can be closed', () => {
-        const action = getAction(component.actions, 'Close session');
-        if (action.condition) {
-          expect(action.condition(sessionData)).toBe(true);
-        }
-      });
-  
-      it('should close a session', () => {
-        const action = getAction(component.actions, 'Close session');
-        action.action$.next(sessionData);
-        expect(mockSessionsDataService.onClose).toHaveBeenCalledWith(sessionData.raw.sessionId);
-      });
-    });
-
-    describe('Delete', () => {
-      it('should check if a session can be deleted', () => {
-        const action = getAction(component.actions, 'Delete session');
-        if (action.condition) {
-          expect(action.condition(sessionData)).toBe(true);
-        }
-      });
-  
-      it('should delete a session', () => {
-        const action = getAction(component.actions, 'Delete session');
-        action.action$.next(sessionData);
-        expect(mockSessionsDataService.onDelete).toHaveBeenCalledWith(sessionData.raw.sessionId);
-      });
+      action.click([session]);
+      expect(spy).toHaveBeenCalledWith(['/results'], { queryParams: mockSession.resultsQueryParams });
     });
   });
 
