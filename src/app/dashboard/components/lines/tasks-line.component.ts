@@ -17,8 +17,10 @@ import { TaskOptions, TaskSummary } from '@app/tasks/types';
 import { DashboardLineCustomColumnsComponent } from '@app/types/components/dashboard-line-table';
 import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
 import { DataFilterService } from '@app/types/services/data-filter.service';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
+import { TableGrpcActionsComponent } from '@components/table/table-grpc-actions.component';
 import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
@@ -44,7 +46,10 @@ import { NotificationService } from '@services/notification.service';
       provide: StatusService,
       useClass: TasksStatusesService,
     },
-    TasksGrpcActionsService,
+    {
+      provide: GrpcActionsService,
+      useClass: TasksGrpcActionsService,
+    },
   ],
   imports: [
     MatToolbarModule,
@@ -54,12 +59,13 @@ import { NotificationService } from '@services/notification.service';
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
+    TableGrpcActionsComponent
   ]
 })
 export class TasksLineComponent extends DashboardLineCustomColumnsComponent<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly indexService = inject(TasksIndexService);
   readonly tableDataService = inject(TasksDataService);
-  readonly grpcActionsService = inject(TasksGrpcActionsService);
+  readonly grpcActionsService = inject(GrpcActionsService);
 
   serviceIcon: string | null = null;
   serviceName: string | null = null;
@@ -89,6 +95,10 @@ export class TasksLineComponent extends DashboardLineCustomColumnsComponent<Task
 
   onSelectionChange(selection: TaskSummary[]): void {
     this.selection = selection;
+  }
+
+  hasSelectColumnDisplayed() {
+    return this.displayedColumnsKeys.includes('select');
   }
 
   manageViewInLogs(): void {

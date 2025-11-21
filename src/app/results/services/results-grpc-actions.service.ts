@@ -53,12 +53,12 @@ export class ResultsGrpcActionsService extends GrpcActionsService<ResultRaw, Res
   }
 
   downloadAs(
-    content: Uint8Array,
+    content: Uint8Array<ArrayBufferLike>,
     filename: string,
     mime: 'application/json' | 'text/plain' | 'application/octet-stream'
   ): void {
     if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-      const blob = new Blob([content], { type: mime });
+      const blob = new Blob([content as Uint8Array<ArrayBuffer>], { type: mime });
 
       const url = URL.createObjectURL(blob);
       try {
