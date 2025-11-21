@@ -1,4 +1,4 @@
-<mat-toolbar color="primary">
+<mat-toolbar class="header-toolbar" color="primary">
   @if (isHandset$ | async) {
     <button mat-icon-button (click)="drawer.toggle()">
       <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
@@ -13,8 +13,6 @@
   </button>
   <div class="title">
     <span>ArmoniK</span>
-    <span> - </span>
-    <span class="greeting">{{ greetings }}</span>
   </div>
   <div class="spacer"></div>
   <div class="environment" [style]="'color:' + environment.color + ';'" [matTooltip]="environment.description">
@@ -26,6 +24,9 @@
   <app-external-services />
   <app-versions-menu />
   <app-theme-selector/>
+  <button mat-icon-button [routerLink]="'/profile'" [disabled]="isProfileButtonDisabled()" matTooltip="Profile" i18n-matTooltip="Profile button tooltip">
+    <mat-icon [fontIcon]="getIcon('profile')"></mat-icon>
+  </button>
 </mat-toolbar>
 <mat-sidenav-container autosize class="sidenav-container">
   <mat-sidenav #drawer class="sidenav"
@@ -48,7 +49,7 @@
         <span matListItemTitle> {{ settingsItem }} </span>
       </a>
     </mat-nav-list>
-
+    <app-scheme-switcher />
   </mat-sidenav>
   <mat-sidenav-content>
     <main>

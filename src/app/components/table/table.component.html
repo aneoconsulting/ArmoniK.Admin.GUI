@@ -5,12 +5,12 @@
     aria-label="Data Table">
 
     @for (column of columns; track column.key) {
-    <ng-container [matColumnDef]="column.key.toString()">
+    <ng-container [matColumnDef]="column.key.toString()" [sticky]="column.type === 'select'" [stickyEnd]="column.type === 'actions'">
       <!-- Header -->
       <th mat-header-cell mat-sort-header [disabled]="!column.sortable" *matHeaderCellDef cdkDrag appNoWrap>
         <app-table-column-header [column]="column" [checked]="selection.hasValue() && isAllSelected"
           [isSelectionIndeterminate]="selection.hasValue() && !isAllSelected" (rowsSelectionChange)="toggleAllRows()"
-          (statusesChange)="onPersonnalizeTasksByStatus()" />
+          (statusesChange)="onPersonalizeTasksByStatus()" />
       </th>
       <!-- Columns -->
       @if (column.type !== 'actions') {
@@ -29,8 +29,8 @@
 
     <!-- Empty -->
     <tr *matNoDataRow>
-      <td [attr.colspan]="columns.length">
-        <app-table-empty-data />
+      <td [attr.colspan]="columns.length" id="empty">
+        <em i18n>No data found.</em>
       </td>
     </tr>
 

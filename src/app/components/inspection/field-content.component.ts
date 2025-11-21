@@ -36,7 +36,7 @@ import { NotificationService } from '@services/notification.service';
     NotificationService,
     IconsService
   ],
-  styleUrl: '../../../inspections.css',
+  styleUrl: '../../../inspections.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FieldContentComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null> {

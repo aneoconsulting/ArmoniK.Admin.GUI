@@ -11,7 +11,7 @@
     This is your profile page. You can see your user data below.
   </p>
 
-  <app-page-section>
+  <section>
     <app-page-section-header icon="group">
       Roles
     </app-page-section-header>
@@ -34,9 +34,9 @@
     }
   
     <!-- TODO: Add a button to read more about permissions -->
-  </app-page-section>
+  </section>
   
-  <app-page-section>
+  <section>
     <app-page-section-header icon="lock">
       <span i18n="Section title"> Permissions </span>
     </app-page-section-header>
@@ -45,10 +45,10 @@
       <div class="permissions">
         @for (group of groupedPermissions(); track group.name) {
           <div class="permission">
-            <h3>
+            <div class="permission-title">
               <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon(group.name)"></mat-icon>
-              {{ group.name }}
-            </h3>
+              <h3>{{ group.name }}</h3>
+            </div>
             <ul>
               <!-- TODO: Create a page in documentation (ArmoniK) in order to explain what's does that mean -->
               @for (permission of group.permissions; track permission) {
@@ -67,5 +67,5 @@
         </em>
       </p>
     }
-  </app-page-section>
+  </section>
 }

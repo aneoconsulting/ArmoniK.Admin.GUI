@@ -303,17 +303,17 @@ describe('TasksLineComponent', () => {
 
     it('should change displayedColumns', () => {
       component.onColumnsChange(newColumns);
-      expect(component.displayedColumnsKeys).toEqual(['select', 'id', 'acquiredAt', 'creationToEndDuration']);
+      expect(component.displayedColumnsKeys).toEqual(newColumns);
     });
 
     it('should change line displayedColumns', () => {
       component.onColumnsChange(newColumns);
-      expect(component.line.displayedColumns).toEqual(['select', 'id', 'acquiredAt', 'creationToEndDuration']);
+      expect(component.line.displayedColumns).toEqual(newColumns);
     });
 
     it('should emit', () => {
       const spy = jest.spyOn(component.lineChange, 'emit');
-      component.onColumnsChange(['select', 'id', 'acquiredAt', 'creationToEndDuration']);
+      component.onColumnsChange(newColumns);
       expect(spy).toHaveBeenCalled();
     });
   });

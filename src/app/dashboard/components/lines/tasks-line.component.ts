@@ -77,6 +77,7 @@ export class TasksLineComponent extends DashboardLineCustomColumnsComponent<Task
   ngOnInit(): void {
     this.initLineEnvironment();
 
+    this.grpcActionsService.refresh = this.tableDataService.refresh$;
     const viewInLogs = this.indexService.restoreViewInLogs();
     this.serviceIcon = viewInLogs.serviceIcon;
     this.serviceName = viewInLogs.serviceName;

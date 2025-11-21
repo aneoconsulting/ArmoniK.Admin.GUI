@@ -17,7 +17,9 @@ export default {
     '@components/(.*)': '<rootDir>/src/app/components/$1',
     '@services/(.*)': '<rootDir>/src/app/services/$1',
     '@pipes/(.*)': '<rootDir>/src/app/pipes/$1',
-    '@app/(.*)': '<rootDir>/src/app/$1'
+    '@app/(.*)': '<rootDir>/src/app/$1',
+    '^d3$': '<rootDir>/test/d3.js',
+    '^force-graph$': '<rootDir>/test/force-graph.js',
   },
   testEnvironment: './JSDOMEnvironmentPatch.ts',
   testEnvironmentOptions: {

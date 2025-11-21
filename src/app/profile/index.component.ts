@@ -2,7 +2,6 @@ import { Component, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
-import { PageSectionComponent } from '@components/page-section.component';
 import { IconsService } from '@services/icons.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { UserService } from '@services/user.service';
@@ -11,40 +10,12 @@ import { Group, PermissionGroup, isGroup } from './types';
 @Component({
   selector: 'app-profile-index',
   templateUrl: './index.component.html',
-  styles: [`
-.permissions {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.2rem;
-}
-
-.permission h3 {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
-
-  text-transform: capitalize;
-
-  margin-bottom: 0.5rem;
-}
-
-.permission h3 mat-icon {
-  height: 1.25rem;
-  width: 1.25rem;
-  font-size: 1.25rem;
-}
-
-.permission ul {
-  margin: 0;
-}
-  `],
+  styleUrl: 'index.component.scss',
   providers: [
     QueryParamsService,
   ],
   imports: [
     PageHeaderComponent,
-    PageSectionComponent,
     PageSectionHeaderComponent,
     MatIconModule,
   ]

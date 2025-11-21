@@ -14,19 +14,7 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 @Component({
   selector: 'app-filters-dialog-filter-field',
   templateUrl: './filters-dialog-filter-field.component.html',
-  styles: [`
-:host {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1rem;
-}
-
-span {
-  min-width: 3rem;
-  text-align: end;
-}
-  `],
+  styleUrl: 'filters-dialog-filter-field.component.scss',
   imports: [
     MatFormFieldModule,
     MatSelectModule,

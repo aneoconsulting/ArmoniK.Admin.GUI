@@ -63,7 +63,7 @@ describe('ByteArrayComponent', () => {
       });
 
       it('should set the grid column size on 4 for large byte-arrays', () => {
-        expect(component.gridColumnSize).toEqual(4);
+        expect(component.flexBasis).toEqual('100%');
       });
       
       it('should set the byteLength', () => {

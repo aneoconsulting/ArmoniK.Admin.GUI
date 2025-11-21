@@ -48,7 +48,6 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
-    MatIconModule,
     MatSnackBarModule,
     TasksTableComponent,
     TableGrpcActionsComponent,
@@ -79,7 +78,7 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
       useClass: TasksStatusesService,
     },
     {
-      provide: GrpcActionsService,
+      provide: GrpcActionsService, 
       useClass: TasksGrpcActionsService,
     },
   ],
@@ -102,6 +101,7 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSu
   ngOnInit(): void {
     this.initTableEnvironment();
 
+    this.grpcActionsService.refresh = this.tableDataService.refresh$;
     const viewInLogs = this.indexService.restoreViewInLogs();
     this.serviceIcon = viewInLogs.serviceIcon;
     this.serviceName = viewInLogs.serviceName;

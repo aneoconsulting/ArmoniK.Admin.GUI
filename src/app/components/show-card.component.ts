@@ -7,11 +7,7 @@ import { ShowCardContentComponent } from './show-card-content.component';
 @Component({
   selector: 'app-show-card',
   templateUrl: 'show-card.component.html',
-  styles: [`
-pre {
-  margin-top: 0;
-}
-  `],
+  styleUrl: 'show-card.component.scss',
   imports: [
     ShowCardContentComponent,
     MatCardModule,

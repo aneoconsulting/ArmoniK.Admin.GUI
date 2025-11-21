@@ -20,7 +20,6 @@ import { AbstractTableDataService } from '../services/table-data.service';
 @Component({
   selector: 'app-dashboard-line-table',
   template: '',
-  
 })
 export abstract class DashboardLineTableComponent<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null> {
   readonly autoRefreshService = inject(AutoRefreshService);
@@ -190,9 +189,6 @@ export abstract class DashboardLineTableComponent<T extends DataRaw, F extends F
   }
 
   onColumnsChange(columns: ColumnKey<T, O>[]) {
-    if ((columns as string[]).includes('select')) {
-      columns = ['select' as ColumnKey<T, O>, ...columns.filter(column => column !== 'select')];
-    }
     this.displayedColumnsKeys = columns;
     this.updateDisplayedColumns();
     this.line.displayedColumns = columns;
@@ -216,7 +212,6 @@ export abstract class DashboardLineTableComponent<T extends DataRaw, F extends F
 @Component({
   selector: 'app-dashboard-line-table',
   template: '',
-  
 })
 export abstract class DashboardLineCustomColumnsComponent<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null> extends DashboardLineTableComponent<T, F, O, FO> {
   abstract override readonly indexService: IndexServiceCustomInterface<T, O>;

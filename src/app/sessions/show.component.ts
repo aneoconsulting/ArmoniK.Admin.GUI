@@ -10,6 +10,7 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service
 import { TaskOptions } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
 import { AppShowComponent } from '@app/types/components/show';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusLabelColor, StatusService } from '@app/types/status';
 import { ShowPageComponent } from '@components/show-page.component';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
@@ -36,7 +37,7 @@ import { SessionRaw } from './types';
 @Component({
   selector: 'app-sessions-show',
   templateUrl: 'show.component.html',
-  styleUrl: '../../inspections.css',
+  styleUrl: '../../inspections.scss',
   providers: [
     UtilsService,
     ShareUrlService,
@@ -61,7 +62,10 @@ import { SessionRaw } from './types';
       provide: StatusService,
       useClass: SessionsStatusesService,
     },
-    SessionsGrpcActionsService,
+    {
+      provide: GrpcActionsService, 
+      useClass: SessionsGrpcActionsService,
+    },
   ],
   imports: [
     ShowPageComponent,
@@ -81,7 +85,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
   readonly grpcService = inject(SessionsGrpcService);
   readonly inspectionService = inject(SessionsInspectionService);
   readonly tasksInspectionService = inject(TasksInspectionService);
-  readonly grpcActionsService = inject(SessionsGrpcActionsService);
+  readonly grpcActionsService = inject(GrpcActionsService);
 
   private readonly sessionsStatusesService = inject(StatusService) as SessionsStatusesService;
   private readonly filtersService = inject(FiltersService);

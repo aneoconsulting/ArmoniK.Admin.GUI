@@ -250,19 +250,19 @@ describe('TasksTableComponent', () => {
     });
 
     describe('task retry', () => {
-      let action: GrpcAction<TaskSummary>;      
+      let action: GrpcAction<TaskSummary>;
 
       beforeEach(() => {
         action = getAction(component.actions, 'Retries');
       });
 
-      it('should permit to retry the task', () => {
+      it('should allow to retry the task', () => {
         const spy = jest.spyOn(component.retries, 'emit');
         action.click([task]);
         expect(spy).toHaveBeenCalledWith(task);
       });
 
-      it('should not permit to retry if the tasks cannot be retried', () => {
+      it('should not allow to retry if the task status is not allowed by the action', () => {
         task.status = TaskStatus.TASK_STATUS_COMPLETED;
         expect(action.condition!([task])).toBeFalsy();
       });
