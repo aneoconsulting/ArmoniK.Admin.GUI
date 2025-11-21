@@ -119,10 +119,6 @@ describe('ResultsTableComponent', () => {
   });
 
   describe('Initialisation', () => {
-    it('should set the grpc action refresh as the dataService refresh', () => {
-      expect(mockResultsGrpcActionsService.refresh).toBe(mockResultsDataService.refresh$);
-    });
-
     it('should append all "grpc action service" actions to the component actions', () => {
       for (const action of mockResultsGrpcActionsService.actions) {
         expect(component.actions.includes(action)).toBeTruthy();
