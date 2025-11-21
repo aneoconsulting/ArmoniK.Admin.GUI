@@ -131,6 +131,10 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSu
     this.selection = selection;
   }
 
+  hasSelectColumnDisplayed() {
+    return this.displayedColumnsKeys.includes('select');
+  }
+
   manageViewInLogs(): void {
     const dialogRef = this.dialog.open<ManageViewInLogsDialogComponent, ManageViewInLogsDialogData, ManageViewInLogsDialogResult>(ManageViewInLogsDialogComponent, {
       data: {

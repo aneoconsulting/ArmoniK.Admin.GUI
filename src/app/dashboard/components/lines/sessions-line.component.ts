@@ -84,4 +84,8 @@ export class SessionsLineComponent extends DashboardLineCustomColumnsComponent<S
   ngOnDestroy(): void {
     this.unsubscribe();
   }
+
+  hasSelectColumnDisplayed() {
+    return this.displayedColumnsKeys.includes('select');
+  }
 }

@@ -131,4 +131,8 @@ export class IndexComponent extends TableHandlerCustomValues<SessionRaw, Session
       this.refresh();
     }
   }
+
+  hasSelectColumnDisplayed() {
+    return this.displayedColumnsKeys.includes('select');
+  }
 }

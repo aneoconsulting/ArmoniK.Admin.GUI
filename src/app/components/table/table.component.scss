@@ -7,3 +7,9 @@ em {
 table {
   background-color: var(--armonik-table-background) !important;
 }
+
+::ng-deep {
+  .mat-mdc-table-sticky-border-elem-left {
+    width: 2.5rem;
+  }
+}
