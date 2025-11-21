@@ -187,4 +187,11 @@ describe('ResultsTableComponent', () => {
   it('should get displayedColumns', () => {
     expect(component.columns).toEqual(displayedColumns);
   });
+
+  it('should emit when the selection changes', () => {
+    const spy = jest.spyOn(component.selectionChange, 'emit');
+    const selection = [{ resultId: '1' }] as ResultRaw[];
+    component.onSelectionChange(selection);
+    expect(spy).toHaveBeenCalledWith(selection);
+  });
 });

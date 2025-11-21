@@ -36,7 +36,7 @@
     />
   </mat-toolbar-row>
     <mat-toolbar-row class="grpc-actions">
-    <app-table-grpc-actions [refresh$]="tableDataService.refresh$" [selection]="selection" [selectDisplayed]="hasSelectColumnDisplayed()" />
+    <app-table-grpc-actions [selection]="selection" [selectDisplayed]="hasSelectColumnDisplayed()" />
   </mat-toolbar-row>
 </mat-toolbar>
 <app-sessions-table

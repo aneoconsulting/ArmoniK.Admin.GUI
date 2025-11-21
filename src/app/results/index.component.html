@@ -32,10 +32,15 @@
       (showFiltersChange)="onShowFiltersChange($event)"
     />
   </mat-toolbar-row>
+
+  <mat-toolbar-row>
+    <app-table-grpc-actions [selection]="selection" [selectDisplayed]="hasSelectColumnDisplayed()" />
+  </mat-toolbar-row>
 </mat-toolbar>
 
 <app-results-table
   [displayedColumns]="displayedColumns()"
   [lockColumns]="lockColumns"
   (optionsUpdate)="onOptionsChange()"
+  (selectionChange)="onSelectionChange($event)"
 />
