@@ -1,17 +1,17 @@
 @use 'styles' as *;
 
-mat-card {
+#graph-session-header {
   position: absolute;
   z-index: 2;
   top: 1rem;
   left: 3rem;
   width: fit-content;
-}
 
-mat-card-content {
-  @include flex-row();
-  min-width: 60vw;
-  padding: 0.5rem !important;
+  mat-card-content {
+    @include flex-row();
+    min-width: 60vw;
+    padding: 0.5rem !important;
+  }
 }
 
 section {

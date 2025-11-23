@@ -1,6 +1,5 @@
-import { ResultStatus, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -9,19 +8,31 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
+import { ResultsFiltersService } from '@app/results/services/results-filters.service';
+import { ResultsGrpcService } from '@app/results/services/results-grpc.service';
 import { ResultsStatusesService } from '@app/results/services/results-statuses.service';
 import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
+import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
+import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { ArmoniKGraphNode, GraphData, GraphLink, LinkType } from '@app/types/graph.types';
-import { StatusLabelColor } from '@app/types/status';
+import { StatusService } from '@app/types/status';
 import { DefaultConfigService } from '@services/default-config.service';
+import { FiltersService } from '@services/filters.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
 import { StorageService } from '@services/storage.service';
+import { TableStorageService } from '@services/table-storage.service';
+import { TableURLService } from '@services/table-url.service';
+import { TableService } from '@services/table.service';
+import { UtilsService } from '@services/utils.service';
 import { forceLink, forceManyBody } from 'd3';
 import ForceGraph from 'force-graph';
 import { Observable, Subject, Subscription, switchMap } from 'rxjs';
 import { AutoCompleteComponent } from '../auto-complete.component';
 import { GraphLegendComponent } from './graph-legend.component';
+import { InspectNodeComponent } from './inspect-node.component';
+import { NodeStatusService } from './services/node-status.service';
 
 @Component({
   selector: 'app-graph',
@@ -38,12 +49,28 @@ import { GraphLegendComponent } from './graph-legend.component';
     RouterModule,
     GraphLegendComponent,
     MatTooltipModule,
-    AutoCompleteComponent
+    AutoCompleteComponent,
+    InspectNodeComponent,
   ],
   providers: [
     SessionsStatusesService,
     TasksStatusesService,
     ResultsStatusesService,
+    TasksGrpcService,
+    TasksFiltersService,
+    ResultsGrpcService,
+    ResultsFiltersService,
+    FiltersService,
+    UtilsService,
+    TableService,
+    TableURLService,
+    TableStorageService,
+    {
+      provide: StatusService,
+      useClass: TasksStatusesService,
+    },
+    GrpcSortFieldService,
+    NodeStatusService,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -65,12 +92,10 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
   colorMap: Record<LinkType, string>;
 
   private readonly iconsService = inject(IconsService);
-  private readonly sessionsStatusesService = inject(SessionsStatusesService);
-  private readonly tasksStatusesService = inject(TasksStatusesService);
-  private readonly resultsStatusesService = inject(ResultsStatusesService);
   private readonly storageService = inject(StorageService);
   private readonly defaultConfigService = inject(DefaultConfigService);
   private readonly clipboard = inject(Clipboard);
+  private readonly nodeStatusService = inject(NodeStatusService);
 
   private readonly redrawGraph$ = new Subject<void>();
 
@@ -81,6 +106,8 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
 
   nodesIds: string[] = [];
   readonly highlightLabel = $localize`Highlight a task`;
+
+  readonly selectedNode = signal<N | null>(null);
 
   ngOnInit(): void {
     const storedColorMap = this.storageService.getItem<Record<LinkType, string>>('graph-links-colors', true) as Record<LinkType, string> | null;
@@ -112,8 +139,11 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
         .linkWidth(4)
         .nodeLabel('id')
         .onNodeClick((node: N) => {
-          this.graph.centerAt(node.x, node.y);
-          this.graph.zoom(4, 2000);
+          if (node.type !== 'session') {
+            this.selectedNode.set(node);
+          }
+          this.graph.centerAt(node.x, node.y, 2000);
+          this.graph.zoom(1.2, 2000);
         });
 
       this.subscription.add(this.grpcObservable.subscribe((result) => this.subscribeToData(result)));
@@ -320,7 +350,7 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
    */
   private drawNode(node: N, ctx: CanvasRenderingContext2D) {
     if (node.x !== undefined && node.y !== undefined) {
-      const label = this.getNodeStatusData(node);
+      const label = this.nodeStatusService.getNodeStatusData(node);
       if (this.nodesToHighlight.has(node.id)) {
         ctx.font = '70px Material Icons';
         const complementary = this.getComplementaryColor(label.color);
@@ -334,32 +364,15 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
   }
 
   /**
-   * Get the data associated to the node status.
-   * @param node N
-   * @returns StatusLabelColor, contains label, color and icon.
-   */
-  private getNodeStatusData(node: N): StatusLabelColor {
-    switch (node.type) {
-    case 'session':
-      return this.sessionsStatusesService.statusToLabel(node.status as SessionStatus);
-    case 'task':
-      return this.tasksStatusesService.statusToLabel(node.status as TaskStatus);
-    case 'result':
-      return this.resultsStatusesService.statusToLabel(node.status as ResultStatus);
-    default:
-      return {
-        label: $localize`Unknown`,
-        color: 'grey',
-      };
-    }
-  }
-
-  /**
    * Returns the associated link color.
    * @param link L
    * @returns string
    */
   private getLinkColor(link: L): string {
     return this.colorMap[link.type];
+  }
+
+  closeNodePanel() {
+    this.selectedNode.set(null);
   }
 }
