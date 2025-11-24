@@ -33,7 +33,7 @@
     </app-table-index-actions-toolbar>
   </mat-toolbar-row>
 
-  <mat-toolbar-row class="filters">
+  <mat-toolbar-row>
     <app-filters-toolbar 
       [filters]="filters"
       [showFilters]="showFilters"
@@ -44,7 +44,7 @@
   </mat-toolbar-row>
 
   <mat-toolbar-row class="grpc-actions">
-    <app-table-grpc-actions [refresh$]="tableDataService.refresh$" [selection]="selection" />
+    <app-table-grpc-actions [refresh$]="tableDataService.refresh$" [selection]="selection" [selectDisplayed]="hasSelectColumnDisplayed()" />
   </mat-toolbar-row>
 </mat-toolbar>
 

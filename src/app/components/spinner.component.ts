@@ -3,11 +3,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-spinner',
-  template: `
-<mat-spinner diameter="30" strokeWidth="4"></mat-spinner>
-  `,
-  styles: [`
-  `],
+  templateUrl: 'spinner.component.html',
   providers: [],
   imports: [
     MatProgressSpinnerModule

@@ -135,4 +135,8 @@ export class IndexComponent extends TableHandlerCustomValues<SessionRaw, Session
   onSelectionChange(selection: SessionRaw[]): void {
     this.selection = selection;
   }
+
+  hasSelectColumnDisplayed() {
+    return this.displayedColumnsKeys.includes('select');
+  }
 }

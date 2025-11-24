@@ -9,7 +9,7 @@ import { TasksGrpcActionsService } from './tasks-grpc-actions.service';
 import { TasksGrpcService } from './tasks-grpc.service';
 
 function getAction(actions: GrpcAction<TaskSummary>[], label: string) {
-  return actions.filter(action => action.label === label)[0];
+  return actions.find(action => action.label === label) as GrpcAction<TaskSummary>;
 } 
 
 describe('TasksGrpcActionsService', () => {
@@ -86,7 +86,7 @@ describe('TasksGrpcActionsService', () => {
       mockGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error()));
       action.click([task1]);
       expect(consoleErrorSpy).toHaveBeenCalled();
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occured.');
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred.');
     });
   });
 
@@ -100,7 +100,7 @@ describe('TasksGrpcActionsService', () => {
   
     it('should display a notification to the user', () => {
       service['handleError'](error);
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occured.');
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred.');
     });
       
     it('should display a notification to the user with a custom message', () => {
@@ -108,5 +108,10 @@ describe('TasksGrpcActionsService', () => {
       service['handleError'](error, message);
       expect(mockNotificationService.error).toHaveBeenCalledWith(message);
     });
+  });
+
+  it('should unsubscribe', () => {
+    service.ngOnDestroy();
+    expect(service['subscriptions'].closed).toBeTruthy();
   });
 });

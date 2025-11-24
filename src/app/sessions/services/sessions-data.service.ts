@@ -113,7 +113,7 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
         filterAnd.forEach(filter => {
           if (filter.field !== SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) {
             const filterLabel = this.#createTaskByStatusLabel(filter, index);
-            if (filterLabel && filter.value) {
+            if (filterLabel && filter.value !== null) {
               params[filterLabel] = filter.value.toString();
             }
           }

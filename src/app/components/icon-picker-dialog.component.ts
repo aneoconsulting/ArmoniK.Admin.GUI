@@ -11,13 +11,7 @@ import { IconsService } from '@services/icons.service';
 @Component({
   selector: 'app-icon-picker',
   templateUrl: './icon-picker-dialog.component.html',
-  styles: [`
-article {
-  max-height: 300px;
-  overflow-y: auto;
-  display: grid;
-}
-  `],
+  styleUrl: 'icon-picker-dialog.component.scss',
   providers: [
     IconsService
   ],

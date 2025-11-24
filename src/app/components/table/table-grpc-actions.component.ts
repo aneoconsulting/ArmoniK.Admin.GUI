@@ -24,6 +24,8 @@ export class TableGrpcActionsComponent<T extends DataRaw> {
   }
   @Input({ required: true }) selection: T[];
 
+  @Input({ required: true }) selectDisplayed: boolean;
+
   getIcon(name: string) {
     return this.iconsService.getIcon(name);
   }

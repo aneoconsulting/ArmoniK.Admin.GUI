@@ -13,7 +13,7 @@ import { InspectionToolbarComponent } from './inspection-toolbar.component';
 @Component({
   selector: 'app-show-page',
   templateUrl: './show-page.component.html',
-  styleUrl: 'show-page.component.css',
+  styleUrl: 'show-page.component.scss',
   imports: [
     InspectionCardComponent,
     InspectionHeaderComponent,

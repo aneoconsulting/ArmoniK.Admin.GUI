@@ -1,5 +1,7 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
 import { DefaultConfigService } from '@services/default-config.service';
 import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
@@ -40,6 +42,14 @@ describe('NavigationComponent', () => {
     observe: jest.fn(() => of({matches: true}))
   };
 
+  const mockUserConnectedGuard = {
+    canActivate: jest.fn(() => false)
+  };
+
+  const mockRouter = {
+    navigateByUrl: jest.fn(),
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -52,6 +62,8 @@ describe('NavigationComponent', () => {
         EnvironmentService,
         DefaultConfigService,
         { provide: StorageService, useValue: mockStorageService },
+        { provide: UserConnectedGuard, useValue: mockUserConnectedGuard },
+        { provide: Router, useValue: mockRouter },
       ]
     }).inject(NavigationComponent);
     component.ngOnInit();
@@ -93,33 +105,6 @@ describe('NavigationComponent', () => {
     expect(component.sidebar).toEqual(currentSidebar);
   });
   
-  it('should greet correctly', () => {
-    jest.useFakeTimers().setSystemTime(new Date('2020-01-01T10:00:00'));
-    fakeIntervalSubject.next();
-    expect(component.greetings).toEqual('Good morning');
-    
-    jest.useFakeTimers().setSystemTime(new Date('2020-01-01T13:00:00'));
-    fakeIntervalSubject.next();
-    expect(component.greetings).toEqual('Good afternoon');
-    
-    jest.useFakeTimers().setSystemTime(new Date('2020-01-01T19:00:00'));
-    fakeIntervalSubject.next();
-    expect(component.greetings).toEqual('Good evening');
-
-    mockUserService.user = {
-      username: 'user'
-    };
-    fakeIntervalSubject.next();
-    expect(component.greetings).toEqual('Good evening, user');
-
-    jest.useFakeTimers().setSystemTime(new Date('2020-01-01T10:00:00'));
-    fakeIntervalSubject.next();
-    expect(component.greetings).toEqual('Good morning, user');
-
-    jest.useFakeTimers().setSystemTime(new Date('2020-01-01T13:00:00'));
-    fakeIntervalSubject.next();
-    expect(component.greetings).toEqual('Good afternoon, user');
-  });
 
   describe('toggle sidebar', () => {
     it('should toggle sidebar', () => {
@@ -132,5 +117,14 @@ describe('NavigationComponent', () => {
       component.toggleSideBar();
       expect(mockNavigationService.saveSideBarOpened).toHaveBeenCalledWith(component.sideBarOpened);
     });
+  });
+
+  describe('profile button', () => {
+    it('should disable profile button when user is not connected', () => {
+      mockUserConnectedGuard.canActivate.mockReturnValue(false);
+      component.updateUserConnectionStatus();
+      expect(component.isProfileButtonDisabled()).toBe(true);
+    });
+
   });
 });

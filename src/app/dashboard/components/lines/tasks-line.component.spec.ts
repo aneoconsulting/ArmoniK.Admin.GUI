@@ -303,17 +303,17 @@ describe('TasksLineComponent', () => {
 
     it('should change displayedColumns', () => {
       component.onColumnsChange(newColumns);
-      expect(component.displayedColumnsKeys).toEqual(['select', 'id', 'acquiredAt', 'creationToEndDuration']);
+      expect(component.displayedColumnsKeys).toEqual(newColumns);
     });
 
     it('should change line displayedColumns', () => {
       component.onColumnsChange(newColumns);
-      expect(component.line.displayedColumns).toEqual(['select', 'id', 'acquiredAt', 'creationToEndDuration']);
+      expect(component.line.displayedColumns).toEqual(newColumns);
     });
 
     it('should emit', () => {
       const spy = jest.spyOn(component.lineChange, 'emit');
-      component.onColumnsChange(['select', 'id', 'acquiredAt', 'creationToEndDuration']);
+      component.onColumnsChange(newColumns);
       expect(spy).toHaveBeenCalled();
     });
   });
@@ -441,6 +441,18 @@ describe('TasksLineComponent', () => {
 
     it('should update line custom columns', () => {
       expect(component.line.customColumns).toEqual(newCustom);
+    });
+  });
+
+  describe('hasSelectColumnDisplayed', () => {
+    it('should return true if the column is displayed', () => {
+      component.displayedColumnsKeys.push('select');
+      expect(component.hasSelectColumnDisplayed()).toBeTruthy();
+    });
+
+    it('should return false if the column is not displayed', () => {
+      component.displayedColumnsKeys = component.displayedColumnsKeys.filter(k => k !== 'select');
+      expect(component.hasSelectColumnDisplayed()).toBeFalsy();
     });
   });
 

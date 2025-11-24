@@ -56,6 +56,9 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
 
   @Output() selectionChange = new EventEmitter<SessionRaw[]>();
 
+  seeGraph$ = new Subject<SessionRaw>();
+  seeGraphSubscription = this.seeGraph$.subscribe(data => this.router.navigate(['/sessions', 'graph', data.sessionId]));
+
   actions: GrpcAction<SessionRaw>[] = [
     {
       label: 'Copy session ID',
@@ -71,6 +74,11 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
       label: 'See results',
       icon: 'results',
       click: (sessions: SessionRaw[]) => this.seeResults$.next(sessions[0]),
+    },
+    {
+      label: $localize`See Graph`,
+      icon: 'graph',
+      click: (sessions: SessionRaw[]) => this.seeGraph$.next(sessions[0]),
     },
   ];
 

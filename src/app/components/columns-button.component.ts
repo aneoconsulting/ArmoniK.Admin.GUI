@@ -11,14 +11,7 @@ import { ColumnsModifyDialogComponent } from './dialogs/columns-modify-dialog/co
 
 @Component({
   selector: 'app-columns-button',
-  template: `
-<button [disabled]="disabled" mat-stroked-button (click)="openModifyColumnsDialog()">
-  <mat-icon aria-hidden="true" [fontIcon]="getIcon('modify-columns')"></mat-icon>
-  <span i18n="Open a dialog on click">Modify Columns</span>
-</button>
-  `,
-  styles: [`
-  `],
+  templateUrl: 'columns-button.component.html',
   imports: [
     MatDialogModule,
     MatButtonModule,

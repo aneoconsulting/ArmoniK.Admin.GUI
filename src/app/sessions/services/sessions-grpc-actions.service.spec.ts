@@ -10,7 +10,7 @@ import { SessionsGrpcActionsService } from './sessions-grpc-actions.service';
 import { SessionsGrpcService } from './sessions-grpc.service';
 
 function getAction(actions: GrpcAction<SessionRaw>[], label: string) {
-  return actions.filter(action => action.label === label)[0];
+  return actions.find(action => action.label === label) as GrpcAction<SessionRaw>;
 } 
 
 describe('SessionsGrpcActionsService', () => {
@@ -104,11 +104,16 @@ describe('SessionsGrpcActionsService', () => {
       expect(mockNotificationService.success).toHaveBeenCalledWith('Sessions paused');
     });
 
+    it('should not pause with an empty array', () => {
+      action.click([]);
+      expect(mockNotificationService.success).not.toHaveBeenCalled();
+    });
+
     it('should catch errors', () => {
       mockGrpcService.pause$.mockReturnValueOnce(throwError(() => new Error()));
       action.click([session1]);
       expect(consoleErrorSpy).toHaveBeenCalled();
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error ocured while pausing session ' + session1.sessionId);
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred while pausing session ' + session1.sessionId);
     });
   });
 
@@ -133,11 +138,16 @@ describe('SessionsGrpcActionsService', () => {
       expect(mockNotificationService.success).toHaveBeenCalledWith('Sessions resumed');
     });
 
+    it('should not resume with an empty array', () => {
+      action.click([]);
+      expect(mockNotificationService.success).not.toHaveBeenCalled();
+    });
+
     it('should catch errors', () => {
       mockGrpcService.resume$.mockReturnValueOnce(throwError(() => new Error()));
       action.click([session1]);
       expect(consoleErrorSpy).toHaveBeenCalled();
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occured while resuming session ' + session1.sessionId);
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred while resuming session ' + session1.sessionId);
     });
   });
 
@@ -161,12 +171,17 @@ describe('SessionsGrpcActionsService', () => {
       action.click([session1, session2]);
       expect(mockNotificationService.success).toHaveBeenCalledWith('Sessions purged');
     });
+    
+    it('should not purge with an empty array', () => {
+      action.click([]);
+      expect(mockNotificationService.success).not.toHaveBeenCalled();
+    });
 
     it('should catch errors', () => {
       mockGrpcService.purge$.mockReturnValueOnce(throwError(() => new Error()));
       action.click([session1]);
       expect(consoleErrorSpy).toHaveBeenCalled();
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occured while purging session ' + session1.sessionId);
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred while purging session ' + session1.sessionId);
     });
   });
 
@@ -190,12 +205,17 @@ describe('SessionsGrpcActionsService', () => {
       action.click([session1, session2]);
       expect(mockNotificationService.success).toHaveBeenCalledWith('Sessions cancelled');
     });
+    
+    it('should not cancel with an empty array', () => {
+      action.click([]);
+      expect(mockNotificationService.success).not.toHaveBeenCalled();
+    });
 
     it('should catch errors', () => {
       mockGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error()));
       action.click([session1]);
       expect(consoleErrorSpy).toHaveBeenCalled();
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occured while cancelling session ' + session1.sessionId);
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred while cancelling session ' + session1.sessionId);
     });
   });
 
@@ -219,12 +239,17 @@ describe('SessionsGrpcActionsService', () => {
       action.click([session1, session2]);
       expect(mockNotificationService.success).toHaveBeenCalledWith('Sessions closed');
     });
+    
+    it('should not close with an empty array', () => {
+      action.click([]);
+      expect(mockNotificationService.success).not.toHaveBeenCalled();
+    });
 
     it('should catch errors', () => {
       mockGrpcService.close$.mockReturnValueOnce(throwError(() => new Error()));
       action.click([session1]);
       expect(consoleErrorSpy).toHaveBeenCalled();
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occured while closing session ' + session1.sessionId);
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred while closing session ' + session1.sessionId);
     });
   });
 
@@ -254,12 +279,17 @@ describe('SessionsGrpcActionsService', () => {
       action.click([session1]);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/sessions']);
     });
+    
+    it('should not delete with an empty array', () => {
+      action.click([]);
+      expect(mockNotificationService.success).not.toHaveBeenCalled();
+    });
 
     it('should catch errors', () => {
       mockGrpcService.delete$.mockReturnValueOnce(throwError(() => new Error()));
       action.click([session1]);
       expect(consoleErrorSpy).toHaveBeenCalled();
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occured while deleting session ' + session1.sessionId);
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred while deleting session ' + session1.sessionId);
     });
   });
 
@@ -273,7 +303,7 @@ describe('SessionsGrpcActionsService', () => {
 
     it('should display a notification to the user', () => {
       service['handleError'](error);
-      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occured.');
+      expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred.');
     });
     
     it('should display a notification to the user with a custom message', () => {
@@ -281,5 +311,10 @@ describe('SessionsGrpcActionsService', () => {
       service['handleError'](error, message);
       expect(mockNotificationService.error).toHaveBeenCalledWith(message);
     });
+  });
+
+  it('should unsubscribe', () => {
+    service.ngOnDestroy();
+    expect(service['subscriptions'].closed).toBeTruthy();
   });
 });

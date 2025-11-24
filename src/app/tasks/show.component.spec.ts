@@ -1,6 +1,7 @@
 import { GetTaskResponse, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { FiltersService } from '@services/filters.service';
@@ -8,7 +9,6 @@ import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { TasksGrpcActionsService } from './services/tasks-grpc-actions.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksInspectionService } from './services/tasks-inspection.service';
 import { ShowComponent } from './show.component';
@@ -79,7 +79,7 @@ describe('AppShowComponent', () => {
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: TasksGrpcService, useValue: mockTasksGrpcService },
         TasksInspectionService,
-        { provide: TasksGrpcActionsService, useValue: mockGrpcActionsService }
+        { provide: GrpcActionsService, useValue: mockGrpcActionsService }
       ]
     }).inject(ShowComponent);
     component.ngOnInit();

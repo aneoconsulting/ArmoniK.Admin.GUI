@@ -197,7 +197,7 @@ describe('SessionsTableComponent', () => {
     expect(mockNotificationService.success).toHaveBeenCalledWith('Session ID copied to clipboard');
   });
 
-  describe('personnalizeTasksByStatus', () => {
+  describe('personalizeTasksByStatus', () => {
     beforeEach(() => {
       component.personalizeTasksByStatus();
     });
@@ -245,6 +245,13 @@ describe('SessionsTableComponent', () => {
       const action = getAction(component.actions, 'See results');
       action.click([session]);
       expect(spy).toHaveBeenCalledWith(['/results'], { queryParams: mockSession.resultsQueryParams });
+    });
+
+    it('should allow to see the session graph', () => {
+      const action = getAction(component.actions, 'See Graph');
+      const spy = jest.spyOn(component.router, 'navigate');
+      action.click([session]);
+      expect(spy).toHaveBeenCalledWith(['/sessions', 'graph', session.sessionId]);
     });
   });
 

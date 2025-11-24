@@ -4,6 +4,10 @@
     <span i18n="Page title"> Result </span>
   </div>
   <div class="actions" actions>
+  <button mat-button [routerLink]="'/sessions/' + data()?.resultId">
+    <mat-icon [fontIcon]="getIcon('sessions')"/>
+    <span i18n>See Session</span>
+  </button>
   <button mat-button [routerLink]="'/sessions/' + data()?.sessionId">
     <mat-icon [fontIcon]="getIcon('sessions')"/>
     <span i18n>See Session</span>
@@ -13,4 +17,15 @@
     <span i18n>See Owner Task</span>
   </button>
   </div>
+  <div class="actions" bonus-actions>
+    @if (result) {
+      @for (action of grpcActionsService.actions; track $index) {
+        <button mat-flat-button color="accent" (click)="action.click([result])" [disabled]="action.condition ? !action.condition([result]) : false">
+          <span i18n>{{ action.label }}</span>
+          <mat-icon [fontIcon]="this.getIcon(action.icon)" />
+        </button>
+      }
+    }
+  </div>
 </app-show-page>
+

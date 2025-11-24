@@ -15,7 +15,7 @@ import { NotificationService } from '@services/notification.service';
 @Component({
   selector: 'app-status-picker-dialog',
   templateUrl: 'status-color-picker.dialog.component.html',
-  styleUrl: 'status-color-picker.dialog.component.css',
+  styleUrl: 'status-color-picker.dialog.component.scss',
   imports: [
     MatIconModule,
     MatButtonModule,
@@ -66,7 +66,7 @@ export class StatusColorPickerDialogComponent<S extends Status> {
       this.clipboard.copy(value.replace('#', ''));
       this.notificationService.success($localize`Color copied !`);
     } else {
-      this.notificationService.error($localize`An error occured`);
+      this.notificationService.error($localize`An error occurred`);
     }
   }
 

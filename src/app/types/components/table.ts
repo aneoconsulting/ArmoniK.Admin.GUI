@@ -22,7 +22,6 @@ export interface SelectableTable<D extends DataRaw> {
 @Component({
   selector: 'app-abstract-table',
   template: '',
-  
 })
 export abstract class AbstractTableComponent<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null> {
   @Input({ required: true }) set displayedColumns(columns: TableColumn<T, O>[]) {
@@ -69,7 +68,6 @@ export abstract class AbstractTableComponent<T extends DataRaw, F extends Filter
 @Component({
   selector: 'app-results-table',
   template: '',
-  
 })
 export abstract class AbstractTaskByStatusTableComponent<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null>
   extends AbstractTableComponent<T, F, O, FO> {

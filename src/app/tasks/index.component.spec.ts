@@ -333,12 +333,7 @@ describe('Tasks Index Component', () => {
     });
 
     it('should save columns', () => {
-      expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(['id', 'createdAt']);
-    });
-
-    it('should always have "select" at position 1', () => {
-      component.onColumnsChange(['id', 'createdAt', 'select']);
-      expect(component.displayedColumnsKeys).toEqual(['select', 'id', 'createdAt']);
+      expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
     });
   });
 
@@ -558,6 +553,18 @@ describe('Tasks Index Component', () => {
 
     it('should save view in logs', () => {
       expect(mockTasksIndexService.saveViewInLogs).toHaveBeenCalledWith(newViewInLogs.serviceIcon, newViewInLogs.serviceName, newViewInLogs.urlTemplate);
+    });
+  });
+
+  describe('hasSelectColumnDisplayed', () => {
+    it('should return true if the column is displayed', () => {
+      component.displayedColumnsKeys.push('select');
+      expect(component.hasSelectColumnDisplayed()).toBeTruthy();
+    });
+
+    it('should return false if the column is not displayed', () => {
+      component.displayedColumnsKeys = component.displayedColumnsKeys.filter(k => k !== 'select');
+      expect(component.hasSelectColumnDisplayed()).toBeFalsy();
     });
   });
 

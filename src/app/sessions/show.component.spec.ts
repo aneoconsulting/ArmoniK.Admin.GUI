@@ -2,6 +2,7 @@ import { GetSessionResponse, SessionStatus } from '@aneoconsultingfr/armonik.api
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TasksInspectionService } from '@app/tasks/services/tasks-inspection.service';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
@@ -94,7 +95,7 @@ describe('AppShowComponent', () => {
         { provide: Router, useValue: mockRouter },
         SessionsInspectionService,
         TasksInspectionService,
-        { provide: SessionsGrpcActionsService, useValue: mockGrpcActionsService },
+        { provide: GrpcActionsService, useValue: mockGrpcActionsService },
       ]
     }).inject(ShowComponent);
     component.ngOnInit();

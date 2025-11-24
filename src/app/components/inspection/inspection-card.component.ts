@@ -14,7 +14,7 @@ import { InspectionComponent } from './inspection.component';
     InspectionComponent,
     MatToolbarModule,
   ],
-  styleUrl: '../../../inspections.css',
+  styleUrl: '../../../inspections.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InspectionCardComponent<T extends DataRaw, O extends TaskOptions | null = null> {

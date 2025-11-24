@@ -11,11 +11,7 @@ import { IconsService } from '@services/icons.service';
 @Component({
   selector: 'app-table-actions',
   templateUrl: './table-actions.component.html',
-  styles: [`
-    p {
-      margin: 0;
-    }
-  `],
+  styleUrl: 'table-actions.component.scss',
   imports: [
     MatButtonModule,
     MatIconModule,

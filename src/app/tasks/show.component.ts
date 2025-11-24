@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Params, RouterModule } from '@angular/router';
 import { Field } from '@app/types/column.type';
 import { AppShowComponent } from '@app/types/components/show';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusLabelColor, StatusService } from '@app/types/status';
 import { ShowPageComponent } from '@components/show-page.component';
 import { DefaultConfigService } from '@services/default-config.service';
@@ -30,7 +31,7 @@ import { TaskOptions, TaskRaw } from './types';
 @Component({
   selector: 'app-tasks-show',
   templateUrl: 'show.component.html',
-  styleUrl: '../../inspections.css',
+  styleUrl: '../../inspections.scss',
   providers: [
     IconsService,
     UtilsService,
@@ -53,7 +54,10 @@ import { TaskOptions, TaskRaw } from './types';
       provide: StatusService,
       useClass: TasksStatusesService,
     },
-    TasksGrpcActionsService,
+    {
+      provide: GrpcActionsService,
+      useClass: TasksGrpcActionsService,
+    },
   ],
   imports: [
     ShowPageComponent,
@@ -69,7 +73,7 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
 
   private readonly tasksStatusesService = inject(StatusService) as TasksStatusesService;
   private readonly filtersService = inject(FiltersService);
-  readonly gprcActionsService = inject(TasksGrpcActionsService);
+  readonly gprcActionsService = inject(GrpcActionsService);
 
   private _status: StatusLabelColor | undefined;
   task: TaskRaw;
