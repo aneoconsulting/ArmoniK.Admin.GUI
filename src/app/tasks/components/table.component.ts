@@ -129,6 +129,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   }
 
   onSelectionChange($event: TaskSummary[]): void {
+    console.log('test');
     this.selectionChange.emit($event);
   }
 

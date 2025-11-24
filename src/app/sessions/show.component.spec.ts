@@ -11,7 +11,6 @@ import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { SessionsGrpcActionsService } from './services/sessions-grpc-actions.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsInspectionService } from './services/sessions-inspection.service';
 import { ShowComponent } from './show.component';

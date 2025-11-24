@@ -89,8 +89,8 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     this.actions.push(...this.grpcActions.actions);
   }
 
-  onSelectionChange($event: SessionRaw[]): void {
-    this.selectionChange.emit($event);
+  onSelectionChange(event: SessionRaw[]): void {
+    this.selectionChange.emit(event);
   }
 
   isDataRawEqual(value: SessionRaw, entry: SessionRaw): boolean {
