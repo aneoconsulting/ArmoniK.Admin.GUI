@@ -21,6 +21,7 @@ import { StatusService } from '@app/types/status';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { TableGrpcActionsComponent } from '@components/table/table-grpc-actions.component';
 import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
@@ -90,7 +91,8 @@ import { SessionRaw } from './types';
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
-    SessionsTableComponent
+    SessionsTableComponent,
+    TableGrpcActionsComponent,
   ]
 })
 export class IndexComponent extends TableHandlerCustomValues<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
@@ -99,6 +101,8 @@ export class IndexComponent extends TableHandlerCustomValues<SessionRaw, Session
   readonly tableDataService = inject(SessionsDataService);
 
   tableType: TableType = 'Sessions';
+
+  selection: SessionRaw[] = [];
 
   ngOnInit() {
     this.initTableEnvironment();
@@ -126,5 +130,9 @@ export class IndexComponent extends TableHandlerCustomValues<SessionRaw, Session
     if (this.displayedColumnsKeys.includes('duration')) {
       this.refresh();
     }
+  }
+
+  hasSelectColumnDisplayed() {
+    return this.displayedColumnsKeys.includes('select');
   }
 }

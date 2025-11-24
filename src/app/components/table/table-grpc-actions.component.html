@@ -1,0 +1,8 @@
+@if (grpcActionsService && selectDisplayed) {
+@for (action of grpcActionsService.actions; track $index) {
+<button mat-flat-button color="accent" (click)="action.click(selection)"  [disabled]="selection.length === 0">
+  <span i18n>{{ action.label }}s</span>
+  <mat-icon [fontIcon]="this.getIcon(action.icon)" />
+</button>
+}
+}

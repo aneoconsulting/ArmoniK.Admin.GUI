@@ -15,6 +15,7 @@ import { StatusService } from '@app/types/status';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { TableGrpcActionsComponent } from '@components/table/table-grpc-actions.component';
 import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
@@ -49,6 +50,7 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
     MatButtonModule,
     MatSnackBarModule,
     TasksTableComponent,
+    TableGrpcActionsComponent,
   ],
   providers: [
     TasksGrpcService,
@@ -127,6 +129,10 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSu
 
   onSelectionChange(selection: TaskSummary[]): void {
     this.selection = selection;
+  }
+
+  hasSelectColumnDisplayed() {
+    return this.displayedColumnsKeys.includes('select');
   }
 
   manageViewInLogs(): void {
