@@ -2,9 +2,9 @@ import { ApplicationRawEnumField, FilterStringOperator, SessionTaskOptionEnumFie
 import { Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { GrpcAction } from '@app/types/actions.type';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { ArmonikData } from '@app/types/data';
-import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -33,14 +33,14 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
   readonly iconsService = inject(IconsService);
   readonly router = inject(Router);
 
-  seeSessions$ = new Subject<ArmonikData<ApplicationRaw>>();
-  seeSessionsSubscription = this.seeSessions$.subscribe(data => this.router.navigate(['/sessions'], { queryParams: this.createViewSessionsQueryParams(data.raw.name, data.raw.version) }));
+  seeSessions$ = new Subject<ApplicationRaw>();
+  seeSessionsSubscription = this.seeSessions$.subscribe(application => this.router.navigate(['/sessions'], { queryParams: this.createViewSessionsQueryParams(application.name, application.version) }));
 
-  actions: ActionTable<ApplicationRaw>[] = [
+  actions: GrpcAction<ApplicationRaw>[] = [
     {
       label: $localize`See session`,
       icon: this.getIcon('sessions'),
-      action$: this.seeSessions$
+      click: (application: ApplicationRaw[]) => this.seeSessions$.next(application[0]),
     },
   ];
 

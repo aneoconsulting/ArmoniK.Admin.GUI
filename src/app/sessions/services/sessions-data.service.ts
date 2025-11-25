@@ -113,7 +113,7 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
         filterAnd.forEach(filter => {
           if (filter.field !== SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) {
             const filterLabel = this.#createTaskByStatusLabel(filter, index);
-            if (filterLabel && filter.value) {
+            if (filterLabel && filter.value !== null) {
               params[filterLabel] = filter.value.toString();
             }
           }
@@ -298,62 +298,5 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
       this.sessionsIdsComputationError.push(sessionId);
       this.warning('Error while computing duration for session: ' + sessionId);
     }
-  }
-
-  // Session Interactions
-
-  onPause(sessionId: string) {
-    this.grpcService.pause$(sessionId)
-      .subscribe(
-        {
-          error: (error) => this.error(error, 'Unable to pause session'),
-          complete: () => this.refresh$.next()
-        }
-      );
-  }
-
-  onResume(sessionId: string) {
-    this.grpcService.resume$(sessionId).subscribe(
-      {
-        error: (error) => this.error(error, 'Unable to resume session'),
-        complete: () => this.refresh$.next()
-      }
-    );
-  }
-
-  onCancel(sessionId: string) {
-    this.grpcService.cancel$(sessionId).subscribe(
-      {
-        error: (error) => this.error(error, 'Unable to cancel session'),
-        complete: () => this.refresh$.next()
-      }
-    );
-  }
-
-  onPurge(sessionId: string) {
-    this.grpcService.purge$(sessionId).subscribe(
-      {
-        error: (error) => this.error(error, 'Unable to purge session'),
-        complete: () => this.refresh$.next()
-      }
-    );
-  }
-
-  onClose(sessionId: string) {
-    this.grpcService.close$(sessionId).subscribe(
-      {
-        error: (error) => this.error(error, 'Unable to close session'),
-        complete: () => this.refresh$.next()
-      }
-    );
-  }
-
-  onDelete(sessionId: string) {
-    this.grpcService.delete$(sessionId).subscribe(
-      {
-        error: (error) => this.error(error, 'Unable to delete session'),
-        complete: () => this.refresh$.next()
-      }
-    );
   }
 }

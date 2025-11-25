@@ -20,15 +20,20 @@ describe('TableComponent', () => {
       sortable: true,
     },
     {
+      key: 'actions',
+      name: 'Actions',
+      sortable: false,
+    },
+    {
       key: 'count',
       name: 'count',
       sortable: false,
     },
     {
-      key: 'actions',
-      name: 'Actions',
+      key: 'select',
+      name: 'Select',
       sortable: false,
-    }
+    },
   ];
 
   const data: SessionData[] = [
@@ -94,7 +99,7 @@ describe('TableComponent', () => {
   });
 
   it('should set columnsKeys', () => {
-    expect(component.columnsKeys).toEqual(columns.map((entry) => entry.key));
+    expect(component.columnsKeys).toEqual(['select', 'sessionId', 'count', 'actions']);
   });
 
   describe('sortChange', () => {
@@ -155,13 +160,18 @@ describe('TableComponent', () => {
 
   test('onDrop should emit columnDrop', () => {
     const spy = jest.spyOn(component.columnDrop, 'emit');
-    component.onDrop({ previousIndex: 0, currentIndex: 1 } as CdkDragDrop<string[], string[]>);
-    expect(spy).toHaveBeenCalledWith(['count', 'sessionId', 'actions']);
+    component.onDrop({ previousIndex: 1, currentIndex: 2 } as CdkDragDrop<string[], string[]>);
+    expect(spy).toHaveBeenCalledWith(['select', 'count', 'sessionId', 'actions']);
   });
 
   test('onDrop should change columns order', () => {
-    component.onDrop({ previousIndex: 0, currentIndex: 1 } as CdkDragDrop<string[], string[]>);
+    component.onDrop({ previousIndex: 1, currentIndex: 2 } as CdkDragDrop<string[], string[]>);
     expect(component.columns).toEqual([
+      {
+        key: 'select',
+        name: 'Select',
+        sortable: false,
+      },
       {
         key: 'count',
         name: 'count',
@@ -230,9 +240,9 @@ describe('TableComponent', () => {
     });
   });
 
-  it('should emit on PersonnalizeTasksByStatus', () => {
-    const spy = jest.spyOn(component.personnalizeTasksByStatus, 'emit');
-    component.onPersonnalizeTasksByStatus();
+  it('should emit on PersonalizeTasksByStatus', () => {
+    const spy = jest.spyOn(component.personalizeTasksByStatus, 'emit');
+    component.onPersonalizeTasksByStatus();
     expect(spy).toHaveBeenCalled();
   });
 
