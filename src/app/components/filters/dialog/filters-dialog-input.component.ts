@@ -86,24 +86,24 @@ export class FiltersDialogInputComponent implements ControlValueAccessor {
   
   private getValidNumber(value: string): number | null {
     const num = Number(value);
-    return !isNaN(num) ? num : null;
+    return Number.isNaN(num) ? null : num;
   }
 
   getDurationInputValue(searchItem: 'hours' | 'minutes' | 'seconds'): number | undefined {
     switch (searchItem) {
     case 'hours':
-      return !isNaN(Number(this.value)) ? Math.floor(Number(this.value)/3600) : undefined;
+      return Number.isNaN(Number(this.value)) ? undefined : Math.floor(Number(this.value)/3600);
     case 'minutes':
-      return !isNaN(Number(this.value)) ? Math.floor((Number(this.value)%3600)/60) : undefined;
+      return Number.isNaN(Number(this.value)) ? undefined : Math.floor((Number(this.value)%3600)/60);
     case 'seconds':
-      return !isNaN(Number(this.value)) ? Math.floor(((Number(this.value))%3600)%60) : undefined;
+      return Number.isNaN(Number(this.value)) ? undefined : Math.floor(((Number(this.value))%3600)%60);
     default:
       return undefined;
     }
   }
 
   writeValue(value: FilterInputValue): void {
-    if (this.type === 'date' && !isNaN(Number(value))) {
+    if (this.type === 'date' && !Number.isNaN(Number(value))) {
       this.dateForm.setValue(new Date(Number(value) * 1000));
     }
     this.value = value;

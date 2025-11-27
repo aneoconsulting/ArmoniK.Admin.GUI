@@ -91,10 +91,9 @@ export class ResultsFiltersService extends DataFilterService<ResultRawEnumField>
   }
 
   retrieveLabel(filterFor: FilterFor<ResultRawEnumField, null>, filterField:  ResultFilterField): string {
-    switch (filterFor) {
-    case 'root':
+    if (filterFor === 'root') {
       return this.rootField[filterField as ResultRawEnumField];
-    default:
+    } else {
       console.error(`Unknown filter type: ${filterFor} ${filterField}`);
       return '';
     }

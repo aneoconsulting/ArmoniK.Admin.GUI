@@ -32,7 +32,7 @@ export class FiltersDialogOperatorComponent implements ControlValueAccessor {
   operatorsLabels: string[];
 
   writeValue(value: string | null): void {
-    if (value !== null && !isNaN(Number(value))) {
+    if (value !== null && !Number.isNaN(Number(value))) {
       value = this.operatorRecord[Number(value)] ?? '';
     }
     this.value = value;

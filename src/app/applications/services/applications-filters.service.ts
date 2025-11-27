@@ -49,10 +49,9 @@ export class ApplicationsFiltersService extends DataFilterService<ApplicationRaw
   }
 
   retrieveLabel(filterFor: FilterFor<ApplicationRawEnumField, null>, filterField:  ApplicationFilterField): string {
-    switch (filterFor) {
-    case 'root':
+    if (filterFor === 'root') {
       return this.rootField[filterField as ApplicationRawEnumField];
-    default:
+    } else {
       console.error(`Unknown filter type: ${filterFor} ${filterField}`);
       return '';
     }

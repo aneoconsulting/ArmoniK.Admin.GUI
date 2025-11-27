@@ -62,10 +62,9 @@ export class PartitionsFiltersService extends DataFilterService<PartitionRawEnum
   }
 
   retrieveLabel(filterFor: FilterFor<PartitionRawEnumField, null>, filterField:  PartitionFilterField): string {
-    switch (filterFor) {
-    case 'root':
+    if (filterFor === 'root') {
       return this.rootField[filterField as PartitionRawEnumField];
-    default:
+    } else {
       console.error(`Unknown filter type: ${filterFor} ${filterField}`);
       return '';
     }

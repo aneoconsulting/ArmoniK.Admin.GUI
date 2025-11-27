@@ -44,7 +44,7 @@ export class FiltersDialogComponent<F extends FiltersEnums, O extends FiltersOpt
   }
 
   private init() {
-    if (!this.data.filtersOr.length) {
+    if (this.data.filtersOr.length === 0) {
       this.add();
     } else {
       this.patchFormValues(this.data.filtersOr);
@@ -60,10 +60,10 @@ export class FiltersDialogComponent<F extends FiltersEnums, O extends FiltersOpt
       value: new FormControl<FilterInputValue>(null),
     });
 
-    if (index !== undefined) {
-      this.form.insert(index + 1, new FormArray([filter]));
-    } else {
+    if (index === undefined) {
       this.form.push(new FormArray([filter]));
+    } else {
+      this.form.insert(index + 1, new FormArray([filter]));
     }
   }
 

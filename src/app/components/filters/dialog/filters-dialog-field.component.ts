@@ -47,7 +47,7 @@ export class FiltersDialogFieldComponent<F extends FiltersEnums, O extends Filte
 
   writeValue(value: string): void {
     if (this.filter.value.for) {
-      if (!isNaN(Number(value))) {
+      if (!Number.isNaN(Number(value))) {
         value = this.retrieveLabel({ for: this.filter.value.for, field: Number(value) } as FilterDefinition<F, O>);
       }
       this.value = value;
