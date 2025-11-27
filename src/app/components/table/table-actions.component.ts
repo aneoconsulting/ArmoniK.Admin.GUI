@@ -4,8 +4,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TaskOptions } from '@app/tasks/types';
+import { GrpcAction } from '@app/types/actions.type';
 import { ArmonikData, DataRaw } from '@app/types/data';
-import { ActionTable } from '@app/types/table';
 import { IconsService } from '@services/icons.service';
 
 @Component({
@@ -20,10 +20,10 @@ import { IconsService } from '@services/icons.service';
   ]
 })
 export class TableActionsComponent<T extends DataRaw, O extends TaskOptions | null = null> {
-  @Input() actions: ActionTable<T, O>[] = [];
+  @Input() actions: GrpcAction<T>[] = [];
   @Input() element: ArmonikData<T, O>;
 
-  readonly iconsService = inject(IconsService);
+  private readonly iconsService = inject(IconsService);
 
   getIcon(icon: string): string {
     return this.iconsService.getIcon(icon);

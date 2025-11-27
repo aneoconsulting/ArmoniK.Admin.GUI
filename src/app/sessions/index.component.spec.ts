@@ -509,6 +509,17 @@ describe('Sessions Index Component', () => {
     });
   });
 
+  describe('hasSelectColumnDisplayed', () => {
+    it('should return true if the column is displayed', () => {
+      component.displayedColumnsKeys.push('select');
+      expect(component.hasSelectColumnDisplayed()).toBeTruthy();
+    });
+
+    it('should return false if the column is not displayed', () => {
+      component.displayedColumnsKeys = component.displayedColumnsKeys.filter(k => k !== 'select');
+      expect(component.hasSelectColumnDisplayed()).toBeFalsy();
+    });
+  });
   
   describe('onShowFiltersChange', () => {
     it('should update show filters', () => {
@@ -522,5 +533,11 @@ describe('Sessions Index Component', () => {
       component.onShowFiltersChange(newShowFilters);
       expect(mockSessionFiltersService.saveShowFilters).toHaveBeenCalledWith(newShowFilters);
     });
+  });
+
+  it('should emit on selection change', () => {
+    const event = [{ id: 'sessionId1' }, { id: 'sessionId2' }] as unknown as SessionRaw[];
+    component.onSelectionChange(event);
+    expect(component.selection).toBe(event);
   });
 });

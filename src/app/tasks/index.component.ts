@@ -7,13 +7,15 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { DashboardStorageService } from '@app/dashboard/services/dashboard-storage.service';
-import { TableHandlerCustomValues } from '@app/types/components';
+import { SelectionTableHandler, TableHandlerCustomValues } from '@app/types/components';
 import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
 import { DataFilterService } from '@app/types/services/data-filter.service';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { TableGrpcActionsComponent } from '@components/table/table-grpc-actions.component';
 import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
@@ -29,6 +31,7 @@ import { ManageViewInLogsDialogComponent } from './components/manage-view-in-log
 import { TasksTableComponent } from './components/table.component';
 import TasksDataService from './services/tasks-data.service';
 import { TasksFiltersService } from './services/tasks-filters.service';
+import { TasksGrpcActionsService } from './services/tasks-grpc-actions.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksIndexService } from './services/tasks-index.service';
 import { TasksStatusesService } from './services/tasks-statuses.service';
@@ -45,9 +48,9 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
-    MatIconModule,
     MatSnackBarModule,
     TasksTableComponent,
+    TableGrpcActionsComponent,
   ],
   providers: [
     TasksGrpcService,
@@ -74,17 +77,22 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
       provide: StatusService,
       useClass: TasksStatusesService,
     },
+    {
+      provide: GrpcActionsService, 
+      useClass: TasksGrpcActionsService,
+    },
   ],
 })
-export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy, SelectionTableHandler<TaskSummary> {
   readonly notificationService = inject(NotificationService);
   readonly indexService = inject(TasksIndexService);
   readonly filtersService = inject(TasksFiltersService);
   readonly tableDataService = inject(TasksDataService);
+  readonly grpcActionsService = inject(GrpcActionsService);
 
   tableType: TableType = 'Tasks';
 
-  selection: string[] = [];
+  selection: TaskSummary[] = [];
 
   serviceIcon: string | null = null;
   serviceName: string | null = null;
@@ -93,6 +101,7 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSu
   ngOnInit(): void {
     this.initTableEnvironment();
 
+    this.grpcActionsService.refresh = this.tableDataService.refresh$;
     const viewInLogs = this.indexService.restoreViewInLogs();
     this.serviceIcon = viewInLogs.serviceIcon;
     this.serviceName = viewInLogs.serviceName;
@@ -118,16 +127,12 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSu
     this.onFiltersChange([[filter]]);
   }
 
-  onSelectionChange(selection: string[]): void {
+  onSelectionChange(selection: TaskSummary[]): void {
     this.selection = selection;
   }
 
-  onCancelTasksSelection():void {
-    this.cancelTasks(this.selection);
-  }
-
-  cancelTasks(tasksIds: string[]): void {
-    this.tableDataService.cancelTasks(tasksIds);
+  hasSelectColumnDisplayed() {
+    return this.displayedColumnsKeys.includes('select');
   }
 
   manageViewInLogs(): void {

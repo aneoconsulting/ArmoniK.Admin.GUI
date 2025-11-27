@@ -8,6 +8,7 @@ import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, CustomColumn } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
@@ -121,6 +122,10 @@ describe('TasksLineComponent', () => {
     error: jest.fn(),
   };
 
+  const mockGrpcService = {
+    actions: [],
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -132,6 +137,7 @@ describe('TasksLineComponent', () => {
         { provide: TasksIndexService, useValue: mockTasksIndexService },
         DefaultConfigService,
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: GrpcActionsService, useValue: mockGrpcService },
       ]
     }).inject(TasksLineComponent);
     component.line = line;
@@ -387,22 +393,9 @@ describe('TasksLineComponent', () => {
   });
 
   it('should update selection', () => {
-    const selection = ['1', '2'];
+    const selection = [{ id: 'taskId1' }, { id: 'taskId2' }] as unknown as TaskSummary[];
     component.onSelectionChange(selection);
     expect(component.selection).toEqual(selection);
-  });
-
-  it('should cancel task', () => {
-    const tasksIds = ['1', '2'];
-    component.cancelTasks(tasksIds);
-    expect(mockTasksDataService.cancelTasks).toHaveBeenCalledWith(tasksIds);
-  });
-
-  it('should cancel selected tasks', () => {
-    const selection = ['1', '2'];
-    component.selection = selection;
-    component.onCancelTasksSelection();
-    expect(mockTasksDataService.cancelTasks).toHaveBeenCalledWith(selection);
   });
 
   it('should update view in logs', () => {
@@ -448,6 +441,18 @@ describe('TasksLineComponent', () => {
 
     it('should update line custom columns', () => {
       expect(component.line.customColumns).toEqual(newCustom);
+    });
+  });
+
+  describe('hasSelectColumnDisplayed', () => {
+    it('should return true if the column is displayed', () => {
+      component.displayedColumnsKeys.push('select');
+      expect(component.hasSelectColumnDisplayed()).toBeTruthy();
+    });
+
+    it('should return false if the column is not displayed', () => {
+      component.displayedColumnsKeys = component.displayedColumnsKeys.filter(k => k !== 'select');
+      expect(component.hasSelectColumnDisplayed()).toBeFalsy();
     });
   });
 

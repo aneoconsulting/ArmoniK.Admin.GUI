@@ -242,3 +242,7 @@ export abstract class TableHandlerCustomValues<T extends DataRaw, F extends Filt
     return {...super.createDashboardLine(), customColumns: this.customColumns};
   }
 }
+
+export interface SelectionTableHandler<T extends DataRaw> {
+  onSelectionChange(selection: T[]): void
+}
