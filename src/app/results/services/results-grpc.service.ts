@@ -1,4 +1,4 @@
-import { GetResultRequest, GetResultResponse, ListResultsRequest, ListResultsResponse, ResultFilterField, ResultRawEnumField, ResultsClient, DownloadResultDataRequest } from '@aneoconsultingfr/armonik.api.angular';
+import { GetResultRequest, GetResultResponse, ListResultsRequest, ListResultsResponse, ResultFilterField, ResultRawEnumField, ResultsClient, DownloadResultDataRequest, DownloadResultDataResponse } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { Filter, FilterType } from '@app/types/filters';
 import { GrpcGetInterface, GrpcTableService, ListDefaultSortField } from '@app/types/services/grpcService';
@@ -33,7 +33,7 @@ export class ResultsGrpcService extends GrpcTableService<ResultRaw, ResultRawEnu
     return this.grpcClient.listResults(listResultRequest);
   }
 
-  downloadResultData$(resultId: string | undefined): Observable<object> {
+  downloadResultData$(resultId: string | undefined): Observable<DownloadResultDataResponse> {
     const downloadResultDataRequest = new DownloadResultDataRequest({
       resultId
     });

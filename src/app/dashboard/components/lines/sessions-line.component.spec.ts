@@ -401,6 +401,18 @@ describe('SessionsLineComponent', () => {
     });
   });
 
+  describe('hasSelectColumnDisplayed', () => {
+    it('should return true if the column is displayed', () => {
+      component.displayedColumnsKeys.push('select');
+      expect(component.hasSelectColumnDisplayed()).toBeTruthy();
+    });
+
+    it('should return false if the column is not displayed', () => {
+      component.displayedColumnsKeys = component.displayedColumnsKeys.filter(k => k !== 'select');
+      expect(component.hasSelectColumnDisplayed()).toBeFalsy();
+    });
+  });
+
   describe('onShowFiltersChange', () => {
     it('should update show filters', () => {
       const newShowFilters = true;

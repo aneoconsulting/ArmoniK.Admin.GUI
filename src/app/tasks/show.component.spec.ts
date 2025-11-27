@@ -1,6 +1,7 @@
 import { GetTaskResponse, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { FiltersService } from '@services/filters.service';
@@ -47,7 +48,6 @@ describe('AppShowComponent', () => {
 
   const mockTasksGrpcService = {
     get$: jest.fn((): Observable<unknown> => of({ task: returnedTask } as GetTaskResponse)),
-    cancel$: jest.fn(() => of({}))
   };
 
   const mockStatusService = {
@@ -63,6 +63,10 @@ describe('AppShowComponent', () => {
     },
   };
 
+  const mockGrpcActionsService = {
+    actions: [],
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -74,7 +78,8 @@ describe('AppShowComponent', () => {
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: TasksGrpcService, useValue: mockTasksGrpcService },
-        TasksInspectionService
+        TasksInspectionService,
+        { provide: GrpcActionsService, useValue: mockGrpcActionsService }
       ]
     }).inject(ShowComponent);
     component.ngOnInit();
@@ -194,39 +199,6 @@ describe('AppShowComponent', () => {
       const error = 'error message';
       component.error(error);
       expect(mockNotificationService.error).toHaveBeenCalledWith(error);
-    });
-  });
-
-  it('should get statuses', () => {
-    expect(component.statuses).toEqual(mockStatusService.statuses);
-  });
-
-  describe('cancelling', () => {
-    beforeEach(() => {
-      component.refresh.next(); // Setting the PROCESSING status.
-    });
-
-    it('should cancel a task', () => {
-      component.cancel();
-      expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith([returnedTask.id]);
-    });
-
-    it('should notify on success', () => {
-      component.cancel();
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Task canceled');
-    });
-
-    it('should refresh on success', () => {
-      const spy = jest.spyOn(component.refresh, 'next');
-      component.cancel();
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it('should log errors', () => {
-      const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
-      mockTasksGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error()));
-      component.cancel();
-      expect(errorSpy).toHaveBeenCalled();
     });
   });
 

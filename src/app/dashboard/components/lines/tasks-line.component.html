@@ -1,4 +1,4 @@
-<mat-toolbar>
+<mat-toolbar class="index-toolbar">
   <mat-toolbar-row>
     <app-table-dashboard-actions-toolbar
       [loading]="loading()"
@@ -17,12 +17,6 @@
       (deleteLine)="onDeleteLine()"
       (editNameLine)="onEditNameLine()"
     >
-    <ng-container extra-buttons-right>
-      <button mat-flat-button color="accent" (click)="onCancelTasksSelection()" [disabled]="!selection.length">
-        <mat-icon matListIcon aria-hidden="true" fontIcon="stop"></mat-icon>
-        <span i18n> Cancel Tasks </span>
-      </button>
-    </ng-container>
     <ng-container extra-menu-items>
     <button mat-menu-item (click)="manageViewInLogs()">
       <mat-icon aria-hidden="true" [fontIcon]="getIcon('find-logs')"></mat-icon>
@@ -46,6 +40,9 @@
       (filtersChange)="onFiltersChange($event)" 
       (showFiltersChange)="onShowFiltersChange($event)"
     />
+  </mat-toolbar-row>
+  <mat-toolbar-row class="grpc-actions">
+    <app-table-grpc-actions [refresh$]="tableDataService.refresh$" [selection]="selection" [selectDisplayed]="hasSelectColumnDisplayed()" />
   </mat-toolbar-row>
 </mat-toolbar>
 <app-tasks-table
