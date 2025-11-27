@@ -59,12 +59,12 @@ describe('AddEnvironmentDialogComponent', () => {
 
     it('should set the testedEnvironment as null if the provided URL is not a correct armonik URL', () => {
       component.formGroup.setValue({host: 'invalid-url' });
-      expect(component.testedEnvironment).toBeNull();
+      expect(component.testedEnvironment).toBeUndefined();
     });
 
-    it('should return null if the host value is an empty string', () => {
+    it('should reset the testedEnvironment on an empty string', () => {
       component.formGroup.setValue({ host: '' });
-      expect(component.testedEnvironment).toBeNull();
+      expect(component.testedEnvironment).toBeUndefined();
     });
   });
 

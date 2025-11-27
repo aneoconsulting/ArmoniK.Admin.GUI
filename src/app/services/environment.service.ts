@@ -42,8 +42,10 @@ export class EnvironmentService {
   }
 
   addEnvironment(environment: string): void {
-    this.hosts.push(environment);
-    this.saveEnvironments();
+    if (!this.hosts.includes(environment)) {
+      this.hosts.push(environment);
+      this.saveEnvironments();
+    }
   }
 
   removeEnvironment(host: string): void {

@@ -12,8 +12,8 @@
   <section>
     @if (loading()) {
       <app-spinner />
-    } @else if (testedEnvironment === null) {
-      <p i18n>Armonik not found at this adress.</p>
+    } @else if (!testedEnvironment) {
+      <p i18n>ArmoniK not found at this adress.</p>
     } @else if (testedEnvironment) {
       <article class="environment" [style]="'color:' + testedEnvironment.color + ';'" [matTooltip]="testedEnvironment.description">
         {{ testedEnvironment.name }} {{ testedEnvironment.version }}

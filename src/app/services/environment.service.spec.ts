@@ -100,6 +100,12 @@ describe('EnvironmentService', () => {
     it('should save the environment list', () => {
       expect(mockStorageService.setItem).toHaveBeenCalledWith('environments', service.hosts);
     });
+
+    it('should not add a host that is already included in the hosts array', () => {
+      const spy = jest.spyOn(service.hosts, 'push');
+      service.addEnvironment(newHost); // Already added via beforeEach
+      expect(spy).not.toHaveBeenCalled();
+    });
   });
 
   describe('removeEnvironment', () => {

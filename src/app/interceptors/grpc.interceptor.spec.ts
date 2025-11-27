@@ -83,29 +83,53 @@ describe('GrpcHostInterceptor', () => {
   });
 
   describe('setting host', () => {
-    const newHost = 'http://google.com';
     beforeEach(() => {
       interceptor.host = 'some-url';
     });
 
-    it('should update the host config if it is valid', () => {
-      interceptor.setHost(newHost);
-      expect(interceptor.host).toEqual(newHost);
+    describe('With URI', () => {
+      const uriHost = 'http://google.com';
+      beforeEach(() => {
+        interceptor.setHost(uriHost);
+      });
+
+      it('should update the host config if it is valid', () => {
+        expect(interceptor.host).toEqual(uriHost);
+      });
+
+      it('should store the host config if it is valid', () => {
+        expect(mockStorageService.setItem).toHaveBeenCalledWith('host-config', uriHost);
+      });
     });
 
-    it('should store the host config if it is valid', () => {
-      interceptor.setHost(newHost);
-      expect(mockStorageService.setItem).toHaveBeenCalledWith('host-config', newHost);
+    describe('With IP adress', () => {
+      const ipHost = 'http://1.1.1.1:8080';
+
+      beforeEach(() => {
+        interceptor.setHost(ipHost);
+      });
+
+      it('should update the host config if it is valid', () => {
+        expect(interceptor.host).toEqual(ipHost);
+      });
+
+      it('should store the host config if it is valid', () => {
+        expect(mockStorageService.setItem).toHaveBeenCalledWith('host-config', ipHost);
+      });
     });
 
-    it('should set the host config to null if the entry is null', () => {
-      interceptor.setHost(null);
-      expect(interceptor.host).toBeNull();
-    });
+    describe('With null', () => {
+      beforeEach(() => {
+        interceptor.setHost(null);
+      });
+      
+      it('should set the host config to null if the entry is null', () => {
+        expect(interceptor.host).toBeNull();
+      });
 
-    it('should clear the stored config if the entry is null', () => {
-      interceptor.setHost(null);
-      expect(mockStorageService.removeItem).toHaveBeenCalledWith('host-config');
+      it('should clear the stored config if the entry is null', () => {
+        expect(mockStorageService.removeItem).toHaveBeenCalledWith('host-config');
+      });
     });
   });
 
