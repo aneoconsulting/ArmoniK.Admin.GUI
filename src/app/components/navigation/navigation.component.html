@@ -15,9 +15,7 @@
     <span>ArmoniK</span>
   </div>
   <div class="spacer"></div>
-  <div class="environment" [style]="'color:' + environment.color + ';'" [matTooltip]="environment.description">
-    {{ environment.name }} {{ environment.version }}
-  </div>
+  <app-environment />
   <div class="spacer"></div>
   <app-change-language-button />
   <app-healthcheck />

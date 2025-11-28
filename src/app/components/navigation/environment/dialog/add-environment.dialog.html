@@ -1,0 +1,30 @@
+<h2 mat-dialog-title i18n="Dialog title">New environment</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="formGroup">
+    <h5 i18n>Environment Endpoint</h5>
+    <mat-form-field appearance="outline">
+      <input matInput id="host" type="text" formControlName="host" placeholder="http://172.19.56.177:5000" />
+    </mat-form-field>
+  </form>
+  
+  <h5 i18n>Environment Overview</h5>
+  <section>
+    @if (loading()) {
+      <app-spinner />
+    } @else if (!testedEnvironment) {
+      <p i18n>ArmoniK not found at this adress.</p>
+    } @else if (testedEnvironment) {
+      <article class="environment" [style]="'color:' + testedEnvironment.color + ';'" [matTooltip]="testedEnvironment.description">
+        {{ testedEnvironment.name }} {{ testedEnvironment.version }}
+      </article>
+    } @else {
+      <p i18n>Enter a valid URL to test the endpoint.</p>
+    }
+  </section>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button matDialogClose i18n>Cancel</button>
+  <button mat-flat-button color="primary" [matDialogClose]="formGroup.value.host" [disabled]="!testedEnvironment" i18n>Confirm</button>
+</mat-dialog-actions>
