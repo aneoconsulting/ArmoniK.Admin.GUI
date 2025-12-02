@@ -1,7 +1,8 @@
-import { ResultRawEnumField, ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { DownloadResultDataResponse, ResultRawEnumField, ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { inject, Injectable } from '@angular/core';
 import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
+import { BlobWriter, ZipWriter } from '@zip.js/zip.js';
 import { catchError, combineLatest, of, Subject, switchMap } from 'rxjs';
 import { ResultsGrpcService } from './results-grpc.service';
 import { ResultsStatusesService } from './results-statuses.service';
@@ -34,7 +35,12 @@ export class ResultsGrpcActionsService extends GrpcActionsService<ResultRaw, Res
           return combineLatest(
             results.map(result => 
               combineLatest([of(result.resultId), this.grpcService.downloadResultData$(result.resultId).pipe(
-                catchError(error => this.handleError(error, $localize`An error occurred while downloading result ${result.resultId}`))
+                catchError(error => {
+                  if (results.length === 1) {
+                    this.handleError(error, $localize`An error occurred while downloading result ${result.resultId}`);
+                  }
+                  return of(null);
+                })
               )])
             )
           );
@@ -42,20 +48,31 @@ export class ResultsGrpcActionsService extends GrpcActionsService<ResultRaw, Res
         return [];
       })
     ).subscribe((resultChunks) => {
-      for (const [resultId, resultChunk] of resultChunks) {
-        if (resultChunk && resultChunk.dataChunk.length !== 0) {
-          const fileName = `${resultId}.bin`;
-          this.downloadAs(resultChunk.serializeBinary(), fileName, 'application/octet-stream');
+      if (resultChunks.length !== 0) {
+        if (resultChunks.length === 1) {
+          const [resultId, resultChunk] = resultChunks[0];
+          if (resultChunk) {
+            const fileName = `${resultId}.bin`;
+            this.downloadAs(resultChunk.serializeBinary(), fileName, 'application/octet-stream');
+            this.success(`${resultId} downloaded`);
+          } else {
+            this.error(`Could not download ${resultId}`);
+          }
+        } else {
+          void this.downloadAsZip(resultChunks);
+          this.success('Results downloaded');
         }
+      } else {
+        this.error('Could not find data to download');
       }
     });
     this.subscriptions.add(downloadSubscription);
   }
 
   downloadAs(
-    content: Uint8Array<ArrayBufferLike>,
+    content: Uint8Array<ArrayBufferLike> | Blob,
     filename: string,
-    mime: 'application/json' | 'text/plain' | 'application/octet-stream'
+    mime: 'application/json' | 'text/plain' | 'application/octet-stream' | 'application/zip'
   ): void {
     if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       const blob = new Blob([content as Uint8Array<ArrayBuffer>], { type: mime });
@@ -74,5 +91,22 @@ export class ResultsGrpcActionsService extends GrpcActionsService<ResultRaw, Res
         setTimeout(() => URL.revokeObjectURL(url), 0);
       }
     }
+  }
+
+  private async downloadAsZip(resultChunks: [string, DownloadResultDataResponse | null][]) {
+    const zipFileWriter = new BlobWriter();
+    const zipWriter = new ZipWriter(zipFileWriter);
+    for (const [resultId, resultChunk] of resultChunks) {
+      if (resultChunk && resultChunk.dataChunk.length !== 0) {
+        const blob = new Blob([resultChunk.serializeBinary()]);
+        console.log(blob);
+        zipWriter.add(`${resultId}.bin`, blob.stream());
+      }
+    }
+    zipWriter.close();
+    const zipFileBlob = await zipFileWriter.getData();
+    const date = new Date().toISOString().slice(0, 10);
+    const id = new Date().getTime();
+    this.downloadAs(zipFileBlob, `results-${id}-${date}.zip`, 'application/zip');
   }
 }

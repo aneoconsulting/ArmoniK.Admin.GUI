@@ -26,7 +26,7 @@ describe('ResultsGrpcActionsService', () => {
 
   const mockStatusService = {};
 
-  const mockSerializedData = 'serializedData';
+  const mockSerializedData = 'test';
   const mockDownloadResult = {
     serializeBinary: jest.fn().mockResolvedValue(mockSerializedData),
     dataChunk: {
