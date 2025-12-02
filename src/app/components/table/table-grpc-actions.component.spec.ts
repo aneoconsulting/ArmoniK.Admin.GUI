@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { TaskSummary } from '@app/tasks/types';
 import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { IconsService } from '@services/icons.service';
+import { Subject } from 'rxjs';
 import { TableGrpcActionsComponent } from './table-grpc-actions.component';
 
 describe('TableGrpcActionsComponent', () => { 
@@ -15,6 +16,7 @@ describe('TableGrpcActionsComponent', () => {
     getIcon: jest.fn(),
   };
 
+  const refresh = new Subject<void>();
   const selection: TaskSummary[] = [];
 
   beforeEach(() => {
@@ -25,6 +27,7 @@ describe('TableGrpcActionsComponent', () => {
         { provide: IconsService, useValue: mockIconsService },
       ],
     }).inject(TableGrpcActionsComponent<TaskSummary>);
+    component.refresh$ = refresh;
     component.selection = selection;
   });
 
@@ -35,6 +38,10 @@ describe('TableGrpcActionsComponent', () => {
   describe('initialisation', () => { 
     it('should set the seleciton', () => {
       expect(component.selection).toEqual(selection);
+    });
+
+    it('should set the grpcActionsService refresh', () => {
+      expect(mockGrpcActionsService.refresh).toBe(refresh);
     });
   });
 

@@ -95,7 +95,6 @@ export class IndexComponent extends TableHandler<ResultRaw, ResultRawEnumField> 
 
   ngOnInit(): void {
     this.initTableEnvironment();
-    this.grpcActionsService.refresh = this.tableDataService.refresh$;
   }
 
   ngAfterViewInit(): void {

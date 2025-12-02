@@ -1,11 +1,11 @@
 import { SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard} from '@angular/cdk/clipboard';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { Router, RouterModule } from '@angular/router';
 import { TaskOptions } from '@app/tasks/types';
 import { GrpcAction } from '@app/types/actions.type';
-import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
+import { AbstractTaskByStatusTableComponent, SelectionTable } from '@app/types/components/table';
 import { ArmonikData, SessionData } from '@app/types/data';
 import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
@@ -30,7 +30,7 @@ import { SessionRaw } from '../types';
   ]
 })
 export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField>
-  implements OnInit {  
+  implements OnInit, SelectionTable<SessionRaw> {  
   readonly statusesService = inject(StatusService) as SessionsStatusesService;
   readonly router = inject(Router);
   readonly copyService = inject(Clipboard);
@@ -53,6 +53,8 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     const sessionData = this.data().find((sessionData) => sessionData.raw.sessionId === session.sessionId) as SessionData;
     this.router.navigate(['/results'], { queryParams: sessionData.resultsQueryParams });
   });
+
+  @Output() selectionChange = new EventEmitter<SessionRaw[]>();
 
   seeGraph$ = new Subject<SessionRaw>();
   seeGraphSubscription = this.seeGraph$.subscribe(data => this.router.navigate(['/sessions', 'graph', data.sessionId]));
@@ -85,6 +87,10 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     this.initStatuses();
     this.grpcActions.refresh = this.tableDataService.refresh$;
     this.actions.push(...this.grpcActions.actions);
+  }
+
+  onSelectionChange(event: SessionRaw[]): void {
+    this.selectionChange.emit(event);
   }
 
   isDataRawEqual(value: SessionRaw, entry: SessionRaw): boolean {

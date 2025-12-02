@@ -44,7 +44,7 @@
   </mat-toolbar-row>
 
   <mat-toolbar-row class="grpc-actions">
-    <app-table-grpc-actions [selection]="selection" [selectDisplayed]="hasSelectColumnDisplayed()" />
+    <app-table-grpc-actions [refresh$]="tableDataService.refresh$" [selection]="selection" [selectDisplayed]="hasSelectColumnDisplayed()" />
   </mat-toolbar-row>
 </mat-toolbar>
 
@@ -52,4 +52,5 @@
   [displayedColumns]="displayedColumns()"
   [lockColumns]="lockColumns"
   (optionsUpdate)="onOptionsChange()"
+  (selectionChange)="onSelectionChange($event)"
 />

@@ -17,16 +17,6 @@
       (deleteLine)="onDeleteLine()"
       (editNameLine)="onEditNameLine()"
     >
-    <ng-container extra-buttons-right>
-    @if (selection) {
-      @for (action of grpcActionsService.actions; track $index) {
-      <button mat-flat-button color="accent" (click)="action.click(selection)"  [disabled]="selection.length === 0">
-        <span i18n>{{ action.label }}s</span>
-        <mat-icon [fontIcon]="this.getIcon(action.icon)" />
-      </button>
-      }
-    }
-    </ng-container>
     <ng-container extra-menu-items>
     <button mat-menu-item (click)="manageViewInLogs()">
       <mat-icon aria-hidden="true" [fontIcon]="getIcon('find-logs')"></mat-icon>
@@ -52,7 +42,7 @@
     />
   </mat-toolbar-row>
   <mat-toolbar-row class="grpc-actions">
-    <app-table-grpc-actions [selection]="selection" [selectDisplayed]="hasSelectColumnDisplayed()" />
+    <app-table-grpc-actions [refresh$]="tableDataService.refresh$" [selection]="selection" [selectDisplayed]="hasSelectColumnDisplayed()" />
   </mat-toolbar-row>
 </mat-toolbar>
 <app-tasks-table

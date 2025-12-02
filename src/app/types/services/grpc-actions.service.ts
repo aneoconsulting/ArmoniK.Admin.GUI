@@ -24,7 +24,7 @@ export abstract class GrpcActionsService<T extends DataRaw, S extends Status, F 
 
   protected _refresh: Subject<void> | null = null;
 
-  /**
+  /*
    * Used to initialize the class.
    * Links the provided refresh subject from the table, index, or show component to the grpc actions.
    * The actions are created AFTER the refresh subjects are links.
