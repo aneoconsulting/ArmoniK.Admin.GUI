@@ -45,17 +45,14 @@ export class FiltersDialogFieldComponent<F extends FiltersEnums, O extends Filte
     return this.dataFiltersService.retrieveLabel(filterDefinition.for, filterDefinition.field as FilterField);
   }
 
-  writeValue(value: string): void {
-    if (this.filter.value.for) {
-      if (!Number.isNaN(Number(value))) {
-        value = this.retrieveLabel({ for: this.filter.value.for, field: Number(value) } as FilterDefinition<F, O>);
-      }
-      this.value = value;
-
-      const field = this.dataFiltersService.retrieveField(value) as { for: FilterFor<F, O>; index: number };
+  writeValue(value: string | null): void {
+    if (value && !Number.isNaN(Number(value)) && this.filter.value.for) { // Retrieving field label 
+      this.value = this.retrieveLabel({ for: this.filter.value.for, field: Number(value) } as FilterDefinition<F, O>);
+    } else if (value) {
+      const field = this.dataFiltersService.retrieveField(value) as { for: FilterFor<F, O>; index: number } | undefined;
       let change: FilterFieldValue<F, O> = null;
-      if (field.index === -1) {
-        const isCustom = this.customProperties.some(col => col.toLowerCase() === `options.options.${value.toLowerCase()}`);
+      if (!field) {
+        const isCustom = this.customProperties.some(col => col.toLowerCase() === `options.options.${value!.toLowerCase()}`);
         if (isCustom) {
           change = value;
           this.emitFor('custom');
@@ -72,6 +69,8 @@ export class FiltersDialogFieldComponent<F extends FiltersEnums, O extends Filte
       if (this.registeredOnTouched) {
         this.registeredOnTouched(change);
       }
+    } else {
+      this.value = null;
     }
   }
 

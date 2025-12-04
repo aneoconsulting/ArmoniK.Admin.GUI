@@ -157,5 +157,9 @@ describe('SessionsFilterService', () => {
         index: 6,
       });
     });
+
+    it('should return undefined if there is no matching label', () => {
+      expect(service.retrieveField('something')).toBeUndefined();
+    });
   });
 });
