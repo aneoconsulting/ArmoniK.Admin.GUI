@@ -14,6 +14,7 @@ import { StatusService } from '@app/types/status';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { TableGrpcActionsComponent } from '@components/table/table-grpc-actions.component';
 import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
@@ -78,15 +79,19 @@ import { ResultRaw } from './types';
     MatButtonModule,
     MatSnackBarModule,
     MatMenuModule,
-    ResultsTableComponent
+    ResultsTableComponent,
+    TableGrpcActionsComponent
   ]
 })
 export class IndexComponent extends TableHandler<ResultRaw, ResultRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly tableDataService = inject(ResultsDataService);
   readonly filtersService = inject(ResultsFiltersService);
   readonly indexService = inject(ResultsIndexService);
+  readonly grpcActionsService = inject(GrpcActionsService);
 
   tableType: TableType = 'Results';
+
+  selection: ResultRaw[] = [];
 
   ngOnInit(): void {
     this.initTableEnvironment();
@@ -98,5 +103,13 @@ export class IndexComponent extends TableHandler<ResultRaw, ResultRawEnumField> 
 
   ngOnDestroy(): void {
     this.unsubscribe();
+  }
+
+  onSelectionChange(selection: ResultRaw[]): void {
+    this.selection = selection;
+  }
+
+  hasSelectColumnDisplayed() {
+    return this.displayedColumnsKeys.includes('select');
   }
 }

@@ -1,5 +1,5 @@
 import { ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { GrpcAction } from '@app/types/actions.type';
 import { AbstractTableComponent } from '@app/types/components/table';
 import { ArmonikData } from '@app/types/data';
@@ -32,10 +32,11 @@ export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, Res
   private readonly grpcActions = inject(GrpcActionsService);
 
   actions: GrpcAction<ResultRaw>[] = [];
+  
+  @Output() selectionChange = new EventEmitter<ResultRaw[]>();
 
   ngOnInit(): void {
     this.initTableDataService();
-    this.grpcActions.refresh = this.tableDataService.refresh$;
     this.actions.push(...this.grpcActions.actions);
   }
 
@@ -45,5 +46,9 @@ export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, Res
 
   trackBy(index: number, item: ArmonikData<ResultRaw>): string | number {
     return item.raw.resultId;
+  }
+
+  onSelectionChange($event: ResultRaw[]): void {
+    this.selectionChange.emit($event);
   }
 }
