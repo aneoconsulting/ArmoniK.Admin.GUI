@@ -28,7 +28,7 @@ describe('ResultsGrpcActionsService', () => {
 
   const mockSerializedData = 'test';
   const mockDownloadResult = {
-    serializeBinary: jest.fn().mockResolvedValue(mockSerializedData),
+    serializeBinary: jest.fn().mockReturnValue(mockSerializedData),
     dataChunk: {
       length: 1,
     },
@@ -71,23 +71,95 @@ describe('ResultsGrpcActionsService', () => {
   });
 
   describe('Download result data', () => {
-    const input = [mockResult1, mockResult2];
     let downloadSpy: jest.SpyInstance;
 
-    describe('Without errors', () => {
+    describe('With single result', () => {
+      const input = [mockResult1];
+      
+      describe('Without errors', () => {
+        beforeEach(() => {
+          downloadSpy = jest.spyOn(service, 'downloadAs').mockImplementation(() => { });
+          const action = getAction(service.actions, 'download');
+          action.click(input);
+        });
 
-      beforeEach(() => {
-        downloadSpy = jest.spyOn(service, 'downloadAs').mockImplementation(() => { });
-        const action = getAction(service.actions, 'download');
-        action.click(input);
+        it('should call downloadResultData$ from the resultsGrpc service', () => {
+          expect(mockResultsGrpcService.downloadResultData$).toHaveBeenCalledTimes(input.length);
+        });
+
+        it('should download result data', () => {
+          expect(downloadSpy).toHaveBeenCalledTimes(input.length);
+        });
+
+        it('should display a success message', () => {
+          expect(mockNotificationService.success).toHaveBeenCalledWith(`${mockResult1.resultId} downloaded`);
+        });
       });
 
-      it('should call downloadResultData$ from the resultsGrpc service', () => {
-        expect(mockResultsGrpcService.downloadResultData$).toHaveBeenCalledTimes(input.length);
+      describe('With errors', () => {
+        beforeEach(() => {
+          downloadSpy = jest.spyOn(service, 'downloadAs').mockImplementation(() => { });
+          const action = getAction(service.actions, 'download');
+          mockResultsGrpcService.downloadResultData$.mockReturnValueOnce(throwError(() => new Error())); // Only one time
+          action.click(input);
+        });
+
+        it('should catch an error', () => {
+          expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it('should display a personnalized error message for the result', () => {
+          expect(mockNotificationService.error).toHaveBeenCalledWith(`An error occurred while downloading result ${mockResult1.resultId}`);
+        });
+      });
+    });
+
+    describe('With multiple results', () => {
+      const input = [mockResult1, mockResult2];
+
+      describe('Without errors', () => {
+        beforeEach(() => {
+          downloadSpy = jest.spyOn(service, 'downloadAsZip').mockImplementation();
+          const action = getAction(service.actions, 'download');
+          action.click(input);
+        });
+
+        it('should call downloadResultData$ from the resultsGrpc service', () => {
+          expect(mockResultsGrpcService.downloadResultData$).toHaveBeenCalledTimes(input.length);
+        });
+
+        it('should download result data', () => {
+          expect(downloadSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it('should display a success message', () => {
+          expect(mockNotificationService.success).toHaveBeenCalledWith('Results downloaded');
+        });
       });
 
-      it('should download result data', () => {
-        expect(downloadSpy).toHaveBeenCalledTimes(input.length);
+      describe('With errors', () => {
+        beforeEach(() => {
+          downloadSpy = jest.spyOn(service, 'downloadAs').mockImplementation(() => { });
+          const action = getAction(service.actions, 'download');
+          mockResultsGrpcService.downloadResultData$.mockReturnValue(throwError(() => new Error())); // Only one time
+          action.click(input);
+        });
+
+        it('should call downloadResultData$ from the resultsGrpc service', () => {
+          expect(mockResultsGrpcService.downloadResultData$).toHaveBeenCalledTimes(input.length);
+        });
+        
+        it('should not download', () => {
+          expect(downloadSpy).not.toHaveBeenCalled();
+        });
+
+        it('should not catch any error', () => {
+          expect(consoleErrorSpy).not.toHaveBeenCalled();
+        });
+
+        it('should display an error message', () => {
+          expect(mockNotificationService.error).toHaveBeenCalledWith('Could not find data to download');
+        });
       });
     });
 
@@ -98,29 +170,20 @@ describe('ResultsGrpcActionsService', () => {
         action.click([]);
       });
 
+      it('should not call downloadResultData$ from the resultsGrpc service', () => {
+        expect(mockResultsGrpcService.downloadResultData$).not.toHaveBeenCalled();
+      });
+
       it('should not download', () => {
         expect(downloadSpy).not.toHaveBeenCalled();
       });
-    });
 
-    describe('With error', () => {
-      beforeEach(() => {
-        downloadSpy = jest.spyOn(service, 'downloadAs').mockImplementation(() => { });
-        const action = getAction(service.actions, 'download');
-        mockResultsGrpcService.downloadResultData$.mockReturnValueOnce(throwError(() => new Error())); // Only one time
-        action.click(input);
+      it('should not catch any error', () => {
+        expect(consoleErrorSpy).not.toHaveBeenCalled();
       });
 
-      it('should catch an error', () => {
-        expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
-      });
-
-      it('should display a personnalized error message', () => {
-        expect(mockNotificationService.error).toHaveBeenCalledWith('An error occurred while downloading result ' + mockResult1.resultId);
-      });
-
-      it('should download only when there is no errors', () => {
-        expect(downloadSpy).toHaveBeenCalledTimes(input.length - 1);
+      it('should display an error message', () => {
+        expect(mockNotificationService.error).toHaveBeenCalledWith('Could not find data to download');
       });
     });
   });
@@ -157,6 +220,10 @@ describe('ResultsGrpcActionsService', () => {
       service.downloadAs(mockBlob, fileName, mime);
     });
 
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
     it('should create an element', () => {
       expect(createElementSpy).toHaveBeenCalledWith('a');
     });
@@ -184,6 +251,30 @@ describe('ResultsGrpcActionsService', () => {
     it('should revoke the URL', () => {
       jest.runAllTimers();
       expect(revokeObjectURLSpy).toHaveBeenCalledWith(mockUrl);
+    });
+  });
+
+  describe('downloadAsZip', () => {
+    let downloadSpy: jest.SpyInstance;
+    const mockReturnedTime = 1;
+    const mockReturnedISOString = '2000-01-01';
+
+    beforeEach(async () => {
+      downloadSpy = jest.spyOn(service, 'downloadAs').mockImplementation(() => {});
+      await service.downloadAsZip([
+        ['result-1', mockDownloadResult],
+        ['result-2', mockDownloadResult]
+      ]);
+      jest.spyOn(Date.prototype, 'getTime').mockReturnValue(mockReturnedTime);
+      jest.spyOn(Date.prototype, 'toISOString').mockReturnValue(mockReturnedISOString);
+    });
+
+    it('should download', () => {
+      expect(downloadSpy).toHaveBeenCalledWith(
+        expect.any(Uint8Array),
+        expect.any(String),
+        'application/zip'
+      );
     });
   });
 

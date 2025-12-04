@@ -45,37 +45,36 @@ export class ResultsGrpcActionsService extends GrpcActionsService<ResultRaw, Res
             )
           );
         }
-        return [];
+        return of([]);
       })
     ).subscribe((resultChunks) => {
-      if (resultChunks.length !== 0) {
-        if (resultChunks.length === 1) {
-          const [resultId, resultChunk] = resultChunks[0];
+      const filteredResult = resultChunks.filter((data) => !!data[1]);
+      if (filteredResult.length !== 0) {
+        if (filteredResult.length === 1) {
+          const [resultId, resultChunk] = filteredResult[0];
           if (resultChunk) {
             const fileName = `${resultId}.bin`;
             this.downloadAs(resultChunk.serializeBinary(), fileName, 'application/octet-stream');
-            this.success(`${resultId} downloaded`);
-          } else {
-            this.error(`Could not download ${resultId}`);
+            this.success($localize`${resultId} downloaded`);
           }
         } else {
-          void this.downloadAsZip(resultChunks);
-          this.success('Results downloaded');
+          void this.downloadAsZip(filteredResult);
+          this.success($localize`Results downloaded`);
         }
       } else {
-        this.error('Could not find data to download');
+        this.error($localize`Could not find data to download`);
       }
     });
     this.subscriptions.add(downloadSubscription);
   }
 
   downloadAs(
-    content: Uint8Array<ArrayBufferLike> | Blob,
+    content: Uint8Array<ArrayBufferLike>,
     filename: string,
     mime: 'application/json' | 'text/plain' | 'application/octet-stream' | 'application/zip'
   ): void {
     if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-      const blob = new Blob([content as Uint8Array<ArrayBuffer>], { type: mime });
+      const blob = new Blob([content], { type: mime });
 
       const url = URL.createObjectURL(blob);
       try {
@@ -93,7 +92,7 @@ export class ResultsGrpcActionsService extends GrpcActionsService<ResultRaw, Res
     }
   }
 
-  private async downloadAsZip(resultChunks: [string, DownloadResultDataResponse | null][]) {
+  async downloadAsZip(resultChunks: [string, DownloadResultDataResponse | null][]) {
     const zip = new JSZip();
     for (const [resultId, resultChunk] of resultChunks) {
       if (resultChunk && resultChunk.dataChunk.length !== 0) {
