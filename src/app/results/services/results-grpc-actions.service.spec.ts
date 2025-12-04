@@ -256,8 +256,6 @@ describe('ResultsGrpcActionsService', () => {
 
   describe('downloadAsZip', () => {
     let downloadSpy: jest.SpyInstance;
-    const mockReturnedTime = 1;
-    const mockReturnedISOString = '2000-01-01';
 
     beforeEach(async () => {
       downloadSpy = jest.spyOn(service, 'downloadAs').mockImplementation(() => {});
@@ -265,8 +263,6 @@ describe('ResultsGrpcActionsService', () => {
         ['result-1', mockDownloadResult],
         ['result-2', mockDownloadResult]
       ]);
-      jest.spyOn(Date.prototype, 'getTime').mockReturnValue(mockReturnedTime);
-      jest.spyOn(Date.prototype, 'toISOString').mockReturnValue(mockReturnedISOString);
     });
 
     it('should download', () => {
