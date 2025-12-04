@@ -51,18 +51,16 @@ export class ResultsGrpcActionsService extends GrpcActionsService<ResultRaw, Res
       const filteredResult = resultChunks.filter((data) => !!data[1]);
       if (filteredResult.length === 0) {
         this.error($localize`Could not find data to download`);
-      } else {
-        if (filteredResult.length === 1) {
-          const [resultId, resultChunk] = filteredResult[0];
-          if (resultChunk) {
-            const fileName = `${resultId}.bin`;
-            this.downloadAs(resultChunk.serializeBinary(), fileName, 'application/octet-stream');
-            this.success($localize`${resultId} downloaded`);
-          }
-        } else {
-          void this.downloadAsZip(filteredResult);
-          this.success($localize`Results downloaded`);
+      } else if (filteredResult.length === 1) {
+        const [resultId, resultChunk] = filteredResult[0];
+        if (resultChunk) {
+          const fileName = `${resultId}.bin`;
+          this.downloadAs(resultChunk.serializeBinary(), fileName, 'application/octet-stream');
+          this.success($localize`${resultId} downloaded`);
         }
+      } else {
+        void this.downloadAsZip(filteredResult);
+        this.success($localize`Results downloaded`);
       }
     });
     this.subscriptions.add(downloadSubscription);
