@@ -49,7 +49,9 @@ export class ResultsGrpcActionsService extends GrpcActionsService<ResultRaw, Res
       })
     ).subscribe((resultChunks) => {
       const filteredResult = resultChunks.filter((data) => !!data[1]);
-      if (filteredResult.length !== 0) {
+      if (filteredResult.length === 0) {
+        this.error($localize`Could not find data to download`);
+      } else {
         if (filteredResult.length === 1) {
           const [resultId, resultChunk] = filteredResult[0];
           if (resultChunk) {
@@ -61,8 +63,6 @@ export class ResultsGrpcActionsService extends GrpcActionsService<ResultRaw, Res
           void this.downloadAsZip(filteredResult);
           this.success($localize`Results downloaded`);
         }
-      } else {
-        this.error($localize`Could not find data to download`);
       }
     });
     this.subscriptions.add(downloadSubscription);
@@ -101,7 +101,7 @@ export class ResultsGrpcActionsService extends GrpcActionsService<ResultRaw, Res
     }
     await zip.generateAsync({ type: 'uint8array' }).then((content) => {
       const date = new Date().toISOString().slice(0, 10);
-      const id = new Date().getTime();
+      const id = Date.now();
       this.downloadAs(content, `results-${id}-${date}.zip`, 'application/zip');
     });
   }
