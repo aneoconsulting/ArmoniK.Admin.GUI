@@ -2,7 +2,7 @@ import { DownloadResultDataResponse, ResultRawEnumField, ResultStatus } from '@a
 import { inject, Injectable } from '@angular/core';
 import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
-import { BlobWriter, ZipWriter } from '@zip.js/zip.js';
+import JSZip from 'jszip';
 import { catchError, combineLatest, of, Subject, switchMap } from 'rxjs';
 import { ResultsGrpcService } from './results-grpc.service';
 import { ResultsStatusesService } from './results-statuses.service';
@@ -94,19 +94,16 @@ export class ResultsGrpcActionsService extends GrpcActionsService<ResultRaw, Res
   }
 
   private async downloadAsZip(resultChunks: [string, DownloadResultDataResponse | null][]) {
-    const zipFileWriter = new BlobWriter();
-    const zipWriter = new ZipWriter(zipFileWriter);
+    const zip = new JSZip();
     for (const [resultId, resultChunk] of resultChunks) {
       if (resultChunk && resultChunk.dataChunk.length !== 0) {
-        const blob = new Blob([resultChunk.serializeBinary()]);
-        console.log(blob);
-        zipWriter.add(`${resultId}.bin`, blob.stream());
+        zip.file(`${resultId}.bin`, resultChunk.serializeBinary());
       }
     }
-    zipWriter.close();
-    const zipFileBlob = await zipFileWriter.getData();
-    const date = new Date().toISOString().slice(0, 10);
-    const id = new Date().getTime();
-    this.downloadAs(zipFileBlob, `results-${id}-${date}.zip`, 'application/zip');
+    await zip.generateAsync({ type: 'uint8array' }).then((content) => {
+      const date = new Date().toISOString().slice(0, 10);
+      const id = new Date().getTime();
+      this.downloadAs(content, `results-${id}-${date}.zip`, 'application/zip');
+    });
   }
 }
