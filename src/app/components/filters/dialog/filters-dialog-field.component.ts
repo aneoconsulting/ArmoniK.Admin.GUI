@@ -51,15 +51,15 @@ export class FiltersDialogFieldComponent<F extends FiltersEnums, O extends Filte
     } else if (value) {
       const field = this.dataFiltersService.retrieveField(value) as { for: FilterFor<F, O>; index: number } | undefined;
       let change: FilterFieldValue<F, O> = null;
-      if (!field) {
-        const isCustom = this.customProperties.some(col => col.toLowerCase() === `options.options.${value!.toLowerCase()}`);
+      if (field) {
+        change = field.index as F | O;
+        this.emitFor(field.for);
+      } else {
+        const isCustom = this.customProperties.some(col => col.toLowerCase() === `options.options.${value.toLowerCase()}`);
         if (isCustom) {
           change = value;
           this.emitFor('custom');
         }
-      } else {
-        change = field.index as F | O;
-        this.emitFor(field.for);
       }
 
       if (this.registeredOnChange) {
