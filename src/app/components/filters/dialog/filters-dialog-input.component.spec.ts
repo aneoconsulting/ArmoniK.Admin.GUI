@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { FilterValueOptions } from '@app/types/filters';
 import { DataFilterService } from '@app/types/services/data-filter.service';
 import { NgxMatDatepickerInputEvent } from '@ngxmc/datetime-picker';
 import { Moment } from 'moment';
@@ -7,7 +8,11 @@ import { FilterInputValue } from './types';
 
 describe('FiltersDialogInputComponent', () => {
   let component: FiltersDialogInputComponent;
-  const statuses = ['Running', 'Error', 'Done'];
+  const statuses = [
+    { key: 1, value: 'Running' },
+    { key: 2, value: 'Done' },
+    { key: 3, value: 'Error' },
+  ] as FilterValueOptions;
 
   const registeredOnChange = jest.fn((val: FilterInputValue) => val);
   const registeredOnTouche = jest.fn((val: FilterInputValue) => val);
@@ -26,11 +31,6 @@ describe('FiltersDialogInputComponent', () => {
 
   it('should run', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should get the value as a string', () => {
-    component.value = 'test';
-    expect(typeof component.valueAsString).toEqual('string');
   });
 
   it('should set the component dateForm if the provided value is a number for a date filter', () => {
@@ -53,16 +53,25 @@ describe('FiltersDialogInputComponent', () => {
       expect(spy).toHaveBeenCalledWith(event.target.value);
     });
 
-    it('should write on autocompleteChange', () => {
-      const value = 'value';
-      component.onAutoCompleteChange(value);
-      expect(spy).toHaveBeenCalledWith(value);
-    });
-
     it('should write on Boolean change', () => {
       const value = 'True';
       component.onBooleanChange(value);
       expect(spy).toHaveBeenCalledWith('true');
+    });
+
+    describe('OnAutoCompleteChange', () => {
+      it('should write on autocompleteChange', () => {
+        component.type = 'string';
+        const value = 'value';
+        component.onAutoCompleteChange(value);
+        expect(spy).toHaveBeenCalledWith(value);
+      });
+
+      it('should write the key corresponding to the label of a status', () => {
+        component.type = 'status';
+        component.onAutoCompleteChange('Done');
+        expect(spy).toHaveBeenCalledWith(statuses[1].key);
+      });
     });
 
     describe('onDateChange', () => {
@@ -166,6 +175,21 @@ describe('FiltersDialogInputComponent', () => {
       
     it('should registered the key on touched', () => {
       expect(registeredOnTouche).toHaveBeenCalledWith(value);
+    });
+  });
+
+  describe('valueAsStatus', () => {
+    it('should return the status label if it exists', () => {
+      expect(component.valueAsStatus(1)).toEqual(statuses[0].value);
+    });
+
+    it('should return an empty string if the status label does not exists', () => {
+      expect(component.valueAsStatus(4)).toEqual('');
+    });
+
+    it('should return the value if it is a non-numerical string', () => {
+      const value = 'some-value';
+      expect(component.valueAsStatus(value)).toEqual(value);
     });
   });
 });
