@@ -211,16 +211,7 @@ export class TasksFiltersService extends DataFilterService<TaskSummaryEnumField,
     return this.filtersDefinitions;
   }
 
-  retrieveField(filterField: string): TaskFilterField  {
-    const rootValues = Object.values(this.rootField);
-    let index = rootValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
-
-    if (index >= 0) {
-      return { for: 'root', index: index };
-    }
-
-    const optionsValues = Object.values(this.optionsFields);
-    index = optionsValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
-    return { for: 'options', index: index };
+  retrieveField(filterField: string): TaskFilterField | undefined  {
+    return this.findKeyFromLabel(this.rootField, filterField, 'root') ?? this.findKeyFromLabel(this.optionsFields as Record<TaskSummaryEnumField, string>, filterField, 'options');
   }
 }

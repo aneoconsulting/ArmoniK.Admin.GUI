@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CustomColumn } from '@app/types/data';
 import { FilterDefinition, FilterFor } from '@app/types/filter-definition';
-import { Filter, FilterType, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
+import { Filter, FilterType, FilterValueOptions, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
 import { DataFilterService } from '@app/types/services/data-filter.service';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -104,14 +104,14 @@ export class FiltersDialogAndComponent<F extends FiltersEnums, O extends Filters
     return 'string';
   }
 
-  findStatuses(filter: Partial<Filter<F, O>>): string[] {
+  findStatuses(filter: Partial<Filter<F, O>>): FilterValueOptions | undefined {
     if (filter.field) {
       const field = this.findFilterMetadata(filter as Filter<F, O>);
       if (field?.type === 'status') {
-        return field.statuses.map((status) => status.value);
+        return field.statuses;
       }
     }
-    return [];
+    return undefined;
   }
 
   updateFor(filter: FormFilter<F, O>, newFor: FilterFor<F, O>) {

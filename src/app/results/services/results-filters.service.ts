@@ -103,9 +103,7 @@ export class ResultsFiltersService extends DataFilterService<ResultRawEnumField>
     return this.filtersDefinitions;
   }
 
-  retrieveField(filterField: string): ResultFilterField  {
-    const values = Object.values(this.rootField);
-    const index = values.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
-    return { for: 'root', index: index };
+  retrieveField(filterField: string): ResultFilterField | undefined {
+    return this.findKeyFromLabel(this.rootField, filterField, 'root');
   }
 }
