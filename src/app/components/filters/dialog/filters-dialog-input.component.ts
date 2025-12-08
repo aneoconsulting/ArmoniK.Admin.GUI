@@ -54,12 +54,12 @@ export class FiltersDialogInputComponent implements ControlValueAccessor {
 
   duration: {[key: number]: string} = {};
 
-  valueAsStatus(value: FilterInputValue): string {
+  valueAsStatus(value: FilterInputValue): string | undefined {
     if (Number.isNaN(Number(value))) {
       return value as string;
     }
     const status = this.statusesMap?.find(status => Number(status.key) === Number(value));
-    return status ? status.value : '';
+    return status?.value;
   }
 
   onChange(event: Event) {
