@@ -1,16 +1,13 @@
-import { ResultStatus, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { ResultsStatusesService } from '@app/results/services/results-statuses.service';
-import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
-import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { ArmoniKGraphNode, GraphData, GraphLink, LinkType } from '@app/types/graph.types';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { StorageService } from '@services/storage.service';
 import { Subject } from 'rxjs';
 import { GraphComponent } from './graph.component';
+import { NodeStatusService } from './services/node-status.service';
 
 describe('GraphComponent', () => {
   let component: GraphComponent<ArmoniKGraphNode, GraphLink<ArmoniKGraphNode>>;
@@ -20,27 +17,6 @@ describe('GraphComponent', () => {
   const mockStorageService = {
     getItem: jest.fn(),
     setItem: jest.fn(),
-  };
-
-  const mockSessionsStatuses = {
-    statusToLabel: jest.fn(() => ({
-      label: 'Running',
-      color: 'green'
-    })),
-  };
-
-  const mockTasksStatuses = {
-    statusToLabel: jest.fn(() => ({
-      label: 'Completed',
-      color: 'green'
-    })),
-  };
-
-  const mockResultsStatuses = {
-    statusToLabel: jest.fn(() => ({
-      label: 'Completed',
-      color: 'green'
-    })),
   };
 
   const mockClipboard = {
@@ -55,6 +31,10 @@ describe('GraphComponent', () => {
     nativeElement: {}
   } as ElementRef;
 
+  const mockNodeStatusService = {
+    getNodeStatusData: jest.fn(() => ({ label: 'status', color: 'green' })),
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -62,9 +42,7 @@ describe('GraphComponent', () => {
         DefaultConfigService,
         { provide: StorageService, useValue: mockStorageService },
         { provide: IconsService, useValue: mockIconsService },
-        { provide: SessionsStatusesService, useValue: mockSessionsStatuses },
-        { provide: TasksStatusesService, useValue: mockTasksStatuses },
-        { provide: ResultsStatusesService, useValue: mockResultsStatuses },
+        { provide: NodeStatusService, useValue: mockNodeStatusService },
         { provide: Clipboard, useValue: mockClipboard },
       ]
     }).inject(GraphComponent<ArmoniKGraphNode, GraphLink<ArmoniKGraphNode>>);
@@ -249,51 +227,6 @@ describe('GraphComponent', () => {
     });
   });
 
-  describe('getNodeStatusData', () => {
-    it('should return the running session label', () => {
-      const node = {
-        type: 'session',
-        status: SessionStatus.SESSION_STATUS_RUNNING,
-      } as ArmoniKGraphNode;
-      expect(component['getNodeStatusData'](node)).toEqual(
-        mockSessionsStatuses.statusToLabel()
-      );
-    });
-
-    it('should return the running task label', () => {
-      const node = {
-        type: 'task',
-        status: TaskStatus.TASK_STATUS_COMPLETED,
-      } as ArmoniKGraphNode;
-      expect(component['getNodeStatusData'](node)).toEqual(
-        mockTasksStatuses.statusToLabel()
-      );
-    });
-
-    it('should return the running result label', () => {
-      const node = {
-        type: 'result',
-        status: ResultStatus.RESULT_STATUS_COMPLETED,
-      } as ArmoniKGraphNode;
-      expect(component['getNodeStatusData'](node)).toEqual(
-        mockResultsStatuses.statusToLabel()
-      );
-    });
-    
-
-    it('should get the default color', () => {
-      const node = {
-        type: 'unknown',
-        status: ResultStatus.RESULT_STATUS_COMPLETED,
-      } as unknown as ArmoniKGraphNode;
-
-      expect(component['getNodeStatusData'](node)).toEqual({
-        label: 'Unknown',
-        color: 'grey'
-      });
-    });
-  });
-
   describe('getLinkColor', () => {
     it('should get all kind of link colors', () => {
       const types: LinkType[] = ['dependency', 'output', 'parent', 'payload'];
@@ -402,5 +335,16 @@ describe('GraphComponent', () => {
       component.toggleHighlightParentNodes(checked);
       expect(spy).toHaveBeenCalled();
     });
+  });
+
+  it('should close node panel', () => {
+    component.selectedNode.set({ id: 'id' } as ArmoniKGraphNode);
+    component.closeNodePanel();
+    expect(component.selectedNode()).toBeNull();
+  });
+
+  it('should unsubscribe on destroy', () => {
+    component.ngOnDestroy();
+    expect(grpcObservable.observed).toBeFalsy();
   });
 });

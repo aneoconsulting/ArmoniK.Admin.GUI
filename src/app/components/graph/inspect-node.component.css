@@ -1,0 +1,30 @@
+mat-card {
+  z-index: 2;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 30%;
+}
+
+mat-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+article {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+h3 {
+  padding: 0;
+  margin: 0;
+}
