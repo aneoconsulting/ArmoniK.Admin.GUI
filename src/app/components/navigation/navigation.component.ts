@@ -14,7 +14,6 @@ import { RouterModule } from '@angular/router';
 import { HealthCheckComponent } from '@app/healthcheck/healthcheck.component';
 import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
 import { SidebarItem } from '@app/types/navigation';
-import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
@@ -23,6 +22,7 @@ import { map, shareReplay } from 'rxjs/operators';
 import { AddSideBarItemDialogComponent } from './add-sidebar-item-dialog/add-sidebar-item.dialog.component';
 import { AddSideBarItemDialogResult } from './add-sidebar-item-dialog/types';
 import { ChangeLanguageButtonComponent } from './change-language-button.component';
+import { EnvironmentComponent } from './environment/environment.component';
 import { ExternalServicesComponent } from './external-services/external-services.component';
 import { SchemeSwitcherComponent } from './scheme-switcher/scheme-switcher.component';
 import { ThemeSelectorComponent } from './theme-selector.component';
@@ -55,6 +55,7 @@ import { VersionsMenuComponent } from './version-menu/versions-menu.component';
     CdkDropList,
     CdkDrag,
     CdkDragHandle,
+    EnvironmentComponent,
     SchemeSwitcherComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -63,11 +64,9 @@ export class NavigationComponent implements OnInit {
   private readonly breakpointObserver = inject(BreakpointObserver);
   readonly navigationService = inject(NavigationService);
   private readonly iconsService = inject(IconsService);
-  private readonly environmentService = inject(EnvironmentService);
   private readonly userConnectedGuard = inject(UserConnectedGuard);
   private readonly dialog = inject(MatDialog);
 
-  environment = this.environmentService.getEnvironment();
   settingsItem = $localize`Settings`;
 
   private userConnected = signal(this.userConnectedGuard.canActivate());

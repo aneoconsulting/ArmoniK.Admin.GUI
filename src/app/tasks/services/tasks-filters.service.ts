@@ -202,7 +202,8 @@ export class TasksFiltersService extends DataFilterService<TaskSummaryEnumField,
     case 'options':
       return this.optionsFields[filterField as TaskOptionEnumField];
     default:
-      throw new Error(`Unknown filter type: ${filterFor} ${filterField}`);
+      console.error(`Unknown filter type: ${filterFor} ${filterField}`);
+      return '';
     }
   }
 
