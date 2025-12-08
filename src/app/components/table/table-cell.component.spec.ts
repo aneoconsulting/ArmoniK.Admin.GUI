@@ -262,6 +262,22 @@ describe('TableCellComponent', () => {
     });
   });
 
+  describe('Byte Array', () => {
+    beforeEach(() => {
+      component.column = {
+        key: 'duration',
+        type: 'byte-array',
+        sortable: false,
+        name: 'Mock byte array',
+      };
+      component.element = element;
+    });
+
+    it('should set byteArray', () => {
+      expect(component.byteArray).toEqual(element.raw.duration);
+    });
+  });
+
   describe('selection', () => {
     beforeEach(() => {
       component.column.key = 'sessionId';

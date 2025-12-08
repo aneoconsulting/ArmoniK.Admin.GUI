@@ -8,6 +8,7 @@ import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, CustomColumn } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -160,6 +161,10 @@ describe('Tasks Index Component', () => {
     cancelTasks: jest.fn(),
   };
 
+  const mockGrpcService = {
+    actions: [],
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -174,6 +179,7 @@ describe('Tasks Index Component', () => {
         { provide: TasksFiltersService, useValue: mockTaskFiltersService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: GrpcActionsService, useValue: mockGrpcService },
       ]
     }).inject(IndexComponent);
     component.ngOnInit();
@@ -327,12 +333,7 @@ describe('Tasks Index Component', () => {
     });
 
     it('should save columns', () => {
-      expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(['id', 'createdAt']);
-    });
-
-    it('should always have "select" at position 1', () => {
-      component.onColumnsChange(['id', 'createdAt', 'select']);
-      expect(component.displayedColumnsKeys).toEqual(['select', 'id', 'createdAt']);
+      expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
     });
   });
 
@@ -524,22 +525,9 @@ describe('Tasks Index Component', () => {
   });
 
   it('should update selection', () => {
-    const selection = ['taskId1', 'taskId2'];
+    const selection = [{ id: 'taskId1' }, { id: 'taskId2' }] as unknown as TaskSummary[];
     component.onSelectionChange(selection);
     expect(component.selection).toEqual(selection);
-  });
-
-  it('should cancel tasks', () => {
-    const tasks = ['taskId'];
-    component.cancelTasks(tasks);
-    expect(mockTasksDataService.cancelTasks).toHaveBeenCalledWith(tasks);
-  });
-
-  it('should cancel selected tasks', () => {
-    const selection = ['taskId1', 'taskId2'];
-    component.selection = selection;
-    component.onCancelTasksSelection();
-    expect(mockTasksDataService.cancelTasks).toHaveBeenCalledWith(selection);
   });
 
   describe('Manage view in logs', () => {
@@ -565,6 +553,18 @@ describe('Tasks Index Component', () => {
 
     it('should save view in logs', () => {
       expect(mockTasksIndexService.saveViewInLogs).toHaveBeenCalledWith(newViewInLogs.serviceIcon, newViewInLogs.serviceName, newViewInLogs.urlTemplate);
+    });
+  });
+
+  describe('hasSelectColumnDisplayed', () => {
+    it('should return true if the column is displayed', () => {
+      component.displayedColumnsKeys.push('select');
+      expect(component.hasSelectColumnDisplayed()).toBeTruthy();
+    });
+
+    it('should return false if the column is not displayed', () => {
+      component.displayedColumnsKeys = component.displayedColumnsKeys.filter(k => k !== 'select');
+      expect(component.hasSelectColumnDisplayed()).toBeFalsy();
     });
   });
 

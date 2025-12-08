@@ -52,9 +52,9 @@ describe('TableColumnHeaderComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should emit on personnalize tasks by status', () => {
+  it('should emit on personalize tasks by status', () => {
     const spy = jest.spyOn(component.statusesChange, 'emit');
-    component.onPersonnalizeStatuses();
+    component.onPersonalizeStatuses();
     expect(spy).toHaveBeenCalled();
   });
 });
