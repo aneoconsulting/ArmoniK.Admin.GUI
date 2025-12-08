@@ -156,7 +156,13 @@ describe('ApplicationsFiltersService', () => {
     expect(service.retrieveFiltersDefinitions()).toEqual(service.filtersDefinitions);
   });
 
-  it('should retrieve the field', () => {
-    expect(service.retrieveField('Namespace')).toEqual({for: 'root', index: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE});
+  describe('Retrieve field', () => {
+    it('should retrieve the field', () => {
+      expect(service.retrieveField('Namespace')).toEqual({for: 'root', index: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE});
+    });
+
+    it('should return undefined if there is no matching label', () => {
+      expect(service.retrieveField('something')).toBeUndefined();
+    });
   });
 });

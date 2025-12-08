@@ -55,8 +55,14 @@ export abstract class DataFilterService<F extends FiltersEnums, O extends Filter
     return this.tableService.restoreShowFilters(`${this.scope}-show-filters`) ?? true;
   }
 
+  protected findKeyFromLabel(record: Record<F, string>, filterField: string, _for: 'root' | 'options') {
+    const keys = Object.keys(record);
+    const key = keys.find(key => record[Number(key) as F].toLocaleLowerCase() === filterField.toLocaleLowerCase());
+    return key ? { for: _for, index: Number(key) } : undefined;
+  }
+
   abstract retrieveLabel(filterFor: FilterFor, filterField: FilterField): string;
-  abstract retrieveField(filterField: string): FilterField;
+  abstract retrieveField(filterField: string): FilterField  | undefined;
 }
 
 export interface FiltersServiceOptionsInterface<O extends NonNullable<FiltersOptionsEnums>> {
