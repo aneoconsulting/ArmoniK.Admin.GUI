@@ -184,7 +184,7 @@ describe('FiltersDialogInputComponent', () => {
     });
 
     it('should return an empty string if the status label does not exists', () => {
-      expect(component.valueAsStatus(4)).toEqual('');
+      expect(component.valueAsStatus(4)).toBeUndefined();
     });
 
     it('should return the value if it is a non-numerical string', () => {
