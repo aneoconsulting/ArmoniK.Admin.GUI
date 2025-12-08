@@ -262,38 +262,4 @@ describe('TasksDataService', () => {
       ]);
     });
   });
-
-  describe('Cancel tasks', () => {
-    const tasksToCancel = ['1', '2', '3'];
-
-    it('should cancel tasks', () => {
-      service.cancelTasks(tasksToCancel);
-      expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith(tasksToCancel);
-    });
-
-    it('should display a success message', () => {
-      service.cancelTasks(tasksToCancel);
-      expect(mockNotificationService.success).toHaveBeenCalled();
-    });
-
-    it('should log errors', () => {
-      mockTasksGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error()));
-      const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
-      service.cancelTasks(tasksToCancel);
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it('should display an error message', () => {
-      mockTasksGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error()));
-      jest.spyOn(console, 'error').mockImplementation(() => {});
-      service.cancelTasks(tasksToCancel);
-      expect(mockNotificationService.error).toHaveBeenCalled();
-    });
-  });
-
-  it('should cancel one task', () => {
-    const task = '1';
-    service.cancelTask(task);
-    expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith([task]);
-  });
 });

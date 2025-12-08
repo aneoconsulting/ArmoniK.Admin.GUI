@@ -268,24 +268,8 @@ describe('SessionsLineComponent', () => {
     });
 
     it('should refresh', () => {
-      component.refresh();
       expect(mockSessionsDataService.refresh$.next).toHaveBeenCalled();
-    });
-  
-    describe('On Options Change', () => {
-      beforeEach(() => {
-        component.onOptionsChange();
-      });
-  
-      it('should save options', () => {
-        expect(component.line.options).toEqual(mockSessionsDataService.options);
-      });
-  
-      it('should refresh', () => {
-        expect(mockSessionsDataService.refresh$.next).toHaveBeenCalled();
-      });
-    });
-  
+    });  
   });
 
   describe('OnColumnsChange', () => {
@@ -298,17 +282,17 @@ describe('SessionsLineComponent', () => {
 
     it('should change displayedColumns', () => {
       component.onColumnsChange(newColumns);
-      expect(component.displayedColumnsKeys).toEqual(['select', 'sessionId', 'count', 'duration']);
+      expect(component.displayedColumnsKeys).toEqual(newColumns);
     });
 
     it('should change line displayedColumns', () => {
       component.onColumnsChange(newColumns);
-      expect(component.line.displayedColumns).toEqual(['select', 'sessionId', 'count', 'duration']);
+      expect(component.line.displayedColumns).toEqual(newColumns);
     });
 
     it('should emit', () => {
       const spy = jest.spyOn(component.lineChange, 'emit');
-      component.onColumnsChange(['select', 'sessionId', 'count', 'duration']);
+      component.onColumnsChange(newColumns);
       expect(spy).toHaveBeenCalled();
     });
   });
@@ -337,7 +321,6 @@ describe('SessionsLineComponent', () => {
   });
 
   describe('onFiltersReset', () => {
-
     beforeEach(() => {
       mockSessionsDataService.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
       component.line.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
@@ -360,24 +343,8 @@ describe('SessionsLineComponent', () => {
     });
 
     it('should refresh', () => {
-      component.refresh();
       expect(mockSessionsDataService.refresh$.next).toHaveBeenCalled();
-    });
-  
-    describe('On Options Change', () => {
-      beforeEach(() => {
-        component.onOptionsChange();
-      });
-  
-      it('should save options', () => {
-        expect(component.line.options).toEqual(mockSessionsDataService.options);
-      });
-  
-      it('should refresh', () => {
-        expect(mockSessionsDataService.refresh$.next).toHaveBeenCalled();
-      });
-    });
-  
+    });  
   });
 
   describe('onLockColumnChange', () => {
@@ -431,6 +398,18 @@ describe('SessionsLineComponent', () => {
 
     it('should update line custom columns', () => {
       expect(component.line.customColumns).toEqual(newCustom);
+    });
+  });
+
+  describe('hasSelectColumnDisplayed', () => {
+    it('should return true if the column is displayed', () => {
+      component.displayedColumnsKeys.push('select');
+      expect(component.hasSelectColumnDisplayed()).toBeTruthy();
+    });
+
+    it('should return false if the column is not displayed', () => {
+      component.displayedColumnsKeys = component.displayedColumnsKeys.filter(k => k !== 'select');
+      expect(component.hasSelectColumnDisplayed()).toBeFalsy();
     });
   });
 

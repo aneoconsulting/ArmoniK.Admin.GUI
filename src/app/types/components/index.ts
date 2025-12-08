@@ -124,9 +124,6 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
   }
 
   onColumnsChange(columns: ColumnKey<T, O>[]) {
-    if ((columns as string[]).includes('select')) {
-      columns = ['select' as ColumnKey<T, O>, ...columns.filter(column => column !== 'select')];
-    }
     this.displayedColumnsKeys = [...columns];
     this.updateDisplayedColumns();
     this.indexService.saveColumns(columns);
@@ -244,4 +241,8 @@ export abstract class TableHandlerCustomValues<T extends DataRaw, F extends Filt
   override createDashboardLine(): TableLine<T, O> {
     return {...super.createDashboardLine(), customColumns: this.customColumns};
   }
+}
+
+export interface SelectionTableHandler<T extends DataRaw> {
+  onSelectionChange(selection: T[]): void
 }

@@ -56,6 +56,12 @@ export class SessionsIndexService implements IndexServiceCustomInterface<Session
       sortable: false,
     },
     {
+      name: $localize`Select`,
+      key: 'select',
+      type: 'select',
+      sortable: false,
+    },
+    {
       name: $localize`Duration`,
       key: 'duration',
       type: 'duration',

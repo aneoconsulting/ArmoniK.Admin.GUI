@@ -18,9 +18,13 @@
     </button>
   </div>
   <div bonus-actions>
-    <button mat-flat-button color="accent" (click)="cancel()" [disabled]="canCancel">
-      <span i18n>Cancel Task</span>
-      <mat-icon [fontIcon]="this.getIcon('cancel')" />
-    </button>
+    @if (task) {
+      @for (action of gprcActionsService.actions; track $index) {
+      <button mat-flat-button color="accent" (click)="action.click([task])" [disabled]="action.condition ? !action.condition([task]) : false">
+        <span i18n>{{ action.label }}</span>
+        <mat-icon [fontIcon]="this.getIcon(action.icon)" />
+      </button>
+      }
+    }
   </div>
 </app-show-page>

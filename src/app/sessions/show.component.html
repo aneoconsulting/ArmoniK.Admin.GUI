@@ -18,32 +18,15 @@
     </button>
   </div>
   <div class="actions" bonus-actions>
-    @if (!disableResume) {
-      <button mat-flat-button color="accent" (click)="resume()" [disabled]="disableResume">
-        <span i18n>Resume Session</span>
-        <mat-icon [fontIcon]="this.getIcon('play')" />
-      </button>
-    } @else {
-      <button mat-flat-button color="accent" (click)="pause()" [disabled]="disablePause">
-        <span i18n>Pause Session</span>
-        <mat-icon [fontIcon]="this.getIcon('pause')" />
-      </button>
+    @if (session) {
+      @for (action of grpcActionsService.actions; track $index) {
+        @if (!action.key || (action.key === 'pause' && action.condition!([session])) || (action.key === 'resume' && action.condition!([session]))) {
+          <button mat-flat-button color="accent" (click)="action.click([session])" [disabled]="action.condition ? !action.condition([session]) : false">
+            <span i18n>{{ action.label }}</span>
+            <mat-icon [fontIcon]="this.getIcon(action.icon)" />
+          </button>
+        }
+      }
     }
-    <button mat-flat-button color="accent" (click)="cancel()" [disabled]="disableCancel">
-      <span i18n>Cancel Session</span>
-      <mat-icon [fontIcon]="this.getIcon('cancel')" />
-    </button>
-    <button mat-flat-button color="accent" (click)="close()" [disabled]="disableClose">
-      <span i18n>Close Session</span>
-      <mat-icon [fontIcon]="this.getIcon('close')" />
-    </button>
-    <button mat-flat-button color="accent" (click)="purge()" [disabled]="disablePurge">
-      <span i18n>Purge Session</span>
-      <mat-icon [fontIcon]="this.getIcon('purge')" />
-    </button>
-    <button mat-flat-button color="accent" (click)="deleteSession()">
-      <span i18n>Delete Session</span>
-      <mat-icon [fontIcon]="this.getIcon('delete')" />
-    </button>
   </div>
 </app-show-page>

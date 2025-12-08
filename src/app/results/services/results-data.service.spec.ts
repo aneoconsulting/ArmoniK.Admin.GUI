@@ -23,6 +23,7 @@ describe('ResultsDataService', () => {
   const results = { results: [{ resultId: 'result1' }, { resultId: 'result2' }, { resultId: 'result3' }], total: 3 } as unknown as ListResultsResponse;
   const mockResultsGrpcService = {
     list$: jest.fn(() => of(results)),
+    downloadResultData$: jest.fn(() => of(void 0)),
   };
 
   const mockNotificationService = {

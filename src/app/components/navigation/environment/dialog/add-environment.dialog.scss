@@ -1,0 +1,18 @@
+:host {
+  width: 30vw !important;
+  display: block;
+}
+
+section {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+section > p {
+  width: 100%;
+}
+
+mat-form-field {
+  width: 100%;
+}

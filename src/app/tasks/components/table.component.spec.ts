@@ -1,14 +1,21 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { GrpcAction } from '@app/types/actions.type';
 import { TableColumn } from '@app/types/column.type';
 import { ArmonikData, ColumnKey, TaskData } from '@app/types/data';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { NotificationService } from '@services/notification.service';
 import { TasksTableComponent } from './table.component';
 import TasksDataService from '../services/tasks-data.service';
 import { TaskOptions, TaskSummary } from '../types';
+
+function getAction(actions: GrpcAction<TaskSummary>[], label: string) {
+  return actions.filter(action => action.label === label)[0];
+} 
 
 describe('TasksTableComponent', () => {
   let component: TasksTableComponent;
@@ -51,7 +58,7 @@ describe('TasksTableComponent', () => {
   };
 
   const mockTasksDataService = {
-    data: [],
+    data: signal([] as ArmonikData<TaskSummary, TaskOptions>[]),
     total: 0,
     loading: false,
     options: {},
@@ -79,6 +86,10 @@ describe('TasksTableComponent', () => {
     taskNotEnded: jest.fn((s: TaskStatus) => s !== TaskStatus.TASK_STATUS_COMPLETED)
   };
 
+  const mockGrpcService = {
+    actions: [],
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -87,13 +98,12 @@ describe('TasksTableComponent', () => {
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
         { provide: Router, useValue: mockRouter },
-        { provide: TasksDataService, useValue: mockTasksDataService }
+        { provide: TasksDataService, useValue: mockTasksDataService },
+        { provide: GrpcActionsService, useValue: mockGrpcService },
       ]
     }).inject(TasksTableComponent);
 
     component.displayedColumns = displayedColumns;
-    component.selection = [];
-
     component.ngOnInit();
   });
 
@@ -122,10 +132,8 @@ describe('TasksTableComponent', () => {
 
   it('should send a notification on copy', () => {
     component.onCopiedTaskId({
-      raw: {
-        id: 'taskId'
-      }
-    } as ArmonikData<TaskSummary, TaskOptions>);
+      id: 'taskId'
+    } as TaskSummary);
     expect(mockClipBoard.copy).toHaveBeenCalledWith('taskId');
     expect(mockNotificationService.success).toHaveBeenCalledWith('Task ID copied to clipboard');
   });
@@ -135,19 +143,6 @@ describe('TasksTableComponent', () => {
     const task = {} as unknown as TaskSummary;
     component.onRetries(task);
     expect(spy).toHaveBeenCalledWith(task);
-  });
-
-  it('should call the cancelTask method on cancel', () => {
-    const id = 'taskId';
-    component.onCancelTask(id);
-    expect(mockTasksDataService.cancelTask).toHaveBeenCalledWith(id);
-  });
-
-  it('should check if task can be cancelled', () => {
-    const task: TaskSummary = {
-      status: TaskStatus.TASK_STATUS_PROCESSING
-    } as unknown as TaskSummary;
-    expect(component.canCancelTask(task)).toBeTruthy();
   });
 
   describe('generateViewInLogsUrl', () => {
@@ -171,8 +166,9 @@ describe('TasksTableComponent', () => {
 
   it('should emit on selection change', () => {
     const spy = jest.spyOn(component.selectionChange, 'emit');
-    component.onSelectionChange([{ id: 'taskId1' }, { id: 'taskId2' }] as unknown as TaskSummary[]);
-    expect(spy).toHaveBeenCalledWith(['taskId1', 'taskId2']);
+    const event = [{ id: 'taskId1' }, { id: 'taskId2' }] as unknown as TaskSummary[];
+    component.onSelectionChange(event);
+    expect(spy).toHaveBeenCalledWith(event);
   });
 
   describe('Adding a service', () => {
@@ -202,65 +198,74 @@ describe('TasksTableComponent', () => {
     });
 
     it('should add a service action', () => {
-      expect(component.actions[4]).toEqual({
+      const action = getAction(component.actions, component.serviceName);
+      expect(action).toEqual({
         label: 'service',
         icon: 'icon',
-        action$: component.openViewInLogs$
+        click: action.click
       });
     });
 
     it('should modify the service action', () => {
+      const mockAction = {
+        label: 'service',
+        icon: 'icon',
+        click: jest.fn()
+      };
+      component.actions[4] = mockAction;
       component.serviceIcon = 'newIcon';
       expect(component.actions[4]).toEqual({
         label: 'service',
         icon: 'newIcon',
-        action$: component.openViewInLogs$
+        click: mockAction.click,
       });
     });
   });
 
   describe('actions', () => {
     const task = {
-      raw: {
-        id: 'taskId',
-        status: TaskStatus.TASK_STATUS_COMPLETED
-      }
-    } as unknown as TaskData;
+      id: 'taskId',
+      status: TaskStatus.TASK_STATUS_COMPLETED
+    } as TaskSummary;
 
     it('should copy the task id', () => {
-      component.actions[0].action$.next(task);
-      expect(mockClipBoard.copy).toHaveBeenCalledWith(task.raw.id);
+      const action = getAction(component.actions, 'Copy Task ID');
+      action.click([task]);
+      expect(mockClipBoard.copy).toHaveBeenCalledWith(task.id);
       expect(mockNotificationService.success).toHaveBeenCalled();
     });
 
     it('should permit to see task related results', () => {
+      const mockTaskData = {
+        raw: task,
+        resultsQueryParams: {
+          '0-root-3-0': task.id,
+        }
+      } as unknown as TaskData;
+      mockTasksDataService.data.set([mockTaskData]);
+      const action = getAction(component.actions, 'See related result');
       const spy = jest.spyOn(component.router, 'navigate');
-      component.actions[1].action$.next(task);
+      action.click([task]);
       expect(spy).toHaveBeenCalled();
     });
 
-    it('should permit to retry the task', () => {
-      const spy = jest.spyOn(component.retries, 'emit');
-      component.actions[2].action$.next(task);
-      expect(spy).toHaveBeenCalledWith(task.raw);
-    });
+    describe('task retry', () => {
+      let action: GrpcAction<TaskSummary>;
 
-    it('should not permit to retry if the tasks cannot be retried', () => {
-      if (component.actions[2].condition) {
-        task.raw.status = TaskStatus.TASK_STATUS_COMPLETED;
-        expect(component.actions[2].condition(task)).toBeFalsy();
-      }
-    });
+      beforeEach(() => {
+        action = getAction(component.actions, 'Retries');
+      });
 
-    it('should permit to cancel task', () => {
-      component.actions[3].action$.next(task);
-      expect(mockTasksDataService.cancelTask).toHaveBeenCalledWith(task.raw.id);
-    });
+      it('should allow to retry the task', () => {
+        const spy = jest.spyOn(component.retries, 'emit');
+        action.click([task]);
+        expect(spy).toHaveBeenCalledWith(task);
+      });
 
-    it('should not permit to cancel tasks if the task is not cancellable', () => {
-      if (component.actions[3].condition) {
-        expect(component.actions[3].condition(task)).toBeFalsy();
-      }
+      it('should not allow to retry if the task status is not allowed by the action', () => {
+        task.status = TaskStatus.TASK_STATUS_COMPLETED;
+        expect(action.condition!([task])).toBeFalsy();
+      });
     });
 
     it('should open views in logs', () => {
@@ -268,8 +273,9 @@ describe('TasksTableComponent', () => {
       component.serviceIcon = 'icon';
       component.serviceName = 'service';
       component.urlTemplate = 'https://myurl.com?taskId=%taskId';
-      component.actions[4].action$.next(task);
-      expect(spy).toHaveBeenCalledWith(`https://myurl.com?taskId=${task.raw.id}`, '_blank');
+      const action = getAction(component.actions, component.serviceName);
+      action.click([task]);
+      expect(spy).toHaveBeenCalledWith(`https://myurl.com?taskId=${task.id}`, '_blank');
     });
   });
 
