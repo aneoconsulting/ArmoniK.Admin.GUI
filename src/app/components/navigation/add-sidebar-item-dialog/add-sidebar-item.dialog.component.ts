@@ -32,6 +32,10 @@ export class AddSideBarItemDialogComponent implements OnInit {
     if (!this.availableSidebars.includes('divider')) {
       this.availableSidebars.push('divider');
     }
+
+    if (this.availableSidebars.length === 1) {
+      this.selectedItem = 'divider';
+    }
   }
 
   updateSelectedItem(item: string) {

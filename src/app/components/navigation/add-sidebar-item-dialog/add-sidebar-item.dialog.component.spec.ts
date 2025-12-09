@@ -64,6 +64,21 @@ describe('AddSideBarItemDialogComponent', () => {
     it('should set the available sidebar items (items not currently in the sidebar and a divider)', () => {
       expect(component.availableSidebars).toEqual(['sessions', 'divider']);
     });
+
+    describe('With all elements currently in the sidebar', () => {
+      beforeEach(() => {
+        mockNavigationService.currentSidebar = navigationStoredSidebar;
+        component.ngOnInit();
+      });
+
+      it('should contains a divider inside the available sidebar', () => {
+        expect(component.availableSidebars).toEqual(['divider']);
+      });
+
+      it('should set the selectedItem as the divider', () => {
+        expect(component.selectedItem).toEqual('divider');
+      });
+    });
   });
 
   it('should update the selected item', () => {

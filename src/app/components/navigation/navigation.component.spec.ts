@@ -1,5 +1,6 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { ChangeDetectorRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -63,6 +64,10 @@ describe('NavigationComponent', () => {
     navigateByUrl: jest.fn(),
   };
 
+  const mockChangeDetectorRef = {
+    markForCheck: jest.fn(),
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -78,6 +83,7 @@ describe('NavigationComponent', () => {
         { provide: MatDialog, useValue: mockDialog },
         { provide: UserConnectedGuard, useValue: mockUserConnectedGuard },
         { provide: Router, useValue: mockRouter },
+        { provide: ChangeDetectorRef, useValue: mockChangeDetectorRef },
       ]
     }).inject(NavigationComponent);
     component.ngOnInit();
@@ -120,11 +126,20 @@ describe('NavigationComponent', () => {
     expect(mockNavigationService.currentSidebar).toEqual(['item-2', 'item-1']);
   });
 
-  it('should add a new item to the sidebar', () => {
+  describe('addNewSideBarItem', () => {
     const item = 'results';
-    component.addNewSideBarItem();
-    dialogResult.next({ item: item });
-    expect(mockNavigationService.addSidebarItem).toHaveBeenCalledWith(item);
+    beforeEach(() => {
+      component.addNewSideBarItem();
+      dialogResult.next({ item: item });
+    });
+
+    it('should add a new item to the sidebar', () => {
+      expect(mockNavigationService.addSidebarItem).toHaveBeenCalledWith(item);
+    });
+
+    it('should refresh the view', () => {
+      expect(mockChangeDetectorRef.markForCheck).toHaveBeenCalled();
+    });
   });
 
   it('should delete a sidebar item at the specified index', () => {
