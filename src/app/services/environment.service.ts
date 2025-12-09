@@ -18,8 +18,8 @@ export type Host = {
 
 @Injectable()
 export class EnvironmentService {
-  hosts: string[];
-  currentHost: string | null;
+  hosts: Host[];
+  currentHost: Host | null;
 
   private readonly storageService = inject(StorageService);
   private readonly defaultConfigService = inject(DefaultConfigService);
@@ -31,14 +31,14 @@ export class EnvironmentService {
   }
 
   private getHostLists() {
-    return (this.storageService.getItem<string[]>('environments', true) ?? this.defaultConfigService.environments) as string[];
+    return (this.storageService.getItem<Host[]>('environments', true) ?? this.defaultConfigService.environments) as Host[];
   }
 
   private getHost() {
-    return this.storageService.getItem<string>('host-config') ?? this.defaultConfigService.hostConfig;
+    return this.storageService.getItem<Host>('host-config', true) as Host ?? this.defaultConfigService.hostConfig;
   }
 
-  selectHost(host: string | null) {
+  selectHost(host: Host | null) {
     this.currentHost = host;
     this.grpcInterceptor.setHost(this.currentHost);
     if (host === null) {
@@ -46,14 +46,14 @@ export class EnvironmentService {
     }
   }
 
-  addEnvironment(environment: string): void {
+  addEnvironment(environment: Host): void {
     if (!this.hosts.includes(environment)) {
       this.hosts.push(environment);
       this.saveEnvironments();
     }
   }
 
-  removeEnvironment(host: string): void {
+  removeEnvironment(host: Host): void {
     const index = this.hosts.indexOf(host);
     if (index != -1) {
       this.hosts.splice(index, 1);

@@ -29,19 +29,18 @@
     </article>
   }
   @for (host of environmentService.hosts; track $index) {
-    @let env = environmentList.get(host);
-    <article class="env-item" [matTooltip]="host">
+    <article class="env-item" [matTooltip]="host.endpoint">
       <section>
-        <button mat-icon-button i18n-matTooltip matTooltip="Select environment" [disabled]="!env || environmentService.currentHost === host" (click)="selectEnvironment(host)">
-          @if (environmentService.currentHost === host) {
+        <button mat-icon-button i18n-matTooltip matTooltip="Select environment" [disabled]="environmentService.currentHost?.endpoint === host.endpoint" (click)="selectEnvironment(host)">
+          @if (environmentService.currentHost?.endpoint === host.endpoint) {
             <mat-icon [fontIcon]="getIcon('checked')" />
           } @else {
             <mat-icon [fontIcon]="getIcon('unchecked')" />
           }
         </button>
-        @if (env) {
-          <div class="environment" [style]="'color:' + env.color + ';'">
-            <span>{{ env.name }} {{ env.version }}</span>
+        @if (host.environment) {
+          <div class="environment" [style]="'color:' + host.environment.color + ';'">
+            <span>{{ host.environment.name }} {{ host.environment.version }}</span>
           </div>
         } @else {
           <p mat-menu-item disabled i18n>Could not find the environment.</p>

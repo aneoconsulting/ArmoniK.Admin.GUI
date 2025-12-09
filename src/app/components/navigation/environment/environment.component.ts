@@ -9,9 +9,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { rotateFull } from '@app/shared/animations';
 import { ConfirmationDialogComponent } from '@components/dialogs/confirmation/confirmation.dialog';
 import { ConfirmationDialogData } from '@components/dialogs/confirmation/type';
-import { Environment, EnvironmentService } from '@services/environment.service';
+import { Environment, EnvironmentService, Host } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
-import { catchError, combineLatest, concatMap, from, mergeMap, Observable, of, startWith, Subject, Subscription, switchMap } from 'rxjs';
+import { catchError, Observable, of, startWith, Subject, Subscription, switchMap } from 'rxjs';
 import { AddEnvironmentDialogComponent } from './dialog/add-environment.dialog';
 
 @Component({
@@ -40,7 +40,6 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   defaultEnvironmentError = false;
   private readonly host$ = new Subject<void>();
   private readonly hostList$ = new Subject<void>();
-  readonly environmentList: Map<string, Environment | null> = new Map();
 
   @ViewChild(MatMenuTrigger) private readonly trigger: MatMenuTrigger | null = null;
 
@@ -56,17 +55,14 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     const hostSubscription = this.host$.pipe(
       startWith(),
-      switchMap(() => this.hostToEnvironment(this.environmentService.currentHost)),
+      switchMap(() => {
+        if (this.environmentService.currentHost?.environment) {
+          return of(this.environmentService.currentHost?.environment);
+        }
+        return this.hostToEnvironment(this.environmentService.currentHost?.endpoint ?? null);
+      }),
     ).subscribe((environment) => {
       this.environment.set(this.partialToCompleteEnv(environment));
-    });
-
-    const hostListSubscription = this.hostList$.pipe(
-      startWith(),
-      concatMap(() => from(this.environmentService.hosts)),
-      mergeMap((host) => combineLatest([of(host), this.hostToEnvironment(host)]))
-    ).subscribe(([host, value]) => {
-      this.environmentList.set(host, value);
     });
 
     this.hostToEnvironment(null).subscribe((value) => {
@@ -75,7 +71,6 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     this.subscription.add(hostSubscription);
-    this.subscription.add(hostListSubscription);
 
     this.host$.next();
     this.hostList$.next();
@@ -100,11 +95,11 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.iconsService.getIcon(name);
   }
 
-  selectEnvironment(envHost: string | null) {
+  selectEnvironment(envHost: Host | null) {
     if (envHost && this.environmentService.hosts.includes(envHost)) {
-      const env = this.environmentList.get(envHost);
+      const env = this.environmentService.hosts.find(host => host === envHost);
       if (env) {
-        this.environment.set(env);
+        this.environment.set(this.partialToCompleteEnv(env.environment ?? null));
         this.environmentService.selectHost(envHost);
       }
     } else {
@@ -113,27 +108,28 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  private hostToEnvironment(envAdress: string | null): Observable<Environment | null> {
-    return this.httpClient.get<Environment>(`${envAdress ?? ''}/static/environment.json`)
+  private hostToEnvironment(endpoint: string | null): Observable<Environment | null> {
+    return this.httpClient.get<Environment>(`${endpoint ?? ''}/static/environment.json`)
       .pipe(catchError(() => of(null)));
   }
 
   openNewEnvDialog() {
-    const dialogRef = this.dialog.open<AddEnvironmentDialogComponent, void, string>(AddEnvironmentDialogComponent);
+    const dialogRef = this.dialog.open<AddEnvironmentDialogComponent, void, Host>(AddEnvironmentDialogComponent);
 
     dialogRef.afterClosed().subscribe(value => {
-      if (value) {
-        value = value.trim();
-        if (value.at(-1) === '/') {
-          value = value.slice(0, -1);
+      if (value && value.endpoint) {
+        let endpoint = value.endpoint.trim();
+        if (endpoint.at(-1) === '/') {
+          endpoint = endpoint.slice(0, -1);
         }
+        value.endpoint = endpoint;
         this.environmentService.addEnvironment(value);
         this.hostList$.next();
       }
     });
   }
 
-  deleteEnv(host: string) {
+  deleteEnv(host: Host) {
     const dialogRef = this.dialog.open<ConfirmationDialogComponent, ConfirmationDialogData>(ConfirmationDialogComponent, {
       data: {
         title: $localize`Removing an environment`,
