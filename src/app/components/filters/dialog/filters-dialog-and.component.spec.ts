@@ -132,18 +132,18 @@ describe('FiltersDialogAndComponent', () => {
       expect(component.findStatuses({
         field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS,
         for: 'root',
-      })).toEqual(statuses.map((status) => status.value));
+      })).toEqual(statuses);
     });
 
     it('should return an empty array if the field is not of type "status"', () => {
       expect(component.findStatuses({
         field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_ACQUIRED_AT,
         for: 'root',
-      })).toEqual([]);
+      })).toBeUndefined();
     });
 
     it('should return an empty array if there is no defined field', () => {
-      expect(component.findStatuses({})).toEqual([]);
+      expect(component.findStatuses({})).toBeUndefined();
     });
   });
 
