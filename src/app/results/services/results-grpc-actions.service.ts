@@ -59,8 +59,12 @@ export class ResultsGrpcActionsService extends GrpcActionsService<ResultRaw, Res
           this.success($localize`${resultId} downloaded`);
         }
       } else {
-        void this.downloadAsZip(filteredResult);
-        this.success($localize`Results downloaded`);
+        try {
+          void this.downloadAsZip(filteredResult);
+          this.success($localize`Results downloaded`);
+        } catch {
+          this.error($localize`An error occured while downloading the archive`);
+        }
       }
     });
     this.subscriptions.add(downloadSubscription);
@@ -97,10 +101,9 @@ export class ResultsGrpcActionsService extends GrpcActionsService<ResultRaw, Res
         zip.file(`${resultId}.bin`, resultChunk.serializeBinary());
       }
     }
-    await zip.generateAsync({ type: 'uint8array' }).then((content) => {
-      const date = new Date().toISOString().slice(0, 10);
-      const id = Date.now();
-      this.downloadAs(content, `results-${id}-${date}.zip`, 'application/zip');
-    });
+    const content = await zip.generateAsync({ type: 'uint8array' });
+    const date = new Date().toISOString().slice(0, 10);
+    const id = Date.now();
+    this.downloadAs(content, `results-${id}-${date}.zip`, 'application/zip');
   }
 }
