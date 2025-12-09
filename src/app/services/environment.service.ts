@@ -4,11 +4,16 @@ import { GRPC_INTERCEPTORS } from '@ngx-grpc/core';
 import { DefaultConfigService } from './default-config.service';
 import { StorageService } from './storage.service';
 
-export interface Environment {
-  color: string,
-  name: string,
-  description: string,
-  version: string,
+export type Environment = {
+  name?: string;
+  version?: string;
+  description?: string;
+  color?: string;
+}
+
+export type Host = {
+  endpoint: string;
+  environment: Environment | undefined;
 }
 
 @Injectable()
