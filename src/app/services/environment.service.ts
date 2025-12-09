@@ -54,7 +54,7 @@ export class EnvironmentService {
   }
 
   removeEnvironment(host: Host): void {
-    const index = this.hosts.indexOf(host);
+    const index = this.hosts.findIndex(h => h.endpoint === host.endpoint);
     if (index != -1) {
       this.hosts.splice(index, 1);
       this.saveEnvironments();

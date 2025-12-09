@@ -39,7 +39,6 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   defaultEnvironment: Environment | null = null;
   defaultEnvironmentError = false;
   private readonly host$ = new Subject<void>();
-  private readonly hostList$ = new Subject<void>();
 
   @ViewChild(MatMenuTrigger) private readonly trigger: MatMenuTrigger | null = null;
 
@@ -73,7 +72,6 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscription.add(hostSubscription);
 
     this.host$.next();
-    this.hostList$.next();
   }
 
   ngAfterViewInit(): void {
@@ -96,8 +94,8 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   selectEnvironment(envHost: Host | null) {
-    if (envHost && this.environmentService.hosts.includes(envHost)) {
-      const env = this.environmentService.hosts.find(host => host === envHost);
+    if (envHost && this.environmentService.hosts.some(h => h.endpoint === envHost.endpoint)) {
+      const env = this.environmentService.hosts.find(host => host.endpoint === envHost.endpoint);
       if (env) {
         this.environment.set(this.partialToCompleteEnv(env.environment ?? null));
         this.environmentService.selectHost(envHost);
@@ -124,7 +122,6 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         value.endpoint = endpoint;
         this.environmentService.addEnvironment(value);
-        this.hostList$.next();
       }
     });
   }
@@ -140,7 +137,6 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
         this.environmentService.removeEnvironment(host);
-        this.hostList$.next();
 
         if (host === this.environmentService.currentHost) {
           this.selectEnvironment(null);

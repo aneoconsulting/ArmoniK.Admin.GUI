@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { Environment, EnvironmentService } from '@services/environment.service';
+import { Environment, EnvironmentService, Host } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { EnvironmentComponent } from './environment.component';
@@ -14,7 +14,15 @@ describe('EnvironmentComponent', () => {
     getIcon: jest.fn(),
   };
 
-  let mockDialogData = 'http://armonik.eu/ ';
+  let mockDialogData = {
+    endpoint: 'http://armonik.eu/ ',
+    environment: {
+      name: 'armonik',
+      version: 'europe',
+      description: '',
+      color: 'orange'
+    }
+  } as Host;
   const mockDialog = {
     open: jest.fn(() => ({
       afterClosed: jest.fn(() => of(mockDialogData))
@@ -31,10 +39,26 @@ describe('EnvironmentComponent', () => {
     get: jest.fn((): Observable<Environment> => of(mockEnv)),
   };
 
-  const mockCurrentHost: string = ''; 
+  const mockCurrentHost: Host = {
+    endpoint: '',
+    environment: undefined,
+  }; 
   const mockEnvironmentService = {
-    currentHost: mockCurrentHost as string | null,
-    hosts: ['armonik.eu', 'test.fr'],
+    currentHost: mockCurrentHost as Host | null,
+    hosts: [
+      {
+        endpoint: 'armonik.eu',
+        environment: {
+          name: 'armonik',
+          version: 'europe',
+          description: '',
+          color: 'orange'
+        }
+      },
+      {
+        endpoint: 'test.fr',
+      }
+    ],
     selectHost: jest.fn(),
     addEnvironment: jest.fn(),
     removeEnvironment: jest.fn(),
@@ -73,10 +97,6 @@ describe('EnvironmentComponent', () => {
   describe('Initialisation', () => { 
     it('should subscribe to host$', () => {
       expect(component['host$'].observed).toBeTruthy();
-    });
-    
-    it('should subscribe to hostList$', () => {
-      expect(component['hostList$'].observed).toBeTruthy();
     });
 
     it('should set the defaultEnvironment', () => {
@@ -126,7 +146,10 @@ describe('EnvironmentComponent', () => {
 
   describe('Select environment', () => { 
     describe('Valid environment', () => {
-      const providedHost = 'armonik.eu';
+      const providedHost = {
+        endpoint: 'armonik.eu',
+        environment: undefined
+      };
       beforeEach(() => {
         component.selectEnvironment(providedHost);
       });
@@ -156,41 +179,34 @@ describe('EnvironmentComponent', () => {
   });
 
   describe('openNewEnvDialog', () => {
-    let spy: jest.SpyInstance;
-
     beforeEach(() => {
-      spy = jest.spyOn(component['hostList$'], 'next');
       component.openNewEnvDialog();
     });
 
     it('should add the environment to the environment service', () => {
-      expect(mockEnvironmentService.addEnvironment).toHaveBeenCalledWith(mockDialogData.trim().slice(0, -1));
+      expect(mockEnvironmentService.addEnvironment).toHaveBeenCalledWith(mockDialogData);
     });
 
-    it('should call the hostList subject', () => {
-      expect(spy).toHaveBeenCalled();
+    it('should trim the dialog data', () => {
+      expect(mockDialogData.endpoint).toEqual('http://armonik.eu');
     });
   });
   
   describe('deleteEnv', () => {
-    const host = 'some-host';
-    let spyHostList: jest.SpyInstance;
+    const host = {
+      endpoint: 'some-host',
+    } as Host;
     let spySelectEnvironment: jest.SpyInstance;
 
     beforeEach(() => {
       mockEnvironmentService.currentHost = host;
       mockDialogData = host;
-      spyHostList = jest.spyOn(component['hostList$'], 'next');
       spySelectEnvironment = jest.spyOn(component, 'selectEnvironment');
       component.deleteEnv(host);
     });
     
     it('should delete the host from the environment service host list', () => {
       expect(mockEnvironmentService.removeEnvironment).toHaveBeenCalledWith(host);
-    });
-
-    it('should call the hostList subject', () => {
-      expect(spyHostList).toHaveBeenCalled();      
     });
 
     it('should select the default environment if the deleted host is the currently selected one', () => {
