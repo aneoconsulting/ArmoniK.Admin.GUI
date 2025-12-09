@@ -9,10 +9,10 @@ The Armonik Admin GUI aims to provide an easy way to observe and interact with t
 The application is designed to run in an ArmoniK cluster. But you can deploy the application with the following command:
 
 ```sh
-docker run -dit -p 80:1080 --name armonik-admin-app dockerhubaneo/armonik_admin_app
+docker run -dit -p 8080:1080 --name armonik-admin-app dockerhubaneo/armonik_admin_app
 ```
 
-The application will then be available at https://localhost:8080/admin/en/. 
+The application will then be available at http://localhost:8080/admin/en/. 
 
 ℹ️ Starting armonik GUI 0.15, the application will be able to switch between one armonik deployment to another.  
 
