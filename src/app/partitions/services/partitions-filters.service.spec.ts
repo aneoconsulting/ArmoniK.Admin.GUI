@@ -148,10 +148,16 @@ describe('PartitionsFilterService', () => {
     expect(service.retrieveFiltersDefinitions()).toEqual(service.filtersDefinitions);
   });
 
-  it('should retrieve Field', () => {
-    expect(service.retrieveField('Pod Reserved')).toEqual({
-      for: 'root',
-      index: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_POD_RESERVED
+  describe('RetrieveField', () => {
+    it('should retrieve Field', () => {
+      expect(service.retrieveField('Pod Reserved')).toEqual({
+        for: 'root',
+        index: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_POD_RESERVED
+      });
+    });
+
+    it('should return undefined if there is no matching label', () => {
+      expect(service.retrieveField('something')).toBeUndefined();
     });
   });
 });
