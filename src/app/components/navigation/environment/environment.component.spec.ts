@@ -51,7 +51,7 @@ describe('EnvironmentComponent', () => {
         environment: {
           name: 'armonik',
           version: 'europe',
-          description: '',
+          description: 'description',
           color: 'orange'
         }
       },
@@ -86,6 +86,7 @@ describe('EnvironmentComponent', () => {
       'trigger' as unknown as keyof EnvironmentComponent,
       mockTrigger as unknown as Environment // Since trigger is private, MatMenuTrigger is not accepted as a "valid" type.
     );
+    mockEnvironmentService.currentHost = mockCurrentHost;
     component.ngOnInit();
     component.ngAfterViewInit();
   });
@@ -124,6 +125,21 @@ describe('EnvironmentComponent', () => {
     it('should subscribe to trigger menuClosed', () => {
       expect(menuOpenedSubject.observed).toBeTruthy();
     });
+
+    describe('With complete environment information', () => {
+      beforeEach(() => {
+        mockEnvironmentService.currentHost = mockEnvironmentService.hosts[0] as Host;
+        component.ngOnInit();
+      });
+
+      it('should set the environment as the one provided by the host object', () => {
+        expect(component.environment()).toEqual(mockEnvironmentService.hosts[0].environment);
+      });
+
+      it('should not call the environment URL', () => {
+        expect(mockHttpClient.get).not.toHaveBeenCalledWith(mockEnvironmentService.hosts[0].endpoint + '/static/environment.json');
+      });
+    });
   });
 
   describe('Menu events', () => { 
@@ -148,18 +164,42 @@ describe('EnvironmentComponent', () => {
     describe('Valid environment', () => {
       const providedHost = {
         endpoint: 'armonik.eu',
-        environment: undefined
+        environment: {
+          name: 'armonik',
+          version: 'europe',
+          description: 'description',
+          color: 'green'
+        }
       };
+
       beforeEach(() => {
         component.selectEnvironment(providedHost);
       });
 
       it('should set the environment signal with the provided host Environment', () => {
-        expect(component.environment()).toEqual(mockEnv);
+        expect(component.environment()).toEqual(providedHost.environment);
       });
 
       it('should select the host in the environment service', () => {
         expect(mockEnvironmentService.selectHost).toHaveBeenCalledWith(providedHost);
+      });
+    });
+
+    describe('Valid but incomplete environment', () => {
+      const providedHost = {
+        endpoint: 'armonik.eu',
+      } as Host;
+      
+      beforeEach(() => {
+        component.selectEnvironment(providedHost);
+      });
+
+      it('should select the host in the environment service', () => {
+        expect(mockEnvironmentService.selectHost).toHaveBeenCalledWith(providedHost);
+      });
+
+      it('should complete the environment with the completeEnv function', () => {
+        expect(component.environment()).toEqual(component['partialToCompleteEnv'](null));
       });
     });
 

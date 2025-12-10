@@ -98,7 +98,7 @@ export class AddEnvironmentDialogComponent implements OnDestroy {
           name: this.customEnvironmentForm.value.name ?? undefined,
           version: this.customEnvironmentForm.value.version ?? undefined,
           description: this.customEnvironmentForm.value.description ?? undefined,
-          color: this.customEnvironmentForm.value.color ?? undefined,
+          color: this.customEnvironmentForm.value.color!,
         };
       }
       this.dialogRef.close({

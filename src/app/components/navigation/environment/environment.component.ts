@@ -95,11 +95,8 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
   selectEnvironment(envHost: Host | null) {
     if (envHost && this.environmentService.hosts.some(h => h.endpoint === envHost.endpoint)) {
-      const env = this.environmentService.hosts.find(host => host.endpoint === envHost.endpoint);
-      if (env) {
-        this.environment.set(this.partialToCompleteEnv(env.environment ?? null));
-        this.environmentService.selectHost(envHost);
-      }
+      this.environment.set(this.partialToCompleteEnv(envHost.environment ?? null));
+      this.environmentService.selectHost(envHost);
     } else {
       this.environment.set(this.defaultEnvironment);
       this.environmentService.selectHost(null);
