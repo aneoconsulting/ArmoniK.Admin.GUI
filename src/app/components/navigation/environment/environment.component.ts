@@ -13,6 +13,7 @@ import { Environment, EnvironmentService, Host } from '@services/environment.ser
 import { IconsService } from '@services/icons.service';
 import { catchError, Observable, of, startWith, Subject, Subscription, switchMap } from 'rxjs';
 import { AddEnvironmentDialogComponent } from './dialog/add-environment.dialog';
+import { ConflictingEnvironmentDialogComponent, ConflictingEnvironmentDialogData } from './dialog/conflicting-environment.dialog';
 
 @Component({
   selector: 'app-environment',
@@ -118,7 +119,29 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
           endpoint = endpoint.slice(0, -1);
         }
         value.endpoint = endpoint;
-        this.environmentService.addEnvironment(value);
+        const old = this.environmentService.hosts.find(h => h.endpoint === endpoint);
+        if (old) {
+          this.openConflictingEnvDialog(old, value);
+        } else {
+          this.environmentService.addEnvironment(value);
+        }
+        
+      }
+    });
+  }
+
+  openConflictingEnvDialog(oldHost: Host, newHost: Host) {
+    const dialogref = this.dialog.open<ConflictingEnvironmentDialogComponent, ConflictingEnvironmentDialogData>(ConflictingEnvironmentDialogComponent, {
+      data: {
+        old: oldHost,
+        new: newHost,
+      },
+    });
+
+    dialogref.afterClosed().subscribe(value => {
+      if (value) {
+        this.environmentService.removeEnvironment(oldHost);
+        this.environmentService.addEnvironment(newHost);
       }
     });
   }

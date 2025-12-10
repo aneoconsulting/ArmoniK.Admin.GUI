@@ -219,16 +219,33 @@ describe('EnvironmentComponent', () => {
   });
 
   describe('openNewEnvDialog', () => {
-    beforeEach(() => {
-      component.openNewEnvDialog();
+    describe('With host that was not already listed', () => {
+      beforeEach(() => {
+        component.openNewEnvDialog();
+      });
+
+      it('should add the environment to the environment service', () => {
+        expect(mockEnvironmentService.addEnvironment).toHaveBeenCalledWith(mockDialogData);
+      });
+
+      it('should trim the dialog data', () => {
+        expect(mockDialogData.endpoint).toEqual('http://armonik.eu');
+      });
     });
 
-    it('should add the environment to the environment service', () => {
-      expect(mockEnvironmentService.addEnvironment).toHaveBeenCalledWith(mockDialogData);
-    });
+    describe('With host that is already listed', () => {
+      beforeEach(() => {
+        mockDialogData.endpoint = 'test.fr';
+        component.openNewEnvDialog();
+      });
 
-    it('should trim the dialog data', () => {
-      expect(mockDialogData.endpoint).toEqual('http://armonik.eu');
+      it('should remove the environment from the environment service', () => {
+        expect(mockEnvironmentService.removeEnvironment).toHaveBeenCalledWith(mockEnvironmentService.hosts[1]);
+      });
+
+      it('should add the environment to the environment service', () => {
+        expect(mockEnvironmentService.addEnvironment).toHaveBeenCalledWith(mockDialogData);
+      });
     });
   });
   
