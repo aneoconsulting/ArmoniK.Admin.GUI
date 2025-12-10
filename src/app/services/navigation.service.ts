@@ -71,7 +71,7 @@ export class NavigationService {
 
   /**
    * Returns the stored sidebar configuration.
-   * If a stored item is not a sibar item, it will be filtered.
+   * If a stored item is not a sidebar item, it will be filtered.
    */
   restoreSidebar(): Sidebar[] {
     const sidebar = this.storageService.getItem('navigation-sidebar', true) as Sidebar[] || this.defaultConfigService.defaultSidebar;

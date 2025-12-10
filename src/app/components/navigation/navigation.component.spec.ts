@@ -121,7 +121,7 @@ describe('NavigationComponent', () => {
     expect(mockNavigationService.toggleSidebarOpened).toHaveBeenCalled();
   });
 
-  it('should change the position of the droped element in the navigation component array', () => {
+  it('should change the position of the dropped element in the navigation component array', () => {
     component.drop({ currentIndex: 1, previousIndex: 0 } as CdkDragDrop<SidebarItem[]>);
     expect(mockNavigationService.currentSidebar).toEqual(['item-2', 'item-1']);
   });
