@@ -88,6 +88,7 @@ export const appConfig: ApplicationConfig = {
       useClass: GrpcHostInterceptor,
     },
     provideAppInitializer(() => {
+      inject(ThemeService);
       const initializerFn = (initializeAppFactory)(inject(UserGrpcService), inject(UserService), inject(VersionsGrpcService), inject(VersionsService), inject(HttpClient), inject(StorageService));
       return initializerFn();
     }),
