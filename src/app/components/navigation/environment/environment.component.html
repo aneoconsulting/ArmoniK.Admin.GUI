@@ -38,13 +38,9 @@
             <mat-icon [fontIcon]="getIcon('unchecked')" />
           }
         </button>
-        @if (host.environment) {
-          <div class="environment" [style]="'color:' + host.environment.color + ';'">
-            <span>{{ host.environment.name }} {{ host.environment.version }}</span>
-          </div>
-        } @else {
-          <p mat-menu-item disabled i18n>Could not find the environment.</p>
-        }
+        <div class="environment" [style]="'color:' + (host.environment?.color ?? 'red') + ';'">
+          <span>{{ host.environment?.name ?? 'Unknown' }} {{ host.environment?.version ?? 'Unknown' }}</span>
+        </div>
       </section>
       <button mat-icon-button (click)="deleteEnv(host)" color="warn">
         <mat-icon [fontIcon]="getIcon('delete')" />
