@@ -37,10 +37,10 @@
           @for (item of navigationService.currentSidebar; track $index) {
           <li cdkDrag>
             @if (isEditing) {
-            <mat-icon class="handle" cdkDragHandle [fontIcon]="getIcon('drag')" />
+            <mat-icon class="handle" cdkDragHandle [fontIcon]="getIcon('drag')" i18n-matTooltip matTooltip="Drag this to change the position of the item" />
             }
             @if(item.type !== 'divider') {
-            <a mat-list-item [routerLink]="item.route" routerLinkActive="navbar-item-selected" [disabled]="isEditing">
+            <a mat-list-item [routerLink]="!isEditing ? item.route : null" routerLinkActive="navbar-item-selected" [disabled]="isEditing">
               <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon(item.id)"></mat-icon>
               <span matListItemTitle> {{ item.display}} </span>
             </a>
@@ -48,7 +48,7 @@
             <mat-divider />
             }
             @if (isEditing) {
-            <button mat-icon-button (click)="deleteSideBarItem($index)">
+            <button mat-icon-button (click)="deleteSideBarItem($index)" i18n-matTooltip matTooltip="Delete this item">
               <mat-icon [fontIcon]="getIcon('delete')" />
             </button>
             }

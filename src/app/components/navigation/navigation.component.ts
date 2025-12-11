@@ -1,7 +1,7 @@
 import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed, ChangeDetectorRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -64,6 +64,7 @@ export class NavigationComponent implements OnInit {
   private readonly iconsService = inject(IconsService);
   private readonly userConnectedGuard = inject(UserConnectedGuard);
   private readonly dialog = inject(MatDialog);
+  private readonly changeDetector = inject(ChangeDetectorRef);
 
   settingsItem = $localize`Settings`;
 
@@ -110,6 +111,7 @@ export class NavigationComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.navigationService.addSidebarItem(result.item);
+        this.changeDetector.markForCheck();
       }
     });
   }

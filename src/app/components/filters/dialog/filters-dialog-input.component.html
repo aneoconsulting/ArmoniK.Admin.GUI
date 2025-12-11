@@ -25,7 +25,7 @@
     </mat-form-field>
   }
   @case ('status') {
-    <app-autocomplete [options]="statuses" [value]="valueAsString" (valueChange)="onAutoCompleteChange($event)" />
+    <app-autocomplete [options]="statusesList" [value]="valueAsStatus(value)" (valueChange)="onAutoCompleteChange($event)" />
   }
   @case ('boolean') {
     <app-autocomplete [options]="['true', 'false']" [value]="value?.toString()" (valueChange)="onBooleanChange($event)" />

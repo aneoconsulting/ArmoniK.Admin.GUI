@@ -74,9 +74,7 @@ export class PartitionsFiltersService extends DataFilterService<PartitionRawEnum
     return this.filtersDefinitions;
   }
 
-  retrieveField(filterField: string): PartitionFilterField  {
-    const values = Object.values(this.rootField);
-    const index = values.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
-    return { for: 'root', index: index };
+  retrieveField(filterField: string): PartitionFilterField | undefined {
+    return this.findKeyFromLabel(this.rootField, filterField, 'root');
   }
 }

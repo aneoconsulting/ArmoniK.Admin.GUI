@@ -17,10 +17,12 @@ describe('FiltersDialogFieldComponent', () => {
       type: 'string',
     }],
     retrieveLabel: jest.fn((_, value) => value === TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID ? 'TaskId' : 'Else'),
-    retrieveField: jest.fn((value): { for?: string; index?: number } => value === 'someProperty' ? { index: -1 } : {
-      for: 'root',
-      index: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
-    }),
+    retrieveField: jest.fn((value): { for?: string; index?: number } | undefined => 
+      value === 'someProperty' ? undefined : {
+        for: 'root',
+        index: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
+      }
+    ),
   };
 
   const filterForm = new FormGroup<FormFilterType<TaskSummaryEnumField, TaskOptionEnumField>>({
@@ -66,19 +68,44 @@ describe('FiltersDialogFieldComponent', () => {
       spy = jest.spyOn(component.for, 'emit');
     });
 
-    describe('with non custom property', () => {
+    describe('With numbered string property', () => {
+      const value = '1';
+
+      it('should set the component value as the label corresponding to the value (in this case, Else)', () => {
+        component.writeValue(value);
+        expect(component.value).toEqual('Else');
+      });
+
+      it('should not emit the for event', () => {
+        expect(spy).not.toHaveBeenCalled();
+      });
+
+      it('should not emit the change event', () => {
+        expect(registeredOnChange).not.toHaveBeenCalled();
+      });
+
+      it('should not emit the touched event', () => {
+        expect(registeredOnTouche).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('with for/root property', () => {
       const value = 'TaskId';
 
       beforeEach(() => {
         component.writeValue(value);
       });
-
-      it('should change the value', () => {
-        expect(component.value).toEqual(value);
+      
+      it('should emit the for returned by the "retrieveField" method', () => {
+        expect(spy).toHaveBeenCalledWith('root');
       });
 
-      it('should emit the new "for" value for the filter', () => {
-        expect(spy).toHaveBeenCalledWith('root');
+      it('should emit the change event with the field', () => {
+        expect(registeredOnChange).toHaveBeenCalledWith(TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID);
+      });
+
+      it('should emit the touched event with the field value', () => {
+        expect(registeredOnTouche).toHaveBeenCalledWith(TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID);
       });
     });
 
@@ -88,19 +115,28 @@ describe('FiltersDialogFieldComponent', () => {
       beforeEach(() => {
         component.writeValue(value);
       });
-
-      it('should change the value', () => {
-        expect(component.value).toEqual(value);
+      
+      it('should emit the for returned by the "retrieveField" method', () => {
+        expect(spy).toHaveBeenCalledWith('custom');
       });
 
-      it('should emit the new "for" value for the filter as "custom"', () => {
-        expect(spy).toHaveBeenCalledWith('custom');
+      it('should emit the change event with the field', () => {
+        expect(registeredOnChange).toHaveBeenCalledWith(value);
+      });
+
+      it('should emit the touched event with the field value', () => {
+        expect(registeredOnTouche).toHaveBeenCalledWith(value);
       });
     });
 
-    it('should retrieve the label if the provided value is a number', () => {
-      component.writeValue('1');
-      expect(component.value).toEqual('Else');
+    describe('With null', () => {
+      beforeEach(() => {
+        component.writeValue(null);
+      });
+
+      it('should set the value as null', () => {
+        expect(component.value).toBeNull();
+      });
     });
   });
 

@@ -92,6 +92,7 @@ describe('ResultsIndexService', () => {
           'manualDeletion',
           'opaqueId',
           'actions',
+          'select',
         ]),
       );
     });

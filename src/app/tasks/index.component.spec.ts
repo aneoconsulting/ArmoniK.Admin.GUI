@@ -163,6 +163,7 @@ describe('Tasks Index Component', () => {
 
   const mockGrpcService = {
     actions: [],
+    refresh: {},
   };
 
   beforeEach(() => {
