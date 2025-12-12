@@ -1,5 +1,5 @@
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { HttpClient } from '@angular/common/http';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
@@ -94,9 +94,12 @@ describe('IndexComponent', () => {
   const mockNavigationService = {
     restoreSidebar: jest.fn(() => [...mockSideBar]),
     saveSidebar: jest.fn(),
+    resetSidebarToDefault: jest.fn(),
+    resetSidebarToStored: jest.fn(),
     updateSidebar: jest.fn(),
     defaultSidebar: [...mockSideBar],
-    sidebarItems: [...mockSidebarItems]
+    sidebarItems: [...mockSidebarItems],
+    edit: signal(false),
   };
 
   const mockKeys: Key[] = ['applications-columns', 'dashboard-lines', 'language'];
@@ -150,32 +153,55 @@ describe('IndexComponent', () => {
     it('should set keys', () => {
       expect(component.keys).toEqual(new Set(mockKeys));
     });
-
-    it('should set sidebar', () => {
-      expect(component.sidebar).toEqual(mockSideBar);
-    });
   });
 
   it('should retrieve icons', () => {
     expect(component.getIcon('heart')).toEqual('favorite');
   });
 
-  it('should reset sidebar', () => {
-    component.onRestoreSidebar();
-    expect(mockNavigationService.restoreSidebar).toHaveBeenCalled();
+  it('should start edit the sidebar', () => {
+    component.startEditSideBar();
+    expect(mockNavigationService.edit()).toBeTruthy();
   });
 
-  it('should clear side bar', () => {
-    component.sidebar = ['applications', 'divider', 'partitions'];
-    dialogResult = true;
-    component.onClearSideBar();
-    expect(component.sidebar).toEqual(mockSideBar);
+  describe('resetSidebar', () => {
+    beforeEach(() => {
+      mockNavigationService.edit.set(true);
+      component.resetSidebar();
+    });
+
+    it('should reset navigation sidebar', () => {
+      expect(mockNavigationService.resetSidebarToStored).toHaveBeenCalled();
+    });
+
+    it('should stop editing', () => {
+      expect(mockNavigationService.edit()).toBeFalsy();
+    });
+  });
+
+  describe('resetToDefaultSideBar', () => {
+    beforeEach(() => {
+      dialogResult = true;
+      component.resetToDefaultSideBar();
+    });
+
+    it('should reset the sidebar to its default configuration', () => {
+      expect(mockNavigationService.resetSidebarToDefault).toHaveBeenCalled();
+    });
+
+    it('should stop editing', () => {
+      expect(mockNavigationService.edit()).toBeFalsy();
+    });
   });
 
   describe('onSaveSideBar', () => {
+    beforeEach(() => {
+      mockNavigationService.edit.set(true);
+    });
+
     it('should save sidebar', () => {
       component.onSaveSidebar();
-      expect(mockNavigationService.saveSidebar).toHaveBeenCalledWith(component.sidebar);
+      expect(mockNavigationService.saveSidebar).toHaveBeenCalled();
     });
   
     it('should restore keys', () => {
@@ -183,45 +209,11 @@ describe('IndexComponent', () => {
       component.onSaveSidebar();
       expect(component.keys).toEqual(new Set(mockKeys));
     });
-  });
 
-  it('should remove an item of the sidebar according to its index', () => {
-    component.onRemoveSidebarItem(0);
-    expect(component.sidebar).toEqual(['sessions', 'tasks']);
-  });
-
-  it('should add a sidebar item at the end of the set', () => {
-    component.onAddSidebarItem();
-    expect(component.sidebar).toEqual([...mockSideBar, 'dashboard']);
-  });
-
-  it('should return the sidebar items', () => {
-    expect(component.getSidebarItems()).toEqual(mockSidebarItems.map(item => {
-      return {
-        name: item.display,
-        value: item.id
-      };
-    }));
-  });
-
-  describe('findSidebarItem', () => {
-    it('should find a sidebar item', () => {
-      expect(component.findSidebarItem('applications')).toEqual({
-        type: 'link',
-        id: 'applications',
-        display: $localize`Applications`,
-        route: '/applications',
-      });
+    it('should stop editing', () => {
+      component.onSaveSidebar();
+      expect(mockNavigationService.edit()).toBeFalsy();
     });
-  
-    it('should throw an Error if it does not find any item', () => {
-      expect(() => component.findSidebarItem('notExisting' as Sidebar)).toThrow();
-    });
-  });
-
-  it('should update the sidebar item on change', () => {
-    component.onSidebarItemChange(0, 'results');
-    expect(component.sidebar[0]).toEqual('results');
   });
 
   describe('updateKeySelection', () => {
@@ -432,15 +424,6 @@ describe('IndexComponent', () => {
       component.onSubmitImport(event);
       expect(target.reset).toHaveBeenCalled();
     });
-  });
-
-  it('should update position on drop', () => {
-    const event = {
-      previousIndex: 0,
-      currentIndex: 1
-    } as CdkDragDrop<SidebarItem[]>;
-    component.drop(event);
-    expect(component.sidebar).toEqual(['sessions', 'dashboard', 'tasks']);
   });
 
   it('should retrieve the config file name', () => {
