@@ -19,6 +19,7 @@ import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { StorageService } from '@services/storage.service';
 import { ClearAllDialogComponent } from './component/clear-all-dialog.component';
+import { ThemeSelectorComponent } from './component/theme-selector.component';
 
 @Component({
   selector: 'app-settings-index',
@@ -39,7 +40,8 @@ import { ClearAllDialogComponent } from './component/clear-all-dialog.component'
     MatButtonModule,
     MatSnackBarModule,
     MatMenuModule,
-  ]
+    ThemeSelectorComponent,
+  ],
 })
 export class IndexComponent implements OnInit {
   sharableURL = null;

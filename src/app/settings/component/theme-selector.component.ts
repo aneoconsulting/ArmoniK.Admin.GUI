@@ -1,26 +1,25 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { Theme } from '@app/types/themes';
+import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { IconsService } from '@services/icons.service';
 import { ThemeService } from '@services/theme.service';
 
 @Component({
   selector: 'app-theme-selector',
-  templateUrl: './theme-selector.component.html',
+  templateUrl: 'theme-selector.component.html',
   styleUrl: 'theme-selector.component.scss',
-  providers: [],
   imports: [
-    MatButtonModule,
-    MatMenuModule,
+    PageSectionHeaderComponent,
     MatIconModule,
-    MatTooltipModule,
+    MatButtonModule,
+    CommonModule,
   ]
 })
 export class ThemeSelectorComponent {
-  private readonly themeService = inject(ThemeService);
+  readonly themeService = inject(ThemeService);
   private readonly iconsService = inject(IconsService);
 
   readonly availableThemes: { name: Theme, displayName: string }[] = [

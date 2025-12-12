@@ -1,30 +1,23 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { IconsService } from '@services/icons.service';
 import { ThemeService } from '@services/theme.service';
 import { ThemeSelectorComponent } from './theme-selector.component';
 
 describe('ThemeSelectorComponent', () => {
   let component: ThemeSelectorComponent;
-  let fixture: ComponentFixture<ThemeSelectorComponent>;
 
   const mockThemeService = {
     changeTheme: jest.fn(),
   };
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
+    component = TestBed.configureTestingModule({
       providers: [
         ThemeSelectorComponent,
         { provide: ThemeService, useValue: mockThemeService },
         IconsService
       ]
-    }).compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ThemeSelectorComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    }).inject(ThemeSelectorComponent);
   });
 
   it('should create', () => {

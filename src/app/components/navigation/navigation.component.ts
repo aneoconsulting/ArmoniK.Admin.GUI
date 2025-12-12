@@ -25,7 +25,6 @@ import { ChangeLanguageButtonComponent } from './change-language-button.componen
 import { EnvironmentComponent } from './environment/environment.component';
 import { ExternalServicesComponent } from './external-services/external-services.component';
 import { SchemeSwitcherComponent } from './scheme-switcher/scheme-switcher.component';
-import { ThemeSelectorComponent } from './theme-selector.component';
 import { VersionsMenuComponent } from './version-menu/versions-menu.component';
 
 @Component({
@@ -39,7 +38,6 @@ import { VersionsMenuComponent } from './version-menu/versions-menu.component';
   imports: [
     AsyncPipe,
     RouterModule,
-    ThemeSelectorComponent,
     MatToolbarModule,
     MatButtonModule,
     MatSidenavModule,
