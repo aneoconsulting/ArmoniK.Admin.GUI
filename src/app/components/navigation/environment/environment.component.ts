@@ -113,7 +113,7 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
     const dialogRef = this.dialog.open<AddEnvironmentDialogComponent, void, Host>(AddEnvironmentDialogComponent);
 
     dialogRef.afterClosed().subscribe(value => {
-      if (value && value.endpoint) {
+      if (value?.endpoint) {
         let endpoint = value.endpoint.trim();
         if (endpoint.at(-1) === '/') {
           endpoint = endpoint.slice(0, -1);
