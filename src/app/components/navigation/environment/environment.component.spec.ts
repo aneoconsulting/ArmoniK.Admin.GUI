@@ -247,6 +247,12 @@ describe('EnvironmentComponent', () => {
         expect(mockEnvironmentService.addEnvironment).toHaveBeenCalledWith(mockDialogData);
       });
     });
+
+    it('should not add an empty string', () => {
+      mockDialogData.endpoint = '';
+      component.openNewEnvDialog();
+      expect(mockEnvironmentService.addEnvironment).not.toHaveBeenCalled();
+    });
   });
   
   describe('deleteEnv', () => {
@@ -281,5 +287,10 @@ describe('EnvironmentComponent', () => {
       name: 'Unknown',
       version: 'Unknown',
     });
+  });
+
+  it('should unsubscribe on destroy', () => {
+    component.ngOnDestroy();
+    expect(component['subscriptions'].closed).toBeTruthy();
   });
 });

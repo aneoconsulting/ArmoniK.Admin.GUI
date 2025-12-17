@@ -46,9 +46,9 @@ export class EnvironmentService {
     }
   }
 
-  addEnvironment(environment: Host): void {
-    if (!this.hosts.includes(environment)) {
-      this.hosts.push(environment);
+  addEnvironment(host: Host): void {
+    if (!this.hosts.some(h => h.endpoint === host.endpoint)) {
+      this.hosts.push(host);
       this.saveEnvironments();
     }
   }

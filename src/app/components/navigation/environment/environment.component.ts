@@ -45,7 +45,7 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
   openedMenu = false;
 
-  private readonly subscription = new Subscription();
+  private readonly subscriptions = new Subscription();
 
   private readonly iconsService = inject(IconsService);
   private readonly dialog = inject(MatDialog);
@@ -57,7 +57,7 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
       startWith(),
       switchMap(() => {
         if (this.environmentService.currentHost?.environment) {
-          return of(this.environmentService.currentHost?.environment);
+          return of(this.environmentService.currentHost.environment);
         }
         return this.hostToEnvironment(this.environmentService.currentHost?.endpoint ?? null);
       }),
@@ -70,24 +70,24 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
       this.defaultEnvironmentError = value === null;
     });
 
-    this.subscription.add(hostSubscription);
+    this.subscriptions.add(hostSubscription);
 
     this.host$.next();
   }
 
   ngAfterViewInit(): void {
     if (this.trigger) {
-      this.subscription.add(this.trigger.menuClosed.subscribe(() => {
+      this.subscriptions.add(this.trigger.menuClosed.subscribe(() => {
         this.openedMenu = false;
       }));
-      this.subscription.add(this.trigger.menuOpened.subscribe(() => {
+      this.subscriptions.add(this.trigger.menuOpened.subscribe(() => {
         this.openedMenu = true;
       }));
     }
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   getIcon(name: string) {
@@ -112,8 +112,8 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   openNewEnvDialog() {
     const dialogRef = this.dialog.open<AddEnvironmentDialogComponent, void, Host>(AddEnvironmentDialogComponent);
 
-    dialogRef.afterClosed().subscribe(value => {
-      if (value?.endpoint) {
+    const subscription = dialogRef.afterClosed().subscribe(value => {
+      if (value?.endpoint && value.endpoint !== '') {
         let endpoint = value.endpoint.trim();
         if (endpoint.at(-1) === '/') {
           endpoint = endpoint.slice(0, -1);
@@ -125,9 +125,10 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
           this.environmentService.addEnvironment(value);
         }
-        
       }
     });
+    
+    this.subscriptions.add(subscription);
   }
 
   openConflictingEnvDialog(oldHost: Host, newHost: Host) {
@@ -138,12 +139,14 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
       },
     });
 
-    dialogref.afterClosed().subscribe(value => {
+    const subscription = dialogref.afterClosed().subscribe(value => {
       if (value) {
         this.environmentService.removeEnvironment(oldHost);
         this.environmentService.addEnvironment(newHost);
       }
     });
+
+    this.subscriptions.add(subscription);
   }
 
   deleteEnv(host: Host) {
