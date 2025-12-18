@@ -67,7 +67,6 @@ export class DefaultConfigService {
     'sessions',
     'tasks',
     'results',
-    'divider',
   ];
 
   readonly #defaultApplications: ScopeConfig<ApplicationRaw, ApplicationRawEnumField> = {
