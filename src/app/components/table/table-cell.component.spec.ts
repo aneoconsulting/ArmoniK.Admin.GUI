@@ -39,6 +39,8 @@ describe('TableCellComponent', () => {
     ]
   ];
 
+  const byteArray = 'Mock-byte-array';
+
   const queryParamsMap = new Map<SessionRawColumnKey, { [key: string]: string }>();
   queryParamsMap.set('sessionId', { sessionId: 'session-id' });
 
@@ -54,8 +56,9 @@ describe('TableCellComponent', () => {
       options,
       clientSubmission: false,
       workerSubmission: false,
+      cancelledAt: byteArray, // This property is modified for tests purposes
       partitionIds: []
-    } as SessionRaw,
+    } as unknown as SessionRaw,
     resultsQueryParams: {
       '0-root-1-1': 'session-not-id',
       '0-root-2-1': 'session',
@@ -227,6 +230,19 @@ describe('TableCellComponent', () => {
         raw: {}
       } as ArmonikData<SessionRaw, TaskOptions>;
       expect(component.dateValue).toBeNull();
+    });
+  });
+
+  describe('byteArray value', () => {
+    beforeEach(() => {
+      column.key = 'cancelledAt';
+      column.type = 'byte-array';
+      component.column = column;
+      component.element = element;
+    });
+
+    it('should set byteArray', () => {
+      expect(component.byteArray).toEqual(byteArray);
     });
   });
 

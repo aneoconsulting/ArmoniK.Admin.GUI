@@ -1,8 +1,9 @@
 import { FilterStringOperator } from '@aneoconsultingfr/armonik.api.angular';
+import { TestBed } from '@angular/core/testing';
 import { FiltersDialogOperatorComponent } from './filters-dialog-operator.component';
 
 describe('FiltersDialogOperatorComponent', () => {
-  const component = new FiltersDialogOperatorComponent();
+  let component: FiltersDialogOperatorComponent;
 
   const operators: Record<number, string> = {
     [FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL]: 'equal',
@@ -13,6 +14,11 @@ describe('FiltersDialogOperatorComponent', () => {
   const registeredOnTouche = jest.fn((val: number | null) => val);
 
   beforeEach(() => {
+    component = TestBed.configureTestingModule({
+      providers: [
+        FiltersDialogOperatorComponent
+      ],
+    }).inject(FiltersDialogOperatorComponent);
     component.operators = operators;
     component.registerOnChange(registeredOnChange);
     component.registerOnTouched(registeredOnTouche);
@@ -76,5 +82,12 @@ describe('FiltersDialogOperatorComponent', () => {
         expect(component.value).toEqual('');
       });
     });
+  });
+
+  it('should directly write value if there is only one operator available', () => {
+    component.operators = {
+      [FilterStringOperator.FILTER_STRING_OPERATOR_CONTAINS]: 'Contains',
+    };
+    expect(registeredOnChange).toHaveBeenCalledWith(FilterStringOperator.FILTER_STRING_OPERATOR_CONTAINS);
   });
 });
