@@ -2,7 +2,7 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { Component, Inject, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -36,8 +36,7 @@ export class TableInspectMessageDialogComponent {
   }
 
   constructor(
-    public dialogRef: MatDialogRef<TableInspectMessageDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) private data: TableInspectMessageDialogData
+    @Inject(MAT_DIALOG_DATA) private readonly data: TableInspectMessageDialogData
   ) {}
 
   private readonly iconsService = inject(IconsService);
@@ -47,10 +46,6 @@ export class TableInspectMessageDialogComponent {
   copy() {
     this.clipboard.copy(this.message);
     this.notificationService.success('Message copied');
-  }
-
-  onNoClick(): void {
-    this.dialogRef.close();
   }
 
   getIcon(name: string) {

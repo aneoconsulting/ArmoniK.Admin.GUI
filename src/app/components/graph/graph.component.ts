@@ -182,7 +182,7 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
    */
   getComplementaryColor(color: string) {
     const colorHex = color.replace('#', '');
-    const colorDec = parseInt(colorHex, 16);
+    const colorDec = Number.parseInt(colorHex, 16);
     let complementaryHex = ((1 << 4 * colorHex.length) - 1 - colorDec).toString(16);
 
     while (complementaryHex.length < colorHex.length) {

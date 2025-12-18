@@ -46,7 +46,7 @@ if (mouse) {
 
     const dx = Math.abs(x - globalThis.innerWidth / 2);
     const dy = Math.abs(y - globalThis.innerHeight / 2);
-    const distance = Math.sqrt(dx * dx + dy * dy);
+    const distance = Math.hypot(dx * dx + dy * dy);
     const size = Math.max(300 - distance, 125);
 
     mouse.style.width = `${size}px`;

@@ -71,9 +71,4 @@ describe('TableInspectMessageDialogComponent', () => {
   it('should get icon', () => {
     expect(component.getIcon('heart')).toEqual('favorite');
   });
-
-  it('should close dialog', () => {
-    component.onNoClick();
-    expect(mockMatDialogRef.close).toHaveBeenCalled();
-  });
 });

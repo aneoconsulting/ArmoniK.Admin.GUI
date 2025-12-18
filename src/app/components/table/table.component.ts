@@ -140,13 +140,13 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   }
 
   isSelected(row: T): boolean {
-    return this.selection.selected.find(selectedRow => {
+    return this.selection.selected.some(selectedRow => {
       if (this.dataComparator) {
         return this.dataComparator(row, selectedRow);
       } else {
         return false;
       }
-    }) !== undefined;
+    });
   }
 
   toggleAllRows(): void {

@@ -108,8 +108,7 @@ export class StorageService implements Storage {
         throw new Error('No data found for the current version');
       }
       this.importDataObject(dataToImport, override);
-    }
-    else if (parsedData['version'] && (parsedData['version']).slice(0, -1) === pkg.version.slice(0, -1)) {
+    } else if (parsedData['version'] && (parsedData['version']).slice(0, -1) === pkg.version.slice(0, -1)) {
       this.importDataObject(parsedData, override);
     } else {
       throw new Error('No data found for the current version');

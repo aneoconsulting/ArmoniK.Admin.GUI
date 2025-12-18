@@ -40,13 +40,12 @@ export class ShareUrlService {
     return keys.reduce((acc, key) => {
       const value = object[key];
 
-      if (!value)
+      if (!value) {
         return acc;
-
-      if (acc === '')
-        return `${key}=${value}`;
-
-      return `${acc}&${key}=${value}`;
+      } else if (acc === '') {
+        return `${key}=` + value.toString();
+      }
+      return `${acc}&${key}=` + value.toString();
     }, '');
   }
 }
