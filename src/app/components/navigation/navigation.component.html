@@ -1,14 +1,14 @@
 <mat-toolbar class="header-toolbar" color="primary">
   @if (isHandset$ | async) {
-    <button mat-icon-button (click)="drawer.toggle()">
-      <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-    </button>
+  <button mat-icon-button (click)="drawer.toggle()">
+    <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+  </button>
   }
-  <button mat-icon-button (click)="toggleSideBar()">
-    @if (sideBarOpened) {
-      <mat-icon [fontIcon]="getIcon('menu-open')" [dir]="'rtl'"/>
+  <button mat-icon-button (click)="toggleSidebar()">
+    @if (navigationService.sideBarOpened()) {
+    <mat-icon [fontIcon]="getIcon('menu-open')" [dir]="'rtl'" />
     } @else {
-      <mat-icon [fontIcon]="getIcon('menu')" [dir]="'rtl'"/>
+    <mat-icon [fontIcon]="getIcon('menu')" [dir]="'rtl'" />
     }
   </button>
   <div class="title">
@@ -21,33 +21,52 @@
   <app-healthcheck />
   <app-external-services />
   <app-versions-menu />
-  <app-theme-selector/>
-  <button mat-icon-button [routerLink]="'/profile'" [disabled]="isProfileButtonDisabled()" matTooltip="Profile" i18n-matTooltip="Profile button tooltip">
+  <button mat-icon-button [routerLink]="'/profile'" [disabled]="isProfileButtonDisabled()" matTooltip="Profile"
+    i18n-matTooltip="Profile button tooltip">
     <mat-icon [fontIcon]="getIcon('profile')"></mat-icon>
   </button>
 </mat-toolbar>
 <mat-sidenav-container autosize class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav"
-  [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-  [mode]="(isHandset$ | async) ? 'over' : 'side'"
-  [opened]="(isHandset$ | async) === false && sideBarOpened">
-    <mat-nav-list>
-      @for (item of sidebar; track $index) {
-        @if(item.type !== 'divider') {
-          <a mat-list-item [routerLink]="item.route" routerLinkActive="navbar-item-selected">
-            <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon(item.id)"></mat-icon>
-            <span matListItemTitle> {{ item.display}} </span>
-          </a>
-        } @else {
-          <mat-divider/>
-        }
+  <mat-sidenav #drawer class="sidenav" [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) === false && navigationService.sideBarOpened()">
+    @let isEditing = navigationService.edit();
+    <div class="nav-container" [style.height]="isEditing ? '100%' : 'fit-content'">
+      <mat-nav-list cdkDropList (cdkDropListDropped)="drop($event)">
+        <ul [style.gap]="isEditing ? '0.25rem' : ''">
+          @for (item of navigationService.currentSidebar; track $index) {
+          <li cdkDrag>
+            @if (isEditing) {
+            <mat-icon class="handle" cdkDragHandle [fontIcon]="getIcon('drag')" i18n-matTooltip matTooltip="Drag this to change the position of the item" />
+            }
+            @if(item.type !== 'divider') {
+            <a mat-list-item [routerLink]="!isEditing ? item.route : null" routerLinkActive="navbar-item-selected" [disabled]="isEditing">
+              <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon(item.id)"></mat-icon>
+              <span matListItemTitle> {{ item.display}} </span>
+            </a>
+            } @else {
+            <mat-divider />
+            }
+            @if (isEditing) {
+            <button mat-icon-button (click)="deleteSideBarItem($index)" i18n-matTooltip matTooltip="Delete this item">
+              <mat-icon [fontIcon]="getIcon('delete')" />
+            </button>
+            }
+          </li>
+          }
+        </ul>
+        <a mat-list-item [routerLink]="'/settings'" routerLinkActive="navbar-item-selected">
+          <mat-icon matListItemIcon aria-hidden="true" fontIcon="settings"></mat-icon>
+          <span matListItemTitle> {{ settingsItem }} </span>
+        </a>
+      </mat-nav-list>
+      @if (isEditing) {
+      <button id="add-item-button" mat-flat-button color="primary" (click)="addNewSideBarItem()" i18n>Add item</button>
       }
-      <a mat-list-item [routerLink]="'/settings'" routerLinkActive="navbar-item-selected">
-        <mat-icon matListItemIcon aria-hidden="true" fontIcon="settings"></mat-icon>
-        <span matListItemTitle> {{ settingsItem }} </span>
-      </a>
-    </mat-nav-list>
-    <app-scheme-switcher />
+    </div>
+    @if (!isEditing) {
+      <app-scheme-switcher />
+    }
   </mat-sidenav>
   <mat-sidenav-content>
     <main>

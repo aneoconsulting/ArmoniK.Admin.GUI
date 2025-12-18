@@ -3,7 +3,7 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModu
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { FilterType } from '@app/types/filters';
+import { FilterType, FilterValueOptions } from '@app/types/filters';
 import { DataFilterService } from '@app/types/services/data-filter.service';
 import { AutoCompleteComponent } from '@components/auto-complete.component';
 import { NgxMatDatepickerActions, NgxMatDatepickerApply, NgxMatDatepickerCancel, NgxMatDatepickerInput, NgxMatDatepickerInputEvent, NgxMatDatepickerToggle, NgxMatDatetimepicker } from '@ngxmc/datetime-picker';
@@ -37,7 +37,15 @@ import { FilterInputValue } from './types';
 })
 export class FiltersDialogInputComponent implements ControlValueAccessor {
   @Input({ required: true }) type: FilterType;
-  @Input({ required: false }) statuses: string[];
+
+  statusesList: string[];
+  private statusesMap: FilterValueOptions | undefined;
+  @Input({ required: false }) set statuses(entry: FilterValueOptions | undefined) {
+    if (entry) {
+      this.statusesMap = entry;
+      this.statusesList = entry.map(status => status.value);
+    }
+  }
 
   readonly dataFiltersService = inject(DataFilterService);
 
@@ -46,8 +54,12 @@ export class FiltersDialogInputComponent implements ControlValueAccessor {
 
   duration: {[key: number]: string} = {};
 
-  get valueAsString() {
-    return this.value as string;
+  valueAsStatus(value: FilterInputValue): string | undefined {
+    if (Number.isNaN(Number(value))) {
+      return value as string;
+    }
+    const status = this.statusesMap?.find(status => Number(status.key) === Number(value));
+    return status?.value;
   }
 
   onChange(event: Event) {
@@ -57,7 +69,14 @@ export class FiltersDialogInputComponent implements ControlValueAccessor {
   }
 
   onAutoCompleteChange(event: string) {
-    this.writeValue(event);
+    if (this.type === 'status' && this.statusesMap) {
+      const status = this.statusesMap.find(status => status.value.toLocaleLowerCase() === event.toLocaleLowerCase());
+      if (status) {
+        this.writeValue(status.key);
+      }
+    } else {
+      this.writeValue(event);
+    }
   }
 
   onBooleanChange(value: string): void {

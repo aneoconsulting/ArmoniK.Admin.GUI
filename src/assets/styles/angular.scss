@@ -44,8 +44,9 @@ mat-sidenav {
   background-color: var(--armonik-container-background) !important;
 }
 
-mat-nav-list > mat-divider {
+mat-nav-list > ul > li > mat-divider {
   margin: 0.5rem !important;
+  width: 100%;
 }
 
 .mat-mdc-card-header-text {
