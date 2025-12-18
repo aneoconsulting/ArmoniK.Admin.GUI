@@ -20,7 +20,8 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
 
 @Component({
   selector: 'app-table-cell',
-  templateUrl: './table-cell.component.html',
+  templateUrl: 'table-cell.component.html',
+  styleUrl: 'table-cell.component.scss',
   imports: [
     EmptyCellPipe,
     RouterModule,
