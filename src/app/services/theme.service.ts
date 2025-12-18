@@ -10,7 +10,7 @@ export class ThemeService {
   private readonly rendererFactory = inject(RendererFactory2);
   private readonly renderer: Renderer2;
 
-  private currentTheme: Theme; 
+  currentTheme: Theme;
 
   constructor() {
     this.renderer = this.rendererFactory.createRenderer(null, null);

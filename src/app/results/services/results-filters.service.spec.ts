@@ -161,10 +161,16 @@ describe('ResultsFilterService', () => {
     expect(service.retrieveFiltersDefinitions()).toEqual(service.filtersDefinitions);
   });
 
-  it('should retrieve Field', () => {
-    expect(service.retrieveField('Created at')).toEqual({
-      for: 'root',
-      index: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_AT
+  describe('RetrieveField', () => {
+    it('should retrieve Field', () => {
+      expect(service.retrieveField('Created at')).toEqual({
+        for: 'root',
+        index: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_AT
+      });
+    });
+
+    it('should return undefined if there is no matching label', () => {
+      expect(service.retrieveField('something')).toBeUndefined();
     });
   });
 });

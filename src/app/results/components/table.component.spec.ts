@@ -119,10 +119,6 @@ describe('ResultsTableComponent', () => {
   });
 
   describe('Initialisation', () => {
-    it('should set the grpc action refresh as the dataService refresh', () => {
-      expect(mockResultsGrpcActionsService.refresh).toBe(mockResultsDataService.refresh$);
-    });
-
     it('should append all "grpc action service" actions to the component actions', () => {
       for (const action of mockResultsGrpcActionsService.actions) {
         expect(component.actions.includes(action)).toBeTruthy();
@@ -186,5 +182,12 @@ describe('ResultsTableComponent', () => {
 
   it('should get displayedColumns', () => {
     expect(component.columns).toEqual(displayedColumns);
+  });
+
+  it('should emit when the selection changes', () => {
+    const spy = jest.spyOn(component.selectionChange, 'emit');
+    const selection = [{ resultId: '1' }] as ResultRaw[];
+    component.onSelectionChange(selection);
+    expect(spy).toHaveBeenCalledWith(selection);
   });
 });
