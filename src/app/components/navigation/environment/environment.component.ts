@@ -9,10 +9,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { rotateFull } from '@app/shared/animations';
 import { ConfirmationDialogComponent } from '@components/dialogs/confirmation/confirmation.dialog';
 import { ConfirmationDialogData } from '@components/dialogs/confirmation/type';
-import { Environment, EnvironmentService } from '@services/environment.service';
+import { Environment, EnvironmentService, Host } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
-import { catchError, combineLatest, concatMap, from, mergeMap, Observable, of, startWith, Subject, Subscription, switchMap } from 'rxjs';
+import { catchError, Observable, of, startWith, Subject, Subscription, switchMap } from 'rxjs';
 import { AddEnvironmentDialogComponent } from './dialog/add-environment.dialog';
+import { ConflictingEnvironmentDialogComponent, ConflictingEnvironmentDialogData } from './dialog/conflicting-environment.dialog';
 
 @Component({
   selector: 'app-environment',
@@ -39,14 +40,12 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   defaultEnvironment: Environment | null = null;
   defaultEnvironmentError = false;
   private readonly host$ = new Subject<void>();
-  private readonly hostList$ = new Subject<void>();
-  readonly environmentList: Map<string, Environment | null> = new Map();
 
   @ViewChild(MatMenuTrigger) private readonly trigger: MatMenuTrigger | null = null;
 
   openedMenu = false;
 
-  private readonly subscription = new Subscription();
+  private readonly subscriptions = new Subscription();
 
   private readonly iconsService = inject(IconsService);
   private readonly dialog = inject(MatDialog);
@@ -56,17 +55,14 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     const hostSubscription = this.host$.pipe(
       startWith(),
-      switchMap(() => this.hostToEnvironment(this.environmentService.currentHost)),
+      switchMap(() => {
+        if (this.environmentService.currentHost?.environment) {
+          return of(this.environmentService.currentHost.environment);
+        }
+        return this.hostToEnvironment(this.environmentService.currentHost?.endpoint ?? null);
+      }),
     ).subscribe((environment) => {
       this.environment.set(this.partialToCompleteEnv(environment));
-    });
-
-    const hostListSubscription = this.hostList$.pipe(
-      startWith(),
-      concatMap(() => from(this.environmentService.hosts)),
-      mergeMap((host) => combineLatest([of(host), this.hostToEnvironment(host)]))
-    ).subscribe(([host, value]) => {
-      this.environmentList.set(host, value);
     });
 
     this.hostToEnvironment(null).subscribe((value) => {
@@ -74,66 +70,86 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
       this.defaultEnvironmentError = value === null;
     });
 
-    this.subscription.add(hostSubscription);
-    this.subscription.add(hostListSubscription);
+    this.subscriptions.add(hostSubscription);
 
     this.host$.next();
-    this.hostList$.next();
   }
 
   ngAfterViewInit(): void {
     if (this.trigger) {
-      this.subscription.add(this.trigger.menuClosed.subscribe(() => {
+      this.subscriptions.add(this.trigger.menuClosed.subscribe(() => {
         this.openedMenu = false;
       }));
-      this.subscription.add(this.trigger.menuOpened.subscribe(() => {
+      this.subscriptions.add(this.trigger.menuOpened.subscribe(() => {
         this.openedMenu = true;
       }));
     }
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   getIcon(name: string) {
     return this.iconsService.getIcon(name);
   }
 
-  selectEnvironment(envHost: string | null) {
-    if (envHost && this.environmentService.hosts.includes(envHost)) {
-      const env = this.environmentList.get(envHost);
-      if (env) {
-        this.environment.set(env);
-        this.environmentService.selectHost(envHost);
-      }
+  selectEnvironment(envHost: Host | null) {
+    if (envHost && this.environmentService.hosts.some(h => h.endpoint === envHost.endpoint)) {
+      this.environment.set(this.partialToCompleteEnv(envHost.environment ?? null));
+      this.environmentService.selectHost(envHost);
     } else {
       this.environment.set(this.defaultEnvironment);
       this.environmentService.selectHost(null);
     }
   }
 
-  private hostToEnvironment(envAdress: string | null): Observable<Environment | null> {
-    return this.httpClient.get<Environment>(`${envAdress ?? ''}/static/environment.json`)
+  private hostToEnvironment(endpoint: string | null): Observable<Environment | null> {
+    return this.httpClient.get<Environment>(`${endpoint ?? ''}/static/environment.json`)
       .pipe(catchError(() => of(null)));
   }
 
   openNewEnvDialog() {
-    const dialogRef = this.dialog.open<AddEnvironmentDialogComponent, void, string>(AddEnvironmentDialogComponent);
+    const dialogRef = this.dialog.open<AddEnvironmentDialogComponent, void, Host>(AddEnvironmentDialogComponent);
 
-    dialogRef.afterClosed().subscribe(value => {
-      if (value) {
-        value = value.trim();
-        if (value.at(-1) === '/') {
-          value = value.slice(0, -1);
+    const subscription = dialogRef.afterClosed().subscribe(value => {
+      if (value?.endpoint && value.endpoint !== '') {
+        let endpoint = value.endpoint.trim();
+        if (endpoint.at(-1) === '/') {
+          endpoint = endpoint.slice(0, -1);
         }
-        this.environmentService.addEnvironment(value);
-        this.hostList$.next();
+        value.endpoint = endpoint;
+        const old = this.environmentService.hosts.find(h => h.endpoint === endpoint);
+        if (old) {
+          this.openConflictingEnvDialog(old, value);
+        } else {
+          this.environmentService.addEnvironment(value);
+        }
       }
     });
+    
+    this.subscriptions.add(subscription);
   }
 
-  deleteEnv(host: string) {
+  openConflictingEnvDialog(oldHost: Host, newHost: Host) {
+    const dialogref = this.dialog.open<ConflictingEnvironmentDialogComponent, ConflictingEnvironmentDialogData>(ConflictingEnvironmentDialogComponent, {
+      data: {
+        old: oldHost,
+        new: newHost,
+      },
+    });
+
+    const subscription = dialogref.afterClosed().subscribe(value => {
+      if (value) {
+        this.environmentService.removeEnvironment(oldHost);
+        this.environmentService.addEnvironment(newHost);
+      }
+    });
+
+    this.subscriptions.add(subscription);
+  }
+
+  deleteEnv(host: Host) {
     const dialogRef = this.dialog.open<ConfirmationDialogComponent, ConfirmationDialogData>(ConfirmationDialogComponent, {
       data: {
         title: $localize`Removing an environment`,
@@ -144,7 +160,6 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
         this.environmentService.removeEnvironment(host);
-        this.hostList$.next();
 
         if (host === this.environmentService.currentHost) {
           this.selectEnvironment(null);

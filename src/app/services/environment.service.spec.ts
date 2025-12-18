@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { GRPC_INTERCEPTORS } from '@ngx-grpc/core';
 import { DefaultConfigService } from './default-config.service';
-import { EnvironmentService } from './environment.service';
+import { EnvironmentService, Host } from './environment.service';
 import { StorageService } from './storage.service';
 
 describe('EnvironmentService', () => {
@@ -11,10 +11,31 @@ describe('EnvironmentService', () => {
     setHost: jest.fn(),
   };
 
-  const storedHostList = ['host-1', 'host-2'];
-  const storedHost = 'host-1';
+  
+  const storedHost = 
+    {
+      endpoint: 'host-1',
+      environment: {
+        name: 'Host',
+        version: '1',
+        description: '',
+        color: 'white',
+      },
+    };
+  const storedHostList = [
+    storedHost,
+    {
+      endpoint: 'host-2',
+      environment: {
+        name: 'Host',
+        version: '2',
+        description: '',
+        color: 'black',
+      },
+    }
+  ] as Host[];
   const mockStorageService = {
-    getItem: jest.fn((value): string | string[] | undefined => value === 'environments' ? structuredClone(storedHostList) : structuredClone(storedHost)),
+    getItem: jest.fn((value): Host | Host[] | undefined => value === 'environments' ? structuredClone(storedHostList) : structuredClone(storedHost)),
     setItem: jest.fn(),
     removeItem: jest.fn(),
   };
@@ -88,7 +109,15 @@ describe('EnvironmentService', () => {
   });
 
   describe('addEnvironment', () => {
-    const newHost = 'host-3';
+    const newHost = {
+      endpoint: 'host-3',
+      environment: {
+        name: 'Host',
+        version: '3',
+        description: '',
+        color: 'green',
+      },
+    };
     beforeEach(() => {
       service.addEnvironment(newHost);
     });
@@ -111,7 +140,7 @@ describe('EnvironmentService', () => {
   describe('removeEnvironment', () => {
     describe('With existing host', () => {
       beforeEach(() => {
-        service.removeEnvironment('host-2');
+        service.removeEnvironment(storedHostList[1]);
       });
     
       it('should remove the environment from the list', () => {
@@ -125,7 +154,10 @@ describe('EnvironmentService', () => {
 
     describe('With unexisting host', () => {
       beforeEach(() => {
-        service.removeEnvironment('host-3');
+        service.removeEnvironment({
+          endpoint: 'host-4',
+          environment: undefined, 
+        });
       });
 
       it('should not remove the environment from the list', () => {

@@ -25,6 +25,7 @@ import { ChangeLanguageButtonComponent } from './change-language-button.componen
 import { EnvironmentComponent } from './environment/environment.component';
 import { ExternalServicesComponent } from './external-services/external-services.component';
 import { SchemeSwitcherComponent } from './scheme-switcher/scheme-switcher.component';
+import { SettingsButtonComponent } from './settings-button/settings-button.component';
 import { VersionsMenuComponent } from './version-menu/versions-menu.component';
 
 @Component({
@@ -55,6 +56,7 @@ import { VersionsMenuComponent } from './version-menu/versions-menu.component';
     CdkDragHandle,
     EnvironmentComponent,
     SchemeSwitcherComponent,
+    SettingsButtonComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

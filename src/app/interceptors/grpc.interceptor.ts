@@ -3,6 +3,7 @@ import { inject } from '@angular/core';
 import { GrpcMessage, GrpcRequest, GrpcEvent, GrpcClient } from '@ngx-grpc/common';
 import { GrpcHandler, GrpcInterceptor } from '@ngx-grpc/core';
 import { DefaultConfigService } from '@services/default-config.service';
+import { Host } from '@services/environment.service';
 import { StorageService } from '@services/storage.service';
 import { Observable } from 'rxjs';
 
@@ -25,7 +26,7 @@ export class GrpcHostInterceptor implements GrpcInterceptor {
   }
 
   private initHost() {
-    this.host = this.storageService.getItem('host-config') ?? this.defaultConfigService.hostConfig;
+    this.host = (this.storageService.getItem('host-config', true) as Host | null)?.endpoint ?? this.defaultConfigService.hostConfig?.endpoint ?? null;
   }
 
   /**
@@ -41,12 +42,12 @@ export class GrpcHostInterceptor implements GrpcInterceptor {
    * Must be a correct and valid URL.
    * @param entry string
    */
-  setHost(entry: string | null) {
+  setHost(entry: Host | null) {
     if (entry === null) {
       this.clearHost();
       this.host = null;
     } else {
-      this.host = entry;
+      this.host = entry.endpoint;
       this.storageService.setItem('host-config', entry);
     }
   }

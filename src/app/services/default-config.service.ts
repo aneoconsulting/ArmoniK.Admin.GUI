@@ -12,6 +12,7 @@ import { LinkType } from '@app/types/graph.types';
 import { Sidebar } from '@app/types/navigation';
 import { StatusLabelColor } from '@app/types/status';
 import { ColorScheme, Theme } from '@app/types/themes';
+import { Host } from './environment.service';
 
 @Injectable()
 export class DefaultConfigService {
@@ -66,7 +67,6 @@ export class DefaultConfigService {
     'sessions',
     'tasks',
     'results',
-    'divider',
   ];
 
   readonly #defaultApplications: ScopeConfig<ApplicationRaw, ApplicationRawEnumField> = {
@@ -274,8 +274,8 @@ export class DefaultConfigService {
     urlTemplate: null,
   };
 
-  readonly #hostConfig: string | null = null;
-  readonly #environments: string[] = [];
+  readonly #hostConfig: Host | null = null;
+  readonly #environments: Host[] = [];
 
   readonly #defaultTaskStatuses: Record<string, StatusLabelColor> = {
     [TaskStatus.TASK_STATUS_COMPLETED]: {
