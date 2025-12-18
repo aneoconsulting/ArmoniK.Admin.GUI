@@ -1,30 +1,63 @@
 <h2 mat-dialog-title i18n="Dialog title">New environment</h2>
 
 <mat-dialog-content>
-  <form [formGroup]="formGroup">
-    <h5 i18n>Environment Endpoint</h5>
-    <mat-form-field appearance="outline">
-      <input matInput id="host" type="text" formControlName="host" placeholder="http://172.19.56.177:5000" />
-    </mat-form-field>
-  </form>
+  <h5 i18n>Environment Endpoint</h5>
+  <mat-form-field appearance="outline">
+    <input matInput id="host" type="text" [formControl]="hostForm" placeholder="http://172.19.56.177:5000" />
+  </mat-form-field>
   
+  <mat-radio-group [formControl]="choiceForm">
+    <mat-radio-button [value]="true" i18n>Use ArmoniK environment (could not work)</mat-radio-button>
+    <div>
+      <mat-radio-button [value]="false" i18n>Define custom environment</mat-radio-button>
+      <form [formGroup]="customEnvironmentForm" class="radio-choice">
+        <article>
+          <mat-form-field>
+            <mat-label for="name" i18n>Name</mat-label>
+            <input matInput id="name" type="text" formControlName="name" placeholder="production">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label for="version" i18n>Version</mat-label>
+            <input matInput id="version" matInput type="text" formControlName="version" placeholder="1.6.7">
+          </mat-form-field>
+        </article>
+        <article>
+          <mat-form-field>
+            <mat-label for="description" i18n>Description</mat-label>
+            <input matInput id="description" matInput type="text" formControlName="description" placeholder="1.6.7">
+          </mat-form-field>
+          <div>
+            <label for="font-color" [style.opacity]="choiceForm.value ? '0.5' : '1'" i18n>Color</label>
+            <input id="font-color" type="color" formControlName="color">
+          </div>
+        </article>
+      </form>
+    </div>
+  </mat-radio-group>
+
   <h5 i18n>Environment Overview</h5>
   <section>
+  @if (choiceForm.value) {
     @if (loading()) {
       <app-spinner />
-    } @else if (!testedEnvironment) {
-      <p i18n>ArmoniK not found at this adress.</p>
-    } @else if (testedEnvironment) {
-      <article class="environment" [style]="'color:' + testedEnvironment.color + ';'" [matTooltip]="testedEnvironment.description">
-        {{ testedEnvironment.name }} {{ testedEnvironment.version }}
-      </article>
     } @else {
-      <p i18n>Enter a valid URL to test the endpoint.</p>
+      <article class="environment" [style]="'color:' + (testedEnvironment?.color ?? 'red') + ';'" [matTooltip]="testedEnvironment?.description">
+        {{ testedEnvironment?.name ?? 'Unknown' }} {{ testedEnvironment?.version ?? 'Unknown' }}
+      </article>
     }
+  } @else {
+    @let value = customEnvironmentForm.value;
+    @if (!value.name && !value.version) {
+      <p i18n>Start typing to see the environment.</p>
+    }
+    <article class="environment" [style]="'color:' + value.color + ';'" [matTooltip]="value.description">
+      {{ value.name }} {{ value.version }}
+    </article>
+  }
   </section>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
   <button mat-button matDialogClose i18n>Cancel</button>
-  <button mat-flat-button color="primary" [matDialogClose]="formGroup.value.host" [disabled]="!testedEnvironment" i18n>Confirm</button>
+  <button mat-flat-button color="primary" [disabled]="!hostForm.valid || (!choiceForm.value && !customEnvironmentForm.valid)" (click)="closeSubmit()" i18n>Confirm</button>
 </mat-dialog-actions>

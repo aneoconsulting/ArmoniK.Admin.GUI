@@ -16,3 +16,23 @@ section > p {
 mat-form-field {
   width: 100%;
 }
+
+form > article {
+  display: flex;
+  gap: 1rem;
+}
+
+.radio-choice {
+  margin: 1rem;
+}
+
+input[type=color] {
+  padding: 0px;
+  min-height: 1rem;
+  min-width: 3rem;
+  border: 0px;
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
