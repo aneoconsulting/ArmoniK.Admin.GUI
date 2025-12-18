@@ -11,7 +11,6 @@ import { ThemeService } from '@services/theme.service';
   selector: 'app-theme-selector',
   templateUrl: 'theme-selector.component.html',
   styleUrl: 'theme-selector.component.scss',
-  standalone: true,
   imports: [
     PageSectionHeaderComponent,
     MatIconModule,
