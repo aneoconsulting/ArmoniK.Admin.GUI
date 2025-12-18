@@ -110,6 +110,10 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
     };
   }
 
+  /**
+   * Create the queryParams used by the taskByStatus component to redirect to the task table.
+   * The partitionId filter is applied on top of every filter of the table.
+   */
   private createTasksByStatusQueryParamsWithManyFilters(sessionId: string) {
     const params: Record<string, string> = {};
     for (const [index, filterAnd] of this.filters.entries()) {
@@ -312,62 +316,5 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
       this.sessionsIdsComputationError.push(sessionId);
       this.warning('Error while computing duration for session: ' + sessionId);
     }
-  }
-
-  // Session Interactions
-
-  onPause(sessionId: string) {
-    this.grpcService.pause$(sessionId)
-      .subscribe(
-        {
-          error: (error) => this.error(error, 'Unable to pause session'),
-          complete: () => this.refresh$.next()
-        }
-      );
-  }
-
-  onResume(sessionId: string) {
-    this.grpcService.resume$(sessionId).subscribe(
-      {
-        error: (error) => this.error(error, 'Unable to resume session'),
-        complete: () => this.refresh$.next()
-      }
-    );
-  }
-
-  onCancel(sessionId: string) {
-    this.grpcService.cancel$(sessionId).subscribe(
-      {
-        error: (error) => this.error(error, 'Unable to cancel session'),
-        complete: () => this.refresh$.next()
-      }
-    );
-  }
-
-  onPurge(sessionId: string) {
-    this.grpcService.purge$(sessionId).subscribe(
-      {
-        error: (error) => this.error(error, 'Unable to purge session'),
-        complete: () => this.refresh$.next()
-      }
-    );
-  }
-
-  onClose(sessionId: string) {
-    this.grpcService.close$(sessionId).subscribe(
-      {
-        error: (error) => this.error(error, 'Unable to close session'),
-        complete: () => this.refresh$.next()
-      }
-    );
-  }
-
-  onDelete(sessionId: string) {
-    this.grpcService.delete$(sessionId).subscribe(
-      {
-        error: (error) => this.error(error, 'Unable to delete session'),
-        complete: () => this.refresh$.next()
-      }
-    );
   }
 }

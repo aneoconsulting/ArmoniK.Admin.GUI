@@ -1,0 +1,92 @@
+import { Component, EventEmitter, Input, OnInit, Output, forwardRef, inject } from '@angular/core';
+import { ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { CustomColumn } from '@app/types/data';
+import { FilterDefinition, FilterFor } from '@app/types/filter-definition';
+import { FilterFieldValue, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
+import { DataFilterService, FilterField } from '@app/types/services/data-filter.service';
+import { AutoCompleteComponent } from '@components/auto-complete.component';
+import { FormFilterType } from './types';
+
+@Component({
+  selector: 'app-filters-dialog-field',
+  templateUrl: 'filters-dialog-field.component.html',
+  standalone: true,
+  imports: [
+    AutoCompleteComponent,
+  ],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => FiltersDialogFieldComponent),
+      multi: true,
+    },
+  ],
+})
+export class FiltersDialogFieldComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> implements OnInit, ControlValueAccessor {
+  value: string | null = null;
+  
+  labelledProperties: string[];
+
+  @Input({ required: true }) filter: FormGroup<FormFilterType<F, O>>;
+  @Input({ required: true }) customProperties: CustomColumn[];
+
+  @Output() for = new EventEmitter<FilterFor<F, O>>();
+  
+  private readonly dataFiltersService = inject(DataFilterService);
+
+  ngOnInit(): void {
+    this.labelledProperties = [
+      ...this.dataFiltersService.filtersDefinitions.map(property => this.retrieveLabel(property) ?? ''),
+      ...this.customProperties.map(custom => custom.replace('options.options.', ''))
+    ];
+  }
+
+  private retrieveLabel(filterDefinition: FilterDefinition<F, O>) {
+    return this.dataFiltersService.retrieveLabel(filterDefinition.for, filterDefinition.field as FilterField);
+  }
+
+  writeValue(value: string | null): void {
+    if (value && !Number.isNaN(Number(value)) && this.filter.value.for) { // Retrieving field label 
+      this.value = this.retrieveLabel({ for: this.filter.value.for, field: Number(value) } as FilterDefinition<F, O>);
+    } else if (value) {
+      const field = this.dataFiltersService.retrieveField(value) as { for: FilterFor<F, O>; index: number } | undefined;
+      let change: FilterFieldValue<F, O> = null;
+      if (field) {
+        change = field.index as F | O;
+        this.emitFor(field.for);
+      } else {
+        const isCustom = this.customProperties.some(col => col.toLowerCase() === `options.options.${value.toLowerCase()}`);
+        if (isCustom) {
+          change = value;
+          this.emitFor('custom');
+        }
+      }
+
+      if (this.registeredOnChange) {
+        this.registeredOnChange(change);
+      }
+
+      if (this.registeredOnTouched) {
+        this.registeredOnTouched(change);
+      }
+    } else {
+      this.value = null;
+    }
+  }
+
+  private emitFor(value: FilterFor<F, O>) {
+    this.for.emit(value);
+  }
+
+  private registeredOnChange: (val: FilterFieldValue<F, O>) => void;
+  
+  private registeredOnTouched: (val: FilterFieldValue<F, O>) => void;
+  
+  registerOnChange(fn: (val: FilterFieldValue<F, O>) => void): void {
+    this.registeredOnChange = fn;
+  }
+  
+  registerOnTouched(fn: (val: FilterFieldValue<F, O>) => void): void {
+    this.registeredOnTouched = fn;
+  }
+}

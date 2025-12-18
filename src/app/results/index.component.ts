@@ -9,10 +9,12 @@ import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.s
 import { DashboardStorageService } from '@app/dashboard/services/dashboard-storage.service';
 import { TableHandler } from '@app/types/components';
 import { DataFilterService } from '@app/types/services/data-filter.service';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { TableGrpcActionsComponent } from '@components/table/table-grpc-actions.component';
 import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
@@ -28,6 +30,7 @@ import { UtilsService } from '@services/utils.service';
 import { ResultsTableComponent } from './components/table.component';
 import ResultsDataService from './services/results-data.service';
 import { ResultsFiltersService } from './services/results-filters.service';
+import { ResultsGrpcActionsService } from './services/results-grpc-actions.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
 import { ResultsStatusesService } from './services/results-statuses.service';
@@ -62,6 +65,10 @@ import { ResultRaw } from './types';
     ResultsGrpcService,
     GrpcSortFieldService,
     FiltersService,
+    {
+      provide: GrpcActionsService,
+      useClass: ResultsGrpcActionsService,
+    }
   ],
   imports: [
     PageHeaderComponent,
@@ -72,15 +79,19 @@ import { ResultRaw } from './types';
     MatButtonModule,
     MatSnackBarModule,
     MatMenuModule,
-    ResultsTableComponent
+    ResultsTableComponent,
+    TableGrpcActionsComponent
   ]
 })
 export class IndexComponent extends TableHandler<ResultRaw, ResultRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly tableDataService = inject(ResultsDataService);
   readonly filtersService = inject(ResultsFiltersService);
   readonly indexService = inject(ResultsIndexService);
+  readonly grpcActionsService = inject(GrpcActionsService);
 
   tableType: TableType = 'Results';
+
+  selection: ResultRaw[] = [];
 
   ngOnInit(): void {
     this.initTableEnvironment();
@@ -92,5 +103,13 @@ export class IndexComponent extends TableHandler<ResultRaw, ResultRawEnumField> 
 
   ngOnDestroy(): void {
     this.unsubscribe();
+  }
+
+  onSelectionChange(selection: ResultRaw[]): void {
+    this.selection = selection;
+  }
+
+  hasSelectColumnDisplayed() {
+    return this.displayedColumnsKeys.includes('select');
   }
 }

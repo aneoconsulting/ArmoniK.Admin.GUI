@@ -132,7 +132,7 @@ describe('ApplicationsFiltersService', () => {
 
     it('should restore default showFilters if it cannot restore', () => {
       mockTableService.restoreShowFilters.mockReturnValueOnce(null);
-      expect(service.restoreShowFilters()).toBe(true);
+      expect(service.restoreShowFilters()).toBeTruthy();
     });
   });
 
@@ -141,14 +141,14 @@ describe('ApplicationsFiltersService', () => {
       expect(service.retrieveLabel('root', ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME)).toEqual('Name');
     });
   
-    it('should not retrieve label in case of options property', () => {
-      expect(() => {service.retrieveLabel('options', ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME);})
-        .toThrow('Impossible case');
+    it('should return an empty string in case of options property', () => {
+      expect(service.retrieveLabel('options', ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME))
+        .toEqual('');
     });
 
-    it('should throw an error in case of an unknown filter for', () => {
-      expect(() => service.retrieveLabel('unexisting' as FilterFor<ApplicationRawEnumField, null>, ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME))
-        .toThrow('Unknown filter type: unexisting 1');
+    it('should return an empty string in case of an unknown filter for', () => {
+      expect(service.retrieveLabel('unexisting' as FilterFor<ApplicationRawEnumField, null>, ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME))
+        .toEqual('');
     });
   });
 
@@ -156,7 +156,13 @@ describe('ApplicationsFiltersService', () => {
     expect(service.retrieveFiltersDefinitions()).toEqual(service.filtersDefinitions);
   });
 
-  it('should retrieve the field', () => {
-    expect(service.retrieveField('Namespace')).toEqual({for: 'root', index: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE});
+  describe('Retrieve field', () => {
+    it('should retrieve the field', () => {
+      expect(service.retrieveField('Namespace')).toEqual({for: 'root', index: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE});
+    });
+
+    it('should return undefined if there is no matching label', () => {
+      expect(service.retrieveField('something')).toBeUndefined();
+    });
   });
 });

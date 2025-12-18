@@ -7,6 +7,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { SessionsTableComponent } from '@app/sessions/components/table.component';
 import { SessionsDataService } from '@app/sessions/services/sessions-data.service';
 import { SessionsFiltersService } from '@app/sessions/services/sessions-filters.service';
+import { SessionsGrpcActionsService } from '@app/sessions/services/sessions-grpc-actions.service';
 import { SessionsGrpcService } from '@app/sessions/services/sessions-grpc.service';
 import { SessionsIndexService } from '@app/sessions/services/sessions-index.service';
 import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
@@ -17,8 +18,10 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service
 import { TaskOptions } from '@app/tasks/types';
 import { DashboardLineCustomColumnsComponent } from '@app/types/components/dashboard-line-table';
 import { DataFilterService } from '@app/types/services/data-filter.service';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
+import { TableGrpcActionsComponent } from '@components/table/table-grpc-actions.component';
 import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
@@ -47,6 +50,10 @@ import { NotificationService } from '@services/notification.service';
     GrpcSortFieldService,
     FiltersService,
     TasksGrpcService,
+    {
+      provide: GrpcActionsService,
+      useClass: SessionsGrpcActionsService,
+    },
   ],
   imports: [
     MatToolbarModule,
@@ -55,12 +62,15 @@ import { NotificationService } from '@services/notification.service';
     SessionsTableComponent,
     MatIconModule,
     MatMenuModule,
+    TableGrpcActionsComponent
   ]
 })
 export class SessionsLineComponent extends DashboardLineCustomColumnsComponent<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly indexService = inject(SessionsIndexService);
   readonly defaultConfig = this.defaultConfigService.defaultSessions;
   readonly tableDataService = inject(SessionsDataService);
+
+  selection: SessionRaw[] = [];
 
   ngOnInit(): void {
     this.initLineEnvironment();
@@ -73,5 +83,9 @@ export class SessionsLineComponent extends DashboardLineCustomColumnsComponent<S
 
   ngOnDestroy(): void {
     this.unsubscribe();
+  }
+
+  hasSelectColumnDisplayed() {
+    return this.displayedColumnsKeys.includes('select');
   }
 }

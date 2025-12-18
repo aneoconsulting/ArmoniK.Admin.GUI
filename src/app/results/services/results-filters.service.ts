@@ -76,11 +76,11 @@ export class ResultsFiltersService extends DataFilterService<ResultRawEnumField>
       field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SIZE,
       type: 'number'
     },
-    {
-      for: 'root',
-      field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_MANUAL_DELETION,
-      type: 'boolean'
-    }
+    // {
+    //   for: 'root',
+    //   field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_MANUAL_DELETION,
+    //   type: 'boolean'
+    // }
   ];
 
   readonly defaultFilters: ResultRawFilters = this.defaultConfigService.defaultResults.filters;
@@ -91,13 +91,11 @@ export class ResultsFiltersService extends DataFilterService<ResultRawEnumField>
   }
 
   retrieveLabel(filterFor: FilterFor<ResultRawEnumField, null>, filterField:  ResultFilterField): string {
-    switch (filterFor) {
-    case 'root':
+    if (filterFor === 'root') {
       return this.rootField[filterField as ResultRawEnumField];
-    case 'options':
-      throw new Error('Impossible case');
-    default:
-      throw new Error(`Unknown filter type: ${filterFor} ${filterField}}`);
+    } else {
+      console.error(`Unknown filter type: ${filterFor} ${filterField}`);
+      return '';
     }
   }
 
@@ -105,9 +103,7 @@ export class ResultsFiltersService extends DataFilterService<ResultRawEnumField>
     return this.filtersDefinitions;
   }
 
-  retrieveField(filterField: string): ResultFilterField  {
-    const values = Object.values(this.rootField);
-    const index = values.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
-    return { for: 'root', index: index };
+  retrieveField(filterField: string): ResultFilterField | undefined {
+    return this.findKeyFromLabel(this.rootField, filterField, 'root');
   }
 }

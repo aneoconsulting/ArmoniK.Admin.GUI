@@ -62,13 +62,11 @@ export class PartitionsFiltersService extends DataFilterService<PartitionRawEnum
   }
 
   retrieveLabel(filterFor: FilterFor<PartitionRawEnumField, null>, filterField:  PartitionFilterField): string {
-    switch (filterFor) {
-    case 'root':
+    if (filterFor === 'root') {
       return this.rootField[filterField as PartitionRawEnumField];
-    case 'options':
-      throw new Error('Impossible case');
-    default:
-      throw new Error(`Unknown filter type: ${filterFor} ${filterField}}`);
+    } else {
+      console.error(`Unknown filter type: ${filterFor} ${filterField}`);
+      return '';
     }
   }
 
@@ -76,9 +74,7 @@ export class PartitionsFiltersService extends DataFilterService<PartitionRawEnum
     return this.filtersDefinitions;
   }
 
-  retrieveField(filterField: string): PartitionFilterField  {
-    const values = Object.values(this.rootField);
-    const index = values.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
-    return { for: 'root', index: index };
+  retrieveField(filterField: string): PartitionFilterField | undefined {
+    return this.findKeyFromLabel(this.rootField, filterField, 'root');
   }
 }

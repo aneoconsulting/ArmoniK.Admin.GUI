@@ -90,16 +90,16 @@ export class SessionsFiltersService extends DataFilterService<SessionRawEnumFiel
       field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PURGED_AT,
       type: 'date'
     },
-    {
-      for: 'root',
-      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLIENT_SUBMISSION,
-      type: 'boolean'
-    },
-    {
-      for: 'root',
-      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_WORKER_SUBMISSION,
-      type: 'boolean'
-    },
+    // {
+    //   for: 'root',
+    //   field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLIENT_SUBMISSION,
+    //   type: 'boolean'
+    // },
+    // {
+    //   for: 'root',
+    //   field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_WORKER_SUBMISSION,
+    //   type: 'boolean'
+    // },
     {
       for: 'options',
       field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
@@ -156,7 +156,8 @@ export class SessionsFiltersService extends DataFilterService<SessionRawEnumFiel
     case 'options':
       return this.optionsFields[filterField as SessionTaskOptionEnumField];
     default:
-      throw new Error(`Unknown filter type: ${filterFor} ${filterField}`);
+      console.error(`Unknown filter type: ${filterFor} ${filterField}`);
+      return '';
     }
   }
 
@@ -164,16 +165,7 @@ export class SessionsFiltersService extends DataFilterService<SessionRawEnumFiel
     return this.filtersDefinitions;
   }
 
-  retrieveField(filterField: string): SessionFilterField {
-    const rootValues = Object.values(this.rootField);
-    let index = rootValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
-
-    if (index >= 0) {
-      return { for: 'root', index: index };
-    }
-
-    const optionsValues = Object.values(this.optionsFields);
-    index = optionsValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
-    return { for: 'options', index: index };
+  retrieveField(filterField: string): SessionFilterField | undefined {
+    return this.findKeyFromLabel(this.rootField, filterField, 'root') ?? this.findKeyFromLabel(this.optionsFields as Record<SessionRawEnumField, string>, filterField, 'options');
   }
 }

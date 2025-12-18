@@ -1,0 +1,49 @@
+section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+button {
+  width: fit-content;
+}
+
+.selected {
+  background-color: var(--armonik-header-color);
+  color: var(--armonik-header-background);
+}
+
+.docs-theme-icon-background {
+  fill: light-dark(white, #151216);
+}
+
+.mat-icon.dark-purple svg  {
+  .docs-theme-icon-toolbar {
+    fill: #67447a;
+  }
+  
+  .docs-theme-icon-button {
+    fill: #f5d9ff;
+  }
+}
+
+.mat-icon.dark-green svg  {
+  .docs-theme-icon-toolbar {
+    fill: #38594a;
+  }
+  
+  .docs-theme-icon-button {
+    fill: #c6ebd6;
+  }
+}
+
+.mat-icon.light-pink svg  {
+  .docs-theme-icon-toolbar {
+    fill: #981b6c;
+  }
+  
+  .docs-theme-icon-button {
+    fill: #ffd8e8;
+  }
+}

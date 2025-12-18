@@ -6,7 +6,7 @@ import { DefaultConfigService } from '@services/default-config.service';
 import { FiltersCacheService } from '@services/filters-cache.service';
 import { TableService } from '@services/table.service';
 import { SessionsFiltersService } from './sessions-filters.service';
-import { SessionFilterDefinition, SessionFilterField, SessionRawFilters } from '../types';
+import { SessionRawFilters } from '../types';
 
 describe('SessionsFilterService', () => {
   let service: SessionsFiltersService;
@@ -105,7 +105,7 @@ describe('SessionsFilterService', () => {
 
     it('should restore default showFilters if it cannot restore', () => {
       mockTableService.restoreShowFilters.mockReturnValueOnce(null);
-      expect(service.restoreShowFilters()).toBe(true);
+      expect(service.restoreShowFilters()).toBeTruthy();
     });
   });
 
@@ -114,19 +114,32 @@ describe('SessionsFilterService', () => {
   });
 
   describe('retrieveLabel', () => {
+    let consoleSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      consoleSpy = jest.spyOn(console, 'error');
+      consoleSpy.mockImplementationOnce(() => {});
+    });
+
     it('should return the right label with filterFor root', () => {
-      const filterDefinition = service.filtersDefinitions.find(filter => filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID) as SessionFilterDefinition;
-      expect(service.retrieveLabel(filterDefinition?.for, (filterDefinition.field as SessionFilterField))).toEqual('Session ID');
+      expect(service.retrieveLabel('root', SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID)).toEqual('Session ID');
     });
 
     it('should return the right label with filterFor options', () => {
-      const filterDefinition = service.filtersDefinitions.find(filter => filter.field === SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAMESPACE) as SessionFilterDefinition;
-      expect(service.retrieveLabel(filterDefinition.for, (filterDefinition.field as SessionFilterField))).toEqual('Application Namespace');
+      expect(service.retrieveLabel('options', SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAMESPACE)).toEqual('Application Namespace');
     });
 
-    it('should throw an error when filterFor is unknown', () => {
+    it('should return an empty string when filterFor is unknown', () => {
       const field = SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID;
-      expect(() => service.retrieveLabel('custom', field)).toThrow(`Unknown filter type: custom ${field}`);
+      const _for = 'custom';
+      expect(service.retrieveLabel(_for, field)).toEqual('');
+    });
+
+    it('should log an error when filterFor is unknown', () => {
+      const field = SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID;
+      const _for = 'custom';
+      service.retrieveLabel(_for, field);
+      expect(consoleSpy).toHaveBeenCalledWith(`Unknown filter type: ${_for} ${field}`);
     });
   });
 
@@ -143,6 +156,10 @@ describe('SessionsFilterService', () => {
         for: 'options',
         index: 6,
       });
+    });
+
+    it('should return undefined if there is no matching label', () => {
+      expect(service.retrieveField('something')).toBeUndefined();
     });
   });
 });

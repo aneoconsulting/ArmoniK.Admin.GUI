@@ -136,7 +136,7 @@ describe('PartitionsTableComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  describe('personnalizeTasksByStatus', () => {
+  describe('personalizeTasksByStatus', () => {
     beforeEach(() => {
       component.personalizeTasksByStatus();
     });

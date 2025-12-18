@@ -7,7 +7,7 @@ import { SplitLinesDialogData, SplitLinesDialogResult } from '@app/types/dialog'
 @Component({
   selector: 'app-split-lines-dialog',
   templateUrl: 'split-lines-dialog.component.html',
-  styleUrl: 'split-lines-dialog.component.css',
+  styleUrl: 'split-lines-dialog.component.scss',
   providers: [],
   imports: [
     MatInputModule,

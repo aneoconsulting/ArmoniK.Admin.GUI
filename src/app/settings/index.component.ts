@@ -1,4 +1,3 @@
-import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,7 +10,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule} from '@angular/material/snack-bar';
 import { Key } from '@app/types/config';
-import { Sidebar, SidebarItem } from '@app/types/navigation';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { FiltersCacheService } from '@services/filters-cache.service';
@@ -21,11 +19,12 @@ import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { StorageService } from '@services/storage.service';
 import { ClearAllDialogComponent } from './component/clear-all-dialog.component';
+import { ThemeSelectorComponent } from './component/theme-selector.component';
 
 @Component({
   selector: 'app-settings-index',
   templateUrl: 'index.component.html',
-  styleUrl: 'index.component.css',
+  styleUrl: 'index.component.scss',
   providers: [
     QueryParamsService,
     NotificationService,
@@ -41,8 +40,8 @@ import { ClearAllDialogComponent } from './component/clear-all-dialog.component'
     MatButtonModule,
     MatSnackBarModule,
     MatMenuModule,
-    DragDropModule,
-  ]
+    ThemeSelectorComponent,
+  ],
 })
 export class IndexComponent implements OnInit {
   sharableURL = null;
@@ -50,31 +49,33 @@ export class IndexComponent implements OnInit {
   keys: Set<Key> = new Set();
   selectedKeys: Set<Key> = new Set();
 
-  sidebar: Sidebar[] = [];
-
   readonly dialog = inject(MatDialog);
   private readonly iconsService = inject(IconsService);
   private readonly notificationService = inject(NotificationService);
-  private readonly navigationService = inject(NavigationService);
+  readonly navigationService = inject(NavigationService);
   private readonly storageService = inject(StorageService);
   private readonly httpClient = inject(HttpClient);
   readonly filtersCacheService = inject(FiltersCacheService);
 
   ngOnInit(): void {
     this.keys = this.sortKeys(this.storageService.restoreKeys());
-    this.sidebar = this.navigationService.restoreSidebar();
   }
 
   getIcon(name: string | null): string {
     return this.iconsService.getIcon(name);
   }
 
-  onRestoreSidebar(): void {
-    this.sidebar = this.navigationService.restoreSidebar();
+  startEditSideBar() {
+    this.navigationService.edit.set(true);
   }
 
-  onClearSideBar(): void {
-    const dialogRef = this.dialog.open<ClearAllDialogComponent>(ClearAllDialogComponent, {});
+  resetSidebar(): void {
+    this.navigationService.resetSidebarToStored();
+    this.navigationService.edit.set(false);
+  }
+
+  resetToDefaultSideBar(): void {
+    const dialogRef = this.dialog.open<ClearAllDialogComponent, void, boolean>(ClearAllDialogComponent, {});
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.clearSideBar();
@@ -83,41 +84,15 @@ export class IndexComponent implements OnInit {
   }
 
   private clearSideBar(): void {
-    this.sidebar = Array.from(this.navigationService.defaultSidebar);
+    this.navigationService.edit.set(true);
+    this.navigationService.resetSidebarToDefault();
+    this.navigationService.edit.set(false);
   }
 
   onSaveSidebar(): void {
-    this.navigationService.saveSidebar(this.sidebar);
+    this.navigationService.saveSidebar();
     this.keys = this.sortKeys(this.storageService.restoreKeys());
-  }
-
-  onRemoveSidebarItem(index: number): void {
-    this.sidebar.splice(index, 1);
-  }
-
-  onAddSidebarItem(): void {
-    this.sidebar.push('dashboard');
-  }
-
-  getSidebarItems(): { name: string, value: Sidebar }[] {
-    return this.navigationService.sidebarItems.map(item => ({
-      name: item.display,
-      value: item.id as Sidebar,
-    }));
-  }
-
-  findSidebarItem(id: Sidebar): SidebarItem {
-    const item = this.navigationService.sidebarItems.find(item => item.id === id);
-
-    if (!item) {
-      throw new Error(`Sidebar item with id "${id}" not found`);
-    }
-
-    return item;
-  }
-
-  onSidebarItemChange(index: number, value: Sidebar): void {
-    this.sidebar[index] = value;
+    this.navigationService.edit.set(false);
   }
 
   updateKeySelection(event: MatCheckboxChange): void {
@@ -221,8 +196,7 @@ export class IndexComponent implements OnInit {
   
       // Update sidebar
       if (hasSidebarKey) {
-        this.sidebar = this.navigationService.restoreSidebar();
-        this.navigationService.updateSidebar(this.sidebar);
+        this.navigationService.updateSidebar(this.navigationService.restoreSidebar());
       }
   
       this.notificationService.success('Settings imported');
@@ -232,10 +206,6 @@ export class IndexComponent implements OnInit {
     }
 
     form.reset();
-  }
-
-  drop(event: CdkDragDrop<SidebarItem[]>) {
-    moveItemInArray(this.sidebar, event.previousIndex, event.currentIndex);
   }
 
   private sortKeys(keys: Set<Key>): Set<Key> {

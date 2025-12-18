@@ -1,13 +1,23 @@
 import { ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { TestBed } from '@angular/core/testing';
+import { GrpcAction } from '@app/types/actions.type';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, ResultData } from '@app/types/data';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { NotificationService } from '@services/notification.service';
 import { ResultsTableComponent } from './table.component';
 import ResultsDataService from '../services/results-data.service';
+import { ResultsGrpcService } from '../services/results-grpc.service';
 import { ResultRaw } from '../types';
+
+Object.defineProperty(globalThis, 'URL', {
+  value: {
+    createObjectURL: jest.fn(() => 'mock-url'),
+    revokeObjectURL: jest.fn(),
+  },
+});
 
 describe('ResultsTableComponent', () => {
   let component: ResultsTableComponent;
@@ -43,6 +53,7 @@ describe('ResultsTableComponent', () => {
   const mockNotificationService = {
     success: jest.fn(),
     error: jest.fn(),
+    warning: jest.fn(),
   };
 
   const mockClipBoard = {
@@ -58,6 +69,20 @@ describe('ResultsTableComponent', () => {
     refresh$: {
       next: jest.fn()
     },
+    onDownload: jest.fn(),
+  };
+
+  const mockResultsGrpcService = {
+    downloadResultData$: jest.fn(),
+  };
+
+  const mockResultsGrpcActionsService = {
+    actions: [
+      {
+        key: 'mock-action'
+      },
+    ] as unknown as GrpcAction<ResultRaw>[],
+    refresh: {}
   };
 
   const mockStatusService = {
@@ -71,7 +96,6 @@ describe('ResultsTableComponent', () => {
     },
   };
 
-
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -79,16 +103,27 @@ describe('ResultsTableComponent', () => {
         { provide: StatusService, useValue: mockStatusService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
-        { provide: ResultsDataService, useValue: mockResultsDataService }
-      ]
+        { provide: ResultsDataService, useValue: mockResultsDataService },
+        { provide: ResultsGrpcService, useValue: mockResultsGrpcService },
+        { provide: GrpcActionsService, useValue: mockResultsGrpcActionsService },
+      ],
     }).inject(ResultsTableComponent);
 
     component.displayedColumns = displayedColumns;
     component.ngOnInit();
+    jest.clearAllMocks();
   });
 
   it('should run', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('Initialisation', () => {
+    it('should append all "grpc action service" actions to the component actions', () => {
+      for (const action of mockResultsGrpcActionsService.actions) {
+        expect(component.actions.includes(action)).toBeTruthy();
+      }
+    });
   });
 
   describe('options changes', () => {
@@ -142,10 +177,17 @@ describe('ResultsTableComponent', () => {
   });
 
   it('should get column keys', () => {
-    expect(component.columnKeys).toEqual(displayedColumns.map(c => c.key));
+    expect(component.columnKeys).toEqual(displayedColumns.map((c) => c.key));
   });
 
   it('should get displayedColumns', () => {
     expect(component.columns).toEqual(displayedColumns);
+  });
+
+  it('should emit when the selection changes', () => {
+    const spy = jest.spyOn(component.selectionChange, 'emit');
+    const selection = [{ resultId: '1' }] as ResultRaw[];
+    component.onSelectionChange(selection);
+    expect(spy).toHaveBeenCalledWith(selection);
   });
 });

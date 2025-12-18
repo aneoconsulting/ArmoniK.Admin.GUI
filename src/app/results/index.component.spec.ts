@@ -7,6 +7,7 @@ import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, CustomColumn } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -145,6 +146,11 @@ describe('Results Index Component', () => {
     },
   };
 
+  const mockGrpcActionsService = {
+    actions: [],
+    refresh: {}
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -159,6 +165,7 @@ describe('Results Index Component', () => {
         { provide: ResultsFiltersService, useValue: mockResultsFiltersService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: GrpcActionsService, useValue: mockGrpcActionsService },
       ]
     }).inject(IndexComponent);
     component.ngOnInit();
@@ -291,17 +298,11 @@ describe('Results Index Component', () => {
     });
 
     it('should update displayed column keys', () => {
-      expect(component.displayedColumnsKeys).toEqual(['select', 'resultId', 'createdAt']);
+      expect(component.displayedColumnsKeys).toEqual(newColumns);
     });
 
     it('should update displayed columns', () => {
       expect(component.displayedColumns()).toEqual([
-        {
-          name: $localize`Select`,
-          key: 'select',
-          type: 'select',
-          sortable: false,
-        },
         {
           name: $localize`Result ID`,
           key: 'resultId',
@@ -315,11 +316,17 @@ describe('Results Index Component', () => {
           type: 'date',
           sortable: true,
         },
+        {
+          name: $localize`Select`,
+          key: 'select',
+          type: 'select',
+          sortable: false,
+        },
       ]);
     });
 
     it('should save columns', () => {
-      expect(mockResultsIndexService.saveColumns).toHaveBeenCalledWith(['select', 'resultId', 'createdAt']);
+      expect(mockResultsIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
     });
   });
 
@@ -452,6 +459,24 @@ describe('Results Index Component', () => {
         options: defaultOptions,
         filters: [],
       });
+    });
+  });
+
+  it('should update the selection when a change is detected', () => {
+    const newSelection = [{ resultId: 'test' }] as ResultRaw[];
+    component.onSelectionChange(newSelection);
+    expect(component.selection).toBe(newSelection);
+  });
+
+  describe('hasSelectColumnDisplayed', () => {
+    it('should return true if the column is displayed', () => {
+      component.displayedColumnsKeys.push('select');
+      expect(component.hasSelectColumnDisplayed()).toBeTruthy();
+    });
+
+    it('should return false if the column is not displayed', () => {
+      component.displayedColumnsKeys = component.displayedColumnsKeys.filter(k => k !== 'select');
+      expect(component.hasSelectColumnDisplayed()).toBeFalsy();
     });
   });
 

@@ -12,7 +12,7 @@ import { JsonComponent } from './json.component';
 @Component({
   selector: 'app-json-inspection',
   templateUrl: 'inspection-json.component.html',
-  styleUrl: 'inspection-json.component.css',
+  styleUrl: 'inspection-json.component.scss',
   providers: [
     IconsService,
   ],

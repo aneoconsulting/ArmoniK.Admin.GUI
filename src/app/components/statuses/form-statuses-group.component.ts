@@ -12,7 +12,7 @@ import { TasksStatusesGroup } from '../../dashboard/types';
 @Component({
   selector: 'app-form-statuses-group',
   templateUrl: './form-statuses-group.component.html',
-  styleUrl: 'form-statuses-group.component.css',
+  styleUrl: 'form-statuses-group.component.scss',
   providers: [],
   imports: [
     MatDialogModule,

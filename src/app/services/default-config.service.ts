@@ -8,13 +8,15 @@ import { SessionRaw } from '@app/sessions/types';
 import { TaskOptions, TaskSummary } from '@app/tasks/types';
 import { ExportedDefaultConfig, ScopeConfig } from '@app/types/config';
 import { ExternalService } from '@app/types/external-service';
+import { LinkType } from '@app/types/graph.types';
 import { Sidebar } from '@app/types/navigation';
 import { StatusLabelColor } from '@app/types/status';
-import { Theme } from '@app/types/themes';
+import { ColorScheme, Theme } from '@app/types/themes';
 
 @Injectable()
 export class DefaultConfigService {
-  readonly #defaultTheme: Theme = 'indigo-pink';
+  readonly #defaultTheme: Theme = 'light-blue';
+  readonly #defaultColorScheme: ColorScheme = 'light dark';
   readonly #defaultExternalServices: ExternalService[] = [];
 
   readonly #defaultDashboardLines: CountLine[] = [
@@ -56,7 +58,6 @@ export class DefaultConfigService {
   readonly #defaultSidebarOpened: boolean = true;
 
   readonly #defaultSidebar: Sidebar[] = [
-    'divider',
     'dashboard',
     'divider',
     'applications',
@@ -66,7 +67,6 @@ export class DefaultConfigService {
     'tasks',
     'results',
     'divider',
-    'divider'
   ];
 
   readonly #defaultApplications: ScopeConfig<ApplicationRaw, ApplicationRawEnumField> = {
@@ -274,6 +274,9 @@ export class DefaultConfigService {
     urlTemplate: null,
   };
 
+  readonly #hostConfig: string | null = null;
+  readonly #environments: string[] = [];
+
   readonly #defaultTaskStatuses: Record<string, StatusLabelColor> = {
     [TaskStatus.TASK_STATUS_COMPLETED]: {
       label: 'Completed',
@@ -346,10 +349,24 @@ export class DefaultConfigService {
     }
   };
 
+  readonly #defaultGraphLinksColors: Record<LinkType, string> = {
+    parent: '#8A427AAA',
+    dependency: '#878adeDD',
+    payload: '#00a700ff',
+    output: '#f7b657',
+  };
+
+  readonly #defaultGraphHighlightParents: boolean = false;
+  readonly #defaultGraphHighlightChildren: boolean = false;
+
   // We use getters to be able to deep copy the default config and to access the default config from the outside
 
   get defaultTheme(): Theme {
     return structuredClone(this.#defaultTheme);
+  }
+
+  get defaultColorScheme(): ColorScheme {
+    return structuredClone(this.#defaultColorScheme);
   }
 
   get defaultExternalServices(): ExternalService[] {
@@ -408,11 +425,32 @@ export class DefaultConfigService {
     return structuredClone(this.#availableLanguages);
   }
 
+  get environments() {
+    return structuredClone(this.#environments);
+  }
+
+  get hostConfig() {
+    return structuredClone(this.#hostConfig);
+  }
+
+  get defaultGraphLinksColors() {
+    return structuredClone(this.#defaultGraphLinksColors);
+  }
+
+  get defaultGraphHighlightParents() {
+    return structuredClone(this.#defaultGraphHighlightParents);
+  }
+
+  get defaultGraphHighlightChildren() {
+    return structuredClone(this.#defaultGraphHighlightChildren);
+  }
+
   readonly #exportedDefaultConfig: ExportedDefaultConfig = {
     'language': this.#defaultLanguage,
     'navigation-sidebar': this.#defaultSidebar,
     'navigation-sidebar-opened': this.#defaultSidebarOpened,
     'navigation-theme': this.#defaultTheme,
+    'navigation-color-scheme': this.#defaultColorScheme,
     'navigation-external-services': this.#defaultExternalServices,
     'applications-tasks-by-status': this.#defaultTasksByStatus,
     'sessions-tasks-by-status': this.#defaultTasksByStatus,
@@ -455,6 +493,11 @@ export class DefaultConfigService {
     'tasks-statuses': this.#defaultTaskStatuses,
     'tasks-custom-columns': [],
     'sessions-custom-columns': [],
+    'environments': this.#environments,
+    'host-config': null,
+    'graph-links-colors': this.#defaultGraphLinksColors,
+    'graph-highlight-parents': this.#defaultGraphHighlightParents,
+    'graph-highlight-children': this.#defaultGraphHighlightChildren,
   };
 
   get exportedDefaultConfig(): ExportedDefaultConfig {

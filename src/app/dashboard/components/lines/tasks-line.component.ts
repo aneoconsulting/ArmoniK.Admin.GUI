@@ -9,6 +9,7 @@ import { ManageViewInLogsDialogComponent } from '@app/tasks/components/manage-vi
 import { TasksTableComponent } from '@app/tasks/components/table.component';
 import TasksDataService from '@app/tasks/services/tasks-data.service';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
+import { TasksGrpcActionsService } from '@app/tasks/services/tasks-grpc-actions.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
@@ -16,8 +17,10 @@ import { TaskOptions, TaskSummary } from '@app/tasks/types';
 import { DashboardLineCustomColumnsComponent } from '@app/types/components/dashboard-line-table';
 import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
 import { DataFilterService } from '@app/types/services/data-filter.service';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusService } from '@app/types/status';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
+import { TableGrpcActionsComponent } from '@components/table/table-grpc-actions.component';
 import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
@@ -42,7 +45,11 @@ import { NotificationService } from '@services/notification.service';
     {
       provide: StatusService,
       useClass: TasksStatusesService,
-    }
+    },
+    {
+      provide: GrpcActionsService,
+      useClass: TasksGrpcActionsService,
+    },
   ],
   imports: [
     MatToolbarModule,
@@ -52,22 +59,25 @@ import { NotificationService } from '@services/notification.service';
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
+    TableGrpcActionsComponent
   ]
 })
 export class TasksLineComponent extends DashboardLineCustomColumnsComponent<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly indexService = inject(TasksIndexService);
   readonly tableDataService = inject(TasksDataService);
+  readonly grpcActionsService = inject(GrpcActionsService);
 
   serviceIcon: string | null = null;
   serviceName: string | null = null;
   urlTemplate: string | null = null;
 
-  selection: string[] = [];
+  selection: TaskSummary[] = [];
   readonly defaultConfig = this.defaultConfigService.defaultTasks;
 
   ngOnInit(): void {
     this.initLineEnvironment();
 
+    this.grpcActionsService.refresh = this.tableDataService.refresh$;
     const viewInLogs = this.indexService.restoreViewInLogs();
     this.serviceIcon = viewInLogs.serviceIcon;
     this.serviceName = viewInLogs.serviceName;
@@ -83,16 +93,12 @@ export class TasksLineComponent extends DashboardLineCustomColumnsComponent<Task
     this.unsubscribe();
   }
 
-  onSelectionChange(selection: string[]): void {
+  onSelectionChange(selection: TaskSummary[]): void {
     this.selection = selection;
   }
 
-  onCancelTasksSelection():void {
-    this.cancelTasks(this.selection);
-  }
-
-  cancelTasks(tasksIds: string[]): void {
-    this.tableDataService.cancelTasks(tasksIds);
+  hasSelectColumnDisplayed() {
+    return this.displayedColumnsKeys.includes('select');
   }
 
   manageViewInLogs(): void {

@@ -189,9 +189,6 @@ export abstract class DashboardLineTableComponent<T extends DataRaw, F extends F
   }
 
   onColumnsChange(columns: ColumnKey<T, O>[]) {
-    if ((columns as string[]).includes('select')) {
-      columns = ['select' as ColumnKey<T, O>, ...columns.filter(column => column !== 'select')];
-    }
     this.displayedColumnsKeys = columns;
     this.updateDisplayedColumns();
     this.line.displayedColumns = columns;

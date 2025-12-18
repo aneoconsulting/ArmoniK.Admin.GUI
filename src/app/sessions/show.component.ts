@@ -2,7 +2,7 @@ import { FilterStringOperator, GetSessionResponse, ResultRawEnumField, SessionSt
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Params, Router, RouterModule } from '@angular/router';
+import { Params, RouterModule } from '@angular/router';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksInspectionService } from '@app/tasks/services/tasks-inspection.service';
@@ -10,6 +10,7 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service
 import { TaskOptions } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
 import { AppShowComponent } from '@app/types/components/show';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { StatusLabelColor, StatusService } from '@app/types/status';
 import { ShowPageComponent } from '@components/show-page.component';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
@@ -26,6 +27,7 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { Subject, map, switchMap } from 'rxjs';
 import { SessionsFiltersService } from './services/sessions-filters.service';
+import { SessionsGrpcActionsService } from './services/sessions-grpc-actions.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionsInspectionService } from './services/sessions-inspection.service';
@@ -35,7 +37,7 @@ import { SessionRaw } from './types';
 @Component({
   selector: 'app-sessions-show',
   templateUrl: 'show.component.html',
-  styleUrl: '../../inspections.css',
+  styleUrl: '../../inspections.scss',
   providers: [
     UtilsService,
     ShareUrlService,
@@ -59,7 +61,11 @@ import { SessionRaw } from './types';
     {
       provide: StatusService,
       useClass: SessionsStatusesService,
-    }
+    },
+    {
+      provide: GrpcActionsService, 
+      useClass: SessionsGrpcActionsService,
+    },
   ],
   imports: [
     ShowPageComponent,
@@ -79,16 +85,12 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
   readonly grpcService = inject(SessionsGrpcService);
   readonly inspectionService = inject(SessionsInspectionService);
   readonly tasksInspectionService = inject(TasksInspectionService);
+  readonly grpcActionsService = inject(GrpcActionsService);
 
   private readonly sessionsStatusesService = inject(StatusService) as SessionsStatusesService;
   private readonly filtersService = inject(FiltersService);
-  private readonly router = inject(Router);
 
-  disablePause: boolean = false;
-  disableResume: boolean = false;
-  disableCancel: boolean = false;
-  disableClose: boolean = false;
-  disablePurge: boolean = true;
+  session: SessionRaw;
 
   tasksKey: string = '';
   tasksQueryParams: Params = {};
@@ -109,12 +111,13 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
   }
 
   set status(value: SessionStatus | undefined) {
-    this._status = value ? this.statuses[value] : undefined;
+    this._status = value ? this.sessionsStatusesService.statuses[value] : undefined;
   }
 
   ngOnInit(): void {
     this.subscribeToDuration();
     this.initInspection();
+    this.grpcActionsService.refresh = this.refresh;
     this.arrays = this.inspectionService.arrays;
     this.optionsFields = this.tasksInspectionService.optionsFields;
     this.resultsKey = this.filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
@@ -133,21 +136,13 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
     const data = this.data();
     this.status = data?.status;
     if (data) {
+      this.session = data;
       this.createResultsQueryParams();
       this.createTasksQueryParams();
       this.partitionsQueryParams = this.filtersService.createFilterPartitionQueryParams(data.partitionIds);
-      this.disablePause = !this.sessionsStatusesService.canPause(data.status);
-      this.disableResume = !this.sessionsStatusesService.canResume(data.status);
-      this.disableCancel = !this.sessionsStatusesService.canCancel(data.status);
-      this.disableClose = !this.sessionsStatusesService.canClose(data.status);
-      this.disablePurge = !this.sessionsStatusesService.canPurge(data.status);
       this.lowerDuration$.next();
       this.upperDuration$.next();
     }  
-  }
-
-  get statuses() {
-    return this.sessionsStatusesService.statuses;
   }
 
   createResultsQueryParams() {
@@ -191,101 +186,5 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
     this.subscriptions.add(lowerDurationSubscription);
     this.subscriptions.add(upperDurationSubscription);
     this.subscriptions.add(computeDurationSubscription);
-  }
-
-  cancel(): void {
-    const data: SessionRaw | null = this.data();
-    if(data?.sessionId) {
-      this.grpcService.cancel$(data.sessionId).subscribe({
-        complete: () => {
-          this.success('Session canceled');
-          this.refresh.next();
-        },
-        error: (error) => {
-          console.error(error);
-          this.error('Unable to cancel session');
-        },
-      });
-    }
-  }
-
-  purge(): void {
-    const data: SessionRaw | null = this.data();
-    if (data?.sessionId) {
-      this.grpcService.purge$(data.sessionId).subscribe({
-        complete: () => {
-          this.success('Session purged');
-          this.refresh.next();
-        },
-        error: (error) => {
-          console.error(error);
-          this.error('Unable to purge session');
-        }
-      });
-    }
-  }
-
-  pause(): void {
-    const data: SessionRaw | null = this.data();
-    if(data?.sessionId) {
-      this.grpcService.pause$(data.sessionId).subscribe({
-        complete: () => {
-          this.success('Session paused');
-          this.refresh.next();
-        },
-        error: (error) => {
-          console.error(error);
-          this.error('Unable to pause session');
-        },
-      });
-    }
-  }
-
-  resume(): void {
-    const data: SessionRaw | null = this.data();
-    if(data?.sessionId) {
-      this.grpcService.resume$(data.sessionId).subscribe({
-        complete: () => {
-          this.success('Session resumed');
-          this.refresh.next();
-        },
-        error: (error) => {
-          console.error(error);
-          this.error('Unable to resume session');
-        },
-      });
-    }
-  }
-
-  close(): void {
-    const data: SessionRaw | null = this.data();
-    if(data?.sessionId) {
-      this.grpcService.close$(data.sessionId).subscribe({
-        complete: () => {
-          this.success('Session closed');
-          this.refresh.next();
-        },
-        error: (error) => {
-          console.error(error);
-          this.error('Unable to close session');
-        },
-      });
-    }
-  }
-
-  deleteSession(): void {
-    const data: SessionRaw | null = this.data();
-    if(data?.sessionId) {
-      this.grpcService.delete$(data.sessionId).subscribe({
-        complete: () => {
-          this.success('Session deleted');
-          this.router.navigate(['/sessions']);
-        },
-        error: (error) => {
-          console.error(error);
-          this.error('Unable to delete session');
-        },
-      });
-    }
   }
 }

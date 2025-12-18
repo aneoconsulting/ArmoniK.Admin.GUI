@@ -49,13 +49,11 @@ export class ApplicationsFiltersService extends DataFilterService<ApplicationRaw
   }
 
   retrieveLabel(filterFor: FilterFor<ApplicationRawEnumField, null>, filterField:  ApplicationFilterField): string {
-    switch (filterFor) {
-    case 'root':
+    if (filterFor === 'root') {
       return this.rootField[filterField as ApplicationRawEnumField];
-    case 'options':
-      throw new Error('Impossible case');
-    default:
-      throw new Error(`Unknown filter type: ${filterFor} ${filterField}}`);
+    } else {
+      console.error(`Unknown filter type: ${filterFor} ${filterField}`);
+      return '';
     }
   }
 
@@ -63,9 +61,7 @@ export class ApplicationsFiltersService extends DataFilterService<ApplicationRaw
     return this.filtersDefinitions;
   }
 
-  retrieveField(filterField: string): ApplicationFilterField  {
-    const values = Object.values(this.rootField);
-    const index = values.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
-    return { for: 'root', index: index };
+  retrieveField(filterField: string): ApplicationFilterField | undefined  {
+    return this.findKeyFromLabel(this.rootField, filterField, 'root');
   }
 }

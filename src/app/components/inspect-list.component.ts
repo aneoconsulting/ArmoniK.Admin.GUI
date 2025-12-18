@@ -29,7 +29,7 @@ import { NotificationService } from '@services/notification.service';
     MatDivider,
     MatIconModule,
   ],
-  styleUrl: 'inspect-list.component.css'
+  styleUrl: 'inspect-list.component.scss'
 })
 export class InspectListComponent {
   private _list: string[] = [];

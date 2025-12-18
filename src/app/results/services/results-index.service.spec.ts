@@ -53,6 +53,51 @@ describe('ResultsIndexService', () => {
     expect(service).toBeTruthy();
   });
 
+  describe('availableTableColumns', () => {
+    it('should expose an "Actions" column for table actions (incl. download)', () => {
+      const actionsCol = service.availableTableColumns.find((c) => c.key === 'actions');
+      expect(actionsCol).toBeTruthy();
+      expect(actionsCol?.type).toBe('actions');
+      expect(actionsCol?.sortable).toBe(false);
+      expect(actionsCol?.name).toBeDefined();
+    });
+
+    it('should expose link columns with correct routes', () => {
+      const ownerTaskId = service.availableTableColumns.find((c) => c.key === 'ownerTaskId');
+      const sessionId = service.availableTableColumns.find((c) => c.key === 'sessionId');
+      const resultId = service.availableTableColumns.find((c) => c.key === 'resultId');
+
+      expect(ownerTaskId?.type).toBe('link');
+      expect(ownerTaskId?.link).toBe('/tasks');
+
+      expect(sessionId?.type).toBe('link');
+      expect(sessionId?.link).toBe('/sessions');
+
+      expect(resultId?.type).toBe('link');
+      expect(resultId?.link).toBe('/results');
+    });
+
+    it('should contain expected column keys', () => {
+      const keys = service.availableTableColumns.map((c) => c.key);
+      expect(keys).toEqual(
+        expect.arrayContaining([
+          'name',
+          'status',
+          'ownerTaskId',
+          'createdBy',
+          'createdAt',
+          'sessionId',
+          'resultId',
+          'size',
+          'manualDeletion',
+          'opaqueId',
+          'actions',
+          'select',
+        ]),
+      );
+    });
+  });
+
   describe('Interval', () => {
     it('should call saveIntervalValue from TableService', () => {
       service.saveIntervalValue(9);

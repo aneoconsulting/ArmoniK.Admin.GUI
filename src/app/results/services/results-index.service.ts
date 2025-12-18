@@ -74,7 +74,19 @@ export class ResultsIndexService implements IndexServiceInterface<ResultRaw> {
       key: 'opaqueId',
       type: 'byte-array',
       sortable: false,
-    }
+    },
+    {
+      name: $localize`Actions`,
+      key: 'actions',
+      type: 'actions',
+      sortable: false,
+    },
+    {
+      name: $localize`Select`,
+      key: 'select',
+      type: 'select',
+      sortable: false,
+    },
   ];
 
   /**

@@ -14,7 +14,7 @@ import { TasksStatusesGroup } from '../types';
 @Component({
   selector: 'app-statuses-group-card',
   templateUrl: 'statuses-group-card.component.html',
-  styleUrl: 'statuses-group-card.component.css',
+  styleUrl: 'statuses-group-card.component.scss',
   providers: [
     DefaultConfigService,
     StorageService,
