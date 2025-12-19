@@ -1,7 +1,3 @@
-<button mat-icon-button matTooltip="View" i18n-matTooltip (click)="onViewObject()" [disabled]="!isObjectDefined" aria-label="view" i18n-aria-label>
-    @if (isObjectDefined) {
-      <mat-icon [fontIcon]="getIcon('view')"/>
-    } @else {
-      <mat-icon [fontIcon]="getIcon('view-off')"/>
-    }
-  </button>
+<button mat-icon-button matTooltip="View" i18n-matTooltip (click)="onViewObject()" [disabled]="!isObjectDefined">
+  <mat-icon [fontIcon]="getIcon(isObjectDefined ? 'view' : 'view-off')"/>
+</button>

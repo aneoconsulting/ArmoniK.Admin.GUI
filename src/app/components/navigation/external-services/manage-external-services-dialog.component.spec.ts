@@ -29,18 +29,11 @@ describe('ManageExternalServicesDialogComponent', () => {
         IconsService
       ]
     }).inject(ManageExternalServicesDialogComponent);
-    component.externalServices = [externalService];
+    component.data.externalServices = [externalService];
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should init', () => {
-    component.ngOnInit();
-    expect(component.externalServices).toEqual([
-      externalService
-    ]);
   });
 
   it('should get icon', () => {
@@ -60,29 +53,24 @@ describe('ManageExternalServicesDialogComponent', () => {
       url: 'newUrl',
       icon: 'main'
     };
-    const index = component.externalServices.indexOf(externalService);
+    const index = component.data.externalServices.indexOf(externalService);
     component.onEditExternalService(newService);
-    expect(component.externalServices[index]).toEqual(newService);
+    expect(component.data.externalServices[index]).toEqual(newService);
   });
 
   it('should delete external services', () => {
     component.deleteExternalService(externalService);
-    expect(component.externalServices).toEqual([]);
-  });
-
-  it('should close on no click', () => {
-    component.onNoClick();
-    expect(mockMatDialogRef.close).toHaveBeenCalled();
+    expect(component.data.externalServices).toEqual([]);
   });
 
   it('should add a service', () => {
     const service: ExternalService = { name: 'new', url: 'https://new', icon: undefined };
     component.onNewService(service);
-    expect(component.externalServices).toContain(service);
+    expect(component.data.externalServices).toContain(service);
   });
 
   it('should edit item list on drop', () => {
-    component.externalServices = [
+    component.data.externalServices = [
       {
         name: 'service1',
         url: 'url',
@@ -106,7 +94,7 @@ describe('ManageExternalServicesDialogComponent', () => {
     
     component.onDrop(event);
 
-    expect(component.externalServices).toEqual([
+    expect(component.data.externalServices).toEqual([
       {
         name: 'service2',
         url: 'url',

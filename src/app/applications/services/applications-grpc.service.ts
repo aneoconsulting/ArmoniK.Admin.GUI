@@ -62,12 +62,10 @@ export class ApplicationsGrpcService extends GrpcTableService<ApplicationRaw, Ap
   }
 
   buildFilter(type: FilterType, filterField: FilterField, filter: Filter<ApplicationRawEnumField, null>): RequestFilterField {
-    switch (type) {
-    case 'string':
+    if (type === 'string') {
       return buildStringFilter(filterField, filter) as ApplicationFilterField.AsObject;
-    default: {
+    } else {
       throw new Error(`Type ${type} not supported`);
-    }
     }
   }
 }

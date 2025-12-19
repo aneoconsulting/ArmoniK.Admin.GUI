@@ -32,28 +32,34 @@ export default class ApplicationsDataService extends AbstractTableDataService<Ap
    */
   private createTasksByStatusQueryParams(name: string, version: string) {
     if(this.filters.length === 0) {
-      return {
-        [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: name,
-        [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: version
-      };
-    } else {
-      const params: Record<string, string> = {};
-      this.filters.forEach((filterAnd, index) => {
-        params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = name;
-        params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = version;
-        filterAnd.forEach(filter => {
-          if ((filter.field !== ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) && 
-          (filter.field !== ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
-            const filterLabel = this.createQueryParamFilterKey(filter, index);
-            if (filterLabel && filter.value) {
-              params[filterLabel] = filter.value.toString();
-            }
-          }
-        });
-
-      });
-      return params;
+      return this.createTasksByStatusQueryParamsSingleFilter(name, version);
     }
+    return this.createTasksByStatusQueryParamsWithManyFilters(name, version);
+  }
+
+  private createTasksByStatusQueryParamsSingleFilter(name: string, version: string) {
+    return {
+      [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: name,
+      [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: version
+    };
+  }
+
+  private createTasksByStatusQueryParamsWithManyFilters(name: string, version: string) {
+    const params: Record<string, string> = {};
+    for (const [index, filterAnd] of this.filters.entries()) {
+      params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = name;
+      params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = version;
+      for (const filter of filterAnd) {
+        if ((filter.field !== ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) && 
+          (filter.field !== ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
+          const filterLabel = this.createQueryParamFilterKey(filter, index);
+          if (filterLabel && filter.value) {
+            params[filterLabel] = filter.value.toString();
+          }
+        }
+      }
+    }
+    return params;
   }
 
   /**

@@ -142,7 +142,7 @@ export class FieldContentComponent<T extends DataRaw, S extends Status, O extend
    * If `false`, the provided type does not change.
    */
   private checkIfArray() {
-    if (this._value instanceof Array) {
+    if ((this._value as unknown[])?.values) { // Values is a method for arrays, checking its existence is checking it is an array.
       this.type = 'array';
     }
   }

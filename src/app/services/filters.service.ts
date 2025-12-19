@@ -85,10 +85,10 @@ export class FiltersService {
 
   createFilterPartitionQueryParams(partitionIds: string[]): Params {
     const params: Params = {};
-    partitionIds.forEach((partitionId, index) => {
+    for (const [index, partitionId] of partitionIds.entries()) {
       const keyPartition = this.createQueryParamsKey<PartitionRawEnumField>(index, 'root' , FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID);
       params[keyPartition] = partitionId;
-    });
+    }
     return params;
   }
 }

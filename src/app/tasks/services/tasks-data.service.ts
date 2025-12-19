@@ -29,24 +29,31 @@ export default class TasksDataService extends AbstractTableDataService<TaskSumma
    */
   createResultsQueryParams(taskId: string) {
     if (this.filters.length === 0) {
-      const keyTask = this.filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
-
-      return {
-        [keyTask]: taskId
-      };
-    } else {
-      const params: Record<string, string> = {};
-      this.filters.forEach((filterAnd, index) => {
-        filterAnd.forEach(filter => {
-          if (!(filter.field === TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
-            const filterLabel = this.#createResultFilterLabel(filter, index);
-            if (filterLabel && filter.value) params[filterLabel] = filter.value.toString();
-          }
-        });
-        params[`${index}-root-${ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = taskId;
-      });
-      return params;
+      return this.createResultsQueryParamsSingleFilter(taskId);
     }
+    return this.createResultsQueryParamsManyFilters(taskId);
+  }
+
+  private createResultsQueryParamsSingleFilter(taskId: string) {
+    const keyTask = this.filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
+
+    return {
+      [keyTask]: taskId
+    };
+  }
+
+  private createResultsQueryParamsManyFilters(taskId: string) {
+    const params: Record<string, string> = {};
+    for (const [index, filterAnd] of this.filters.entries()) {
+      for (const filter of filterAnd) {
+        if (!(filter.field === TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
+          const filterLabel = this.#createResultFilterLabel(filter, index);
+          if (filterLabel && filter.value) params[filterLabel] = filter.value.toString();
+        }
+      }
+      params[`${index}-root-${ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = taskId;
+    }
+    return params;
   }
 
   /**

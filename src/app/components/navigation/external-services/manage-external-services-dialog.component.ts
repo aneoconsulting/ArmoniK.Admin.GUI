@@ -1,5 +1,5 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, Inject, OnInit, inject } from '@angular/core';
+import { Component, Inject, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,22 +22,15 @@ import { FormExternalServiceComponent } from './form-external-service.component'
     FormExternalServiceComponent,
   ]
 })
-export class ManageExternalServicesDialogComponent implements OnInit {
+export class ManageExternalServicesDialogComponent {
   readonly iconsService = inject(IconsService);
   
-  externalServices: ExternalService[] = [];
   editedService: ExternalService | undefined = undefined;
 
   constructor(
     public dialogRef: MatDialogRef<ManageExternalServicesDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ManageExternalServicesDialogData
   ) {}
-
-  ngOnInit(): void {
-    this.externalServices = [
-      ...this.data.externalServices.map((externalService) => ({ ...externalService })),
-    ];
-  }
 
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);
@@ -49,29 +42,25 @@ export class ManageExternalServicesDialogComponent implements OnInit {
 
   onEditExternalService(externalService: ExternalService): void {
     if (this.editedService) {
-      const index = this.externalServices.indexOf(this.editedService);
-      this.externalServices[index] = externalService;
+      const index = this.data.externalServices.indexOf(this.editedService);
+      this.data.externalServices[index] = externalService;
       this.editedService = undefined;
     }
   }
 
   deleteExternalService(externalService: ExternalService): void {
-    const index = this.externalServices.indexOf(externalService);
+    const index = this.data.externalServices.indexOf(externalService);
 
     if (index >= 0) {
-      this.externalServices.splice(index, 1);
+      this.data.externalServices.splice(index, 1);
     }
   }
 
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-
   onDrop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.externalServices, event.previousIndex, event.currentIndex);
+    moveItemInArray(this.data.externalServices, event.previousIndex, event.currentIndex);
   }
 
   onNewService(service: ExternalService) {
-    this.externalServices.push(service);
+    this.data.externalServices.push(service);
   }
 }

@@ -149,7 +149,7 @@ export class IndexComponent implements OnInit {
     const blob = new Blob([data], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const date = new Date().toISOString().slice(0, 10);
-    const id = new Date().getTime();
+    const id = Date.now();
 
     const anchor = document.createElement('a');
     anchor.href = url;
@@ -159,7 +159,7 @@ export class IndexComponent implements OnInit {
     this.notificationService.success('Settings exported');
   }
 
-  onSubmitImport(event: SubmitEvent): void {
+  async onSubmitImport(event: SubmitEvent): Promise<void> {
     event.preventDefault();
 
     const form = event.target as HTMLFormElement;
@@ -187,30 +187,25 @@ export class IndexComponent implements OnInit {
       return;
     }
 
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const data = reader.result as string;
-      try {
-        this.storageService.importData(data);
-        this.keys = this.sortKeys(this.storageService.restoreKeys());
+    try {
+      const fileContent = await file.text();
+      this.storageService.importData(fileContent, true, true);
+      this.keys = this.sortKeys(this.storageService.restoreKeys());
   
-        const hasSidebarKey = this.keys.has('navigation-sidebar');
+      const hasSidebarKey = this.keys.has('navigation-sidebar');
   
-        // Update sidebar
-        if (hasSidebarKey) {
-          this.navigationService.updateSidebar(this.navigationService.restoreSidebar());
-        }
-  
-        this.notificationService.success('Settings imported');
-      } catch (e) {
-        console.warn(e);
-        this.notificationService.error('Settings could not be imported.');
+      // Update sidebar
+      if (hasSidebarKey) {
+        this.navigationService.updateSidebar(this.navigationService.restoreSidebar());
       }
+  
+      this.notificationService.success('Settings imported');
+    } catch (e) {
+      console.warn(e);
+      this.notificationService.error('Settings could not be imported.');
+    }
 
-      form.reset();
-    };
-    reader.readAsText(file);
+    form.reset();
   }
 
   private sortKeys(keys: Set<Key>): Set<Key> {

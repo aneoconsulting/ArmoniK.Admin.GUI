@@ -71,9 +71,9 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
   protected initColumns() {
     this.displayedColumnsKeys = this.indexService.restoreColumns();
     this.availableColumns = this.indexService.availableTableColumns;
-    this.indexService.availableTableColumns.forEach(column => {
+    for (const column of this.indexService.availableTableColumns) {
       this.columnsLabels[column.key] = column.name;
-    });
+    }
     this.lockColumns = this.indexService.restoreLockColumns();
   }
 

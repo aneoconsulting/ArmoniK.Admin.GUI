@@ -11,7 +11,7 @@ export class VersionsService {
    */
   private formatVersion(version: string | null): string | undefined {
     if (version !== null) {
-      const versionNumber = version.split('.').map(versionPart => Number(versionPart));
+      const versionNumber = version.split('.').map(Number);
       const isInvalidNumber = versionNumber.some(number => Number.isNaN(number));
       if (!isInvalidNumber) {
         return this.fixVersion(versionNumber);
