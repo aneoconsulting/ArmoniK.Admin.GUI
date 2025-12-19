@@ -24,6 +24,7 @@ export class ChangeLanguageButtonComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly iconsService = inject(IconsService);
   private readonly storageService = inject(StorageService);
+  private readonly window = inject(Window);
 
   selectedLanguage: string;
   availableLanguages: string[];
@@ -35,7 +36,7 @@ export class ChangeLanguageButtonComponent implements OnInit {
   }
   
   getLanguageFromUrl(): string | undefined {
-    const location = window.location.pathname.split('/');
+    const location = this.window.location.pathname.split('/');
     let urlLanguage: undefined | string = undefined;
     let i = 0;
     while (i < this.defaultConfigService.availableLanguages.length && !urlLanguage) {

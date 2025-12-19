@@ -13,29 +13,6 @@ import { StorageService } from '@services/storage.service';
 import { of } from 'rxjs';
 import { IndexComponent } from './index.component';
 
-class FakeFileReader extends FileReader {
-  _result: string;
-
-  override set result(entry: string) {
-    this._result = entry;
-  }
-
-  override get result() {
-    return this._result;
-  }
-  
-  constructor(result: string) {
-    super();
-    this.result = result;
-  }
-
-  override onload = jest.fn();
-
-  override readAsText() {
-    this.onload();
-  }
-}
-
 describe('IndexComponent', () => {
   let component: IndexComponent;
 
@@ -330,7 +307,10 @@ describe('IndexComponent', () => {
     const newSideBar: Sidebar[] = ['results', 'partitions'];
     const data = {'navigation-sidebar': newSideBar};
 
-    const file = new File([JSON.stringify(data)], 'settings', {type: 'application/json'});
+    const file = {
+      text: jest.fn(() => JSON.stringify(data)),
+      type: 'application/json',
+    };
     const target = {
       querySelector: jest.fn().mockReturnValue({files: [file]}),
       reset: jest.fn()
@@ -341,87 +321,84 @@ describe('IndexComponent', () => {
       preventDefault: jest.fn()
     } as unknown as SubmitEvent;
 
-    jest.spyOn(global, 'FileReader').mockReturnValue(new FakeFileReader(JSON.stringify(data)));
-
     beforeEach(() => {
       mockStorageService.restoreKeys.mockReturnValueOnce(new Set(Object.keys(data) as Key[]));
       mockNavigationService.restoreSidebar.mockReturnValueOnce(data['navigation-sidebar']);
     });
 
-    it('should not accept undefined forms', () => {
-      expect(component.onSubmitImport({target: undefined, preventDefault: jest.fn()} as unknown as SubmitEvent)).toBeUndefined();
+    it('should not accept undefined forms', async () => {
+      expect(await component.onSubmitImport({target: undefined, preventDefault: jest.fn()} as unknown as SubmitEvent)).toBeUndefined();
     });
 
-    it('should not accept invalid input', () => {
+    it('should not accept invalid input', async () => {
       target.querySelector.mockReturnValueOnce(undefined);
-      expect(component.onSubmitImport(event)).toBeUndefined();
+      expect(await component.onSubmitImport(event)).toBeUndefined();
     });
 
-    it('should not accept empty files input', () => {
+    it('should not accept empty files input', async () => {
       target.querySelector.mockReturnValueOnce({files: []});
-      expect(component.onSubmitImport(event)).toBeUndefined();
+      expect(await component.onSubmitImport(event)).toBeUndefined();
     });
 
-    it('should notify on empty file', () => {
+    it('should notify on empty file', async () => {
       target.querySelector.mockReturnValueOnce({files: []});
-      component.onSubmitImport(event);
+      await component.onSubmitImport(event);
       expect(mockNotificationService.error).toHaveBeenCalled();
     });
 
-    it('should not accept not json file', () => {
+    it('should not accept not json file', async () => {
       target.querySelector.mockReturnValueOnce({files: [{type: 'application/txt'}]});
-      component.onSubmitImport(event);
-      expect(component.onSubmitImport(event)).toBeUndefined();
+      expect(await component.onSubmitImport(event)).toBeUndefined();
     });
 
-    it('should notify on wrong file type', () => {
+    it('should notify on wrong file type', async () => {
       target.querySelector.mockReturnValueOnce({files: [{type: 'application/txt'}]});
-      component.onSubmitImport(event);
+      await component.onSubmitImport(event);
       expect(mockNotificationService.error).toHaveBeenCalled();
     });
 
-    it('should reset the form on wrong file type', () => {
+    it('should reset the form on wrong file type', async () => {
       target.querySelector.mockReturnValueOnce({files: [{type: 'application/txt'}]});
-      component.onSubmitImport(event);
+      await component.onSubmitImport(event);
       expect(target.reset).toHaveBeenCalled();
     });
 
     it('should import data in storage', async () => {
-      component.onSubmitImport(event);
-      expect(mockStorageService.importData).toHaveBeenCalledWith(JSON.stringify(data));
+      await component.onSubmitImport(event);
+      expect(mockStorageService.importData).toHaveBeenCalledWith(JSON.stringify(data), true, true);
     });
 
-    it('should set keys', () => {
-      component.onSubmitImport(event);
+    it('should set keys', async () => {
+      await component.onSubmitImport(event);
       expect(component.keys).toEqual(new Set(Object.keys(data) as Key[]));
     });
 
-    it('should set sidebar', () => {
-      component.onSubmitImport(event);
+    it('should set sidebar', async () => {
+      await component.onSubmitImport(event);
       expect(mockNavigationService.updateSidebar).toHaveBeenCalledWith(data['navigation-sidebar']);
     });
 
-    it('should notify on success', () => {
-      component.onSubmitImport(event);
+    it('should notify on success', async () => {
+      await component.onSubmitImport(event);
       expect(mockNotificationService.success).toHaveBeenCalled();
     });
 
-    it('should console warn in case of reading error', () => {
+    it('should console warn in case of reading error', async () => {
       console.warn = jest.fn().mockImplementation(() => {});
       mockStorageService.importData.mockImplementationOnce(() => {throw new Error();});
-      component.onSubmitImport(event);
+      await component.onSubmitImport(event);
       expect(console.warn).toHaveBeenCalled();
     });
 
-    it('should notify on error', () => {
+    it('should notify on error', async () => {
       console.warn = jest.fn().mockImplementation(() => {});
       mockStorageService.importData.mockImplementationOnce(() => {throw new Error();});
-      component.onSubmitImport(event);
+      await component.onSubmitImport(event);
       expect(mockNotificationService.error).toHaveBeenCalled();
     });
 
-    it('should reset the form', () => {
-      component.onSubmitImport(event);
+    it('should reset the form', async () => {
+      await component.onSubmitImport(event);
       expect(target.reset).toHaveBeenCalled();
     });
   });

@@ -24,8 +24,8 @@ export class TableInspectObjectDialogComponent implements OnInit {
   object: object | null = null;
 
   constructor(
-    public dialogRef: MatDialogRef<TableInspectObjectDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: TableInspectObjectDialogData
+    public readonly dialogRef: MatDialogRef<TableInspectObjectDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public readonly data: TableInspectObjectDialogData
   ) {}
 
   ngOnInit(): void {

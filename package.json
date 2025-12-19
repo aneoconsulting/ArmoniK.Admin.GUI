@@ -1,6 +1,6 @@
 {
   "name": "armonik-admin-gui",
-  "version": "0.10.7",
+  "version": "0.14.4",
   "packageManager": "pnpm@10.12.1",
   "scripts": {
     "ng": "ng",
@@ -18,7 +18,7 @@
   },
   "private": true,
   "dependencies": {
-    "@aneoconsultingfr/armonik.api.angular": "^3.26.1",
+    "@aneoconsultingfr/armonik.api.angular": "^3.28.1",
     "@angular/animations": "^20.0.3",
     "@angular/cdk": "20.0.3",
     "@angular/common": "^20.0.3",

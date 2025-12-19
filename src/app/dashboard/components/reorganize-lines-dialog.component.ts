@@ -79,7 +79,9 @@ export class ReorganizeLinesDialogComponent implements OnInit {
             line.name = result;
           }
         };
-        this.lines.forEach(line => changeSelectedNameLine(line, selectedLine.name));
+        for (const line of this.lines) {
+          changeSelectedNameLine(line, selectedLine.name);
+        }
       }
     });
   }

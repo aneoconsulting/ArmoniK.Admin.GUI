@@ -20,7 +20,8 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
 
 @Component({
   selector: 'app-table-cell',
-  templateUrl: './table-cell.component.html',
+  templateUrl: 'table-cell.component.html',
+  styleUrl: 'table-cell.component.scss',
   imports: [
     EmptyCellPipe,
     RouterModule,
@@ -142,9 +143,9 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
     }
     const keys = this.column.key.toString().split('.');
     let resultObject: {[key: string]: object} = element.raw as unknown as {[key: string]: object};
-    keys.forEach(key => {
+    for (const key of keys) {
       resultObject = resultObject[key] as {[key: string]: object};
-    });
+    }
     return resultObject;
   }
 

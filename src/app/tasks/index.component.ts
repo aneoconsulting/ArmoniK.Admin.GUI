@@ -88,7 +88,6 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSu
   readonly indexService = inject(TasksIndexService);
   readonly filtersService = inject(TasksFiltersService);
   readonly tableDataService = inject(TasksDataService);
-  readonly grpcActionsService = inject(GrpcActionsService);
 
   tableType: TableType = 'Tasks';
 
@@ -101,7 +100,6 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSu
   ngOnInit(): void {
     this.initTableEnvironment();
 
-    this.grpcActionsService.refresh = this.tableDataService.refresh$;
     const viewInLogs = this.indexService.restoreViewInLogs();
     this.serviceIcon = viewInLogs.serviceIcon;
     this.serviceName = viewInLogs.serviceName;

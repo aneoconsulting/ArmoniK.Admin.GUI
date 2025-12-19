@@ -1,0 +1,30 @@
+<h2 mat-dialog-title i18n>Conflicting Hosts</h2>
+
+<mat-dialog-content>
+  <p i18n>You have conflicting hosts configuration regarding the address: {{ endpoint }}</p>
+
+  <section>
+    @let old = oldEnv();
+    @let newE = newEnv();
+    @if (old && newE) {
+      <div>
+        <p i18n>Old configuration: </p>
+        <article class="environment" [style]="'color:' + old.color + ';'" [matTooltip]="old.description">
+          {{ old.name }} {{ old.version }}
+        </article>
+      </div>
+
+      <div>
+        <p i18n>New configuration: </p>
+        <article class="environment" [style]="'color:' + newE.color + ';'" [matTooltip]="newE.description">
+          {{ newE.name }} {{ newE.version }}
+        </article>
+      </div>
+    }
+  </section>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="false" i18n>Keep the old environment</button>
+  <button mat-button [mat-dialog-close]="true" i18n>Use the new environment</button>
+</mat-dialog-actions>

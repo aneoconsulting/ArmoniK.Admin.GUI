@@ -77,7 +77,7 @@ export const appConfig: ApplicationConfig = {
     FiltersCacheService,
     {
       provide: Window,
-      useValue: window
+      useValue: globalThis
     },
     {
       provide: Storage,

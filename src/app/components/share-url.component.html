@@ -1,7 +1,3 @@
-<button mat-icon-button i18n-aria-label aria-label="Share" [cdkCopyToClipboard]="sharableURL" (cdkCopyToClipboardCopied)="onCopied()" [disabled]="copied" matTooltip="Copy Page URL" i18n-matTooltip>
-  @if (copied) {
-    <mat-icon aria-hidden="true" [fontIcon]="getIcon('done')"/>
-  } @else {
-    <mat-icon aria-hidden="true" [fontIcon]="getIcon('share')"/>
-  }
+<button mat-icon-button [cdkCopyToClipboard]="sharableURL" (cdkCopyToClipboardCopied)="onCopied()" [disabled]="copied" matTooltip="Copy Page URL" i18n-matTooltip>
+  <mat-icon aria-hidden="true" [fontIcon]="getIcon(copied ? 'done' : 'share')"/>
 </button>

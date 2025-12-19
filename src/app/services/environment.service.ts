@@ -4,17 +4,22 @@ import { GRPC_INTERCEPTORS } from '@ngx-grpc/core';
 import { DefaultConfigService } from './default-config.service';
 import { StorageService } from './storage.service';
 
-export interface Environment {
-  color: string,
-  name: string,
-  description: string,
-  version: string,
+export type Environment = {
+  name?: string;
+  version?: string;
+  description?: string;
+  color?: string;
+}
+
+export type Host = {
+  endpoint: string;
+  environment: Environment | undefined;
 }
 
 @Injectable()
 export class EnvironmentService {
-  hosts: string[];
-  currentHost: string | null;
+  hosts: Host[];
+  currentHost: Host | null;
 
   private readonly storageService = inject(StorageService);
   private readonly defaultConfigService = inject(DefaultConfigService);
@@ -26,14 +31,14 @@ export class EnvironmentService {
   }
 
   private getHostLists() {
-    return (this.storageService.getItem<string[]>('environments', true) ?? this.defaultConfigService.environments) as string[];
+    return (this.storageService.getItem<Host[]>('environments', true) ?? this.defaultConfigService.environments) as Host[];
   }
 
   private getHost() {
-    return this.storageService.getItem<string>('host-config') ?? this.defaultConfigService.hostConfig;
+    return this.storageService.getItem<Host>('host-config', true) as Host ?? this.defaultConfigService.hostConfig;
   }
 
-  selectHost(host: string | null) {
+  selectHost(host: Host | null) {
     this.currentHost = host;
     this.grpcInterceptor.setHost(this.currentHost);
     if (host === null) {
@@ -41,15 +46,15 @@ export class EnvironmentService {
     }
   }
 
-  addEnvironment(environment: string): void {
-    if (!this.hosts.includes(environment)) {
-      this.hosts.push(environment);
+  addEnvironment(host: Host): void {
+    if (!this.hosts.some(h => h.endpoint === host.endpoint)) {
+      this.hosts.push(host);
       this.saveEnvironments();
     }
   }
 
-  removeEnvironment(host: string): void {
-    const index = this.hosts.indexOf(host);
+  removeEnvironment(host: Host): void {
+    const index = this.hosts.findIndex(h => h.endpoint === host.endpoint);
     if (index != -1) {
       this.hosts.splice(index, 1);
       this.saveEnvironments();

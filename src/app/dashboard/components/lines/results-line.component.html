@@ -27,9 +27,15 @@
       (showFiltersChange)="onShowFiltersChange($event)"
     />
   </mat-toolbar-row>
+
+  <mat-toolbar-row class="grpc-actions">
+    <app-table-grpc-actions [refresh$]="tableDataService.refresh$" [selection]="selection" [selectDisplayed]="hasSelectColumnDisplayed()" />
+  </mat-toolbar-row>
 </mat-toolbar>
 <app-results-table
   [displayedColumns]="displayedColumns()"
   [lockColumns]="lockColumns"
   (optionsUpdate)="onOptionsChange()"
+  (selectionChange)="onSelectionChange($event)"
+  (columnUpdate)="onColumnsChange($event)"
 />

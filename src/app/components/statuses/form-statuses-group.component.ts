@@ -64,7 +64,7 @@ export class FormStatusesGroupComponent implements OnInit {
         this.groupForm.patchValue({name: statusLabelColor.label, color: statusLabelColor.color});
       }
     } else {
-      const index = statuses.value.findIndex(s => s === status);
+      const index = statuses.value.indexOf(status);
       statuses.value.splice(index, 1);
     }
   }

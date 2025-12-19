@@ -25,6 +25,7 @@ import { ChangeLanguageButtonComponent } from './change-language-button.componen
 import { EnvironmentComponent } from './environment/environment.component';
 import { ExternalServicesComponent } from './external-services/external-services.component';
 import { SchemeSwitcherComponent } from './scheme-switcher/scheme-switcher.component';
+import { SettingsButtonComponent } from './settings-button/settings-button.component';
 import { VersionsMenuComponent } from './version-menu/versions-menu.component';
 
 @Component({
@@ -55,6 +56,7 @@ import { VersionsMenuComponent } from './version-menu/versions-menu.component';
     CdkDragHandle,
     EnvironmentComponent,
     SchemeSwitcherComponent,
+    SettingsButtonComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -68,8 +70,8 @@ export class NavigationComponent implements OnInit {
 
   settingsItem = $localize`Settings`;
 
-  private userConnected = signal(this.userConnectedGuard.canActivate());
-  isProfileButtonDisabled = computed(() => !this.userConnected());
+  private readonly userConnected = signal(this.userConnectedGuard.canActivate());
+  readonly isProfileButtonDisabled = computed(() => !this.userConnected());
 
   sidebar = this.navigationService.currentSidebar;
   sideBarOpened = true;

@@ -1,6 +1,6 @@
 <mat-chip-listbox>
   @for(filter of filters(); track $index) {
-    <mat-chip class="mat-mdc-standard-chip mat-primary mat-mdc-chip-selected" (click)="openFiltersDialog()">
+    <mat-chip class="mat-mdc-standard-chip mat-primary mat-mdc-chip-selected" (click)="openFiltersDialog()" (keydown.enter)="openFiltersDialog()">
       <span>{{ filter }}</span>
     </mat-chip>
     @if(!$last) {

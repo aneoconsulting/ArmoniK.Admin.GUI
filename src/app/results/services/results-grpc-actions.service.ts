@@ -75,7 +75,7 @@ export class ResultsGrpcActionsService extends GrpcActionsService<ResultRaw, Res
     filename: string,
     mime: 'application/json' | 'text/plain' | 'application/octet-stream' | 'application/zip'
   ): void {
-    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    if (typeof document !== 'undefined') {
       const blob = new Blob([content], { type: mime });
 
       const url = URL.createObjectURL(blob);

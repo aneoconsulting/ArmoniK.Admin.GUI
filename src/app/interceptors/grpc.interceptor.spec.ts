@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { GrpcMessage, GrpcRequest } from '@ngx-grpc/common';
 import { GrpcHandler } from '@ngx-grpc/core';
 import { DefaultConfigService } from '@services/default-config.service';
+import { Host } from '@services/environment.service';
 import { StorageService } from '@services/storage.service';
 import { GrpcClientSettings, GrpcHostInterceptor } from './grpc.interceptor';
 
@@ -35,7 +36,7 @@ describe('GrpcHostInterceptor', () => {
 
   describe('initialisation', () => {
     it('should get the host-config stored item', () => {
-      expect(mockStorageService.getItem).toHaveBeenCalledWith('host-config');
+      expect(mockStorageService.getItem).toHaveBeenCalledWith('host-config', true);
     });
     
     it('should set the default host if the stored item is undefined', () => {
@@ -88,13 +89,15 @@ describe('GrpcHostInterceptor', () => {
     });
 
     describe('With URI', () => {
-      const uriHost = 'http://google.com';
+      const uriHost = {
+        endpoint: 'http://google.com',
+      } as Host;
       beforeEach(() => {
         interceptor.setHost(uriHost);
       });
 
       it('should update the host config if it is valid', () => {
-        expect(interceptor.host).toEqual(uriHost);
+        expect(interceptor.host).toEqual(uriHost.endpoint);
       });
 
       it('should store the host config if it is valid', () => {
@@ -103,14 +106,16 @@ describe('GrpcHostInterceptor', () => {
     });
 
     describe('With IP adress', () => {
-      const ipHost = 'http://1.1.1.1:8080';
+      const ipHost = {
+        endpoint: 'http://1.1.1.1:8080',
+      } as Host;
 
       beforeEach(() => {
         interceptor.setHost(ipHost);
       });
 
       it('should update the host config if it is valid', () => {
-        expect(interceptor.host).toEqual(ipHost);
+        expect(interceptor.host).toEqual(ipHost.endpoint);
       });
 
       it('should store the host config if it is valid', () => {

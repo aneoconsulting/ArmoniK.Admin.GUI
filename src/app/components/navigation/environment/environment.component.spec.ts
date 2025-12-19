@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { Environment, EnvironmentService } from '@services/environment.service';
+import { Environment, EnvironmentService, Host } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { EnvironmentComponent } from './environment.component';
@@ -14,7 +14,15 @@ describe('EnvironmentComponent', () => {
     getIcon: jest.fn(),
   };
 
-  let mockDialogData = 'http://armonik.eu/ ';
+  let mockDialogData = {
+    endpoint: 'http://armonik.eu/ ',
+    environment: {
+      name: 'armonik',
+      version: 'europe',
+      description: '',
+      color: 'orange'
+    }
+  } as Host;
   const mockDialog = {
     open: jest.fn(() => ({
       afterClosed: jest.fn(() => of(mockDialogData))
@@ -31,10 +39,26 @@ describe('EnvironmentComponent', () => {
     get: jest.fn((): Observable<Environment> => of(mockEnv)),
   };
 
-  const mockCurrentHost: string = ''; 
+  const mockCurrentHost: Host = {
+    endpoint: '',
+    environment: undefined,
+  }; 
   const mockEnvironmentService = {
-    currentHost: mockCurrentHost as string | null,
-    hosts: ['armonik.eu', 'test.fr'],
+    currentHost: mockCurrentHost as Host | null,
+    hosts: [
+      {
+        endpoint: 'armonik.eu',
+        environment: {
+          name: 'armonik',
+          version: 'europe',
+          description: 'description',
+          color: 'orange'
+        }
+      },
+      {
+        endpoint: 'test.fr',
+      }
+    ],
     selectHost: jest.fn(),
     addEnvironment: jest.fn(),
     removeEnvironment: jest.fn(),
@@ -62,6 +86,7 @@ describe('EnvironmentComponent', () => {
       'trigger' as unknown as keyof EnvironmentComponent,
       mockTrigger as unknown as Environment // Since trigger is private, MatMenuTrigger is not accepted as a "valid" type.
     );
+    mockEnvironmentService.currentHost = mockCurrentHost;
     component.ngOnInit();
     component.ngAfterViewInit();
   });
@@ -73,10 +98,6 @@ describe('EnvironmentComponent', () => {
   describe('Initialisation', () => { 
     it('should subscribe to host$', () => {
       expect(component['host$'].observed).toBeTruthy();
-    });
-    
-    it('should subscribe to hostList$', () => {
-      expect(component['hostList$'].observed).toBeTruthy();
     });
 
     it('should set the defaultEnvironment', () => {
@@ -104,6 +125,21 @@ describe('EnvironmentComponent', () => {
     it('should subscribe to trigger menuClosed', () => {
       expect(menuOpenedSubject.observed).toBeTruthy();
     });
+
+    describe('With complete environment information', () => {
+      beforeEach(() => {
+        mockEnvironmentService.currentHost = mockEnvironmentService.hosts[0] as Host;
+        component.ngOnInit();
+      });
+
+      it('should set the environment as the one provided by the host object', () => {
+        expect(component.environment()).toEqual(mockEnvironmentService.hosts[0].environment);
+      });
+
+      it('should not call the environment URL', () => {
+        expect(mockHttpClient.get).not.toHaveBeenCalledWith(mockEnvironmentService.hosts[0].endpoint + '/static/environment.json');
+      });
+    });
   });
 
   describe('Menu events', () => { 
@@ -126,17 +162,44 @@ describe('EnvironmentComponent', () => {
 
   describe('Select environment', () => { 
     describe('Valid environment', () => {
-      const providedHost = 'armonik.eu';
+      const providedHost = {
+        endpoint: 'armonik.eu',
+        environment: {
+          name: 'armonik',
+          version: 'europe',
+          description: 'description',
+          color: 'green'
+        }
+      };
+
       beforeEach(() => {
         component.selectEnvironment(providedHost);
       });
 
       it('should set the environment signal with the provided host Environment', () => {
-        expect(component.environment()).toEqual(mockEnv);
+        expect(component.environment()).toEqual(providedHost.environment);
       });
 
       it('should select the host in the environment service', () => {
         expect(mockEnvironmentService.selectHost).toHaveBeenCalledWith(providedHost);
+      });
+    });
+
+    describe('Valid but incomplete environment', () => {
+      const providedHost = {
+        endpoint: 'armonik.eu',
+      } as Host;
+      
+      beforeEach(() => {
+        component.selectEnvironment(providedHost);
+      });
+
+      it('should select the host in the environment service', () => {
+        expect(mockEnvironmentService.selectHost).toHaveBeenCalledWith(providedHost);
+      });
+
+      it('should complete the environment with the completeEnv function', () => {
+        expect(component.environment()).toEqual(component['partialToCompleteEnv'](null));
       });
     });
 
@@ -156,41 +219,57 @@ describe('EnvironmentComponent', () => {
   });
 
   describe('openNewEnvDialog', () => {
-    let spy: jest.SpyInstance;
+    describe('With host that was not already listed', () => {
+      beforeEach(() => {
+        component.openNewEnvDialog();
+      });
 
-    beforeEach(() => {
-      spy = jest.spyOn(component['hostList$'], 'next');
+      it('should add the environment to the environment service', () => {
+        expect(mockEnvironmentService.addEnvironment).toHaveBeenCalledWith(mockDialogData);
+      });
+
+      it('should trim the dialog data', () => {
+        expect(mockDialogData.endpoint).toEqual('http://armonik.eu');
+      });
+    });
+
+    describe('With host that is already listed', () => {
+      beforeEach(() => {
+        mockDialogData.endpoint = 'test.fr';
+        component.openNewEnvDialog();
+      });
+
+      it('should remove the environment from the environment service', () => {
+        expect(mockEnvironmentService.removeEnvironment).toHaveBeenCalledWith(mockEnvironmentService.hosts[1]);
+      });
+
+      it('should add the environment to the environment service', () => {
+        expect(mockEnvironmentService.addEnvironment).toHaveBeenCalledWith(mockDialogData);
+      });
+    });
+
+    it('should not add an empty string', () => {
+      mockDialogData.endpoint = '';
       component.openNewEnvDialog();
-    });
-
-    it('should add the environment to the environment service', () => {
-      expect(mockEnvironmentService.addEnvironment).toHaveBeenCalledWith(mockDialogData.trim().slice(0, -1));
-    });
-
-    it('should call the hostList subject', () => {
-      expect(spy).toHaveBeenCalled();
+      expect(mockEnvironmentService.addEnvironment).not.toHaveBeenCalled();
     });
   });
   
   describe('deleteEnv', () => {
-    const host = 'some-host';
-    let spyHostList: jest.SpyInstance;
+    const host = {
+      endpoint: 'some-host',
+    } as Host;
     let spySelectEnvironment: jest.SpyInstance;
 
     beforeEach(() => {
       mockEnvironmentService.currentHost = host;
       mockDialogData = host;
-      spyHostList = jest.spyOn(component['hostList$'], 'next');
       spySelectEnvironment = jest.spyOn(component, 'selectEnvironment');
       component.deleteEnv(host);
     });
     
     it('should delete the host from the environment service host list', () => {
       expect(mockEnvironmentService.removeEnvironment).toHaveBeenCalledWith(host);
-    });
-
-    it('should call the hostList subject', () => {
-      expect(spyHostList).toHaveBeenCalled();      
     });
 
     it('should select the default environment if the deleted host is the currently selected one', () => {
@@ -208,5 +287,10 @@ describe('EnvironmentComponent', () => {
       name: 'Unknown',
       version: 'Unknown',
     });
+  });
+
+  it('should unsubscribe on destroy', () => {
+    component.ngOnDestroy();
+    expect(component['subscriptions'].closed).toBeTruthy();
   });
 });
