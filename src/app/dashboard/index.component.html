@@ -35,7 +35,7 @@
     </div>
   }
   
-  <main class="lines" [style]="'grid-template-columns: repeat(' + columns + ', 1fr);'">
+  <main class="lines" [style]="'grid-template-columns: repeat(' + columns() + ', 1fr);'">
     @for (line of lines; track line.name+line.type) {
       <section>
         <app-page-section-header [icon]="getLineIcon(line.type)">

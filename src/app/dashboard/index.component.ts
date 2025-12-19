@@ -85,14 +85,14 @@ export class IndexComponent implements OnInit {
   lines: Line[];
   showFabActions = false;
   hasOnlyOneLine = signal(false);
-  columns = 1;
+  columns = signal(1);
 
   sharableURL = '';
 
   ngOnInit(): void {
     this.lines = this.#dashboardIndexService.restoreLines();
     this.sharableURL = this.#shareURLService.generateSharableURL(null, null);
-    this.columns = this.#dashboardIndexService.restoreSplitLines();
+    this.columns.set(this.#dashboardIndexService.restoreSplitLines());
   }
 
   getIcon(name: string): string {
@@ -195,14 +195,14 @@ export class IndexComponent implements OnInit {
   onSplitLinesDialog() {
     const dialogRef = this.#dialog.open<SplitLinesDialogComponent, SplitLinesDialogData, SplitLinesDialogResult>(SplitLinesDialogComponent, {
       data: {
-        columns: this.columns,
+        columns: this.columns(),
       }
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result?.columns) {
-        this.columns = result.columns;
-        this.#dashboardIndexService.saveSplitLines(this.columns);
+        this.columns.set(result.columns);
+        this.#dashboardIndexService.saveSplitLines(result.columns);
       }
     });
   }

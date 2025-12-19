@@ -83,7 +83,7 @@ describe('IndexComponent', () => {
   it('should init', () => {
     expect(component.lines).toEqual(defaultLines);
     expect(component.sharableURL).toEqual(defaultUrl);
-    expect(component.columns).toEqual(10);
+    expect(component.columns()).toEqual(10);
   });
 
   it('should get icons', () => {
@@ -166,7 +166,7 @@ describe('IndexComponent', () => {
   it('should split lines', () => {
     dialogRef$ = of({columns: 4});
     component.onSplitLinesDialog();
-    expect(component.columns).toEqual(4);
+    expect(component.columns()).toEqual(4);
   });
 
   it('should delete line', () => {

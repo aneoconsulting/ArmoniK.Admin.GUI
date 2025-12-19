@@ -85,7 +85,6 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   ngOnInit(): void {
     this.initTableDataService();
     this.initStatuses();
-    this.grpcActions.refresh = this.tableDataService.refresh$;
     this.actions.push(...this.grpcActions.actions);
   }
 

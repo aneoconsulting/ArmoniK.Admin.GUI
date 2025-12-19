@@ -59,6 +59,7 @@ export class FiltersDialogFieldComponent<F extends FiltersEnums, O extends Filte
         if (isCustom) {
           change = value;
           this.emitFor('custom');
+          this.value = value;
         }
       }
 
