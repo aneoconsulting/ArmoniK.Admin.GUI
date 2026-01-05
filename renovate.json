@@ -48,6 +48,16 @@
       "matchDatasources": [
         "github-tags"
       ]
+    },
+    {
+      "groupName": "jest github comment",
+      "groupSlug": "jest-github-comment",
+      "matchDatasources": [
+        "github-tags"
+      ],
+      "matchPackageNames": [
+          "MishaKav/jest-coverage-comment"
+      ]
     }
   ]
 }
