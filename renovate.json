@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base",
+    "config:recommended",
     "group:allNonMajor",
     ":semanticCommitTypeAll(chore)",
     "helpers:pinGitHubActionDigests"
@@ -11,53 +11,35 @@
     {
       "groupName": "npm packages",
       "groupSlug": "npm",
-      "matchDatasources": [
-        "npm"
-      ]
+      "matchDatasources": ["npm"]
     },
     {
       "groupName": "npm aneoconsultingfr packages",
       "groupSlug": "npm-aneoconsultingfr",
-      "matchDatasources": [
-        "npm"
-      ],
-      "matchPackagePatterns": [
-        "@aneoconsultingfr/*"
-      ]
+      "matchDatasources": ["npm"],
+      "matchPackagePatterns": ["@aneoconsultingfr/*"]
     },
     {
       "groupName": "npm angular packages",
       "groupSlug": "npm-angular",
-      "matchDatasources": [
-        "npm"
-      ],
-      "matchPackagePatterns": [
-        "@angular/*"
-      ]
+      "matchDatasources": ["npm"],
+      "matchPackagePatterns": ["@angular/*"]
     },
     {
       "groupName": "docker images",
       "groupSlug": "docker",
-      "matchDatasources": [
-        "docker"
-      ]
+      "matchDatasources": ["docker"]
     },
     {
       "groupName": "github actions",
       "groupSlug": "github-actions",
-      "matchDatasources": [
-        "github-tags"
-      ]
+      "matchDatasources": ["github-tags"]
     },
     {
       "groupName": "jest github comment",
       "groupSlug": "jest-github-comment",
-      "matchDatasources": [
-        "github-tags"
-      ],
-      "matchPackageNames": [
-          "MishaKav/jest-coverage-comment"
-      ]
+      "matchDatasources": ["github-tags"],
+      "matchPackageNames": ["MishaKav/jest-coverage-comment"]
     }
   ]
 }
