@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ConfirmationDialogData } from './type';
 
 @Component({
@@ -20,6 +20,11 @@ export class ConfirmationDialogComponent {
   };
 
   constructor(
+    private readonly dialogRef: MatDialogRef<ConfirmationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public readonly data: ConfirmationDialogData
   ) {}
+
+  close(value: boolean) {
+    this.dialogRef.close(value);
+  }
 }
