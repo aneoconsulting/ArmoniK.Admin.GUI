@@ -7,7 +7,7 @@ describe('ConfirmationDialogComponent', () => {
   let component: ConfirmationDialogComponent;
 
   const mockDialogRef = {
-    close: () => {},
+    close: jest.fn(),
   } as unknown as MatDialogRef<ConfirmationDialogComponent>;
 
   const mockData: ConfirmationDialogData = {
@@ -31,5 +31,11 @@ describe('ConfirmationDialogComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should close with the provided value', () => {
+    const value = true;
+    component.close(value);
+    expect(mockDialogRef.close).toHaveBeenCalledWith(value);
   });
 });
