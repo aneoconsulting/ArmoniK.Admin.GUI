@@ -120,7 +120,9 @@ export class GraphDataService {
       this.createNode(task.payloadId, ResultStatus.RESULT_STATUS_UNSPECIFIED, 'result');
     }
     this.addLink(task.taskId, task.payloadId, 'payload');
-    this.addParentTask(task.payloadId, task.parentTaskIds.at(-1) as string);
+    if (task.parentTaskIds.length !== 0) {
+      this.addParentTask(task.payloadId, task.parentTaskIds.at(-1) as string);
+    }
   }
 
   /**
@@ -182,7 +184,7 @@ export class GraphDataService {
    * @param resultId 
    * @param taskOwnerId 
    */
-  private addTaskOwner(resultId: string, taskOwnerId: string) {
+  private addTaskOwner(resultId: string, taskOwnerId?: string) {
     if (taskOwnerId && taskOwnerId !== '') {
       if (!this.getNodeById(taskOwnerId)) {
         this.createNode(taskOwnerId, TaskStatus.TASK_STATUS_UNSPECIFIED, 'task');

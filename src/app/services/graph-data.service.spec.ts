@@ -115,6 +115,31 @@ describe('GraphDataService', () => {
         ]
       );
     });
+
+    it('should not add the parent task Id of the payload if there is no parent tasks', () => {
+      const eventWithNoParents = {
+        update: event.update,
+        newTask: {
+          ...event.newTask,
+          parentTaskIds: [] as string[]
+        },
+      } as EventSubscriptionResponse;
+      events.next(eventWithNoParents);
+      expect(service.links).toEqual<GraphLink<ArmoniKGraphNode>[]>(
+        [
+          {
+            type: 'payload',
+            source: event.newTask!.payloadId,
+            target: event.newTask!.taskId,
+          },
+          ...event.newTask!.dataDependencies.map((dependency) => ({
+            type: 'dependency',
+            source: dependency,
+            target: event.newTask!.taskId
+          } as GraphLink<ArmoniKGraphNode>)),
+        ]
+      );
+    });
   });
 
   describe('new Result', () => {

@@ -4,6 +4,10 @@
     <span i18n="Page title"> Sessions </span>
   </div>
   <div class="actions" actions>
+    <button mat-button [routerLink]="'/sessions/graph/' + id" [queryParams]="tasksQueryParams">
+      <span i18n>See Graph</span>
+      <mat-icon [fontIcon]="getIcon('graph')" />
+    </button>
     <button mat-button [routerLink]="'/tasks'" [queryParams]="tasksQueryParams">
       <span i18n>See Tasks</span>
       <mat-icon [fontIcon]="getIcon('tasks')" />

@@ -145,7 +145,7 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
   }
 
   /**
-   * 
+   * Copy the Id of the session
    */
   copySessionId() {
     this.clipboard.copy(this.sessionId);
