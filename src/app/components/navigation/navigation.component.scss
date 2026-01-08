@@ -24,6 +24,7 @@ main {
 
 .mat-toolbar {
   margin-bottom: 0 !important;
+  gap: 0.25rem !important;
 
   .mdc-icon-button > .mat-icon {
     color: var(--armonik-header-color) !important;
@@ -41,10 +42,8 @@ main {
   background-color: var(--armonik-navbar-selected);
 }
 
-.environment {
-  background: white;
-  padding: 0 1rem;
-  border-radius: 0.25rem;
+app-environment {
+  margin-left: 17rem;
 }
 
 mat-sidenav-container {
