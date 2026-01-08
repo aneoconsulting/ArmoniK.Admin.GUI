@@ -21,8 +21,11 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
-      - run: npm i -g @antfu/ni
-      - run: corepack enable
+      - name: Installing CI package manager
+        run: npm i -g @antfu/ni
+
+      - name: Setting up bridge between pnpm and @antfu/ni
+        run: corepack enable
 
       - name: Setup Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -42,8 +45,11 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
-      - run: npm i -g @antfu/ni
-      - run: corepack enable
+      - name: Installing CI package manager
+        run: npm i -g @antfu/ni
+
+      - name: Setting up bridge between pnpm and @antfu/ni
+        run: corepack enable
 
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
@@ -62,8 +68,11 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
-      - run: npm i -g @antfu/ni
-      - run: corepack enable
+      - name: Installing CI package manager
+        run: npm i -g @antfu/ni
+
+      - name: Setting up bridge between pnpm and @antfu/ni
+        run: corepack enable
 
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
@@ -93,8 +102,11 @@ jobs:
       
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
-      - run: npm i -g @antfu/ni
-      - run: corepack enable
+      - name: Installing CI package manager
+        run: npm i -g @antfu/ni
+
+      - name: Setting up bridge between pnpm and @antfu/ni
+        run: corepack enable
 
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
