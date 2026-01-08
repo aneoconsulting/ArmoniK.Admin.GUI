@@ -9,7 +9,7 @@ import { Subject } from 'rxjs';
 @Component({
   selector: 'app-table-grpc-actions',
   templateUrl: 'table-grpc-actions.component.html',
-  styleUrl: 'table-grpc-actions.component.css',
+  styleUrl: 'table-grpc-actions.component.scss',
   imports: [
     MatButtonModule,
     MatIconModule,

@@ -99,7 +99,7 @@ describe('TableComponent', () => {
   });
 
   it('should set columnsKeys', () => {
-    expect(component.columnsKeys).toEqual(['select', 'sessionId', 'count', 'actions']);
+    expect(component.columnsKeys).toEqual(['select', 'sessionId', 'actions', 'count']);
   });
 
   describe('sortChange', () => {
@@ -158,36 +158,42 @@ describe('TableComponent', () => {
     expect(spy).toHaveBeenCalledWith(component.selection.selected);
   });
 
-  test('onDrop should emit columnDrop', () => {
-    const spy = jest.spyOn(component.columnDrop, 'emit');
-    component.onDrop({ previousIndex: 1, currentIndex: 2 } as CdkDragDrop<string[], string[]>);
-    expect(spy).toHaveBeenCalledWith(['select', 'count', 'sessionId', 'actions']);
-  });
+  describe('onDrop', () => {
+    let spy: jest.SpyInstance;
 
-  test('onDrop should change columns order', () => {
-    component.onDrop({ previousIndex: 1, currentIndex: 2 } as CdkDragDrop<string[], string[]>);
-    expect(component.columns).toEqual([
-      {
-        key: 'select',
-        name: 'Select',
-        sortable: false,
-      },
-      {
-        key: 'count',
-        name: 'count',
-        sortable: false,
-      },
-      {
-        key: 'sessionId',
-        name: 'Session ID',
-        sortable: true,
-      },
-      {
-        key: 'actions',
-        name: 'Actions',
-        sortable: false,
-      },
-    ]);
+    beforeEach(() => {
+      spy = jest.spyOn(component.columnDrop, 'emit');
+      component.onDrop({ previousIndex: 1, currentIndex: 2 } as CdkDragDrop<string[], string[]>);
+    });
+
+    it('should emit columnDrop', () => {
+      expect(spy).toHaveBeenCalledWith(['select', 'actions', 'sessionId', 'count']);
+    });
+
+    it('should change columns order', () => {
+      expect(component.columns).toEqual([
+        {
+          key: 'select',
+          name: 'Select',
+          sortable: false,
+        },
+        {
+          key: 'actions',
+          name: 'Actions',
+          sortable: false,
+        },
+        {
+          key: 'sessionId',
+          name: 'Session ID',
+          sortable: true,
+        },
+        {
+          key: 'count',
+          name: 'count',
+          sortable: false,
+        },
+      ]);
+    });
   });
 
   test('isAllSelected should be false when not everything is selected', () => {

@@ -39,10 +39,6 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
     if (selectColumn) {
       entries = [selectColumn, ...entries.filter(column => column.key !== 'select')];
     }
-    const actionsColumn = entries.find(column => column.key === 'actions');
-    if (actionsColumn) {
-      entries = [...entries.filter(column => column.key !== 'actions'), actionsColumn];
-    }
     this._columns = entries;
     this._columnsKeys = entries.map((entry) => entry.key);
   }
