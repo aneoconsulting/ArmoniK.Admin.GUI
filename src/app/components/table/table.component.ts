@@ -1,17 +1,19 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
 import { GrpcAction } from '@app/types/actions.type';
-import { TableColumn } from '@app/types/column.type';
+import { ColumnsBehaviourValues, ColumnType, SpecialColumn, TableColumn } from '@app/types/column.type';
 import { ArmonikData, ColumnKey, DataRaw } from '@app/types/data';
 import { ListOptions } from '@app/types/options';
 import { Status, StatusService } from '@app/types/status';
 import { TableContainerComponent } from '@components/table-container.component';
+import { DefaultConfigService } from '@services/default-config.service';
+import { StorageService } from '@services/storage.service';
 import { TableActionsComponent } from './table-actions.component';
 import { TableCellComponent } from './table-cell.component';
 import { TableColumnHeaderComponent } from './table-column-header.component';
@@ -35,9 +37,13 @@ import { TableColumnHeaderComponent } from './table-column-header.component';
 export class TableComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null> implements AfterViewInit, OnDestroy {
   // Required inputs
   @Input({ required: true }) set columns(entries: TableColumn<T, O>[]) {
-    const selectColumn = entries.find(column => column.key === 'select');
-    if (selectColumn) {
-      entries = [selectColumn, ...entries.filter(column => column.key !== 'select')];
+    for (const key of Object.keys(this.columnsBehaviour) as SpecialColumn[]) {
+      const column = entries.find(col => col.key === key);
+      if (column && this.columnsBehaviour[key] === ColumnsBehaviourValues.LEFT) {
+        entries = [column, ...entries.filter(col => col.key !== key)];
+      } else if (column && this.columnsBehaviour[key] === ColumnsBehaviourValues.RIGHT) {
+        entries = [...entries.filter(col => col.key !== key), column];
+      }
     }
     this._columns = entries;
     this._columnsKeys = entries.map((entry) => entry.key);
@@ -75,8 +81,15 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   @Output() selectionChange = new EventEmitter<T[]>();
   @Output() personalizeTasksByStatus = new EventEmitter<void>();
 
+  private readonly storageService = inject(StorageService);
+  private readonly defaultConfigService = inject(DefaultConfigService);
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+
+  private readonly columnsBehaviour: Record<SpecialColumn, ColumnsBehaviourValues>;
+  readonly stickLeftColumns: ColumnType[];
+  readonly stickRightColumns: ColumnType[];
 
   private _data: ArmonikData<T, O>[];
   private _columns: TableColumn<T, O>[];
@@ -100,6 +113,13 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   }
 
   selection = new SelectionModel<T>(true, []);
+
+  constructor() {
+    this.columnsBehaviour = this.storageService.getItem('table-columns-behaviour', true) as Record<SpecialColumn, ColumnsBehaviourValues> ?? this.defaultConfigService.defaultTableColumnsBehaviour;
+    const keys = Object.keys(this.columnsBehaviour) as SpecialColumn[];
+    this.stickLeftColumns = keys.filter(key => this.columnsBehaviour[key] === ColumnsBehaviourValues.LEFT);
+    this.stickRightColumns = keys.filter(key => this.columnsBehaviour[key] === ColumnsBehaviourValues.RIGHT);
+  }
 
   ngAfterViewInit(): void {
     this.sort.sortChange.subscribe(() => {

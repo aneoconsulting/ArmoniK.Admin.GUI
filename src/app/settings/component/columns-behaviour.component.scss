@@ -1,0 +1,17 @@
+section {
+  margin-left: 2rem;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  gap: 1rem;
+
+  div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    span {
+      margin-right: 1rem;
+    }
+  }
+}

@@ -1,17 +1,20 @@
 import { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { EventEmitter } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { SessionRaw } from '@app/sessions/types';
 import { TaskOptions } from '@app/tasks/types';
-import { TableColumn } from '@app/types/column.type';
+import { ColumnsBehaviourValues, TableColumn } from '@app/types/column.type';
 import { SessionData } from '@app/types/data';
 import { ListOptions } from '@app/types/options';
+import { DefaultConfigService } from '@services/default-config.service';
+import { StorageService } from '@services/storage.service';
 import { TableComponent } from './table.component';
 
 describe('TableComponent', () => {
-  const component = new TableComponent<SessionRaw, SessionStatus, TaskOptions>();
+  let component: TableComponent<SessionRaw, SessionStatus, TaskOptions>;
 
   const columns: TableColumn<SessionRaw, TaskOptions>[] = [
     {
@@ -82,14 +85,32 @@ describe('TableComponent', () => {
     return a.sessionId === b.sessionId;
   };
 
+  const mockStorageService = {
+    getItem: jest.fn(),
+  };
+  
+  const mockDefaultConfigService = {
+    defaultTableColumnsBehaviour: {
+      'select': ColumnsBehaviourValues.LEFT,
+      'actions': ColumnsBehaviourValues.RIGHT,
+    } as Record<string, ColumnsBehaviourValues>,
+  };
+  
   beforeEach(() => {
+    component = TestBed.configureTestingModule({
+      providers: [
+        TableComponent,
+        { provide: StorageService, useValue: mockStorageService },
+        { provide: DefaultConfigService, useValue: mockDefaultConfigService },
+      ],
+    }).inject(TableComponent<SessionRaw, SessionStatus, TaskOptions>);
+    component.sort = sort;
+    component.paginator = paginator;
     component.columns = structuredClone(columns);
     component.dataComparator = sessionComparator;
     component.data = data;
     component.total = total;
     component.options = options;
-    component.sort = sort;
-    component.paginator = paginator;
     component.selection.clear();
     component.ngAfterViewInit();
   });
@@ -99,7 +120,25 @@ describe('TableComponent', () => {
   });
 
   it('should set columnsKeys', () => {
-    expect(component.columnsKeys).toEqual(['select', 'sessionId', 'actions', 'count']);
+    expect(component.columnsKeys).toEqual(['select', 'sessionId', 'count', 'actions']);
+  });
+
+  describe('init', () => {
+    it('should call the storage service', () => {
+      expect(mockStorageService.getItem).toHaveBeenCalledWith('table-columns-behaviour');
+    });
+
+    it('should set the columnsBehaviour record', () => {
+      expect(component['columnsBehaviour']).toEqual(mockDefaultConfigService.defaultTableColumnsBehaviour);
+    });
+
+    it('should set the stickLeftColumn', () => {
+      expect(component.stickLeftColumns).toEqual(['select']);
+    });
+
+    it('should set the stickRightColumn', () => {
+      expect(component.stickRightColumns).toEqual(['actions']);
+    });
   });
 
   describe('sortChange', () => {
@@ -167,7 +206,7 @@ describe('TableComponent', () => {
     });
 
     it('should emit columnDrop', () => {
-      expect(spy).toHaveBeenCalledWith(['select', 'actions', 'sessionId', 'count']);
+      expect(spy).toHaveBeenCalledWith(['select', 'sessionId', 'count', 'actions']);
     });
 
     it('should change columns order', () => {
@@ -178,11 +217,6 @@ describe('TableComponent', () => {
           sortable: false,
         },
         {
-          key: 'actions',
-          name: 'Actions',
-          sortable: false,
-        },
-        {
           key: 'sessionId',
           name: 'Session ID',
           sortable: true,
@@ -190,6 +224,11 @@ describe('TableComponent', () => {
         {
           key: 'count',
           name: 'count',
+          sortable: false,
+        },
+        {
+          key: 'actions',
+          name: 'Actions',
           sortable: false,
         },
       ]);
