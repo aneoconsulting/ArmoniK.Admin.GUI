@@ -143,4 +143,47 @@ In addition, the `fix` and `feat` header types have the following effects:
 - `feat`: a commit of this type introduces a new feature to the codebase (this correlates with MINOR in Semantic Versioning).
 
 For more details about conventional commit rules, please refer
-to [Conventional commits](https://www.conventionalcommits.org/en/v1.0.0/). 
+to [Conventional commits](https://www.conventionalcommits.org/en/v1.0.0/).
+
+### Trunk based development & branches organization
+
+The repository is managed using the [trunk based development method](https://trunkbaseddevelopment.com/). The goal is to have one main branch (main) and short-lived development branches. Since the branches are small, they are merged more quickly and they are less likely to be conflicting with each other.
+
+### File structure
+
+All development files and components are located in the `src/app` folder.
+They are all splitted accross different folders, that each have their own purpose.
+
+A component or page includes at least 3 files:
+- An html file (angular template),
+- A typescript file (angular component),
+- A test file (jest)
+
+Some of them can also include a scss file. All those files share the same name (for example `name.component.{*ts,scss,html}). Each component is [standalone](https://angular.dev/reference/migrations/standalone).
+
+#### Routes
+
+The following folders list all available routes to the user:
+- `applications`: Armonik Data - Resolves on a table
+- `dashboard`: Landing page of the application - Can add tables of various Armonik Data types. 
+- `partitions`: Armonik Data - Resolves on a table
+- `profile`: User informations authorizations.
+- `results`: Armonik Data - Resolves on a table
+- `sessions`: Armonik Data - Resolves on a table
+- `settings`: GUI settings
+- `tasks`: Armonik Data - Resolves on a table
+
+Those folder always include an `index` component that resolves to their respective route. The `partitions`, `sessions`, `tasks` and `results` pages also include `show` components.
+Those routes also includes specific services and components.
+
+#### Components
+
+Generic components are located inside the `src/app/components` folder. They represent components used throughout the entire application. You can find filters related components, dialogs, inspection components, tables...
+
+#### Services
+
+Just like generic components, some services are used throughout the application. To know more about them, please check their code and documentation.
+
+#### Types
+
+Types folder is particular. While it stores some generic types that are used in the application, they also include abstract classes and interfaces of some components and services.
