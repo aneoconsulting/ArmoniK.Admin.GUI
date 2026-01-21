@@ -69,18 +69,6 @@ describe('TableComponent', () => {
 
   const total = 1;
 
-  const sort: MatSort = {
-    active: 'namespace',
-    direction: 'asc',
-    sortChange: new EventEmitter()
-  } as unknown as MatSort;
-
-  const paginator: MatPaginator = {
-    pageIndex: 2,
-    pageSize: 50,
-    page: new EventEmitter()
-  } as unknown as MatPaginator;
-
   const sessionComparator = (a: SessionRaw, b: SessionRaw) => {
     return a.sessionId === b.sessionId;
   };
@@ -104,8 +92,16 @@ describe('TableComponent', () => {
         { provide: DefaultConfigService, useValue: mockDefaultConfigService },
       ],
     }).inject(TableComponent<SessionRaw, SessionStatus, TaskOptions>);
-    component.sort = sort;
-    component.paginator = paginator;
+    component.sort = {
+      active: 'namespace',
+      direction: 'asc',
+      sortChange: new EventEmitter()
+    } as unknown as MatSort;
+    component.paginator = {
+      pageIndex: 2,
+      pageSize: 50,
+      page: new EventEmitter()
+    } as unknown as MatPaginator;
     component.columns = structuredClone(columns);
     component.dataComparator = sessionComparator;
     component.data = data;
@@ -113,6 +109,10 @@ describe('TableComponent', () => {
     component.options = options;
     component.selection.clear();
     component.ngAfterViewInit();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should create', () => {
@@ -125,7 +125,7 @@ describe('TableComponent', () => {
 
   describe('init', () => {
     it('should call the storage service', () => {
-      expect(mockStorageService.getItem).toHaveBeenCalledWith('table-columns-behaviour');
+      expect(mockStorageService.getItem).toHaveBeenCalledWith('table-columns-behaviour', true);
     });
 
     it('should set the columnsBehaviour record', () => {
@@ -139,12 +139,23 @@ describe('TableComponent', () => {
     it('should set the stickRightColumn', () => {
       expect(component.stickRightColumns).toEqual(['actions']);
     });
+
+    it('should set "isAllSelected" to false if the data length is different than the selection length', () => {
+      expect(component.isAllSelected).toBeFalsy();
+    });
+    
+    it('should set "isAllSelected" to true if the data length is equal to the selection length', () => {
+      component.selection.clear();
+      component.selection.selected.push(...data.map(d => d.raw));
+      component.data = data;
+      expect(component.isAllSelected).toBeTruthy();
+    });
   });
 
   describe('sortChange', () => {
     it('should change sort', () => {
-      sort.active = 'status';
-      sort.direction = 'desc';
+      component.sort.active = 'status';
+      component.sort.direction = 'desc';
       component.sort.sortChange.emit();
       expect(component.options).toEqual({
         pageIndex: 0,
@@ -165,15 +176,15 @@ describe('TableComponent', () => {
 
   describe('paginator', () => {
     it('should change pageIndex', () => {
-      paginator.pageIndex = 3;
-      paginator.pageSize = 25;
+      component.paginator.pageIndex = 3;
+      component.paginator.pageSize = 25;
       component.paginator.page.emit();
       expect(component.options).toEqual({
         pageIndex: 3,
         pageSize: 25,
         sort: {
-          active: 'status',
-          direction: 'desc',
+          active: 'namespace',
+          direction: 'asc',
         }
       });
     });
@@ -185,7 +196,7 @@ describe('TableComponent', () => {
     });
 
     it('should slice data if pageSize is lower', () => {
-      paginator.pageSize = 1;
+      component.paginator.pageSize = 1;
       component.paginator.page.emit();
       expect(component.data).toEqual([data[0]]);
     });
@@ -206,7 +217,7 @@ describe('TableComponent', () => {
     });
 
     it('should emit columnDrop', () => {
-      expect(spy).toHaveBeenCalledWith(['select', 'sessionId', 'count', 'actions']);
+      expect(spy).toHaveBeenCalledWith(['select', 'count', 'sessionId', 'actions']);
     });
 
     it('should change columns order', () => {
@@ -217,14 +228,14 @@ describe('TableComponent', () => {
           sortable: false,
         },
         {
-          key: 'sessionId',
-          name: 'Session ID',
-          sortable: true,
-        },
-        {
           key: 'count',
           name: 'count',
           sortable: false,
+        },
+        {
+          key: 'sessionId',
+          name: 'Session ID',
+          sortable: true,
         },
         {
           key: 'actions',
@@ -266,7 +277,7 @@ describe('TableComponent', () => {
 
     it('should clear all row', () => {
       const spy = jest.spyOn(component.selection, 'clear');
-      component.selection.selected.push(...data.map(d => d.raw));
+      component['_isAllSelected'] = true;
       component.toggleAllRows();
       expect(spy).toHaveBeenCalled();
     });
