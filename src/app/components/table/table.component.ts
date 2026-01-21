@@ -37,16 +37,23 @@ import { TableColumnHeaderComponent } from './table-column-header.component';
 export class TableComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null> implements AfterViewInit, OnDestroy {
   // Required inputs
   @Input({ required: true }) set columns(entries: TableColumn<T, O>[]) {
-    for (const key of Object.keys(this.columnsBehaviour) as SpecialColumn[]) {
-      const column = entries.find(col => col.key === key);
-      if (column && this.columnsBehaviour[key] === ColumnsBehaviourValues.LEFT) {
-        entries = [column, ...entries.filter(col => col.key !== key)];
-      } else if (column && this.columnsBehaviour[key] === ColumnsBehaviourValues.RIGHT) {
-        entries = [...entries.filter(col => col.key !== key), column];
+    const behavioursKeys = Object.keys(this.columnsBehaviour) as SpecialColumn[];
+    const leftMostColumns: TableColumn<T, O>[] = [];
+    const rightMostColumns: TableColumn<T, O>[] = [];
+    for (const column of entries) {
+      const behaviourKey = behavioursKeys.find(col => col === column.key);
+      if (behaviourKey && this.columnsBehaviour[behaviourKey] === ColumnsBehaviourValues.LEFT) {
+        leftMostColumns.push(column);
+      } else if (behaviourKey && this.columnsBehaviour[behaviourKey] === ColumnsBehaviourValues.RIGHT) {
+        rightMostColumns.push(column);
       }
     }
-    this._columns = entries;
-    this._columnsKeys = entries.map((entry) => entry.key);
+    this._columns = [
+      ...leftMostColumns ,
+      ...entries.filter(col => !leftMostColumns.includes(col) && !rightMostColumns.includes(col)),
+      ...rightMostColumns
+    ];
+    this._columnsKeys = this._columns.map((entry) => entry.key);
   }
 
   @Input({ required: true }) set data(entries: ArmonikData<T, O>[]) {
