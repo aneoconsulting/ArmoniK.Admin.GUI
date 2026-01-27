@@ -30,6 +30,9 @@ import { NotificationService } from '@services/notification.service';
   ]
 })
 export class ByteArrayComponent {
+  /**
+   * Uint8Array data to display.
+   */
   @Input({ required: true }) set data(entry: Uint8Array) {
     this.byteArray = entry;
     this.decodedData = this.byteArrayService.decode(this.byteArray);
@@ -38,6 +41,9 @@ export class ByteArrayComponent {
     }
   }
 
+  /**
+   * Label to display while hovering 
+   */
   @Input({ required: true }) label: string;
 
   decodedData: string | null = null;

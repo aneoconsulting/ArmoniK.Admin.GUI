@@ -8,6 +8,13 @@ import { DataRaw } from '@app/types/data';
 import { IconsService } from '@services/icons.service';
 import { StatusColorPickerComponent } from '../status-color-picker.component';
 
+/**
+ * Represent the header of a column of the table.
+ * Generally only displays the name of the column (which is associated to a field of an ArmonikData). Some columns have a unique display:
+ * - "select" column : displays a checkbox which allow the user to select/unselect every displayed line on click.
+ * - "status" column : displays the name of the column and the StatusColorPicker component, which allows to update the color of displayed statuses in the table.
+ * - "count" column : displays the name of the column and a button allowing the user to changes groups of tasks statuses. 
+ */
 @Component({
   selector: 'app-table-column-header',
   templateUrl: './table-column-header.component.html',
@@ -20,42 +27,70 @@ import { StatusColorPickerComponent } from '../status-color-picker.component';
 })
 export class TableColumnHeaderComponent<T extends DataRaw, O extends TaskOptions | null = null> {
 
-  readonly iconService = inject(IconsService);
+  private readonly iconService = inject(IconsService);
 
-  private _icon: string;
-  private _type: ColumnType;
-  private _name: string;
+  /**
+   * Icon to display for the "count" section (CountTasksByStatusComponent) of the html template.
+   */
+  icon: string;
 
+  /**
+   * Specified how to display the column.
+   * @default "raw"
+   */
+  type: ColumnType;
+
+  /**
+   * Displayed name.
+   */
+  name: string;
+
+  /**
+   * Required input. Will set the type, name and icon values of the component.
+   */
   @Input({ required: true }) set column(entry: TableColumn<T, O>) {
-    this._type = entry.type ?? 'raw';
-    this._name = entry.name;
+    this.type = entry.type ?? 'raw';
+    this.name = entry.name;
     if (entry.type === 'count') {
-      this._icon = this.iconService.getIcon('tune');
+      this.icon = this.iconService.getIcon('tune');
     }
   }
+
+  /**
+   * Optional input. Label of the checkox displayed for the "select" column.
+   */
   @Input({ required: false }) checkBoxLabel: string;
+
+  /**
+   * Optional input. Wherever the "select" column is checked.
+   */
   @Input({ required: false }) checked: boolean;
+
+  /**
+   * Optional input. Should be true when some rows are selected.
+   */
   @Input({ required: false }) isSelectionIndeterminate: boolean;
 
+  /**
+   * Emits when the selection change.
+   */
   @Output() rowsSelectionChange = new EventEmitter<void>();
+  
+  /**
+   * Emits when the statuses are changed.
+   */
   @Output() statusesChange = new EventEmitter<void>();
 
-  get name() {
-    return this._name;
-  }
-
-  get icon() {
-    return this._icon;
-  }
-
-  get type() {
-    return this._type;
-  }
-
+  /**
+   * Emits the selection change event when the "select" checkbox is clicked.
+   */
   onToggleAllRows() {
     this.rowsSelectionChange.emit();
   }
 
+  /**
+   * Emits the status update event when the child component (StatusColorPickerComponent) returns an event.
+   */
   onPersonalizeStatuses() {
     this.statusesChange.emit();
   }

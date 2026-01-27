@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ShowCardContentComponent } from '@components/show-card-content.component';
@@ -8,6 +8,9 @@ export interface TableInspectObjectDialogData {
   object: Record<string, unknown>;
 }
 
+/**
+ * Dialog displaying an object. Called by the [TableInspectObjectComponent](./table-inspect-object.component.ts).
+ */
 @Component({
   selector: 'app-table-inspect-object-dialog',
   templateUrl: './table-inspect-object-dialog.component.html',
@@ -18,21 +21,28 @@ export interface TableInspectObjectDialogData {
   ],
   providers: []
 })
-export class TableInspectObjectDialogComponent implements OnInit {
+export class TableInspectObjectDialogComponent {
+  /**
+   * Title of the dialog.
+   */
+  label: string;
 
-  label = '';
+  /**
+   * Object to display.
+   */
   object: object | null = null;
 
   constructor(
     public readonly dialogRef: MatDialogRef<TableInspectObjectDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public readonly data: TableInspectObjectDialogData
-  ) {}
-
-  ngOnInit(): void {
-    this.label = this.data.label;
-    this.object = this.data.object;
+    @Inject(MAT_DIALOG_DATA) data: TableInspectObjectDialogData
+  ) {
+    this.label = data.label;
+    this.object = data.object;
   }
 
+  /**
+   * Closes the dialog.
+   */
   onNoClick(): void {
     this.dialogRef.close();
   }

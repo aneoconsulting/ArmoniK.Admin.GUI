@@ -15,11 +15,16 @@ describe('TableColumnHeaderComponent', () => {
     sortable: false,
   };
 
+  const mockedIcon = 'test';
+  const mockIconsService = {
+    getIcon: jest.fn(() => mockedIcon),
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         TableColumnHeaderComponent,
-        IconsService,
+        { provide: IconsService, useValue: mockIconsService },
       ]
     }).inject(TableColumnHeaderComponent);
     component.column = initColumn;
@@ -29,21 +34,27 @@ describe('TableColumnHeaderComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should correctly set name', () => {
-    expect(component.name).toEqual(initColumn.name);
-  });
+  describe('initialisation', () => {
+    it('should correctly set name', () => {
+      expect(component.name).toEqual(initColumn.name);
+    });
 
-  it('should correctly set icon', () => {
-    expect(component.icon).toEqual(component.iconService.getIcon('tune'));
-  });
+    it('should correctly set icon', () => {
+      expect(component.icon).toEqual(mockedIcon);
+    });
 
-  it('should correctly set type', () => {
-    expect(component.type).toEqual(initColumn.type);
-  });
+    it('should have called iconsService getIcon', () => {
+      expect(mockIconsService.getIcon).toHaveBeenCalled();
+    });
 
-  it('should set "raw" as the default type', () => {
-    component.column = { ...initColumn, type: undefined };
-    expect(component.type).toEqual('raw');
+    it('should correctly set type', () => {
+      expect(component.type).toEqual(initColumn.type);
+    });
+
+    it('should set "raw" as the default type', () => {
+      component.column = { ...initColumn, type: undefined };
+      expect(component.type).toEqual('raw');
+    });
   });
 
   it('should emit on toggle all rows', () => {

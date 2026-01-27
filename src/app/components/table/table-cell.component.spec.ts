@@ -107,7 +107,7 @@ describe('TableCellComponent', () => {
   });
 
   it('should get queryParams', () => {
-    expect(component.queryParams).toEqual(element.queryParams?.get('sessionId'));
+    expect(component['queryParams']).toEqual(element.queryParams?.get('sessionId'));
   });
 
   it('should get queryTasksParams', () => {
@@ -171,7 +171,7 @@ describe('TableCellComponent', () => {
     });
 
     it('should set link', () => {
-      expect(component.link).toEqual(`${component.column.link}/${element.raw[component.column.key as keyof DataRaw]}`);
+      expect(component['link']).toEqual(`${component.column.link}/${element.raw[component.column.key as keyof DataRaw]}`);
     });
   });
 
@@ -299,7 +299,7 @@ describe('TableCellComponent', () => {
     it('should create a link with queryParams', () => {
       component.element = element;
       component.createLink();
-      expect(component.link).toEqual('/sessions');
+      expect(component['link']).toEqual('/sessions');
     });
 
     it('should create a link without queryParams', () => {
@@ -308,13 +308,13 @@ describe('TableCellComponent', () => {
       elementCopy.raw.sessionId = 'session-id';
       component.element = elementCopy;
       component.createLink();
-      expect(component.link).toEqual(`${component.column.link}/${elementCopy.raw[component.column.key as keyof DataRaw]}`);
+      expect(component['link']).toEqual(`${component.column.link}/${elementCopy.raw[component.column.key as keyof DataRaw]}`);
     });
 
     it('should set an empty link', () => {
       component.column.link = undefined;
       component.createLink();
-      expect(component.link).toEqual('');
+      expect(component['link']).toEqual('');
     });
   });
 

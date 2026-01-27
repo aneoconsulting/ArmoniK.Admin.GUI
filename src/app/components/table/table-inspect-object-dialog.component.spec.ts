@@ -25,7 +25,6 @@ describe('TableInspectObjectDialogComponent', () => {
         { provide: MAT_DIALOG_DATA, useValue: mockData }
       ]
     }).inject(TableInspectObjectDialogComponent);
-    component.ngOnInit();
   });
 
   it('Should run', () => {

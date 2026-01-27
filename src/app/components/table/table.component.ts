@@ -16,6 +16,9 @@ import { TableActionsComponent } from './table-actions.component';
 import { TableCellComponent } from './table-cell.component';
 import { TableColumnHeaderComponent } from './table-column-header.component';
 
+/**
+ * Display any kind of ArmoniKData in a [angular material table](https://material.angular.dev/components/table/overview).
+ */
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
@@ -33,7 +36,9 @@ import { TableColumnHeaderComponent } from './table-column-header.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TableComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null> implements AfterViewInit, OnDestroy {
-  // Required inputs
+  /**
+   * Required input. Represents the displayed columns in the table.
+   */
   @Input({ required: true }) set columns(entries: TableColumn<T, O>[]) {
     const selectColumn = entries.find(column => column.key === 'select');
     if (selectColumn) {
@@ -43,6 +48,9 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
     this._columnsKeys = entries.map((entry) => entry.key);
   }
 
+  /**
+   * Required input. Data to display.
+   */
   @Input({ required: true }) set data(entries: ArmonikData<T, O>[]) {
     this._data = entries;
     if (this.dataComparator) {
@@ -54,15 +62,48 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
     }
   }
 
+  /**
+   * Required input. Total number of this ArmonikData in the database.
+   */
   @Input({ required: true }) total: number;
 
+  /**
+   * Required input. [ListOptions](src/app/types/options.ts) of the table.
+   */
   @Input({ required: true }) options: ListOptions<T, O>;
+
+  /**
+   * Required input. If true, the user cannot change columns positions.
+   */
   @Input({ required: true }) lockColumns: boolean;
 
-  // Optional inputs
+  
+  /**
+   * Optional input. Actions available on each row.
+   */
   @Input({ required: false }) actions: GrpcAction<T>[];
+
+  /**
+   * Optional input. Used to display statuses instead of their enumeration.
+   */
   @Input({ required: false }) statusesService: StatusService<S>;
+
+  /**
+   * Optional input. This input is then forwarded to the [CountTasksByStatusComponent](src/app/components/count-tasks-by-status.component.ts) component.
+   */
   @Input({ required: false }) statusesGroups: TasksStatusesGroup[];
+
+  /**
+   * Provide a way to compare data, which will be used to know which data is selected and which is not.
+   * 
+   * For example, for a task, the function will be:
+   * 
+   * ```typescript
+   * function taskComparator(task1: TaskRaw, task2: TaskRaw) {
+   *   return task1.id === task2.id;
+   * }
+   * ```
+   */
   @Input({ required: false }) dataComparator: ((a: T, b: T) => boolean) | undefined;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -70,12 +111,36 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
     return index;
   }
 
+  /**
+   * Emits an event when columns position change
+   */
   @Output() columnDrop = new EventEmitter<ColumnKey<T, O>[]>();
+
+  /**
+   * Emits an event when the user changes page, page size, sort direction or sorted column.
+   */
   @Output() optionsChange = new EventEmitter<never>();
+
+  /**
+   * Emits an event when the user select a line.
+   */
   @Output() selectionChange = new EventEmitter<T[]>();
+
+  /**
+   * Emits an event when the user change the displayed statuses in the tasks by statuses component.
+   */
   @Output() personalizeTasksByStatus = new EventEmitter<void>();
 
+  /**
+   * Observe the paginator in the HTML template.
+   * The paginator object is used to emit an event when the user changes the page size or page. 
+   */
   @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  /**
+   * Observes the sort in the HTML template.
+   * The sort object is used to emit an event when the user changes the sort direction or the sorted column.
+   */
   @ViewChild(MatSort) sort: MatSort;
 
   private _data: ArmonikData<T, O>[];
@@ -124,6 +189,10 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
     this.paginator.page.unsubscribe();
   }
 
+  /**
+   * Emits the new columns positions to the parent component.
+   * @param event CdkDragDrop - contains information about the
+   */
   onDrop(event: CdkDragDrop<string[]>) {
     const columns = this._columns;
     moveItemInArray(columns, event.previousIndex, event.currentIndex);
@@ -131,10 +200,18 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
     this.columnDrop.emit(this.columns.map(column => column.key));
   }
 
+  /**
+   * Emits when the selection change.
+   */
   emitSelectionChange(): void {
     this.selectionChange.emit(this.selection.selected);
   }
 
+  /**
+   * Checks if a row is selected. Uses the provided dataComparator method (return false otherwise).
+   * @param row row to check
+   * @returns true if the row is selected, false if it is not
+   */
   isSelected(row: T): boolean {
     return this.selection.selected.some(selectedRow => {
       if (this.dataComparator) {
@@ -145,6 +222,9 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
     });
   }
 
+  /**
+   * Select or unselect all rows.
+   */
   toggleAllRows(): void {
     if (this.isAllSelected) {
       this.selection.clear();
@@ -156,15 +236,22 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
     this.emitSelectionChange();
   }
 
-  toggleRow(data: T): void {
-    if (this.selection.isSelected(data)) {
-      this.selection.deselect(data);
+  /**
+   * Select the row associated to the provided data
+   * @param row row to select
+   */
+  toggleRow(row: T): void {
+    if (this.selection.isSelected(row)) {
+      this.selection.deselect(row);
     } else {
-      this.selection.select(data);
+      this.selection.select(row);
     }
     this.emitSelectionChange();
   }
 
+  /**
+   * Emits when displayed statuses in personalizeTaskByStatus changes.
+   */
   onPersonalizeTasksByStatus(): void {
     this.personalizeTasksByStatus.emit();
   }

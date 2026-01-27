@@ -18,6 +18,9 @@ import { ByteArrayComponent } from './cells/byte-array-cell.component';
 import { TableInspectMessageComponent } from './table-inspect-message.component';
 import { TableInspectObjectComponent } from './table-inspect-object.component';
 
+/**
+ * Display a cell in the table component.
+ */
 @Component({
   selector: 'app-table-cell',
   templateUrl: 'table-cell.component.html',
@@ -37,6 +40,11 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
   ]
 })
 export class TableCellComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null>{
+  /**
+   * Required input.
+   * Allow the component to load the correct data and display it depending on its type.
+   * Must be the first input.
+   */
   @Input({ required: true }) set column(entry: TableColumn<T, O>) {
     this._column = entry;
     if (entry.key === 'count') {
@@ -44,11 +52,15 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
     }
   }
 
+  /**
+   * Required input.
+   * ArmonikData. The component will look for the value to display with the column information and then store it in the value variable.
+   */
   @Input({ required: true }) set element(entry: ArmonikData<T, O>) {
     this._element = entry;
     this._value = this.handleNestedKeys(entry);
     if (entry) {
-      this._queryParams = this.element.queryParams?.get(this.column.key);
+      this.queryParams = this._element.queryParams?.get(this.column.key);
       this.createLink();
       if (this.column.key === 'count') {
         this.refreshStatuses.next();
@@ -56,28 +68,63 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
     }
   }
 
+  /**
+   * Optional input. Allows the component to display the correct status and not just its enumeration.
+   */
   @Input({ required: false }) statusesService: StatusService<S>;
+
+  /**
+   * Optional input. Used for the "select" column. value set to true will "check" the checkbox.
+   * @default false
+   */
   @Input({ required: false }) isSelected: boolean = false;
+
+  /**
+   * Optional input. This input is then forwarded to the [CountTasksByStatusComponent](src/app/components/count-tasks-by-status.component.ts) component.
+   * @default []
+   */
   @Input({ required: false }) statusesGroups: TasksStatusesGroup[] = [];
 
+  /**
+   * Event emitted when checkbox ("select" column) is clicked.
+   */
   @Output() changeSelection = new EventEmitter<void>();
 
   private readonly router = inject(Router);
 
+  /**
+   * Stores the value to display. Its type will be adapted to prevent typescript errors.
+   */
   private _value: unknown;
+
+  /**
+   * Reference of the complete ArmonikData element.
+   */
   private _element: ArmonikData<T, O>;
+
+  /**
+   * Column (key) of this cell.
+   */
   private _column: TableColumn<T, O>;
 
-  private _link: string;
-  private _queryParams: Params | undefined;
+  /**
+   * Used in the navigate method.
+   */
+  private link: string;
+
+  /**
+   * queryParams stored in the provided element.
+   */
+  private queryParams: Params | undefined;
+
+  /**
+   * Refresh subject created if the cell is a "count" cell.
+   * Will emit only when the cell content is updated.
+   */
   refreshStatuses: Subject<void>;
 
   get column() {
     return this._column;
-  }
-
-  get element() {
-    return this._element;
   }
 
   get value() {
@@ -96,14 +143,6 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
     return (this.value as Timestamp)?.toDate() ?? null;
   }
 
-  get link() {
-    return this._link;
-  }
-
-  get queryParams() {
-    return this._queryParams;
-  }
-
   get queryTasksParams() {
     return (this._element as unknown as SessionData | ApplicationData | PartitionData).queryTasksParams;
   }
@@ -116,27 +155,42 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
     return this._value as Uint8Array;
   }
 
+  /**
+   * Instanciate the "link" variable.
+   * Will set the link to an empty string if no link is provided in the column definition.
+   * If query params are provided, the link will simply be the link provided in the column definition (used to filter other tables).
+   * If not, it will add the displayed value to it (used to go to an inspection page, where query params are useless).
+   */
   createLink() {
     if (this.column.link) {
-      if (this._queryParams) {
-        this._link = this.column.link;
+      if (this.queryParams) {
+        this.link = this.column.link;
       } else {
-        this._link = `${this.column.link}/${this.element.raw[this.column.key as keyof DataRaw]}`;
+        this.link = `${this.column.link}/${this._element.raw[this.column.key as keyof DataRaw]}`;
       }
     } else {
-      this._link = '';
+      this.link = '';
     }
   }
 
+  /**
+   * Navigates to the route provided in the "link" variable.
+   * If queryParams are provided, will use them.
+   */
   navigate() {
-    if (this._link) {
+    if (this.link) {
       const extras: NavigationExtras = {
-        queryParams: this._queryParams,
+        queryParams: this.queryParams,
       };
-      this.router.navigate([this._link], extras);
+      this.router.navigate([this.link], extras);
     }
   }
 
+  /**
+   * Uses the provided column key to get the value to display. Also work on nested objects.
+   * @param element ArmoniKData - contains information about all columns
+   * @returns the value to display, as unknown
+   */
   handleNestedKeys(element: ArmonikData<T, O>) {
     if (element?.raw === undefined) {
       return undefined;
@@ -149,19 +203,30 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
     return resultObject;
   }
 
+  /**
+   * Emits the changeSelection event.
+   */
   onSelectionChange() {
     this.changeSelection.emit();
   }
 
+  /**
+   * Returns the label associated to the selected status.
+   * @returns string
+   */
   checkboxLabel(): string {
     if (this.isSelected) {
-      return $localize`Deselect Task ${this.element.raw[this.column.key as keyof DataRaw]}`;
+      return $localize`Deselect ${this._element.raw[this.column.key as keyof DataRaw]}`;
     }
     else {
-      return $localize`Select Task ${this.element.raw[this.column.key as keyof DataRaw]}`;
+      return $localize`Select ${this._element.raw[this.column.key as keyof DataRaw]}`;
     }
   }
 
+  /**
+   * Returns the label associated to a status.
+   * @returns StatusLabelColor
+   */
   statusLabel(): StatusLabelColor {
     return this.statusesService.statusToLabel(this._value as S);
   }
