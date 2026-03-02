@@ -81,7 +81,12 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
         return [];
       })
     ).subscribe((entries) => {
-      this.handleData(entries);
+      const total = this.total();
+      if (entries.length === 0 && total !== 0) {
+        this.setToLastPage(total);
+      } else {
+        this.handleData(entries);
+      }
     });
   }
 
@@ -106,6 +111,17 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
   handleData(entries: T[]): void {
     this.data.set(entries.map(entry => this.createNewLine(entry)));
     this.loading.set(false);
+  }
+
+  /**
+   * Called when no data are received while there is still some in the database.
+   * This case generally happens when data is filtered or deleted while the user is on one of the latest page of the table.
+   * Refreshes automatically the data.
+   * @param total the total number of data stored in the database
+   */
+  private setToLastPage(total: number) {
+    this.options.pageIndex = Math.floor(total / this.options.pageSize);
+    this.refresh$.next();
   }
 
   /**
