@@ -139,6 +139,34 @@ describe('ResultsDataService', () => {
       service.refresh$.next();
       expect(mockCacheService.save).toHaveBeenCalledWith(service.scope, results);
     });
+
+    describe('Gets no data while some are available in the database', () => {
+      const total = 100;
+
+      beforeEach(() => {
+        mockResultsGrpcService.list$.mockReturnValueOnce(of({
+          tasks: [],
+          total: total,
+          pageSize: service.options.pageSize,
+          page: 11
+        } as unknown as ListResultsResponse));
+        service.refresh$.next();
+      });
+
+      it('should have called the grpcService twice', () => {
+        expect(mockResultsGrpcService.list$).toHaveBeenCalledTimes(2);
+      });
+
+      it('should have called the grpcService with the last possible page', () => {
+        expect(mockResultsGrpcService.list$).toHaveBeenCalledWith(
+          {
+            ...service.options,
+            pageIndex: Math.floor(total / service.options.pageSize),
+          },
+          service.filters
+        );
+      });
+    });
   });
 
   it('should display a success message', () => {

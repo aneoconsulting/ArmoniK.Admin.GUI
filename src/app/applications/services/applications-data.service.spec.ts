@@ -183,6 +183,34 @@ describe('ApplicationDataService', () => {
       service.refresh$.next();
       expect(mockCacheService.save).toHaveBeenCalledWith(service.scope, applications);
     });
+
+    describe('Gets no data while some are available in the database', () => {
+      const total = 100;
+
+      beforeEach(() => {
+        mockApplicationsGrpcService.list$.mockReturnValueOnce(of({
+          tasks: [],
+          total: total,
+          pageSize: service.options.pageSize,
+          page: 11
+        } as unknown as ListApplicationsResponse));
+        service.refresh$.next();
+      });
+
+      it('should have called the grpcService twice', () => {
+        expect(mockApplicationsGrpcService.list$).toHaveBeenCalledTimes(2);
+      });
+
+      it('should have called the grpcService with the last possible page', () => {
+        expect(mockApplicationsGrpcService.list$).toHaveBeenCalledWith(
+          {
+            ...service.options,
+            pageIndex: Math.floor(total / service.options.pageSize),
+          },
+          service.filters
+        );
+      });
+    });
   });
 
   it('should display a success message', () => {
