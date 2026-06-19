@@ -176,10 +176,46 @@ describe('TasksDataService', () => {
         expect(mockTasksGrpcService.list$).toHaveBeenCalledWith(
           {
             ...service.options,
-            pageIndex: Math.floor(total / service.options.pageSize),
+            pageIndex: 9, // last page for 100 items with a pageSize of 10
           },
           service.filters
         );
+      });
+    });
+
+    describe('Gets no data while the database is empty', () => {
+      beforeEach(() => {
+        mockTasksGrpcService.list$.mockReturnValueOnce(of({
+          tasks: [],
+          total: 0,
+          pageSize: service.options.pageSize,
+        } as unknown as ListTasksResponse));
+        service.refresh$.next();
+      });
+
+      it('should render an empty table without clamping or refetching', () => {
+        expect(mockTasksGrpcService.list$).toHaveBeenCalledTimes(1);
+        expect(service.data()).toEqual([]);
+      });
+    });
+
+    describe('Gets no data while already on the last page', () => {
+      const total = 100;
+
+      beforeEach(() => {
+        // stale total: the database reports data but the last page itself comes back empty
+        service.options.pageIndex = 9; // last page for 100 items with a pageSize of 10
+        mockTasksGrpcService.list$.mockReturnValueOnce(of({
+          tasks: [],
+          total: total,
+          pageSize: service.options.pageSize,
+        } as unknown as ListTasksResponse));
+        service.refresh$.next();
+      });
+
+      it('should not loop and should render an empty table', () => {
+        expect(mockTasksGrpcService.list$).toHaveBeenCalledTimes(1);
+        expect(service.data()).toEqual([]);
       });
     });
   });
