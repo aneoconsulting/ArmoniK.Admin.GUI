@@ -1,12 +1,12 @@
-node_modules
+# Sphinx build output
+build/
+.venv*/
+__pycache__/
+
+# Editor / OS
 *.iml
 .idea
-*.log*
-.nuxt
 .vscode
 .DS_Store
-coverage
-dist
-sw.*
+*.log*
 .env
-.output

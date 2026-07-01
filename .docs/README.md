@@ -1,57 +1,40 @@
-# Docus Starter
+# ArmoniK.Admin.GUI Docs
 
-Starter template for [Docus](https://docus.dev).
-
-## Clone
-
-Clone the repository (using `nuxi`):
-
-```bash
-npx nuxi init -t themes/docus
-```
+User documentation for the ArmoniK Admin GUI, built with
+[Sphinx](https://www.sphinx-doc.org) and
+[MyST](https://myst-parser.readthedocs.io) (Markdown) and published on
+[Read the Docs](https://readthedocs.org).
 
 ## Setup
 
-Install dependencies:
+> Run these commands from the repository root.
+
+Create and activate a virtual environment:
 
 ```bash
-yarn install
+python -m venv .venv-doc
+source .venv-doc/bin/activate
 ```
 
-## Development
+Install the dependencies:
 
 ```bash
-yarn dev
+pip install -r .docs/requirements.txt
 ```
 
-## Edge Side Rendering
+## Usage
 
-Can be deployed to Vercel Functions, Netlify Functions, AWS, and most Node-compatible environments.
-
-Look at all the available presets [here](https://v3.nuxtjs.org/guide/deploy/presets).
+Build the docs locally:
 
 ```bash
-yarn build
+sphinx-build -M html .docs .docs/build
 ```
 
-## Static Generation
+The output can be found in `.docs/build/html/index.html`.
 
-Use the `generate` command to build your application.
+## Structure
 
-The HTML files will be generated in the .output/public directory and ready to be deployed to any static compatible hosting.
-
-```bash
-yarn generate
-```
-
-## Preview build
-
-You might want to preview the result of your build locally, to do so, run the following command:
-
-```bash
-yarn preview
-```
-
----
-
-For a detailed explanation of how things work, check out [Docus](https://docus.dev).
+- `conf.py` — Sphinx configuration.
+- `index.rst` — landing page and table of contents (`toctree`).
+- `content/` — the documentation pages, written in Markdown.
+- `_static/` — custom CSS and static assets.
