@@ -1,0 +1,17 @@
+@if (loading) {
+  <app-spinner />
+} @else {
+  @for (group of statusesGroups; track group.name) {
+    <a mat-button
+      [matTooltip]="group.name"
+      [routerLink]="['/tasks']"
+      [queryParams]="group.queryParams"
+      [style]="'color: ' + group.color"
+    >
+      {{ group.statusCount ?? 0 }}
+    </a>
+    @if (!$last) {
+      <span>|</span>
+    }
+  }
+}

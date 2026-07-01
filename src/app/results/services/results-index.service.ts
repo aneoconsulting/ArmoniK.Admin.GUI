@@ -35,6 +35,11 @@ export class ResultsIndexService implements IndexServiceInterface<ResultRaw> {
       link: '/tasks',
     },
     {
+      name: $localize`Created By`,
+      key: 'createdBy',
+      sortable: true,
+    },
+    {
       name: $localize`Created at`,
       key: 'createdAt',
       type: 'date',
@@ -58,7 +63,30 @@ export class ResultsIndexService implements IndexServiceInterface<ResultRaw> {
       name: $localize`Size`,
       key: 'size',
       sortable: true
-    }
+    },
+    {
+      name: $localize`Manual Deletion`,
+      key: 'manualDeletion',
+      sortable: true,
+    },
+    {
+      name: $localize`Opaque ID`,
+      key: 'opaqueId',
+      type: 'byte-array',
+      sortable: false,
+    },
+    {
+      name: $localize`Actions`,
+      key: 'actions',
+      type: 'actions',
+      sortable: false,
+    },
+    {
+      name: $localize`Select`,
+      key: 'select',
+      type: 'select',
+      sortable: false,
+    },
   ];
 
   /**

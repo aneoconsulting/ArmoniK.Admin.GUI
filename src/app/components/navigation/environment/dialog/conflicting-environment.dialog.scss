@@ -1,0 +1,10 @@
+@use 'styles' as *;
+
+.environment {
+  width: fit-content;
+}
+
+section {
+  margin: 1rem 2rem;
+  @include flex-row();
+}

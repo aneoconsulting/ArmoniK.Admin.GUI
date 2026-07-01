@@ -1,7 +1,6 @@
 import { inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { TableLine } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
@@ -9,12 +8,13 @@ import { ManageCustomColumnDialogComponent } from '@components/manage-custom-dia
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { TableColumn } from '../column.type';
 import { ColumnKey, CustomColumn, DataRaw } from '../data';
 import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '../filters';
-import { ListOptions } from '../options';
-import { FiltersServiceInterface } from '../services/filtersService';
+import { DataFilterService } from '../services/data-filter.service';
 import { IndexServiceCustomInterface, IndexServiceInterface } from '../services/indexService';
+import { AbstractTableDataService } from '../services/table-data.service';
 import { TableType } from '../table';
 
 export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null> {
@@ -26,36 +26,42 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
   readonly router = inject(Router);
 
   abstract readonly indexService: IndexServiceInterface<T, O>;
-  abstract readonly filtersService: FiltersServiceInterface<F, FO>;
+  abstract readonly filtersService: DataFilterService<F, FO>;
+  abstract readonly tableDataService: AbstractTableDataService<T, F, O, FO>;
 
   abstract tableType: TableType;
 
-  displayedColumns: TableColumn<T, O>[] = [];
+  readonly displayedColumns = signal<TableColumn<T, O>[]>([]);
   displayedColumnsKeys: ColumnKey<T, O>[] = [];
-  availableColumns: ColumnKey<T, O>[] = [];
+  availableColumns: TableColumn<T, O>[] = [];
   lockColumns: boolean = false;
   columnsLabels: Record<ColumnKey<T, O>, string> = {} as Record<ColumnKey<T, O>, string>;
 
-  loading = signal(false);
-
-  options: ListOptions<T, O>;
-
-  filters: FiltersOr<F, FO>;
-  filters$: Subject<FiltersOr<F, FO>>;
   showFilters: boolean;
 
   intervalValue = 0;
   sharableURL = '';
-
-  refresh$: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
   interval$: Observable<number> = this.autoRefreshService.createInterval(this.interval, this.stopInterval);
 
   subscriptions: Subscription = new Subscription();
 
+  get options() {
+    return this.tableDataService.options;
+  }
+
+  get filters() {
+    return this.tableDataService.filters;
+  }
+
+  get loading() {
+    return this.tableDataService.loading;
+  }
+
   initTableEnvironment() {
     this.initColumns();
+    this.updateDisplayedColumns();
     this.initFilters();
     this.initOptions();
     this.intervalValue = this.indexService.restoreIntervalValue();
@@ -64,27 +70,25 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
 
   protected initColumns() {
     this.displayedColumnsKeys = this.indexService.restoreColumns();
-    this.updateDisplayedColumns();
-    this.availableColumns = this.indexService.availableTableColumns.map(column => column.key);
-    this.indexService.availableTableColumns.forEach(column => {
+    this.availableColumns = this.indexService.availableTableColumns;
+    for (const column of this.indexService.availableTableColumns) {
       this.columnsLabels[column.key] = column.name;
-    });
+    }
     this.lockColumns = this.indexService.restoreLockColumns();
   }
 
   private initFilters() {
-    this.filters = this.filtersService.restoreFilters();
+    this.tableDataService.filters = this.filtersService.restoreFilters();
     this.showFilters = this.filtersService.restoreShowFilters();
-    this.filters$ = new BehaviorSubject(this.filters);
   }
 
   private initOptions() {
-    this.options = this.indexService.restoreOptions();
+    this.tableDataService.options = this.indexService.restoreOptions();
   }
 
   mergeSubscriptions() {
-    const mergeSubscription = merge(this.interval$).subscribe(() => this.refresh$.next());
-    this.subscriptions.add(mergeSubscription);
+    const intervalSubscription = this.interval$.subscribe(() => this.refresh());
+    this.subscriptions.add(intervalSubscription);
     this.handleAutoRefreshStart();
   }
 
@@ -93,15 +97,17 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
   }
 
   updateDisplayedColumns(): void {
-    this.displayedColumns = this.displayedColumnsKeys.map(key => this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<T, O>);
+    this.displayedColumns.set(
+      this.displayedColumnsKeys.map(key => this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<T, O>)
+    );
   }
 
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);
   }
 
-  onRefresh() {
-    this.refresh$.next();
+  refresh() {
+    this.tableDataService.refresh$.next();
   }
 
   onIntervalValueChange(value: number) {
@@ -111,16 +117,13 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
       this.stopInterval.next();
     } else {
       this.interval.next(value);
-      this.refresh$.next();
+      this.refresh();
     }
 
     this.indexService.saveIntervalValue(value);
   }
 
   onColumnsChange(columns: ColumnKey<T, O>[]) {
-    if ((columns as string[]).includes('select')) {
-      columns = ['select' as ColumnKey<T, O>, ...columns.filter(column => column !== 'select')];
-    }
     this.displayedColumnsKeys = [...columns];
     this.updateDisplayedColumns();
     this.indexService.saveColumns(columns);
@@ -131,18 +134,22 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
     this.updateDisplayedColumns();
   }
 
-  onFiltersChange(value: FiltersOr<F, FO>) {
-    this.filters = value;
+  onOptionsChange() {
+    this.indexService.saveOptions(this.options);
+    this.refresh();
+  }
 
-    this.filtersService.saveFilters(value);
-    this.options.pageIndex = 0;
-    this.filters$.next(this.filters);
+  onFiltersChange(value: FiltersOr<F, FO>) {
+    this.tableDataService.options.pageIndex = 0;
+    this.tableDataService.filters = value;
+    this.filtersService.saveFilters(this.filters);
+    this.refresh();
   }
 
   onFiltersReset(): void {
-    this.filters = this.filtersService.resetFilters();
-    this.options.pageIndex = 0;
-    this.filters$.next([]);
+    this.tableDataService.options.pageIndex = 0;
+    this.tableDataService.filters = this.filtersService.resetFilters();
+    this.refresh();
   }
 
   onShowFiltersChange(value: boolean) {
@@ -160,7 +167,7 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
   }
 
   handleAutoRefreshStart() {
-    this.refresh$.next();
+    this.refresh();
     if (this.intervalValue === 0) {
       this.stopInterval.next();
     } else {
@@ -169,7 +176,12 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
   }
 
   onAddToDashboard() {
-    this.dashboardIndexService.addLine<TableLine<T, O>>({
+    this.dashboardIndexService.addLine<TableLine<T, O>>(this.createDashboardLine());
+    this.router.navigate(['/dashboard']);
+  }
+
+  protected createDashboardLine(): TableLine<T, O> {
+    return {
       name: this.tableType,
       type: this.tableType,
       interval: 10,
@@ -178,42 +190,35 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
       displayedColumns: this.displayedColumnsKeys,
       lockColumns: this.lockColumns,
       showFilters: this.showFilters
-    });
-    this.router.navigate(['/dashboard']);
+    };
   }
 }
 
 export abstract class TableHandlerCustomValues<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null> extends TableHandler<T, F, O, FO> {
-
   abstract override readonly indexService: IndexServiceCustomInterface<T, O>;
 
   customColumns: CustomColumn[];
 
   protected override initColumns() {
+    super.initColumns();
     this.customColumns = this.indexService.restoreCustomColumns();
-    this.displayedColumnsKeys = [...this.indexService.restoreColumns()];
-    this.availableColumns = this.indexService.availableTableColumns.map(column => column.key);
-    this.availableColumns.push(...this.customColumns as ColumnKey<T, O>[]);
-    this.lockColumns = this.indexService.restoreLockColumns();
-    this.indexService.availableTableColumns.forEach(column => {
-      this.columnsLabels[column.key] = column.name;
-    });
-    this.updateDisplayedColumns();
   }
 
   override updateDisplayedColumns(): void {
-    this.displayedColumns = this.displayedColumnsKeys.map(key => {
-      if (key.toString().includes('options.options.')) {
-        const customColumnName = key.toString().replaceAll('options.options.', '');
-        return {
-          key: key,
-          name: customColumnName,
-          sortable: true,
-        } as TableColumn<T, O>;
-      } else {
-        return this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<T, O>;
-      }
-    });
+    this.displayedColumns.set(
+      this.displayedColumnsKeys.map(key => {
+        if (key.toString().includes('options.options.')) {
+          const customColumnName = key.toString().replaceAll('options.options.', '');
+          return {
+            key: key,
+            name: customColumnName,
+            sortable: true,
+          } as TableColumn<T, O>;
+        } else {
+          return this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<T, O>;
+        }
+      })
+    );
   }
 
   addCustomColumn(): void {
@@ -224,8 +229,6 @@ export abstract class TableHandlerCustomValues<T extends DataRaw, F extends Filt
     dialogRef.afterClosed().subscribe((result) => {
       if(result) {
         this.customColumns = result;
-        this.availableColumns = this.availableColumns.filter(column => !column.toString().startsWith('options.options.'));
-        this.availableColumns.push(...result as ColumnKey<T, O>[]);
         this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.toString().startsWith('options.options.'));
         this.displayedColumnsKeys.push(...result as ColumnKey<T, O>[]);
         this.updateDisplayedColumns();
@@ -235,18 +238,11 @@ export abstract class TableHandlerCustomValues<T extends DataRaw, F extends Filt
     });
   }
 
-  override onAddToDashboard() {
-    this.dashboardIndexService.addLine<TableLine<T, O>>({
-      name: this.tableType,
-      type: this.tableType,
-      interval: 10,
-      filters: this.filters,
-      options: this.options,
-      displayedColumns: this.displayedColumnsKeys,
-      lockColumns: this.lockColumns,
-      showFilters: this.showFilters,
-      customColumns: this.customColumns
-    });
-    this.router.navigate(['/dashboard']);
+  override createDashboardLine(): TableLine<T, O> {
+    return {...super.createDashboardLine(), customColumns: this.customColumns};
   }
+}
+
+export interface SelectionTableHandler<T extends DataRaw> {
+  onSelectionChange(selection: T[]): void
 }

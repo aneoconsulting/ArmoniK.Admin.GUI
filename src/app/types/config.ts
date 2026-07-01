@@ -13,7 +13,8 @@ export type ScopeConfig<T extends DataRaw, F extends FiltersEnums, O extends Tas
 };
 
 export type CustomScope = 'sessions' | 'tasks';
-export type Scope = 'applications' | 'partitions' | 'sessions' | 'results' | 'tasks';
+export type StatusScope = 'sessions' | 'results' | 'tasks';
+export type Scope = 'applications' | 'partitions' | StatusScope;
 export type Element = 'columns' | 'options' | 'filters' | 'interval' | 'lock-columns';
 
 export type Key =
@@ -21,6 +22,7 @@ export type Key =
   'navigation-sidebar' |
   'navigation-sidebar-opened' |
   'navigation-theme' |
+  'navigation-color-scheme' |
   'navigation-external-services' |
   'dashboard-lines'|
   'dashboard-split-lines' |
@@ -28,9 +30,15 @@ export type Key =
   'sessions-tasks-by-status' |
   'partitions-tasks-by-status' |
   'tasks-view-in-logs' |
+  'host-config' |
+  'environments'|
+  'graph-links-colors' |
+  'graph-highlight-parents' |
+  'graph-highlight-children' |
   `${CustomScope}-custom-columns` |
   `${Scope}-${Element}` |
-  `${Scope}-show-filters`;
+  `${Scope}-show-filters` |
+  `${StatusScope}-statuses`;
 
 export type ExportedDefaultConfig = {
   [key in Key]: unknown;

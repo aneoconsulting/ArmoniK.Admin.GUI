@@ -1,0 +1,3 @@
+<button mat-icon-button [cdkCopyToClipboard]="sharableURL" (cdkCopyToClipboardCopied)="onCopied()" [disabled]="copied" matTooltip="Copy Page URL" i18n-matTooltip>
+  <mat-icon aria-hidden="true" [fontIcon]="getIcon(copied ? 'done' : 'share')"/>
+</button>

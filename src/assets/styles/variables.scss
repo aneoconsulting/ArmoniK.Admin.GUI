@@ -1,0 +1,45 @@
+@use '@angular/material' as mat;
+@use '../themes/light-blue.scss' as light-blue;
+@use '../themes/dark-green.scss' as dark-green;
+@use '../themes/dark-purple.scss' as dark-purple;
+@use '../themes/light-pink.scss' as light-pink;
+
+$light-blue: mat.define-theme(
+  (
+    color: (
+      theme-type: color-scheme,
+      primary: light-blue.$primary-palette,
+      tertiary: light-blue.$tertiary-palette,
+    )
+  )
+);
+
+$light-pink: mat.define-theme(
+  (
+    color: (
+      theme-type: color-scheme,
+      primary: light-pink.$primary-palette,
+      tertiary: light-pink.$tertiary-palette,
+    )
+  )
+);
+
+$dark-green: mat.define-theme(
+  (
+    color: (
+      theme-type: color-scheme,
+      primary: dark-green.$primary-palette,
+      tertiary: dark-green.$tertiary-palette,
+    )
+  )
+);
+
+$dark-purple: mat.define-theme(
+  (
+    color: (
+      theme-type: color-scheme,
+      primary: dark-purple.$primary-palette,
+      tertiary: dark-purple.$tertiary-palette,
+    )
+  )
+);

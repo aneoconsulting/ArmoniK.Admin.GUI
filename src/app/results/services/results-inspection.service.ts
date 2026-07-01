@@ -20,11 +20,22 @@ export class ResultsInspectionService extends InspectionService<ResultRaw> {
       type: 'date'
     },
     {
+      key: 'createdBy',
+      link: 'tasks',
+    },
+    {
       key: 'completedAt',
       type: 'date'
     },
     {
+      key: 'manualDeletion',
+    },
+    {
       key: 'size'
+    },
+    {
+      key: 'opaqueId',
+      type: 'byte-array',
     }
   ];
 }

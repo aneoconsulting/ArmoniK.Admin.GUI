@@ -2,7 +2,6 @@ import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { EditStatusesGroupDialogComponent } from './edit-status-group-dialog.component';
-import { TasksStatusesGroup } from '../../dashboard/types';
 
 describe('', () => {
   let component: EditStatusesGroupDialogComponent;
@@ -11,14 +10,31 @@ describe('', () => {
     close: jest.fn()
   };
 
+  const statusesLabelsColors = {
+    [TaskStatus.TASK_STATUS_CANCELLED]: {
+      label: 'Cancelled',
+      color: 'black',
+    },
+    [TaskStatus.TASK_STATUS_COMPLETED]: {
+      label: 'Completed',
+      color: 'green',
+    },
+    [TaskStatus.TASK_STATUS_ERROR]: {
+      label: 'Error',
+      color: 'red',
+    }
+  };
+
+  const group = { name: 'status', color: 'green', statuses: [TaskStatus.TASK_STATUS_CANCELLED, TaskStatus.TASK_STATUS_COMPLETED]};
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         EditStatusesGroupDialogComponent,
         { provide: MatDialogRef, useValue: mockMatDialogRef },
         { provide: MAT_DIALOG_DATA, useValue: {
-          statuses: [{ name: 'result', value: 'the-result' }],
-          group: { name: 'status', color: 'green', statuses: [TaskStatus.TASK_STATUS_CANCELLED, TaskStatus.TASK_STATUS_COMPLETED]}
+          statuses: statusesLabelsColors,
+          group: group,
         } }
       ]
     }).inject(EditStatusesGroupDialogComponent);
@@ -29,13 +45,11 @@ describe('', () => {
   });
 
   it('should init', () => {
-    component.ngOnInit();
-    expect(component.statuses).toEqual([{ name: 'result', value: 'the-result' }]);
-    expect(component.group).toEqual({ name: 'status', color: 'green', statuses: [TaskStatus.TASK_STATUS_CANCELLED, TaskStatus.TASK_STATUS_COMPLETED]});
+    expect(component.data.statuses).toEqual(statusesLabelsColors);
+    expect(component.group).toEqual(group);
   });
 
   it('should close with result on submit', () => {
-    const group: TasksStatusesGroup = {name: 'status', color: 'green', statuses: [TaskStatus.TASK_STATUS_CANCELLED, TaskStatus.TASK_STATUS_COMPLETED]};
     component.onSubmit(group);
     expect(mockMatDialogRef.close).toHaveBeenCalledWith(group);
   });

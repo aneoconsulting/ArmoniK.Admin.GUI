@@ -1,3 +1,4 @@
+import { ResultRawEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Field } from '@app/types/column.type';
 import { InspectionService } from '@app/types/services/inspectionService';
 import { TaskOptions, TaskRaw } from '../types';
@@ -19,7 +20,8 @@ export class TasksInspectionService extends InspectionService<TaskRaw> {
       key: 'podHostname'
     },
     {
-      key: 'podTtl'
+      key: 'podTtl',
+      type: 'date',
     },
     {
       key: 'creationToEndDuration',
@@ -34,6 +36,14 @@ export class TasksInspectionService extends InspectionService<TaskRaw> {
       type: 'duration'
     },
     {
+      key: 'createdBy',
+      link: 'tasks',
+    },
+    {
+      key: 'payloadId',
+      link: 'results',
+    },
+    {
       key: 'createdAt',
       type: 'date'
     },
@@ -42,7 +52,7 @@ export class TasksInspectionService extends InspectionService<TaskRaw> {
       type: 'date'
     },
     {
-      key: 'fetchedAt',
+      key: 'receivedAt',
       type: 'date'
     },
     {
@@ -50,7 +60,7 @@ export class TasksInspectionService extends InspectionService<TaskRaw> {
       type: 'date'
     },
     {
-      key: 'receivedAt',
+      key: 'fetchedAt',
       type: 'date'
     },
     {
@@ -62,12 +72,16 @@ export class TasksInspectionService extends InspectionService<TaskRaw> {
       type: 'date'
     },
     {
+      key: 'endedAt',
+      type: 'date'
+    },
+    {
       key: 'statusMessage',
-      type: 'object'
+      type: 'message'
     },
     {
       key: 'output',
-      type: 'object'
+      type: 'output'
     },
   ];
 
@@ -107,22 +121,22 @@ export class TasksInspectionService extends InspectionService<TaskRaw> {
     {
       key: 'dataDependencies',
       link: 'results',
-      queryParams: '0-root-7-0'
+      queryParams: `0-root-${ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID}-0`
     },
     {
       key: 'expectedOutputIds',
       link: 'results',
-      queryParams: '0-root-7-0'
+      queryParams: `0-root-${ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID}-0`
     },
     {
       key: 'parentTaskIds',
       link: 'tasks',
-      queryParams: '0-root-1-0'
+      queryParams: `0-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID}-0`
     },
     {
       key: 'retryOfIds',
       link: 'tasks',
-      queryParams: '0-root-1-0'
+      queryParams: `0-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID}-0`
     }
   ];
 }

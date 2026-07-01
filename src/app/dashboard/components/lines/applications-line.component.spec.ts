@@ -1,7 +1,7 @@
 import { ApplicationRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
+import ApplicationsDataService from '@app/applications/services/applications-data.service';
 import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOptions } from '@app/applications/types';
 import { TableColumn } from '@app/types/column.type';
@@ -11,6 +11,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { of } from 'rxjs';
 import { ApplicationsLineComponent } from './applications-line.component';
 import { TableLine } from '../../types';
 
@@ -53,7 +54,13 @@ describe('ApplicationsLineComponent', () => {
       key: 'count',
       type: 'count',
       sortable: true
-    }
+    },
+    {
+      name: $localize`Select`,
+      key: 'select',
+      type: 'select',
+      sortable: false,
+    },
   ];
 
   const options: ApplicationRawListOptions = {
@@ -88,6 +95,17 @@ describe('ApplicationsLineComponent', () => {
     }),
   };
 
+  const mockApplicationsDataService = {
+    data: [],
+    total: 0,
+    loading: false,
+    options: {},
+    filters: [] as FiltersOr<ApplicationRawEnumField>,
+    refresh$: {
+      next: jest.fn()
+    },
+  };
+
   const mockApplicationsIndexService = {
     availableTableColumns: displayedColumns,
     defaultColumns: defaultColumns,
@@ -106,6 +124,7 @@ describe('ApplicationsLineComponent', () => {
       providers: [
         ApplicationsLineComponent,
         { provide: MatDialog, useValue: mockMatDialog },
+        { provide: ApplicationsDataService, useValue: mockApplicationsDataService },
         AutoRefreshService,
         IconsService,
         { provide: ApplicationsIndexService, useValue: mockApplicationsIndexService },
@@ -122,11 +141,14 @@ describe('ApplicationsLineComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should load properly', () => {
+    expect(component.loading).toEqual(mockApplicationsDataService.loading);
+  });
+
   describe('on init', () => {
     it('should init with line values', () => {
       const intervalSpy = jest.spyOn(component.interval, 'next');
       component.ngOnInit();
-      expect(component.loading).toBeTruthy();
       expect(component.filters).toBe(line.filters);
       expect(intervalSpy).toHaveBeenCalledWith(line.interval);
       expect(component.showFilters).toEqual(line.showFilters);
@@ -152,6 +174,21 @@ describe('ApplicationsLineComponent', () => {
     expect(subSpy).toHaveBeenCalled();
   });
 
+  describe('handleAutoRefreshStart', () => {
+    it('should start interval if interval value is not 0', () => {
+      const spy = jest.spyOn(component.interval, 'next');
+      component.handleAutoRefreshStart();
+      expect(spy).toHaveBeenCalledWith(component.intervalValue);
+    });
+
+    it('should stop interval if interval value is 0', () => {
+      const spy = jest.spyOn(component.stopInterval, 'next');
+      component.intervalValue = 0;
+      component.handleAutoRefreshStart();
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
   it('should get icon', () => {
     expect(component.getIcon('tune')).toEqual('tune');
   });
@@ -161,9 +198,22 @@ describe('ApplicationsLineComponent', () => {
   });
 
   it('should refresh', () => {
-    const refreshSpy = jest.spyOn(component.refresh, 'next');
-    component.onRefresh();
-    expect(refreshSpy).toHaveBeenCalled();
+    component.refresh();
+    expect(mockApplicationsDataService.refresh$.next).toHaveBeenCalled();
+  });
+
+  describe('On Options Change', () => {
+    beforeEach(() => {
+      component.onOptionsChange();
+    });
+
+    it('should save options', () => {
+      expect(component.line.options).toEqual(mockApplicationsDataService.options);
+    });
+
+    it('should refresh', () => {
+      expect(mockApplicationsDataService.refresh$.next).toHaveBeenCalled();
+    });
   });
 
   describe('onIntervalValueChange', () => {
@@ -223,14 +273,13 @@ describe('ApplicationsLineComponent', () => {
     });
 
     it('should refresh', () => {
-      const spyFilters = jest.spyOn(component.filters$, 'next');
       component.onFiltersChange(newFilters);
-      expect(spyFilters).toHaveBeenCalled();
+      expect(mockApplicationsDataService.refresh$.next).toHaveBeenCalled();
     });
   });
 
   describe('OnColumnsChange', () => {
-    const newColumns: ApplicationRawColumnKey[] = ['name', 'count', 'service'];
+    const newColumns: ApplicationRawColumnKey[] = ['name', 'count', 'service', 'select'];
 
     beforeEach(() => {
       component.displayedColumnsKeys = ['namespace', 'service'];
@@ -278,9 +327,8 @@ describe('ApplicationsLineComponent', () => {
   });
 
   describe('onFiltersReset', () => {
-
     beforeEach(() => {
-      component.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
+      mockApplicationsDataService.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]] as FiltersOr<ApplicationRawEnumField>;
       component.line.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
     });
 
@@ -301,9 +349,8 @@ describe('ApplicationsLineComponent', () => {
     });
 
     it('should refresh', () => {
-      const spyFilters = jest.spyOn(component.filters$, 'next');
       component.onFiltersReset();
-      expect(spyFilters).toHaveBeenCalled();
+      expect(mockApplicationsDataService.refresh$.next).toHaveBeenCalled();
     });
   });
 

@@ -1,10 +1,10 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, of } from 'rxjs';
 import { AddLineDialogResult, ReorganizeLinesDialogResult, SplitLinesDialogResult } from '@app/types/dialog';
 import { IconsService } from '@services/icons.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { Observable, of } from 'rxjs';
 import { IndexComponent } from './index.component';
 import { DashboardIndexService } from './services/dashboard-index.service';
 import { CountLine, Line, LineType } from './types';
@@ -83,14 +83,11 @@ describe('IndexComponent', () => {
   it('should init', () => {
     expect(component.lines).toEqual(defaultLines);
     expect(component.sharableURL).toEqual(defaultUrl);
-    expect(component.columns).toEqual(10);
+    expect(component.columns()).toEqual(10);
   });
 
-  it('should get required icons', () => {
-    expect(component.getIcon('settings')).toEqual('settings');
-    expect(component.getIcon('add')).toEqual('add');
-    expect(component.getIcon('list')).toEqual('view_list');
-    expect(component.getIcon('vertical-split')).toEqual('vertical_split');
+  it('should get icons', () => {
+    expect(component.getIcon('heart')).toEqual('favorite');
   });
 
   it('should open Fab', () => {
@@ -169,7 +166,7 @@ describe('IndexComponent', () => {
   it('should split lines', () => {
     dialogRef$ = of({columns: 4});
     component.onSplitLinesDialog();
-    expect(component.columns).toEqual(4);
+    expect(component.columns()).toEqual(4);
   });
 
   it('should delete line', () => {

@@ -15,7 +15,7 @@
       ],
       "@app/*": [
         "src/app/*"
-      ],
+      ]
     },
     "rootDir": "./",
     "outDir": "./dist/out-tsc",
@@ -30,7 +30,7 @@
     "declaration": false,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
@@ -38,7 +38,7 @@
     "useDefineForClassFields": false,
     "lib": [
       "ES2023",
-      "dom",
+      "dom"
     ]
   },
   "angularCompilerOptions": {

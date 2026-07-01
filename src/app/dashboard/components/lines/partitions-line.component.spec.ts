@@ -1,7 +1,7 @@
 import { PartitionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
+import PartitionsDataService from '@app/partitions/services/partitions-data.service';
 import { PartitionsIndexService } from '@app/partitions/services/partitions-index.service';
 import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawListOptions } from '@app/partitions/types';
 import { TableColumn } from '@app/types/column.type';
@@ -11,6 +11,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { of } from 'rxjs';
 import { PartitionsLineComponent } from './partitions-line.component';
 import { TableLine } from '../../types';
 
@@ -46,7 +47,13 @@ describe('PartitionsLineComponent', () => {
       key: 'count',
       type: 'count',
       sortable: true
-    }
+    },
+    {
+      name: $localize`Select`,
+      key: 'select',
+      type: 'select',
+      sortable: false,
+    },
   ];
 
   const options: PartitionRawListOptions = {
@@ -81,6 +88,17 @@ describe('PartitionsLineComponent', () => {
     }),
   };
 
+  const mockPartitionsDataService = {
+    data: [],
+    total: 0,
+    loading: false,
+    options: {},
+    filters: [] as FiltersOr<PartitionRawEnumField>,
+    refresh$: {
+      next: jest.fn()
+    },
+  };
+
   const mockPartitionsIndexService = {
     availableTableColumns: displayedColumns,
     defaultColumns: defaultColumns,
@@ -100,6 +118,7 @@ describe('PartitionsLineComponent', () => {
         { provide: MatDialog, useValue: mockMatDialog },
         AutoRefreshService,
         IconsService,
+        { provide: PartitionsDataService, useValue: mockPartitionsDataService },
         { provide: PartitionsIndexService, useValue: mockPartitionsIndexService },
         DefaultConfigService,
         { provide: NotificationService, useValue: mockNotificationService },
@@ -114,11 +133,14 @@ describe('PartitionsLineComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should load properly', () => {
+    expect(component.loading).toEqual(mockPartitionsDataService.loading);
+  });
+
   describe('on init', () => {
     it('should init with line values', () => {
       const intervalSpy = jest.spyOn(component.interval, 'next');
       component.ngOnInit();
-      expect(component.loading).toBeTruthy();
       expect(component.filters).toBe(line.filters);
       expect(intervalSpy).toHaveBeenCalledWith(line.interval);
     });
@@ -144,6 +166,21 @@ describe('PartitionsLineComponent', () => {
     expect(subSpy).toHaveBeenCalled();
   });
 
+  describe('handleAutoRefreshStart', () => {
+    it('should start interval if interval value is not 0', () => {
+      const spy = jest.spyOn(component.interval, 'next');
+      component.handleAutoRefreshStart();
+      expect(spy).toHaveBeenCalledWith(component.intervalValue);
+    });
+
+    it('should stop interval if interval value is 0', () => {
+      const spy = jest.spyOn(component.stopInterval, 'next');
+      component.intervalValue = 0;
+      component.handleAutoRefreshStart();
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
   it('should get icon', () => {
     expect(component.getIcon('tune')).toEqual('tune');
   });
@@ -153,9 +190,22 @@ describe('PartitionsLineComponent', () => {
   });
 
   it('should refresh', () => {
-    const refreshSpy = jest.spyOn(component.refresh, 'next');
-    component.onRefresh();
-    expect(refreshSpy).toHaveBeenCalled();
+    component.refresh();
+    expect(mockPartitionsDataService.refresh$.next).toHaveBeenCalled();
+  });
+
+  describe('On Options Change', () => {
+    beforeEach(() => {
+      component.onOptionsChange();
+    });
+
+    it('should save options', () => {
+      expect(component.line.options).toEqual(mockPartitionsDataService.options);
+    });
+
+    it('should refresh', () => {
+      expect(mockPartitionsDataService.refresh$.next).toHaveBeenCalled();
+    });
   });
 
   describe('onIntervalValueChange', () => {
@@ -215,14 +265,13 @@ describe('PartitionsLineComponent', () => {
     });
 
     it('should refresh', () => {
-      const spyFilters = jest.spyOn(component.filters$, 'next');
       component.onFiltersChange(newFilters);
-      expect(spyFilters).toHaveBeenCalled();
+      expect(mockPartitionsDataService.refresh$.next).toHaveBeenCalled();
     });
   });
 
   describe('OnColumnsChange', () => {
-    const newColumns: PartitionRawColumnKey[] = ['id', 'count', 'podMax'];
+    const newColumns: PartitionRawColumnKey[] = ['id', 'count', 'podMax', 'select'];
 
     beforeEach(() => {
       component.displayedColumnsKeys = ['count', 'id'] as PartitionRawColumnKey[];
@@ -272,7 +321,7 @@ describe('PartitionsLineComponent', () => {
   describe('onFiltersReset', () => {
 
     beforeEach(() => {
-      component.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
+      mockPartitionsDataService.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
       component.line.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
     });
 
@@ -293,9 +342,8 @@ describe('PartitionsLineComponent', () => {
     });
 
     it('should refresh', () => {
-      const spyFilters = jest.spyOn(component.filters$, 'next');
       component.onFiltersReset();
-      expect(spyFilters).toHaveBeenCalled();
+      expect(mockPartitionsDataService.refresh$.next).toHaveBeenCalled();
     });
   });
 

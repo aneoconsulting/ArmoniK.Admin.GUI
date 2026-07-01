@@ -1,7 +1,7 @@
 import { ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
+import ResultsDataService from '@app/results/services/results-data.service';
 import { ResultsIndexService } from '@app/results/services/results-index.service';
 import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawListOptions } from '@app/results/types';
 import { TableColumn } from '@app/types/column.type';
@@ -10,6 +10,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { of } from 'rxjs';
 import { ResultsLineComponent } from './results-line.component';
 import { TableLine } from '../../types';
 
@@ -45,7 +46,13 @@ describe('ResultsLineComponent', () => {
       key: 'size',
       type: 'count',
       sortable: true
-    }
+    },
+    {
+      name: $localize`Select`,
+      key: 'select',
+      type: 'select',
+      sortable: false,
+    },
   ];
 
   const options: ResultRawListOptions = {
@@ -80,6 +87,17 @@ describe('ResultsLineComponent', () => {
     }),
   };
 
+  const mockResultsDataService = {
+    data: [],
+    total: 0,
+    loading: false,
+    options: {},
+    filters: [] as FiltersOr<ResultRawEnumField>,
+    refresh$: {
+      next: jest.fn()
+    },
+  };
+
   const mockResultsIndexService = {
     availableTableColumns: displayedColumns,
     defaultColumns: defaultColumns,
@@ -99,6 +117,7 @@ describe('ResultsLineComponent', () => {
         { provide: MatDialog, useValue: mockMatDialog },
         AutoRefreshService,
         IconsService,
+        { provide: ResultsDataService, useValue: mockResultsDataService },
         { provide: ResultsIndexService, useValue: mockResultsIndexService },
         DefaultConfigService,
         { provide: NotificationService, useValue: mockNotificationService }
@@ -113,11 +132,14 @@ describe('ResultsLineComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should load properly', () => {
+    expect(component.loading).toEqual(mockResultsDataService.loading);
+  });
+
   describe('on init', () => {
     it('should init with line values', () => {
       const intervalSpy = jest.spyOn(component.interval, 'next');
       component.ngOnInit();
-      expect(component.loading).toBeTruthy();
       expect(component.filters).toBe(line.filters);
       expect(intervalSpy).toHaveBeenCalledWith(line.interval);
     });
@@ -143,6 +165,21 @@ describe('ResultsLineComponent', () => {
     expect(subSpy).toHaveBeenCalled();
   });
 
+  describe('handleAutoRefreshStart', () => {
+    it('should start interval if interval value is not 0', () => {
+      const spy = jest.spyOn(component.interval, 'next');
+      component.handleAutoRefreshStart();
+      expect(spy).toHaveBeenCalledWith(component.intervalValue);
+    });
+
+    it('should stop interval if interval value is 0', () => {
+      const spy = jest.spyOn(component.stopInterval, 'next');
+      component.intervalValue = 0;
+      component.handleAutoRefreshStart();
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
   it('should get icon', () => {
     expect(component.getIcon('tune')).toEqual('tune');
   });
@@ -152,9 +189,22 @@ describe('ResultsLineComponent', () => {
   });
 
   it('should refresh', () => {
-    const refreshSpy = jest.spyOn(component.refresh, 'next');
-    component.onRefresh();
-    expect(refreshSpy).toHaveBeenCalled();
+    component.refresh();
+    expect(mockResultsDataService.refresh$.next).toHaveBeenCalled();
+  });
+
+  describe('On Options Change', () => {
+    beforeEach(() => {
+      component.onOptionsChange();
+    });
+
+    it('should save options', () => {
+      expect(component.line.options).toEqual(mockResultsDataService.options);
+    });
+
+    it('should refresh', () => {
+      expect(mockResultsDataService.refresh$.next).toHaveBeenCalled();
+    });
   });
 
   describe('onIntervalValueChange', () => {
@@ -196,32 +246,32 @@ describe('ResultsLineComponent', () => {
 
   describe('onFilterChange', () => {
     const newFilters: FiltersOr<ResultRawEnumField> = [[{for: 'root', field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_AT, operator: 1, value: 2}]];
+    let lineSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      lineSpy = jest.spyOn(component.lineChange, 'emit');
+      component.onFiltersChange(newFilters);
+    });
 
     it('should update applied filters', () => {
-      component.onFiltersChange(newFilters);
       expect(component.filters).toEqual(newFilters);
     });
 
     it('should update line filters', () => {
-      component.onFiltersChange(newFilters);
       expect(component.line.filters).toEqual(newFilters);
     });
 
     it('should emit', () => {
-      const lineSpy = jest.spyOn(component.lineChange, 'emit');
-      component.onFiltersChange(newFilters);
       expect(lineSpy).toHaveBeenCalled();
     });
 
     it('should refresh', () => {
-      const spyFilters = jest.spyOn(component.filters$, 'next');
-      component.onFiltersChange(newFilters);
-      expect(spyFilters).toHaveBeenCalled();
+      expect(mockResultsDataService.refresh$.next).toHaveBeenCalled();
     });
   });
 
   describe('OnColumnsChange', () => {
-    const newColumns: ResultRawColumnKey[] = ['resultId', 'name', 'sessionId'];
+    const newColumns: ResultRawColumnKey[] = ['resultId', 'name', 'sessionId', 'select'];
 
     beforeEach(() => {
       component.displayedColumnsKeys = ['actions', 'resultId'] as ResultRawColumnKey[];
@@ -241,7 +291,7 @@ describe('ResultsLineComponent', () => {
     it('should emit', () => {
       const spy = jest.spyOn(component.lineChange, 'emit');
       component.onColumnsChange(newColumns);
-      expect(spy).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledWith();
     });
   });
 
@@ -271,7 +321,7 @@ describe('ResultsLineComponent', () => {
   describe('onFiltersReset', () => {
 
     beforeEach(() => {
-      component.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
+      mockResultsDataService.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
       component.line.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
     });
 
@@ -292,9 +342,8 @@ describe('ResultsLineComponent', () => {
     });
 
     it('should refresh', () => {
-      const spyFilters = jest.spyOn(component.filters$, 'next');
       component.onFiltersReset();
-      expect(spyFilters).toHaveBeenCalled();
+      expect(mockResultsDataService.refresh$.next).toHaveBeenCalled();
     });
   });
 

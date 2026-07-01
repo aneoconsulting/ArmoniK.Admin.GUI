@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { SessionRaw } from '@app/sessions/types';
 import { TaskOptions } from '@app/tasks/types';
-import { ColumnKey } from '@app/types/data';
+import { TableColumn } from '@app/types/column.type';
+import { ColumnKey, CustomColumn } from '@app/types/data';
 import { IconsService } from '@services/icons.service';
 import { TableIndexActionsToolbarComponent } from './table-index-actions-toolbar.component';
 
@@ -17,7 +18,26 @@ describe('TableDashboardActionsToolbarComponent', () => {
     'status': 'Status',
   } as Record<ColumnKey<SessionRaw, TaskOptions>, string>;
   const displayedColumns: ColumnKey<SessionRaw, TaskOptions>[] = ['sessionId', 'actions'];
-  const availableColumns: ColumnKey<SessionRaw, TaskOptions>[] = ['sessionId', 'actions', 'status'];
+  const availableColumns: TableColumn<SessionRaw, TaskOptions>[] = [
+    {
+      key: 'sessionId',
+      name: 'Session ID',
+      sortable: true
+    },
+    {
+      key: 'actions',
+      name: 'Actions',
+      sortable: false,
+      type: 'actions',
+    },
+    {
+      key: 'status',
+      name: 'Status',
+      sortable: true,
+      type: 'status',
+    }
+  ];
+  const customColumns: CustomColumn[] = ['options.options.FastCompute'];
   const lockColumns = false;
 
   beforeEach(() => {
@@ -33,6 +53,7 @@ describe('TableDashboardActionsToolbarComponent', () => {
     component.columnsLabels = columnsLabels;
     component.displayedColumns = displayedColumns;
     component.availableColumns = availableColumns;
+    component.customColumns = customColumns;
     component.lockColumns = lockColumns;
   });
 

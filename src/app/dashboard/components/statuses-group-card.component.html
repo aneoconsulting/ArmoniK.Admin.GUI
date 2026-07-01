@@ -17,7 +17,7 @@
         <li>
           <a routerLink="/tasks" [queryParams]="createQueryParam(status)">
             <span>
-              {{ statusToLabel(status) }}
+              {{ statusToLabel(status).label }}
             </span>
             <span>
               {{ updateCounter(status) }}

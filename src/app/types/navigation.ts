@@ -3,7 +3,7 @@
  *
  * A sidebar is build using a list of SidebarItems.
  */
-const ALL_SIDEBAR_LINKS = ['profile', 'dashboard', 'applications', 'sessions', 'partitions', 'results', 'tasks', 'healthcheck', 'divider'] as const;
+const ALL_SIDEBAR_LINKS = ['dashboard', 'applications', 'sessions', 'partitions', 'results', 'tasks', 'divider'] as const;
 
 export type Sidebar = typeof ALL_SIDEBAR_LINKS[number];
 
@@ -13,7 +13,7 @@ export function isSideBar(value: string): value is Sidebar {
 
 export type SidebarLinkItem = {
   type: 'link';
-  id: string;
+  id: Sidebar;
   display: string;
   route: string;
 };
@@ -26,4 +26,3 @@ export type SidebarDividerItem = {
 };
 
 export type SidebarItem = SidebarLinkItem | SidebarDividerItem;
-export type SidebarItems = SidebarItem[];

@@ -2,28 +2,9 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-table-container',
-  template: `
-<div class="container">
-  <ng-content select="app-table-loading"></ng-content>
-  <div class="table-container">
-    <ng-content select="table"></ng-content>
-  </div>
-  <ng-content select="mat-paginator"></ng-content>
-</div>
-  `,
-  styles: [`
-.container {
-  position: relative;
-}
-.table-container {
-  position: relative;
-  overflow: auto;
-}
-  `],
-  standalone: true,
-  providers: [
-  ],
-  imports: [
-  ]
+  templateUrl: 'table-container.component.html',
+  styleUrl: 'table-container.component.scss',
+  providers: [],
+  imports: []
 })
 export class TableContainerComponent {}

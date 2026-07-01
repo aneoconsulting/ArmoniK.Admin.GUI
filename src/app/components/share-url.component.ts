@@ -7,18 +7,7 @@ import { IconsService } from '@services/icons.service';
 
 @Component({
   selector: 'app-share-url',
-  template: `
-<button mat-icon-button i18n-aria-label aria-label="Share" [cdkCopyToClipboard]="sharableURL" (cdkCopyToClipboardCopied)="onCopied()" [disabled]="copied" matTooltip="Copy Page URL" i18n-matTooltip>
-  @if (copied) {
-    <mat-icon aria-hidden="true" [fontIcon]="getIcon('done')"/>
-  } @else {
-    <mat-icon aria-hidden="true" [fontIcon]="getIcon('share')"/>
-  }
-</button>
-  `,
-  styles: [`
-  `],
-  standalone: true,
+  templateUrl: 'share-url.component.html',
   imports: [
     ClipboardModule,
     MatIconModule,
@@ -27,14 +16,14 @@ import { IconsService } from '@services/icons.service';
   ]
 })
 export class ShareUrlComponent {
-  #iconsService = inject(IconsService);
+  private readonly iconsService = inject(IconsService);
 
   @Input({required: true}) sharableURL: string;
 
   public copied = false;
 
   getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   onCopied() {

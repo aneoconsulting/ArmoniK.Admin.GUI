@@ -1,0 +1,25 @@
+<form [formGroup]="externalServiceForm" (ngSubmit)="onSubmit()">
+  <mat-form-field id="field-name" appearance="outline" subscriptSizing="dynamic">
+    <mat-label for="name" i18n="Name of the external service">Name</mat-label>
+    <input matInput id="name" type="text" formControlName="name">
+  </mat-form-field>
+  <mat-form-field id="field-url" class="grid-span-2" appearance="outline" subscriptSizing="dynamic">
+    <mat-label for="url" i18n="URL of the external service"> URL </mat-label>
+    <input matInput id="url" type="url" formControlName="url">
+  </mat-form-field>
+  <div>
+    <app-icon-picker
+    [icon]="externalServiceForm.value.icon"
+    (iconChange)="onIconChange($event)"
+    />
+    @if (externalService) {
+    <button mat-icon-button color="accent" type="submit" i18n-matTooltip matTooltip="Edit the service">
+      <mat-icon [fontIcon]="getIcon('edit')" />
+    </button>
+    } @else {
+    <button mat-icon-button color="accent" type="submit" i18n-matTooltip matTooltip="Add the service">
+      <mat-icon [fontIcon]="getIcon('add')" />
+    </button>
+    }
+  </div>
+</form>

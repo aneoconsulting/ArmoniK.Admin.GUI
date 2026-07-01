@@ -1,6 +1,7 @@
 /// <reference types="@angular/localize" />
 
 import { bootstrapApplication } from '@angular/platform-browser';
+import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { Subscription, fromEvent } from 'rxjs';
 import { AppComponent } from './app/app.component';
 import { appConfig } from './app/app.config';
@@ -11,7 +12,7 @@ const loadingApp = document.getElementById('loading-app');
 const subscriptions = new Subscription();
 let hasError = false;
 
-const theme = window.localStorage.getItem('navigation-theme');
+const theme = globalThis.localStorage.getItem('navigation-theme');
 
 function setDarkBackGroundColor() {
   if (loadingApp) {
@@ -43,9 +44,9 @@ if (mouse) {
     mouse.style.left = `${x}px`;
     mouse.style.top = `${y}px`;
 
-    const dx = Math.abs(x - window.innerWidth / 2);
-    const dy = Math.abs(y - window.innerHeight / 2);
-    const distance = Math.sqrt(dx * dx + dy * dy);
+    const dx = Math.abs(x - globalThis.innerWidth / 2);
+    const dy = Math.abs(y - globalThis.innerHeight / 2);
+    const distance = Math.hypot(dx, dy);
     const size = Math.max(300 - distance, 125);
 
     mouse.style.width = `${size}px`;
@@ -53,25 +54,20 @@ if (mouse) {
   }));
 }
 
-bootstrapApplication(AppComponent, appConfig)
-  .catch((err) => {
-    hasError = true;
-    const loading = document.getElementById('loading') as HTMLDivElement;
-    const error = document.getElementById('error') as HTMLDivElement;
-    const errorMessage = document.getElementById('error-message') as HTMLDivElement;
+try {
+  await bootstrapApplication(AppComponent, appConfig);
+} catch (err) {
+  hasError = true;
+  const loading = document.getElementById('loading') as HTMLDivElement;
+  const error = document.getElementById('error') as HTMLDivElement;
+  const errorMessage = document.getElementById('error-message') as HTMLDivElement;
 
-    loading.style.display = 'none';
-    error.style.display = 'block';
+  loading.style.display = 'none';
+  error.style.display = 'block';
 
-    if (err?.statusMessage) {
-      errorMessage.textContent = err.statusMessage;
-      return;
-    }
-
-    errorMessage.textContent = err.message || err;
-  })
-  .finally(() => {
-    if (!hasError) {
-      subscriptions.unsubscribe();
-    }
-  });
+  errorMessage.textContent = (err as GrpcStatusEvent).statusMessage ?? (err as Error).message ?? err;
+} finally {
+  if (!hasError) {
+    subscriptions.unsubscribe();
+  }
+}

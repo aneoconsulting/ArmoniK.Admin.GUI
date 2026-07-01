@@ -1,0 +1,9 @@
+@use 'styles' as *;
+
+:host {
+  @include flex-row();
+}
+
+section {
+  @include flex-row(1rem);
+}

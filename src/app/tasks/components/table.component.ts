@@ -1,39 +1,30 @@
-import { FilterStringOperator, ListTasksResponse, ResultRawEnumField, TaskOptionEnumField, TaskSummaryEnumField} from '@aneoconsultingfr/armonik.api.angular';
+import { TaskOptionEnumField, TaskSummaryEnumField} from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard, } from '@angular/cdk/clipboard';
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { Router} from '@angular/router';
-import { Subject } from 'rxjs';
-import { AbstractTableComponent } from '@app/types/components/table';
+import { GrpcAction } from '@app/types/actions.type';
+import { AbstractTableComponent, SelectionTable } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
 import { ArmonikData, TaskData } from '@app/types/data';
-import { Filter } from '@app/types/filters';
-import { ActionTable } from '@app/types/table';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
+import { StatusService } from '@app/types/status';
 import { TableComponent } from '@components/table/table.component';
-import { FiltersService } from '@services/filters.service';
-import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
-import { TasksGrpcService } from '../services/tasks-grpc.service';
-import { TasksIndexService } from '../services/tasks-index.service';
+import { Subject } from 'rxjs';
+import TasksDataService from '../services/tasks-data.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
 import { TaskOptions, TaskSummary } from '../types';
 
 @Component({
   selector: 'app-tasks-table',
-  standalone: true,
   templateUrl: './table.component.html',
   providers: [
-    MatDialog,
-    FiltersService,
     Clipboard,
-    TasksGrpcService,
-    GrpcSortFieldService,
   ],
   imports: [
     TableComponent
   ]
 })
-export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField>
-  implements OnInit, AfterViewInit {
+export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, SelectionTable<TaskSummary> {
   scope: Scope = 'tasks';
 
   @Input({ required: false }) set serviceIcon(entry: string | null) {
@@ -57,13 +48,13 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
 
   @Output() retries = new EventEmitter<TaskSummary>();
   @Output() cancelTask = new EventEmitter<string>();
-  @Output() selectionChange = new EventEmitter<string[]>();
+  @Output() selectionChange = new EventEmitter<TaskSummary[]>();
 
-  readonly indexService = inject(TasksIndexService);
-  readonly grpcService = inject(TasksGrpcService);
+  readonly tableDataService = inject(TasksDataService);
   readonly router = inject(Router);
   readonly clipboard = inject(Clipboard);
-  readonly tasksStatusesService = inject(TasksStatusesService);
+  readonly tasksStatusesService = inject(StatusService) as TasksStatusesService;
+  private readonly grpcActionsService = inject(GrpcActionsService);
 
   private _serviceIcon: string = '';
   private _serviceName: string = '';
@@ -81,106 +72,51 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
     return this._urlTemplate;
   }
 
-  selection: string[];
+  copy$ = new Subject<TaskSummary>();
+  copyS = this.copy$.subscribe((task) => this.onCopiedTaskId(task));
 
-  copy$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
-  copyS = this.copy$.subscribe((data) => this.onCopiedTaskId(data));
+  seeResult$ = new Subject<TaskSummary>();
+  resultSubscription = this.seeResult$.subscribe((task) => {
+    const taskData = this.data().find(taskData => taskData.raw.id === task.id) as TaskData;
+    this.router.navigate(['/results'], { queryParams: taskData.resultsQueryParams });
+  });
 
-  seeResult$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
-  resultSubscription = this.seeResult$.subscribe((data) => this.router.navigate(['/results'], { queryParams: (data as TaskData).resultsQueryParams }));
+  retries$ = new Subject<TaskSummary>();
+  retriesSubscription = this.retries$.subscribe((task) => this.onRetries(task));
 
-  retries$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
-  retriesSubscription = this.retries$.subscribe((data) => this.onRetries(data.raw));
-
-  cancelTask$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
-  cancelTaskSubscription = this.cancelTask$.subscribe((data) => this.onCancelTask(data.raw.id));
-
-  openViewInLogs$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
-  openViewInLogsSubscription = this.openViewInLogs$.subscribe((data) => window.open(this.generateViewInLogsUrl(data.raw.id), '_blank'));
+  openViewInLogs$ = new Subject<TaskSummary>();
+  openViewInLogsSubscription = this.openViewInLogs$.subscribe((task) => window.open(this.generateViewInLogsUrl(task.id), '_blank'));
   
-  actions: ActionTable<TaskSummary, TaskOptions>[] = [
+  actions: GrpcAction<TaskSummary>[] = [
     {
       label: $localize`Copy Task ID`,
       icon: 'copy',
-      action$: this.copy$,
+      click: (tasks: TaskSummary[]) => this.copy$.next(tasks[0]),
     },
     {
       label: $localize`See related result`,
       icon: 'view',
-      action$: this.seeResult$,
+      click: (tasks: TaskSummary[]) => this.seeResult$.next(tasks[0]),
     },
     {
       label: $localize`Retries`,
       icon: 'published_with_changes',
-      action$: this.retries$,
-      condition: (element: ArmonikData<TaskSummary, TaskOptions>) => this.isRetried(element.raw),
-    },
-    {
-      label: $localize`Cancel task`,
-      icon: 'cancel',
-      action$: this.cancelTask$,
-      condition: (element: ArmonikData<TaskSummary, TaskOptions>) => this.canCancelTask(element.raw),
+      click: (tasks: TaskSummary[]) => this.retries$.next(tasks[0]),
+      condition: (tasks: TaskSummary[]) => this.isRetried(tasks[0]),
     },
   ];
 
   ngOnInit(): void {
-    this.initTable();
-  }
-
-  ngAfterViewInit(): void {
-    this.subscribeToData();
-  }
-
-  computeGrpcData(entries: ListTasksResponse): TaskSummary[] | undefined {
-    return entries.tasks;
+    this.initTableDataService();
+    this.actions.push(...this.grpcActionsService.actions);
   }
 
   isDataRawEqual(value: TaskSummary, entry: TaskSummary): boolean {
     return value.id === entry.id;
   }
 
-  createNewLine(entry: TaskSummary): TaskData {
-    return {
-      raw: entry,
-      resultsQueryParams: this.createResultsQueryParams(entry.id),
-    };
-  }
-
-  createResultsQueryParams(taskId: string) {
-    if (this.filters.length === 0) {
-      const keyTask = this.filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
-
-      return {
-        [keyTask]: taskId
-      };
-    } else {
-      const params: Record<string, string> = {};
-      this.filters.forEach((filterAnd, index) => {
-        filterAnd.forEach(filter => {
-          if (!(filter.field === TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
-            const filterLabel = this.#createResultFilterLabel(filter, index);
-            if (filterLabel && filter.value) params[filterLabel] = filter.value.toString();
-          }
-        });
-        params[`${index}-root-${ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = taskId;
-      });
-      return params;
-    }
-  }
-
-  #createResultFilterLabel(filter: Filter<TaskSummaryEnumField, TaskOptionEnumField>, orGroup: number) {
-    if (filter.field !== null && filter.operator !== null) {
-      if (filter.field === TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID) {
-        return this.filtersService.createQueryParamsKey<ResultRawEnumField>(orGroup, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
-      } else if (filter.field === TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID) {
-        return this.filtersService.createQueryParamsKey<ResultRawEnumField>(orGroup, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
-      }
-    }
-    return null;
-  }
-
-  onCopiedTaskId(element: ArmonikData<TaskSummary, TaskOptions>) {
-    this.clipboard.copy(element.raw.id);
+  onCopiedTaskId(task: TaskSummary) {
+    this.clipboard.copy(task.id);
     this.notificationService.success('Task ID copied to clipboard');
   }
 
@@ -188,20 +124,12 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
     return this.tasksStatusesService.isRetried(task.status);
   }
 
-  canCancelTask(task: TaskSummary): boolean {
-    return this.tasksStatusesService.taskNotEnded(task.status);
-  }
-
   onRetries(task: TaskSummary) {
     this.retries.emit(task);
   }
 
-  onCancelTask(id: string) {
-    this.grpcService.cancel$([id]).subscribe(() => this.notificationService.success('Task canceled'));
-  }
-
   onSelectionChange($event: TaskSummary[]): void {
-    this.selectionChange.emit($event.map(task => task.id));
+    this.selectionChange.emit($event);
   }
 
   generateViewInLogsUrl(taskId: string): string {
@@ -216,15 +144,15 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
     if (this._serviceIcon !== '' && this._serviceName !== '' && this._urlTemplate !== '') {
       if (this.actions[4]) {
         this.actions[4] = {
+          ...this.actions[4],
           label: this._serviceName,
           icon: this._serviceIcon,
-          action$: this.openViewInLogs$,
         };
       } else {
         this.actions.push({
           label: this._serviceName,
           icon: this._serviceIcon,
-          action$: this.openViewInLogs$,
+          click: (tasks: TaskSummary[]) => this.openViewInLogs$.next(tasks[0]),
         });
       }
     }

@@ -1,18 +1,18 @@
 import { SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
-import { DefaultConfigService } from '@services/default-config.service';
-import { TableService } from '@services/table.service';
+import { Scope } from '@app/types/config';
+import { DataFilterService, FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/data-filter.service';
+import { StatusService } from '@app/types/status';
 import { SessionsStatusesService } from './sessions-statuses.service';
 import { SessionFilterDefinition, SessionFilterField, SessionFilterFor, SessionRawFilters } from '../types';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SessionsFiltersService implements FiltersServiceOptionsInterface<SessionRawEnumField, TaskOptionEnumField>, FiltersServiceStatusesInterface {
-  readonly statusService = inject(SessionsStatusesService);
-  readonly defaultConfigService = inject(DefaultConfigService);
-  readonly tableService = inject(TableService);
+export class SessionsFiltersService extends DataFilterService<SessionRawEnumField, TaskOptionEnumField>
+  implements FiltersServiceOptionsInterface<TaskOptionEnumField>, FiltersServiceStatusesInterface<SessionStatus> {
+  protected readonly scope: Scope = 'sessions';
+  readonly statusService = inject(StatusService) as SessionsStatusesService;
 
   readonly rootField: Record<SessionRawEnumField, string> = {
     [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID]: $localize`Session ID`,
@@ -61,7 +61,7 @@ export class SessionsFiltersService implements FiltersServiceOptionsInterface<Se
       statuses: Object.keys(this.statusService.statuses).map(status => {
         return {
           key: status,
-          value: this.statusService.statuses[Number(status) as SessionStatus],
+          value: this.statusService.statuses[Number(status) as SessionStatus].label,
         };
       }),
     },
@@ -90,16 +90,16 @@ export class SessionsFiltersService implements FiltersServiceOptionsInterface<Se
       field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PURGED_AT,
       type: 'date'
     },
-    {
-      for: 'root',
-      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLIENT_SUBMISSION,
-      type: 'boolean'
-    },
-    {
-      for: 'root',
-      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_WORKER_SUBMISSION,
-      type: 'boolean'
-    },
+    // {
+    //   for: 'root',
+    //   field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLIENT_SUBMISSION,
+    //   type: 'boolean'
+    // },
+    // {
+    //   for: 'root',
+    //   field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_WORKER_SUBMISSION,
+    //   type: 'boolean'
+    // },
     {
       for: 'options',
       field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
@@ -144,26 +144,9 @@ export class SessionsFiltersService implements FiltersServiceOptionsInterface<Se
 
   readonly defaultFilters: SessionRawFilters = this.defaultConfigService.defaultSessions.filters;
 
-  saveFilters(filters: SessionRawFilters): void {
-    this.tableService.saveFilters('sessions-filters', filters);
-  }
-
-  restoreFilters(): SessionRawFilters {
-    return this.tableService.restoreFilters<SessionRawEnumField, SessionTaskOptionEnumField>('sessions-filters', this.filtersDefinitions) ?? this.defaultFilters;
-  }
-
-  resetFilters(): SessionRawFilters {
-    this.tableService.resetFilters('sessions-filters');
-
-    return this.defaultFilters;
-  }
-
-  saveShowFilters(showFilters: boolean): void {
-    this.tableService.saveShowFilters('sessions-show-filters', showFilters);
-  }
-
-  restoreShowFilters(): boolean {
-    return this.tableService.restoreShowFilters('sessions-show-filters') ?? true;
+  constructor() {
+    super();
+    this.getFromCache();
   }
 
   retrieveLabel(filterFor: SessionFilterFor, filterField: SessionFilterField): string {
@@ -173,7 +156,8 @@ export class SessionsFiltersService implements FiltersServiceOptionsInterface<Se
     case 'options':
       return this.optionsFields[filterField as SessionTaskOptionEnumField];
     default:
-      throw new Error(`Unknown filter type: ${filterFor} ${filterField}`);
+      console.error(`Unknown filter type: ${filterFor} ${filterField}`);
+      return '';
     }
   }
 
@@ -181,16 +165,7 @@ export class SessionsFiltersService implements FiltersServiceOptionsInterface<Se
     return this.filtersDefinitions;
   }
 
-  retrieveField(filterField: string): SessionFilterField {
-    const rootValues = Object.values(this.rootField);
-    let index = rootValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
-
-    if (index >= 0) {
-      return { for: 'root', index: index };
-    }
-
-    const optionsValues = Object.values(this.optionsFields);
-    index = optionsValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
-    return { for: 'options', index: index };
+  retrieveField(filterField: string): SessionFilterField | undefined {
+    return this.findKeyFromLabel(this.rootField, filterField, 'root') ?? this.findKeyFromLabel(this.optionsFields as Record<SessionRawEnumField, string>, filterField, 'options');
   }
 }

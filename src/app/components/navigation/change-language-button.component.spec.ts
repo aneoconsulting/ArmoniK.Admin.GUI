@@ -5,22 +5,6 @@ import { IconsService } from '@services/icons.service';
 import { StorageService } from '@services/storage.service';
 import { ChangeLanguageButtonComponent } from './change-language-button.component';
 
-const jestReplace = jest.fn();
-
-const url = 'localhost:4200';
-
-function overrideLocation(newLocation: string) {
-  Object.defineProperty(window, 'location', {
-    value: {
-      pathname: newLocation,
-      replace: jestReplace,
-      href: url
-    },
-    writable: true,
-    configurable: true
-  });
-}
-
 describe('ChangeLanguageButtonComponent', () => {
   let component: ChangeLanguageButtonComponent;
 
@@ -33,6 +17,12 @@ describe('ChangeLanguageButtonComponent', () => {
     getItem: jest.fn(),
   };
 
+  const mockWindow = {
+    location: {
+      pathname: 'admin',
+    }
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -40,10 +30,12 @@ describe('ChangeLanguageButtonComponent', () => {
         {provide: Router, useValue: mockRouter},
         DefaultConfigService,
         IconsService,
-        {provide: StorageService, useValue: mockStorageService}
+        {provide: StorageService, useValue: mockStorageService},
+        { provide: Window, useValue: mockWindow },
       ]
     }).inject(ChangeLanguageButtonComponent);
     component.ngOnInit();
+    mockWindow.location.pathname = 'admin';
   });
 
   it('should run', () => {
@@ -53,7 +45,7 @@ describe('ChangeLanguageButtonComponent', () => {
   describe('on init', () => {
     it('should get Language from default config', () => {
       mockStorageService.getItem.mockImplementationOnce(() => null);
-      overrideLocation('admin/undefined');
+      mockWindow.location.pathname = 'admin/undefined';
       component.ngOnInit();
       expect(component.selectedLanguage).toEqual('en');
     });
@@ -80,17 +72,17 @@ describe('ChangeLanguageButtonComponent', () => {
 
   describe('getLanguageFromUrl', () => {
     it('should not get language from url if it is not found', () => {
-      overrideLocation('admin');
+      mockWindow.location.pathname = 'admin';
       expect(component.getLanguageFromUrl()).toBeUndefined();
     });
 
     it('should get language from url', () => {
-      overrideLocation('en/admin');
+      mockWindow.location.pathname = 'en/admin';
       expect(component.getLanguageFromUrl()).toEqual('en');
     });
 
     it('should not get a language from url that is not saved', () => {
-      overrideLocation('fr/admin');
+      mockWindow.location.pathname = 'fr/admin';
       expect(component.getLanguageFromUrl()).toBeUndefined();
     });
   });

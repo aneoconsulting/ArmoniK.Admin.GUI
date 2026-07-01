@@ -7,12 +7,7 @@ import { ShowActionButton } from '@app/types/components/show';
 @Component({
   selector: 'app-show-action-area',
   templateUrl: './show-action-area.component.html',
-  styles: [`
-  button {
-    margin-right: 3px;
-  }
-  `],
-  standalone: true,
+  styleUrl: 'show-action-area.component.scss',
   imports: [
     RouterModule,
     MatButtonModule,
@@ -30,12 +25,13 @@ export class ShowActionAreaComponent {
   }
   
   @Input({required: true}) set actions(entries : ShowActionButton[]) {
-    entries.filter(entry => entry.disabled !== undefined).forEach(entry => {
+    const filteredEntries = entries.filter(entry => entry.disabled !== undefined);
+    for (const entry of filteredEntries) {
       if (entry.disabled) {
         this.isDisabled[entry.id] = false;
         entry.disabled.subscribe(value => this.isDisabled[entry.id] = value);
       }
-    });
+    }
     this._actions = entries;
   }
 }

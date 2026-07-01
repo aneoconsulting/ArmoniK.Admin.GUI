@@ -2,14 +2,14 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { TaskOptions } from '@app/tasks/types';
-import { ColumnKey, DataRaw } from '@app/types/data';
+import { TableColumn } from '@app/types/column.type';
+import { ColumnKey, CustomColumn, DataRaw } from '@app/types/data';
 import { IconsService } from '@services/icons.service';
 import { TableActionsToolbarComponent } from './table-actions-toolbar.component';
 
 @Component({
   selector: 'app-table-index-actions-toolbar',
   templateUrl: './table-index-actions-toolbar.component.html',
-  standalone: true,
   imports: [
     TableActionsToolbarComponent,
     MatMenuModule,
@@ -25,7 +25,8 @@ export class TableIndexActionsToolbarComponent<T extends DataRaw, O extends Task
   @Input({ required: true }) intervalValue: number;
   @Input({ required: true }) columnsLabels: Record<ColumnKey<T, O>, string>;
   @Input({ required: true }) displayedColumns: ColumnKey<T, O>[];
-  @Input({ required: true }) availableColumns: ColumnKey<T, O>[];
+  @Input({ required: true }) availableColumns: TableColumn<T, O>[];
+  @Input({ required: false }) customColumns: CustomColumn[];
   @Input({ required: true }) lockColumns = false;
 
   @Output() refresh: EventEmitter<void> = new EventEmitter<void>();

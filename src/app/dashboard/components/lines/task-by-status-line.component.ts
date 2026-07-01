@@ -1,34 +1,32 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, inject, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, Output, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {  MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Observable, Subject, Subscription, merge, startWith, switchMap, tap } from 'rxjs';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { EditNameLineData } from '@app/types/dialog';
-import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
-import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
+import { DataFilterService } from '@app/types/services/data-filter.service';
+import { StatusService } from '@app/types/status';
 import { AutoRefreshButtonComponent } from '@components/auto-refresh-button.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { PageSectionHeaderComponent } from '@components/page-section-header.component';
-import { PageSectionComponent } from '@components/page-section.component';
 import { RefreshButtonComponent } from '@components/refresh-button.component';
 import { SpinnerComponent } from '@components/spinner.component';
 import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-dialog.component';
-import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
+import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { UtilsService } from '@services/utils.service';
+import { Observable, Subject, Subscription, catchError, merge, of, startWith, switchMap, tap } from 'rxjs';
 import { CountLine, ManageGroupsDialogData, ManageGroupsDialogResult } from '../../types';
 import { EditNameLineDialogComponent } from '../edit-name-line-dialog.component';
 import { StatusesGroupCardComponent } from '../statuses-group-card.component';
@@ -36,22 +34,8 @@ import { StatusesGroupCardComponent } from '../statuses-group-card.component';
 @Component({
   selector: 'app-dashboard-task-status-line',
   templateUrl: './task-by-status-line.component.html',
-  styles: [`
-app-actions-toolbar {
-  flex-grow: 1;
-}
-
-.groups {
-  margin-top: 1rem;
-
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 1rem;
-}
-    `],
-  standalone: true,
+  styleUrl: 'task-by-status-line.component.scss',
   providers: [
-    TasksStatusesService,
     ShareUrlService,
     QueryParamsService,
     TasksGrpcService,
@@ -62,18 +46,19 @@ app-actions-toolbar {
     TasksGrpcService,
     TasksFiltersService,
     {
-      provide: DATA_FILTERS_SERVICE,
+      provide: DataFilterService,
       useClass: TasksFiltersService
     },
     GrpcSortFieldService,
+    NotificationService,
+    {
+      provide: StatusService,
+      useClass: TasksStatusesService,
+    }
   ],
   imports: [
-    PageSectionComponent,
-    PageSectionHeaderComponent,
-    ActionsToolbarComponent,
     RefreshButtonComponent,
     SpinnerComponent,
-    ActionsToolbarGroupComponent,
     AutoRefreshButtonComponent,
     FiltersToolbarComponent,
     MatToolbarModule,
@@ -81,21 +66,22 @@ app-actions-toolbar {
     MatMenuModule,
     MatButtonModule,
     StatusesGroupCardComponent,
-    TableDashboardActionsToolbarComponent,
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TaskByStatusLineComponent implements AfterViewInit,OnDestroy {
   readonly dialog = inject(MatDialog);
   readonly autoRefreshService = inject(AutoRefreshService);
   readonly iconsService = inject(IconsService);
   readonly taskGrpcService = inject(TasksGrpcService);
+  private readonly notificationService = inject(NotificationService);
 
   @Input({ required: true }) line: CountLine;
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
   @Output() lineDelete: EventEmitter<CountLine> = new EventEmitter<CountLine>();
 
   total: number;
-  loading = false;
+  loading = signal<boolean>(false);
   data = signal<StatusCount[]>([]);
 
   refresh: Subject<void> = new Subject<void>();
@@ -107,14 +93,18 @@ export class TaskByStatusLineComponent implements AfterViewInit,OnDestroy {
   ngAfterViewInit() {
     const mergeSubscription = merge(this.refresh, this.interval$).pipe(
       startWith(0),
-      tap(() => (this.loading = true)),
-      switchMap(() => this.taskGrpcService.countByStatus$(this.line.filters as TaskSummaryFilters)),
+      tap(() => (this.loading.set(true))),
+      switchMap(() => this.taskGrpcService.countByStatus$(this.line.filters as TaskSummaryFilters).pipe(
+        catchError((err: GrpcStatusEvent) => {
+          console.error(err);
+          this.notificationService.error('Could not load tasks by statuses');
+          return of({status: undefined});
+        })
+      )),
     ).subscribe((data) => {
-      if (data.status) {
-        this.data.set(data.status);
-        this.total = data.status.reduce((acc, curr) => acc + curr.count, 0);
-        this.loading = false;
-      }
+      this.data.set(data.status ?? []);
+      this.total = this.data().reduce((acc, curr) => acc + curr.count, 0);
+      this.loading.set(false);
     });
     this.subscriptions.add(mergeSubscription);
   }

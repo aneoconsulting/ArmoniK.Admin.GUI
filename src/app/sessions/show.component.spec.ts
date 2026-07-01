@@ -1,17 +1,18 @@
 import { GetSessionResponse, SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GrpcStatusEvent } from '@ngx-grpc/common';
-import { Timestamp } from '@ngx-grpc/well-known-types';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { TasksInspectionService } from '@app/tasks/services/tasks-inspection.service';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
+import { StatusService } from '@app/types/status';
+import { GrpcStatusEvent } from '@ngx-grpc/common';
+import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsInspectionService } from './services/sessions-inspection.service';
-import { SessionsStatusesService } from './services/sessions-statuses.service';
 import { ShowComponent } from './show.component';
 import { SessionRaw } from './types';
 
@@ -59,16 +60,24 @@ describe('AppShowComponent', () => {
 
   const mockSessionsGrpcService = {
     get$: jest.fn((): Observable<unknown> => of({session: returnedSession} as GetSessionResponse)),
-    cancel$: jest.fn(() => of({})),
-    pause$: jest.fn(() => of({})),
-    resume$: jest.fn(() => of({})),
-    close$: jest.fn(() => of({})),
-    delete$: jest.fn(() => of({})),
     getTaskData$: jest.fn(() => of({})),
   };
 
   const mockRouter = {
     navigate: jest.fn(),
+  };
+
+  const mockStatusService = {
+    statuses: {
+      [SessionStatus.SESSION_STATUS_RUNNING]: {
+        label: 'Running',
+        color: 'green'
+      },
+    },
+  };
+
+  const mockGrpcActionsService = {
+    actions: [],
   };
 
   beforeEach(() => {
@@ -77,7 +86,7 @@ describe('AppShowComponent', () => {
         ShowComponent,
         IconsService,
         FiltersService,
-        SessionsStatusesService,
+        { provide: StatusService, useValue: mockStatusService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
@@ -85,6 +94,7 @@ describe('AppShowComponent', () => {
         { provide: Router, useValue: mockRouter },
         SessionsInspectionService,
         TasksInspectionService,
+        { provide: GrpcActionsService, useValue: mockGrpcActionsService },
       ]
     }).inject(ShowComponent);
     component.ngOnInit();
@@ -189,10 +199,10 @@ describe('AppShowComponent', () => {
       component.lowerDate = taskCreatedAt.date;
       component.upperDate = taskEndedAt.date;
       component.computeDuration$.next();
-      expect(component.data()?.duration).toEqual({
+      expect(component.data()?.duration).toEqual(new Duration({
         seconds: '1000',
         nanos: 0
-      });
+      }));
     });
   });
 
@@ -228,7 +238,7 @@ describe('AppShowComponent', () => {
   describe('get status', () => {
     it('should return the status label if there is data', () => {
       component.refresh.next();
-      expect(component.status).toEqual('Running');
+      expect(component.status).toEqual(mockStatusService.statuses[SessionStatus.SESSION_STATUS_RUNNING]);
     });
 
     it('should return undefined if there is no data', () => {
@@ -240,149 +250,6 @@ describe('AppShowComponent', () => {
 
   it('should get resultKeys', () => {
     expect(component.resultsKey).toEqual('0-root-1-0');
-  });
-
-  describe('Cancelling', () => {
-    beforeAll(() => {
-      component.refresh.next(); // setting up the RUNNING status
-    });
-
-    it('should permit to cancel a session', () => {
-      expect(component.disableCancel).toBeFalsy();
-    });
-
-    it('should call grpc service "cancel$" method', () => {
-      component.cancel();
-      expect(mockSessionsGrpcService.cancel$).toHaveBeenCalled();
-    });
-
-    it('should notify on success when cancelling a session', () => {
-      component.cancel();
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Session canceled');
-    });
-
-    it('should notify on errors when cancelling a session', () => {
-      jest.spyOn(console, 'error').mockImplementation(() => {});
-      mockSessionsGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error()));
-      component.cancel();
-      expect(mockNotificationService.error).toHaveBeenCalled();
-    });
-  });
-
-  describe('Pausing', () => {
-    beforeAll(() => {
-      component.refresh.next(); // setting up the RUNNING status
-    });
-
-    it('should permit to pause a session', () => {
-      expect(component.disablePause).toBeFalsy();
-    });
-
-    it('should call the grpc service "pause$" method', () => {
-      component.pause();
-      expect(mockSessionsGrpcService.pause$).toHaveBeenCalled();
-    });
-
-    it('should notify on success when pausing a session', () => {
-      component.pause();
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Session paused');
-    });
-
-    it('should notify on errors when pausing a session', () => {
-      jest.spyOn(console, 'error').mockImplementation(() => {});
-      mockSessionsGrpcService.pause$.mockReturnValueOnce(throwError(() => new Error()));
-      component.pause();
-      expect(mockNotificationService.error).toHaveBeenCalled();
-    });
-  });
-
-  describe('Resuming', () => {
-    beforeEach(() => {
-      const pausedSession = {
-        sessionId: 'pausedSession',
-        partitionIds: ['partitionId1', 'partitionId2'],
-        status: SessionStatus.SESSION_STATUS_PAUSED
-      } as SessionRaw;
-      mockSessionsGrpcService.get$.mockReturnValueOnce(of(pausedSession));
-      component.data.set(pausedSession); // setting up the PAUSE status
-      component.afterDataFetching();
-    });
-
-    it('should permit to resume a session', () => {
-      expect(component.disableResume).toBeFalsy();
-    });
-
-    it('should call the grpc service "resume$" method', () => {
-      component.resume();
-      expect(mockSessionsGrpcService.resume$).toHaveBeenCalled();
-    });
-
-    it('should notify on success when resuming a session', () => {
-      component.resume();
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Session resumed');
-    });
-
-    it('should notify on errors when resuming a session', () => {
-      jest.spyOn(console, 'error').mockImplementation(() => {});
-      mockSessionsGrpcService.resume$.mockReturnValueOnce(throwError(() => new Error()));
-      component.resume();
-      expect(mockNotificationService.error).toHaveBeenCalled();
-    });
-  });
-
-  describe('Closing', () => {
-    beforeAll(() => {
-      component.refresh.next(); // setting up the RUNNING status
-    });
-
-    it('should permit to close a session', () => {
-      expect(component.disableClose).toBeFalsy();
-    });
-
-    it('should call the grpc service "close$" method', () => {
-      component.close();
-      expect(mockSessionsGrpcService.close$).toHaveBeenCalled();
-    });
-
-    it('should notify on success when closing a session', () => {
-      component.close();
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Session closed');
-    });
-
-    it('should notify on errors when closing a session', () => {
-      jest.spyOn(console, 'error').mockImplementation(() => {});
-      mockSessionsGrpcService.close$.mockReturnValueOnce(throwError(() => new Error()));
-      component.close();
-      expect(mockNotificationService.error).toHaveBeenCalled();
-    });
-  });
-
-  describe('Deleting', () => {
-    beforeAll(() => {
-      component.refresh.next(); // setting up the RUNNING status
-    });
-
-    it('should call the grpc service "delete$" method', () => {
-      component.deleteSession();
-      expect(mockSessionsGrpcService.delete$).toHaveBeenCalled();
-    });
-
-    it('should notify on success when deleting a session', () => {
-      component.deleteSession();
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Session deleted');
-    });
-
-    it('should navigate to sessions list page after succesfully deleting a session', () => {
-      component.deleteSession();
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/sessions']);
-    });
-
-    it('should notify on errors when deleting a session', () => {
-      jest.spyOn(console, 'error').mockImplementation(() => {});
-      mockSessionsGrpcService.delete$.mockReturnValueOnce(throwError(() => new Error()));
-      component.deleteSession();
-      expect(mockNotificationService.error).toHaveBeenCalled();
-    });
   });
 
   describe('on destroy', () => {

@@ -8,12 +8,6 @@ import { NavigationComponent } from '@components/navigation/navigation.component
     NavigationComponent,
     RouterModule,
   ],
-  template: `
-  <app-navigation>
-    <router-outlet></router-outlet>
-  </app-navigation>
-  `,
-  standalone: true
+  templateUrl: 'app.component.html',
 })
-export class AppComponent {
-}
+export class AppComponent {}

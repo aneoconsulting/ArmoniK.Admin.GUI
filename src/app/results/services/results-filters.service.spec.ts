@@ -1,9 +1,11 @@
-import { FilterStringOperator, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterDateOperator, FilterStringOperator, ResultRawEnumField, ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
+import { FiltersOr } from '@app/types/filters';
+import { StatusService } from '@app/types/status';
 import { DefaultConfigService } from '@services/default-config.service';
+import { FiltersCacheService } from '@services/filters-cache.service';
 import { TableService } from '@services/table.service';
 import { ResultsFiltersService } from './results-filters.service';
-import { ResultsStatusesService } from './results-statuses.service';
 import { ResultRawFilters } from '../types';
 
 describe('ResultsFilterService', () => {
@@ -28,19 +30,52 @@ describe('ResultsFilterService', () => {
     restoreShowFilters: jest.fn((): boolean | null => showFilters),
   };
 
+  const cachedFilters: FiltersOr<ResultRawEnumField> = [[{
+    field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_COMPLETED_AT,
+    for: 'root',
+    operator: FilterDateOperator.FILTER_DATE_OPERATOR_AFTER,
+    value: '1'
+  }]];
+
+  const mockFiltersCacheService = {
+    get: jest.fn(() => cachedFilters),
+  };
+
+  const mockStatusService = {
+    statuses: {
+      [ResultStatus.RESULT_STATUS_ABORTED]: {
+        label: 'Aborted',
+      },
+      [ResultStatus.RESULT_STATUS_COMPLETED]: {
+        label: 'Completed'
+      },
+    },
+  };
+
   beforeEach(() => {
     service = TestBed.configureTestingModule({
       providers: [
         ResultsFiltersService,
-        ResultsStatusesService,
         DefaultConfigService,
-        { provide: TableService, useValue: mockTableService }
+        { provide: StatusService, useValue: mockStatusService },
+        { provide: TableService, useValue: mockTableService },
+        { provide: FiltersCacheService, useValue: mockFiltersCacheService }
       ]
     }).inject(ResultsFiltersService);
   });
 
   it('should create', () => {
     expect(service).toBeTruthy();
+  });
+
+  describe('initialisation', () => {
+    it('should get filters from the filterCache', () => {
+      expect(mockFiltersCacheService.get).toHaveBeenCalledWith(service['scope']);
+    });
+
+    it('should save the cached filters if they exist', () => {
+      expect(mockTableService.saveFilters).toHaveBeenCalledWith(`${service['scope']}-filters`, cachedFilters);
+    });
   });
 
   it('should save filters', () => {
@@ -90,21 +125,35 @@ describe('ResultsFilterService', () => {
 
     it('should restore default showFilters if it cannot restore', () => {
       mockTableService.restoreShowFilters.mockReturnValueOnce(null);
-      expect(service.restoreShowFilters()).toBe(true);
+      expect(service.restoreShowFilters()).toBeTruthy();
     });
   });
 
   describe('retrieveLabel', () => {
+    let consoleSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      consoleSpy = jest.spyOn(console, 'error');
+      consoleSpy.mockImplementationOnce(() => {});
+    });
+
     it('should permit to retrieve label', () => {
       expect(service.retrieveLabel('root', ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID)).toEqual('Result ID');
     });
 
-    it('should throw an error for options cases', () => {
-      expect(() => service.retrieveLabel('options', ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID)).toThrow('Impossible case');
+    it('should return an empty string for options cases', () => {
+      expect(service.retrieveLabel('options', ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID)).toEqual('');
     });
 
-    it('should throw an error for unknown filter type', () => {
-      expect(() => service.retrieveLabel('custom', ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID)).toThrow(`Unknown filter type: custom ${ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID}`);
+    it('should return an empty string for unknown filter type', () => {
+      expect(service.retrieveLabel('custom', ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID)).toEqual('');
+    });
+
+    it('should log an error when filterFor is unknown', () => {
+      const field = ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID;
+      const _for = 'custom';
+      service.retrieveLabel(_for, field);
+      expect(consoleSpy).toHaveBeenCalledWith(`Unknown filter type: ${_for} ${field}`);
     });
   });
 
@@ -112,10 +161,16 @@ describe('ResultsFilterService', () => {
     expect(service.retrieveFiltersDefinitions()).toEqual(service.filtersDefinitions);
   });
 
-  it('should retrieve Field', () => {
-    expect(service.retrieveField('Created at')).toEqual({
-      for: 'root',
-      index: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_AT
+  describe('RetrieveField', () => {
+    it('should retrieve Field', () => {
+      expect(service.retrieveField('Created at')).toEqual({
+        for: 'root',
+        index: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_AT
+      });
+    });
+
+    it('should return undefined if there is no matching label', () => {
+      expect(service.retrieveField('something')).toBeUndefined();
     });
   });
 });

@@ -1,9 +1,16 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDivider } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Params, RouterModule } from '@angular/router';
+import { Params, Router, RouterModule } from '@angular/router';
+import { Scope } from '@app/types/config';
+import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '@app/types/filters';
+import { FiltersCacheService } from '@services/filters-cache.service';
+import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 
 /**
  * The inspect list component provide a way to display lists inside a Mat-Card.
@@ -13,7 +20,6 @@ import { Params, RouterModule } from '@angular/router';
 @Component({
   selector: 'app-inspect-list',
   templateUrl: 'inspect-list.component.html',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatToolbarModule,
@@ -21,41 +27,20 @@ import { Params, RouterModule } from '@angular/router';
     MatButtonModule,
     RouterModule,
     MatDivider,
+    MatIconModule,
   ],
-  styles: [`
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .no-data {
-      text-align: center;
-      margin: 1rem;
-      font-style: italic;
-    }
-
-    button {
-      width: fit-content; 
-    }
-
-    .item {
-      width: 100%;
-      margin: 0.5rem;
-    }
-
-    mat-divider {
-      margin-right: 0.5rem;
-    }
-
-    mat-toolbar {
-      padding: 1rem;
-    }
-  `]
+  styleUrl: 'inspect-list.component.scss'
 })
 export class InspectListComponent {
   private _list: string[] = [];
   private _queryParams: Params;
+  private readonly filters: FiltersOr<FiltersEnums, FiltersOptionsEnums> = [];
+
+  private readonly filtersCacheService = inject(FiltersCacheService);
+  private readonly iconsService = inject(IconsService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly router = inject(Router);
+  readonly clipboard = inject(Clipboard);
 
   @Input({ required: true }) set list(entries: string[] | undefined) {
     if (entries) {
@@ -66,21 +51,48 @@ export class InspectListComponent {
   @Input({ required: false }) set queryParams(entry: string | undefined) {
     if (entry && this.list.length !== 0) {
       this._queryParams = {};
-      const paramsKey = entry.slice(1);
-      this.list.forEach((value, index) => {
-        const key = `${index}${paramsKey}`;
-        this._queryParams[key] = value;
-      });
+      if (this.list.length > 50) {
+        const splittedKey = entry.split('-');
+        
+        for (const value of this.list) {
+          this.filters.push([{
+            for: splittedKey[1] as 'custom' | 'root' | 'options',
+            field: Number(splittedKey[2]),
+            operator: Number(splittedKey[3]),
+            value: value,
+          }]);
+        }
+      } else {
+        const paramsKey = entry.slice(1);
+        for (const [index, value] of this.list.entries()) {
+          const key = `${index}${paramsKey}`;
+          this._queryParams[key] = value;
+        }
+      }
     }
   }
 
-  @Input({ required: false }) redirectLink: string | undefined;
+  @Input({ required: false }) redirectLink: Scope | undefined;
 
   get list(): string[] {
     return this._list;
   }
 
-  get queryParams(): Params {
-    return this._queryParams;
+  getIcon(name: string) {
+    return this.iconsService.getIcon(name);
+  }
+
+  copy(value: string) {
+    this.clipboard.copy(value);
+    this.notificationService.success('Id copied');
+  }
+
+  navigate() {
+    if (this.redirectLink) {
+      if (this.filters.length !== 0) {
+        this.filtersCacheService.set(this.redirectLink, this.filters);
+      }
+      this.router.navigate([`/${this.redirectLink}`], { queryParams: this._queryParams });
+    }
   }
 }

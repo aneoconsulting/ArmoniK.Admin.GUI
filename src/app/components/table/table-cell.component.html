@@ -2,6 +2,12 @@
   @case ('object') {
     <app-table-inspect-object [object]="handleNestedKeys(element)" [label]="column.name" />
   }
+  @case ('message') {
+    <app-table-inspect-message [label]="column.name" [message]="string" />
+  }
+  @case ('output') {
+    <app-table-inspect-message [label]="column.name" [message]="string" />
+  }
   @case ('link') {
     <button mat-button (click)="navigate()">
       {{ value | emptyCell }}
@@ -14,7 +20,7 @@
     {{ dateValue | date: 'yyyy-MM-dd &nbsp;HH:mm:ss' | emptyCell }}
   }
   @case ('status') {
-    {{ statusLabel() }}
+    <app-status-chip [status]="statusLabel()" />
   }
   @case ('count') {
     <app-count-tasks-by-status
@@ -32,6 +38,9 @@
       [checked]="isSelected"
       [aria-label]="checkboxLabel()"
     />
+  }
+  @case ('byte-array') {
+    <app-byte-array-cell [data]="byteArray" [label]="column.name" />
   }
   @default {
     {{ value | emptyCell }}

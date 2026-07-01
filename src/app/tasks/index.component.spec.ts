@@ -2,29 +2,26 @@ import { FilterStringOperator, TaskOptionEnumField, TaskSummaryEnumField } from 
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { TableLine } from '@app/dashboard/types';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, CustomColumn } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { of } from 'rxjs';
 import { IndexComponent } from './index.component';
+import TasksDataService from './services/tasks-data.service';
 import { TasksFiltersService } from './services/tasks-filters.service';
-import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksIndexService } from './services/tasks-index.service';
 import { TaskOptions, TaskSummary } from './types';
 
 describe('Tasks Index Component', () => {
   let component: IndexComponent;
-
-  const mockTasksGrpcService = {
-    cancel$: jest.fn(() => of()),
-  };
 
   const newCustomColumns: CustomColumn[] = ['options.options.FastCompute', 'options.options.NewCustom'];
 
@@ -152,6 +149,23 @@ describe('Tasks Index Component', () => {
     warning: jest.fn(),
   };
 
+  const mockTasksDataService = {
+    data: [],
+    total: 0,
+    loading: false,
+    options: {},
+    filters: [],
+    refresh$: {
+      next: jest.fn()
+    },
+    cancelTasks: jest.fn(),
+  };
+
+  const mockGrpcService = {
+    actions: [],
+    refresh: {},
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -159,13 +173,14 @@ describe('Tasks Index Component', () => {
         IconsService,
         AutoRefreshService,
         { provide: TasksIndexService, useValue: mockTasksIndexService },
-        { provide: TasksGrpcService, useValue: mockTasksGrpcService },
+        { provide: TasksDataService, useValue: mockTasksDataService },
         { provide: MatDialog, useValue: mockMatDialog },
         { provide: DashboardIndexService, useValue: mockDashboardIndexService },
         { provide: Router, useValue: mockRouter },
         { provide: TasksFiltersService, useValue: mockTaskFiltersService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: GrpcActionsService, useValue: mockGrpcService },
       ]
     }).inject(IndexComponent);
     component.ngOnInit();
@@ -181,12 +196,16 @@ describe('Tasks Index Component', () => {
     expect(component.displayedColumnsKeys).toEqual([...defaultColumns, ...defaultCustomColumns]);
   });
 
+  it('should load properly', () => {
+    expect(component.loading).toEqual(mockTasksDataService.loading);
+  });
+
   describe('initialisation', () => {
     it('should initialise columns (with customs)', () => {
       expect(component.displayedColumnsKeys).toEqual([...defaultColumns, ...defaultCustomColumns]);
-      expect(component.availableColumns).toEqual([...availableTableColumns.map(column => column.key), ...defaultCustomColumns]);
+      expect(component.availableColumns).toEqual(availableTableColumns);
       expect(component.customColumns).toEqual(defaultCustomColumns);
-      expect(component.displayedColumns).toEqual([
+      expect(component.displayedColumns()).toEqual([
         {
           name: $localize`Task ID`,
           key: 'id',
@@ -224,7 +243,6 @@ describe('Tasks Index Component', () => {
 
     it('should initialise filters', () => {
       expect(component.filters).toEqual([]);
-      expect(component.filters$).toBeDefined();
     });
 
     it('should init options', () => {
@@ -254,9 +272,8 @@ describe('Tasks Index Component', () => {
   });
 
   it('should refresh', () => {
-    const spy = jest.spyOn(component.refresh$, 'next');
-    component.onRefresh();
-    expect(spy).toHaveBeenCalled();
+    component.refresh();
+    expect(mockTasksDataService.refresh$.next).toHaveBeenCalled();
   });
 
   describe('On interval value change', () => {
@@ -272,9 +289,8 @@ describe('Tasks Index Component', () => {
     });
 
     it('should refresh if the value is not null', () => {
-      const spy = jest.spyOn(component.refresh$, 'next');
       component.onIntervalValueChange(5);
-      expect(spy).toHaveBeenCalled();
+      expect(mockTasksDataService.refresh$.next).toHaveBeenCalled();
     });
 
     it('should stop the interval if the value is 0', () => {
@@ -300,7 +316,7 @@ describe('Tasks Index Component', () => {
     });
 
     it('should update displayed columns', () => {
-      expect(component.displayedColumns).toEqual([
+      expect(component.displayedColumns()).toEqual([
         {
           name: $localize`Task ID`,
           key: 'id',
@@ -318,12 +334,7 @@ describe('Tasks Index Component', () => {
     });
 
     it('should save columns', () => {
-      expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(['id', 'createdAt']);
-    });
-
-    it('should always have "select" at position 1', () => {
-      component.onColumnsChange(['id', 'createdAt', 'select']);
-      expect(component.displayedColumnsKeys).toEqual(['select', 'id', 'createdAt']);
+      expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
     });
   });
 
@@ -337,7 +348,7 @@ describe('Tasks Index Component', () => {
     });
 
     it('should update displayed columns', () => {
-      expect(component.displayedColumns).toEqual([
+      expect(component.displayedColumns()).toEqual([
         {
           name: $localize`Task ID`,
           key: 'id',
@@ -367,8 +378,21 @@ describe('Tasks Index Component', () => {
     });
   });
 
-  describe('On Filters Change', () => {
+  describe('On Options Change', () => {
+    beforeEach(() => {
+      component.onOptionsChange();
+    });
 
+    it('should save options', () => {
+      expect(mockTasksIndexService.saveOptions).toHaveBeenCalledWith(mockTasksDataService.options);
+    });
+
+    it('should refresh', () => {
+      expect(mockTasksDataService.refresh$.next).toHaveBeenCalled();
+    });
+  });
+
+  describe('On Filters Change', () => {
     const newFilters: FiltersOr<TaskSummaryEnumField, TaskOptionEnumField> = [
       [
         {
@@ -380,15 +404,12 @@ describe('Tasks Index Component', () => {
       ]
     ];
 
-    let filterSpy: jest.SpyInstance;
-
     beforeEach(() => {
-      filterSpy = jest.spyOn(component.filters$, 'next');
       component.onFiltersChange(newFilters);
     });
 
     it('should update filters', () => {
-      expect(component.filters).toEqual(newFilters);
+      expect(mockTasksDataService.filters).toEqual(newFilters);
     });
 
     it('should save filters', () => {
@@ -398,17 +419,10 @@ describe('Tasks Index Component', () => {
     it('should update page index', () => {
       expect(component.options.pageIndex).toEqual(0);
     });
-
-    it('should emit filters', () => {
-      expect(filterSpy).toHaveBeenCalledWith(newFilters);
-    });
   });
 
   describe('On Filter Reset', () => {
-    let filterSpy: jest.SpyInstance;
-
     beforeEach(() => {
-      filterSpy = jest.spyOn(component.filters$, 'next');
       component.onFiltersReset();
     });
 
@@ -418,10 +432,6 @@ describe('Tasks Index Component', () => {
 
     it('should reset page index', () => {
       expect(component.options.pageIndex).toEqual(0);
-    });
-
-    it('should emit empty filters', () => {
-      expect(filterSpy).toHaveBeenCalledWith([]);
     });
   });
 
@@ -485,10 +495,6 @@ describe('Tasks Index Component', () => {
       expect(component.customColumns).toEqual(newCustomColumns);
     });
 
-    it('should update available columns', () => {
-      expect(component.availableColumns).toEqual([...availableTableColumns.map(column => column.key), ...newCustomColumns]);
-    });
-
     it('should update displayed columns', () => {
       expect(component.displayedColumnsKeys).toEqual([...defaultColumns, ...newCustomColumns]);
     });
@@ -520,49 +526,9 @@ describe('Tasks Index Component', () => {
   });
 
   it('should update selection', () => {
-    const selection = ['taskId1', 'taskId2'];
+    const selection = [{ id: 'taskId1' }, { id: 'taskId2' }] as unknown as TaskSummary[];
     component.onSelectionChange(selection);
     expect(component.selection).toEqual(selection);
-  });
-
-  describe('Cancel Tasks', () => {
-    const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
-
-    it('should cancel tasks', () => {
-      const tasks = ['taskId'];
-      component.cancelTasks(tasks);
-      expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith(tasks);
-    });
-
-    it('should notify on success', () => {
-      component.cancelTasks(['taskId']);
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Tasks canceled');
-    });
-
-    it('should refresh on success', () => {
-      const spy = jest.spyOn(component.refresh$, 'next');
-      component.cancelTasks(['taskId']);
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it('should notify on errors', () => {
-      mockTasksGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error()));
-      component.cancelTasks(['taskId']);
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to cancel tasks');
-    });
-
-    it('should log errors', () => {
-      mockTasksGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error('Error')));
-      component.cancelTasks(['taskId']);
-      expect(spy).toHaveBeenCalledWith(new Error('Error'));
-    });
-  });
-
-  it('should cancel selected tasks', () => {
-    const selection = ['taskId1', 'taskId2'];
-    component.selection = selection;
-    component.onCancelTasksSelection();
-    expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith(selection);
   });
 
   describe('Manage view in logs', () => {
@@ -588,6 +554,18 @@ describe('Tasks Index Component', () => {
 
     it('should save view in logs', () => {
       expect(mockTasksIndexService.saveViewInLogs).toHaveBeenCalledWith(newViewInLogs.serviceIcon, newViewInLogs.serviceName, newViewInLogs.urlTemplate);
+    });
+  });
+
+  describe('hasSelectColumnDisplayed', () => {
+    it('should return true if the column is displayed', () => {
+      component.displayedColumnsKeys.push('select');
+      expect(component.hasSelectColumnDisplayed()).toBeTruthy();
+    });
+
+    it('should return false if the column is not displayed', () => {
+      component.displayedColumnsKeys = component.displayedColumnsKeys.filter(k => k !== 'select');
+      expect(component.hasSelectColumnDisplayed()).toBeFalsy();
     });
   });
 

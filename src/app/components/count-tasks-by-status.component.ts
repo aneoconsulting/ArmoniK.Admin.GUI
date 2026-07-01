@@ -1,28 +1,23 @@
 import { Component, Input, OnInit, WritableSignal, inject, signal } from '@angular/core';
-import { Subject, switchMap } from 'rxjs';
 import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
+import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
+import { StatusService } from '@app/types/status';
 import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.component';
+import { Subject, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-count-tasks-by-status',
-  template: `
-<app-view-tasks-by-status
-  [defaultQueryParams]="queryParams"
-  [loading]="loading"
-  [statusesGroups]="statusesGroups"
-  [statusesCount]="statusesCount()"
->
-</app-view-tasks-by-status>
-  `,
-  styles: [`
-  `],
-  standalone: true,
+  templateUrl: 'count-tasks-by-status.component.html',
   providers: [
     TasksGrpcService,
-    TasksFiltersService
+    TasksFiltersService,
+    {
+      provide: StatusService,
+      useClass: TasksStatusesService,
+    }
   ],
   imports: [
     ViewTasksByStatusComponent,

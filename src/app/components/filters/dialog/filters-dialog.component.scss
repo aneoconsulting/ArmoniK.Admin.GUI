@@ -1,0 +1,30 @@
+@use 'styles' as *;
+
+mat-dialog-content {
+  @include flex-col(1rem);
+}
+
+section {
+  @include flex-row($gap: 1rem, $justify: center, $align: start, $wrap: nowrap);
+}
+
+.filter-header {
+  align-items: center;
+}
+
+article {
+  @include flex-col(0.5rem);
+}
+
+.mat-divider {
+  width: 45%;
+}
+
+button {
+  width: fit-content;
+}
+
+.delete-button, .add-button {
+  width: 2rem;
+  height: 2rem;
+}

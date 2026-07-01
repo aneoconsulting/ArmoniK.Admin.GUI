@@ -3,22 +3,25 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NavigationExtras, Params, Router, RouterModule } from '@angular/router';
-import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
-import { Subject } from 'rxjs';
 import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
-import { ApplicationData, ArmonikData, DataRaw, PartitionData, SessionData, Status } from '@app/types/data';
-import { StatusesServiceI } from '@app/types/services';
+import { ApplicationData, ArmonikData, DataRaw, PartitionData, SessionData } from '@app/types/data';
+import { Status, StatusLabelColor, StatusService } from '@app/types/status';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
+import { StatusChipComponent } from '@components/status-chip.component';
+import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
+import { Subject } from 'rxjs';
+import { ByteArrayComponent } from './cells/byte-array-cell.component';
+import { TableInspectMessageComponent } from './table-inspect-message.component';
 import { TableInspectObjectComponent } from './table-inspect-object.component';
 
 @Component({
   selector: 'app-table-cell',
-  standalone: true,
-  templateUrl: './table-cell.component.html',
+  templateUrl: 'table-cell.component.html',
+  styleUrl: 'table-cell.component.scss',
   imports: [
     EmptyCellPipe,
     RouterModule,
@@ -28,6 +31,9 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
     MatButtonModule,
     CountTasksByStatusComponent,
     MatCheckboxModule,
+    TableInspectMessageComponent,
+    StatusChipComponent,
+    ByteArrayComponent,
   ]
 })
 export class TableCellComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null>{
@@ -42,7 +48,7 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
     this._element = entry;
     this._value = this.handleNestedKeys(entry);
     if (entry) {
-      this._queryParams = this.element.queryParams?.get(this.column.key as keyof DataRaw);
+      this._queryParams = this.element.queryParams?.get(this.column.key);
       this.createLink();
       if (this.column.key === 'count') {
         this.refreshStatuses.next();
@@ -50,13 +56,13 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
     }
   }
 
-  @Input({ required: false }) statusesService: StatusesServiceI<S>;
+  @Input({ required: false }) statusesService: StatusService<S>;
   @Input({ required: false }) isSelected: boolean = false;
   @Input({ required: false }) statusesGroups: TasksStatusesGroup[] = [];
 
   @Output() changeSelection = new EventEmitter<void>();
 
-  private router = inject(Router);
+  private readonly router = inject(Router);
 
   private _value: unknown;
   private _element: ArmonikData<T, O>;
@@ -78,12 +84,12 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
     return this._value;
   }
 
-  get durationValue() {
-    return this._value as Duration;
+  get string() {
+    return this._value as string;
   }
 
-  get statusValue() {
-    return this._value as S;
+  get durationValue() {
+    return this._value as Duration;
   }
 
   get dateValue(): Date | null {
@@ -104,6 +110,10 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
 
   get countFilters() {
     return (this._element as unknown as SessionData | ApplicationData | PartitionData).filters;
+  }
+
+  get byteArray() {
+    return this._value as Uint8Array;
   }
 
   createLink() {
@@ -128,14 +138,14 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
   }
 
   handleNestedKeys(element: ArmonikData<T, O>) {
-    if (element === undefined || element.raw === undefined) {
+    if (element?.raw === undefined) {
       return undefined;
     }
     const keys = this.column.key.toString().split('.');
     let resultObject: {[key: string]: object} = element.raw as unknown as {[key: string]: object};
-    keys.forEach(key => {
+    for (const key of keys) {
       resultObject = resultObject[key] as {[key: string]: object};
-    });
+    }
     return resultObject;
   }
 
@@ -152,7 +162,7 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
     }
   }
 
-  statusLabel(): string {
-    return this.statusesService.statusToLabel(this.statusValue);
+  statusLabel(): StatusLabelColor {
+    return this.statusesService.statusToLabel(this._value as S);
   }
 }

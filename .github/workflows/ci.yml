@@ -19,13 +19,17 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
-      - run: npm install -g pnpm@9.7.0
+      - name: Set alternate npm integrity keys # Might be a temp fix
+        run: |
+          echo COREPACK_INTEGRITY_KEYS="$(curl https://registry.npmjs.org/-/npm/v1/keys | jq -c '{npm: .keys}')" >> $GITHUB_ENV
+
+      - run: npm install -g pnpm@10.2.0
       - run: corepack enable
 
       - name: Setup Node
-        uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           scope: 'repository'
           node-version: 20
@@ -41,12 +45,16 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      
-      - run: npm install -g pnpm@9.7.0
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Set alternate npm integrity keys # Might be a temp fix
+        run: |
+          echo COREPACK_INTEGRITY_KEYS="$(curl https://registry.npmjs.org/-/npm/v1/keys | jq -c '{npm: .keys}')" >> $GITHUB_ENV
+
+      - run: npm install -g pnpm@10.2.0
       - run: corepack enable
 
-      - uses: actions/setup-node@v4 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           scope: 'repository'
           node-version: 20
@@ -62,12 +70,16 @@ jobs:
     name: Coverage
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       
-      - run: npm install -g pnpm@9.7.0
+      - name: Set alternate npm integrity keys # Might be a temp fix
+        run: |
+          echo COREPACK_INTEGRITY_KEYS="$(curl https://registry.npmjs.org/-/npm/v1/keys | jq -c '{npm: .keys}')" >> $GITHUB_ENV
+
+      - run: npm install -g pnpm@10.2.0
       - run: corepack enable
 
-      - uses: actions/setup-node@v4 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           scope: 'repository'
           node-version: 20
@@ -94,12 +106,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
-      - run: npm install -g pnpm@9.7.0
+      - name: Set alternate npm integrity keys # Might be a temp fix
+        run: |
+          echo COREPACK_INTEGRITY_KEYS="$(curl https://registry.npmjs.org/-/npm/v1/keys | jq -c '{npm: .keys}')" >> $GITHUB_ENV
+
+      - run: npm install -g pnpm@10.1.0
       - run: corepack enable
 
-      - uses: actions/setup-node@v4 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           scope: 'repository'
           node-version: 20

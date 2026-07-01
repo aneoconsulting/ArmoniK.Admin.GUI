@@ -1,19 +1,21 @@
-import { FilterStringOperator, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
+import { Router } from '@angular/router';
+import { GrpcAction } from '@app/types/actions.type';
 import { TableColumn } from '@app/types/column.type';
 import { ArmonikData, ColumnKey, TaskData } from '@app/types/data';
-import { FiltersOr } from '@app/types/filters';
-import { CacheService } from '@services/cache.service';
-import { FiltersService } from '@services/filters.service';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
+import { StatusService } from '@app/types/status';
 import { NotificationService } from '@services/notification.service';
 import { TasksTableComponent } from './table.component';
-import { TasksGrpcService } from '../services/tasks-grpc.service';
-import { TasksIndexService } from '../services/tasks-index.service';
-import { TasksStatusesService } from '../services/tasks-statuses.service';
+import TasksDataService from '../services/tasks-data.service';
 import { TaskOptions, TaskSummary } from '../types';
+
+function getAction(actions: GrpcAction<TaskSummary>[], label: string) {
+  return actions.filter(action => action.label === label)[0];
+} 
 
 describe('TasksTableComponent', () => {
   let component: TasksTableComponent;
@@ -46,21 +48,6 @@ describe('TasksTableComponent', () => {
     }
   ];
 
-  const mockTasksIndexService = {
-    isActionsColumn: jest.fn(),
-    isTaskIdColumn: jest.fn(),
-    isStatusColumn: jest.fn(),
-    isDateColumn: jest.fn(),
-    isDurationColumn: jest.fn(),
-    isObjectColumn: jest.fn(),
-    isSelectColumn: jest.fn(),
-    isSimpleColumn: jest.fn(),
-    isNotSortableColumn: jest.fn(),
-    columnToLabel: jest.fn(),
-    saveColumns: jest.fn(),
-    saveOptions: jest.fn(),
-  };
-
   const mockNotificationService = {
     success: jest.fn(),
     error: jest.fn(),
@@ -70,161 +57,69 @@ describe('TasksTableComponent', () => {
     copy: jest.fn()
   };
 
-  const tasks = { tasks: [{ id: 'task1' }, { id: 'task2' }, { id: 'task3' }], total: 3 };
-  const mockTasksGrpcService = {
-    list$: jest.fn(() => of(tasks)),
-    cancel$: jest.fn(() => of({})),
+  const mockTasksDataService = {
+    data: signal([] as ArmonikData<TaskSummary, TaskOptions>[]),
+    total: 0,
+    loading: false,
+    options: {},
+    filters: [],
+    refresh$: {
+      next: jest.fn()
+    },
+    cancelTask: jest.fn(),
   };
 
-  const cachedtasks = { tasks: [{ id: 'task1' }, { id: 'task2' }], total: 2 };
-  const mockCacheService = {
-    get: jest.fn(() => cachedtasks),
-    save: jest.fn(),
+  const mockRouter = {
+    navigate: jest.fn(),
+  };
+
+  const mockStatusService = {
+    statuses: {
+      [TaskStatus.TASK_STATUS_CANCELLED]: {
+        label: 'Cancelled',
+      },
+      [TaskStatus.TASK_STATUS_COMPLETED]: {
+        label: 'Completed'
+      },
+    },
+    isRetried: jest.fn((s: TaskStatus) => s === TaskStatus.TASK_STATUS_RETRIED),
+    taskNotEnded: jest.fn((s: TaskStatus) => s !== TaskStatus.TASK_STATUS_COMPLETED)
+  };
+
+  const mockGrpcService = {
+    actions: [],
   };
 
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         TasksTableComponent,
-        { provide: TasksIndexService, useValue: mockTasksIndexService },
-        { provide: TasksGrpcService, useValue: mockTasksGrpcService },
-        TasksStatusesService,
-        FiltersService,
-        { provide: CacheService, useValue: mockCacheService },
+        { provide: StatusService, useValue: mockStatusService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
+        { provide: Router, useValue: mockRouter },
+        { provide: TasksDataService, useValue: mockTasksDataService },
+        { provide: GrpcActionsService, useValue: mockGrpcService },
       ]
     }).inject(TasksTableComponent);
 
     component.displayedColumns = displayedColumns;
-    component.selection = [];
-    component.filters$ = new BehaviorSubject<FiltersOr<TaskSummaryEnumField, TaskOptionEnumField>>([]);
-    component.options = {
-      pageIndex: 0,
-      pageSize: 10,
-      sort: {
-        active: 'id',
-        direction: 'desc'
-      }
-    };
-    component.refresh$ = new Subject();
-    component.loading = signal(false);
     component.ngOnInit();
-    component.ngAfterViewInit();
   });
 
   it('should run', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('initialisation', () => {
-    it('should load cached data from cachedService', () => {
-      expect(mockCacheService.get).toHaveBeenCalled();
-    });
-  });
-
-  describe('loadFromCache', () => {
-    beforeEach(() => {
-      component.loadFromCache();
-    });
-
-    it('should update total data with cached one', () => {
-      expect(component.total).toEqual(cachedtasks.total);
-    });
-
-    it('should update data with cached one', () => {
-      expect(component.data()).toEqual([
-        {
-          raw: {
-            id: 'task1'
-          },
-          resultsQueryParams: {
-            '1-root-3-0': 'task1'
-          }
-        },
-        {
-          raw: {
-            id: 'task2'
-          },
-          resultsQueryParams: {
-            '1-root-3-0': 'task2'
-          }
-        },
-      ]);
-    });
-  });
-
-  it('should update data on refresh', () => {
-    component.refresh$.next();
-    expect(component.data()).toEqual([
-      {
-        raw: {
-          id: 'task1'
-        },
-        resultsQueryParams: {
-          '1-root-3-0': 'task1'
-        }
-      },
-      {
-        raw: {
-          id: 'task2'
-        },
-        resultsQueryParams: {
-          '1-root-3-0': 'task2'
-        }
-      },
-      {
-        raw: {
-          id: 'task3'
-        },
-        resultsQueryParams: {
-          '1-root-3-0': 'task3'
-        }
-      }
-    ]);
-  });
-
-  it('should cache received data', () => {
-    component.refresh$.next();
-    expect(mockCacheService.get).toHaveBeenCalled();
-  });
-
   it('should return columns keys', () => {
     expect(component.columnKeys).toEqual(displayedColumns.map(column => column.key));
   });
-
-  describe('on list error', () => {
-    beforeEach(() => {
-      mockTasksGrpcService.list$.mockReturnValueOnce(throwError(() => new Error()));
-    });
-
-    it('should log error', () => {
-      const spy = jest.spyOn(console, 'error').mockImplementation(() => { });
-      component.refresh$.next();
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it('should send a notification', () => {
-      component.refresh$.next();
-      expect(mockNotificationService.error).toHaveBeenCalled();
-    });
-
-    it('should send empty data', () => {
-      component.refresh$.next();
-      expect(component.data()).toEqual([]);
-    });
-  });
   
   describe('options changes', () => {
-    it('should refresh data', () => {
-      const spy = jest.spyOn(component.refresh$, 'next');
+    it('emit', () => {
+      const spy = jest.spyOn(component.optionsUpdate, 'emit');
       component.onOptionsChange();
       expect(spy).toHaveBeenCalled();
-    });
-
-    it('should save options', () => {
-      component.onOptionsChange();
-      expect(mockTasksIndexService.saveOptions).toHaveBeenCalled();
     });
   });
 
@@ -237,10 +132,8 @@ describe('TasksTableComponent', () => {
 
   it('should send a notification on copy', () => {
     component.onCopiedTaskId({
-      raw: {
-        id: 'taskId'
-      }
-    } as ArmonikData<TaskSummary, TaskOptions>);
+      id: 'taskId'
+    } as TaskSummary);
     expect(mockClipBoard.copy).toHaveBeenCalledWith('taskId');
     expect(mockNotificationService.success).toHaveBeenCalledWith('Task ID copied to clipboard');
   });
@@ -250,19 +143,6 @@ describe('TasksTableComponent', () => {
     const task = {} as unknown as TaskSummary;
     component.onRetries(task);
     expect(spy).toHaveBeenCalledWith(task);
-  });
-
-  it('should emit on cancel task', () => {
-    const id = 'taskId';
-    component.onCancelTask(id);
-    expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith([id]);
-  });
-
-  it('should check if task can be cancelled', () => {
-    const task: TaskSummary = {
-      status: TaskStatus.TASK_STATUS_PROCESSING
-    } as unknown as TaskSummary;
-    expect(component.canCancelTask(task)).toBeTruthy();
   });
 
   describe('generateViewInLogsUrl', () => {
@@ -277,16 +157,18 @@ describe('TasksTableComponent', () => {
     });
   });
 
-  test('onDrop should call tasksIndexService', () => {
+  test('onDrop should emit', () => {
+    const spy = jest.spyOn(component.columnUpdate, 'emit');
     const newColumns: ColumnKey<TaskSummary, TaskOptions>[] = ['actions', 'id', 'status'];
     component.onDrop(newColumns);
-    expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
+    expect(spy).toHaveBeenCalledWith(newColumns);
   });
 
   it('should emit on selection change', () => {
     const spy = jest.spyOn(component.selectionChange, 'emit');
-    component.onSelectionChange([{ id: 'taskId1' }, { id: 'taskId2' }] as unknown as TaskSummary[]);
-    expect(spy).toHaveBeenCalledWith(['taskId1', 'taskId2']);
+    const event = [{ id: 'taskId1' }, { id: 'taskId2' }] as unknown as TaskSummary[];
+    component.onSelectionChange(event);
+    expect(spy).toHaveBeenCalledWith(event);
   });
 
   describe('Adding a service', () => {
@@ -316,129 +198,84 @@ describe('TasksTableComponent', () => {
     });
 
     it('should add a service action', () => {
-      expect(component.actions[4]).toEqual({
+      const action = getAction(component.actions, component.serviceName);
+      expect(action).toEqual({
         label: 'service',
         icon: 'icon',
-        action$: component.openViewInLogs$
+        click: action.click
       });
     });
 
     it('should modify the service action', () => {
+      const mockAction = {
+        label: 'service',
+        icon: 'icon',
+        click: jest.fn()
+      };
+      component.actions[4] = mockAction;
       component.serviceIcon = 'newIcon';
       expect(component.actions[4]).toEqual({
         label: 'service',
         icon: 'newIcon',
-        action$: component.openViewInLogs$
-      });
-    });
-  });
-
-  describe('Results query params', () => {
-    const id = 'taskId';
-    it('should return the taskId if there is no filter', () => {
-      expect(component.createResultsQueryParams(id)).toEqual({
-        '1-root-3-0': id
-      });
-    });
-
-    it('should add filters if there is any', () => {
-      component.filters = [
-        [
-          {
-            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID,
-            for: 'root',
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_CONTAINS,
-            value: 'session1'
-          },
-          {
-            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
-            for: 'root',
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_NOT_EQUAL,
-            value: 'taskId'
-          }
-        ],
-        [
-          {
-            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
-            for: 'root',
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-            value: 'should not appear'
-          },
-          {
-            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID,
-            for: 'root',
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_STARTS_WITH,
-            value: 'session2'
-          },
-          {
-            field: null,
-            for: 'root',
-            operator: null,
-            value: 'neither should this'
-          }
-        ]
-      ];
-      expect(component.createResultsQueryParams(id)).toEqual({
-        '0-root-1-2': 'session1',
-        '0-root-3-1': 'taskId',
-        '0-root-3-0': id,
-        '1-root-1-4': 'session2',
-        '1-root-3-0': id,
+        click: mockAction.click,
       });
     });
   });
 
   describe('actions', () => {
     const task = {
-      raw: {
-        id: 'taskId',
-        status: TaskStatus.TASK_STATUS_COMPLETED
-      }
-    } as unknown as TaskData;
+      id: 'taskId',
+      status: TaskStatus.TASK_STATUS_COMPLETED
+    } as TaskSummary;
 
     it('should copy the task id', () => {
-      component.actions[0].action$.next(task);
-      expect(mockClipBoard.copy).toHaveBeenCalledWith(task.raw.id);
+      const action = getAction(component.actions, 'Copy Task ID');
+      action.click([task]);
+      expect(mockClipBoard.copy).toHaveBeenCalledWith(task.id);
       expect(mockNotificationService.success).toHaveBeenCalled();
     });
 
     it('should permit to see task related results', () => {
+      const mockTaskData = {
+        raw: task,
+        resultsQueryParams: {
+          '0-root-3-0': task.id,
+        }
+      } as unknown as TaskData;
+      mockTasksDataService.data.set([mockTaskData]);
+      const action = getAction(component.actions, 'See related result');
       const spy = jest.spyOn(component.router, 'navigate');
-      component.actions[1].action$.next(task);
+      action.click([task]);
       expect(spy).toHaveBeenCalled();
     });
 
-    it('should permit to retry the task', () => {
-      const spy = jest.spyOn(component.retries, 'emit');
-      component.actions[2].action$.next(task);
-      expect(spy).toHaveBeenCalledWith(task.raw);
-    });
+    describe('task retry', () => {
+      let action: GrpcAction<TaskSummary>;
 
-    it('should not permit to retry if the tasks cannot be retried', () => {
-      if (component.actions[2].condition) {
-        task.raw.status = TaskStatus.TASK_STATUS_COMPLETED;
-        expect(component.actions[2].condition(task)).toBeFalsy();
-      }
-    });
+      beforeEach(() => {
+        action = getAction(component.actions, 'Retries');
+      });
 
-    it('should permit to cancel task', () => {
-      component.actions[3].action$.next(task);
-      expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith([task.raw.id]);
-    });
+      it('should allow to retry the task', () => {
+        const spy = jest.spyOn(component.retries, 'emit');
+        action.click([task]);
+        expect(spy).toHaveBeenCalledWith(task);
+      });
 
-    it('should not permit to cancel tasks if the task is not cancellable', () => {
-      if (component.actions[3].condition) {
-        expect(component.actions[3].condition(task)).toBeFalsy();
-      }
+      it('should not allow to retry if the task status is not allowed by the action', () => {
+        task.status = TaskStatus.TASK_STATUS_COMPLETED;
+        expect(action.condition!([task])).toBeFalsy();
+      });
     });
 
     it('should open views in logs', () => {
-      const spy = jest.spyOn(window, 'open');
+      const spy = jest.spyOn(window, 'open').mockImplementation(() => null);
       component.serviceIcon = 'icon';
       component.serviceName = 'service';
       component.urlTemplate = 'https://myurl.com?taskId=%taskId';
-      component.actions[4].action$.next(task);
-      expect(spy).toHaveBeenCalledWith(`https://myurl.com?taskId=${task.raw.id}`, '_blank');
+      const action = getAction(component.actions, component.serviceName);
+      action.click([task]);
+      expect(spy).toHaveBeenCalledWith(`https://myurl.com?taskId=${task.id}`, '_blank');
     });
   });
 
@@ -459,5 +296,29 @@ describe('TasksTableComponent', () => {
   it('should track a task by its id', () => {
     const task = { raw: { id: 'task' } } as TaskData;
     expect(component.trackBy(0, task)).toEqual(task.raw.id);
+  });
+
+  it('should get data', () => {
+    expect(component.data).toEqual(mockTasksDataService.data);
+  });
+
+  it('should get total', () => {
+    expect(component.total).toEqual(mockTasksDataService.total);
+  });
+
+  it('should get options', () => {
+    expect(component.options).toEqual(mockTasksDataService.options);
+  });
+
+  it('should get filters', () => {
+    expect(component.filters).toEqual(mockTasksDataService.filters);
+  });
+
+  it('should get column keys', () => {
+    expect(component.columnKeys).toEqual(displayedColumns.map(c => c.key));
+  });
+
+  it('should get displayedColumns', () => {
+    expect(component.columns).toEqual(displayedColumns);
   });
 });

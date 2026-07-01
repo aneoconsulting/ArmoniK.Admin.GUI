@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
 import { IconsService } from '@services/icons.service';
+import { of } from 'rxjs';
 import { AutoRefreshButtonComponent } from './auto-refresh-button.component';
 
 describe('Auto-refresh component', () => {

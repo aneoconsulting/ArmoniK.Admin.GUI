@@ -1,12 +1,28 @@
 import { FilterDateOperator, FilterStringOperator, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
-import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { TaskSummaryFilters } from '@app/tasks/types';
+import { StatusService } from '@app/types/status';
 import { FiltersService } from '@services/filters.service';
 import { StatusesGroupCardComponent } from './statuses-group-card.component';
 
 describe('StatusesGroupCardComponent', () => {
   let component: StatusesGroupCardComponent;
+
+  const mockStatusService = {
+    statuses: {
+      [TaskStatus.TASK_STATUS_CANCELLED]: {
+        label: 'Cancelled',
+        color: 'red'
+      },
+      [TaskStatus.TASK_STATUS_PROCESSING]: {
+        label: 'Processing',
+        color: 'green'
+      }
+    },
+    statusToLabel: jest.fn((s: TaskStatus) => {
+      return (mockStatusService.statuses[s]);
+    }),
+  } as unknown as StatusService<TaskStatus>;
 
   const filters: TaskSummaryFilters = [
     [
@@ -43,7 +59,7 @@ describe('StatusesGroupCardComponent', () => {
     component = TestBed.configureTestingModule({
       providers: [
         StatusesGroupCardComponent,
-        TasksStatusesService,
+        { provide: StatusService, useValue: mockStatusService },
         FiltersService
       ]
     }).inject(StatusesGroupCardComponent);
@@ -58,7 +74,7 @@ describe('StatusesGroupCardComponent', () => {
   });
 
   it('should get labels', () => {
-    expect(component.statusToLabel(TaskStatus.TASK_STATUS_COMPLETED)).toEqual('Completed');
+    expect(component.statusToLabel(TaskStatus.TASK_STATUS_PROCESSING)).toEqual(mockStatusService.statuses[TaskStatus.TASK_STATUS_PROCESSING]);
   });
 
   it('should update counter', () => {

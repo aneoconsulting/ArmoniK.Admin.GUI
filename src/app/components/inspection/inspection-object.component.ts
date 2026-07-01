@@ -2,20 +2,24 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { TaskOptions } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
-import { DataRaw, Status } from '@app/types/data';
+import { DataRaw, TaskOutput } from '@app/types/data';
+import { Status } from '@app/types/status';
 import { PrettyPipe } from '@pipes/pretty.pipe';
+import { ByteArrayComponent } from './byte-array.component';
 import { FieldContentComponent } from './field-content.component';
+import { MessageComponent } from './message.component';
 
 @Component({
   selector: 'app-inspection-object',
   templateUrl: 'inspection-object.component.html',
-  standalone: true,
   imports: [
     MatExpansionModule,
     PrettyPipe,
     FieldContentComponent,
+    MessageComponent,
+    ByteArrayComponent
   ],
-  styleUrl: '../../../inspections.css',
+  styleUrl: '../../../inspections.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InspectionObjectComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null> {
@@ -50,8 +54,20 @@ export class InspectionObjectComponent<T extends DataRaw, S extends Status, O ex
     return this._fields;
   }
 
+  getError(field: Field<T> | Field<O>): string {
+    return ((this.data as T)[field.key as keyof T] as TaskOutput).error;
+  }
+
+  getMessage(field: Field<T> | Field<O>): string {
+    return (this.data as T)[field.key as keyof T] as string;
+  }
+
   getObject(field: Field<T> | Field<O>): T {
     return (this.data as T | NonNullable<O>)[field.key as keyof (T | O)] as T;
+  }
+
+  getByteArray(field: Field<T> | Field<O>): Uint8Array {
+    return (this.data as T |NonNullable<O>)[field.key as keyof (T | O)] as Uint8Array;
   }
 
   private setFieldsFromData(data: T | NonNullable<O>) {

@@ -1,0 +1,9 @@
+@if (message) {
+  <section id="message-header">
+    <h2 i18n>{{ label | pretty }}</h2>
+    <button mat-icon-button (click)="copy()">
+      <mat-icon [fontIcon]="copyIcon" />
+    </button>
+  </section>
+  <mat-card appearance="outlined">{{ message }}</mat-card>
+}

@@ -7,12 +7,7 @@ import { ShowCardContentComponent } from './show-card-content.component';
 @Component({
   selector: 'app-show-card',
   templateUrl: 'show-card.component.html',
-  styles: [`
-pre {
-  margin-top: 0;
-}
-  `],
-  standalone: true,
+  styleUrl: 'show-card.component.scss',
   imports: [
     ShowCardContentComponent,
     MatCardModule,
@@ -21,5 +16,4 @@ pre {
 })
 export class ShowCardComponent<T extends DataRaw> {
   @Input({ required: true }) data: T | null;
-  @Input() statuses: Record<number, string> = [];
 }

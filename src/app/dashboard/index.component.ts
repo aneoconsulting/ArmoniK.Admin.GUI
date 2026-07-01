@@ -1,5 +1,5 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -10,15 +10,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { AddLineDialogData, AddLineDialogResult, ReorganizeLinesDialogData, ReorganizeLinesDialogResult, SplitLinesDialogData, SplitLinesDialogResult } from '@app/types/dialog';
-import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
-import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
-import { AutoRefreshButtonComponent } from '@components/auto-refresh-button.component';
-import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
-import { PageSectionComponent } from '@components/page-section.component';
-import { RefreshButtonComponent } from '@components/refresh-button.component';
-import { SpinnerComponent } from '@components/spinner.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -46,47 +39,7 @@ import { Line, LineType } from './types';
 @Component({
   selector: 'app-dashboard-index',
   templateUrl: './index.component.html',
-  styles: [`
-.fab {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-
-  z-index: 150;
-
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 1rem;
-}
-
-.fab-actions {
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.no-line {
-  margin-top: 2rem;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  gap: 2rem;
-}
-
-.lines {
-  display: grid;
-  gap: 4rem;
-
-  /* Allow user to view tasks even with the add button */
-  margin-bottom: 2rem
-}
-  `],
-  standalone: true,
+  styleUrl: 'index.component.scss',
   providers: [
     ShareUrlService,
     QueryParamsService,
@@ -105,13 +58,7 @@ import { Line, LineType } from './types';
   ],
   imports: [
     PageHeaderComponent,
-    PageSectionComponent,
-    SpinnerComponent,
     PageSectionHeaderComponent,
-    ActionsToolbarComponent,
-    ActionsToolbarGroupComponent,
-    RefreshButtonComponent,
-    AutoRefreshButtonComponent,
     MatIconModule,
     MatToolbarModule,
     MatButtonModule,
@@ -120,7 +67,6 @@ import { Line, LineType } from './types';
     MatCardModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
-    FiltersToolbarComponent,
     TaskByStatusLineComponent,
     ApplicationsLineComponent,
     ResultsLineComponent,
@@ -138,15 +84,15 @@ export class IndexComponent implements OnInit {
 
   lines: Line[];
   showFabActions = false;
-  hasOnlyOneLine = false;
-  columns = 1;
+  hasOnlyOneLine = signal(false);
+  columns = signal(1);
 
   sharableURL = '';
 
   ngOnInit(): void {
     this.lines = this.#dashboardIndexService.restoreLines();
     this.sharableURL = this.#shareURLService.generateSharableURL(null, null);
-    this.columns = this.#dashboardIndexService.restoreSplitLines();
+    this.columns.set(this.#dashboardIndexService.restoreSplitLines());
   }
 
   getIcon(name: string): string {
@@ -174,7 +120,7 @@ export class IndexComponent implements OnInit {
 
   openFab() {
     this.showFabActions = !this.showFabActions;
-    this.hasOnlyOneLine = this.lines.length === 1;
+    this.hasOnlyOneLine.set(this.lines.length === 1);
   }
 
   onAddLineDialog() {
@@ -249,14 +195,14 @@ export class IndexComponent implements OnInit {
   onSplitLinesDialog() {
     const dialogRef = this.#dialog.open<SplitLinesDialogComponent, SplitLinesDialogData, SplitLinesDialogResult>(SplitLinesDialogComponent, {
       data: {
-        columns: this.columns,
+        columns: this.columns(),
       }
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result?.columns) {
-        this.columns = result.columns;
-        this.#dashboardIndexService.saveSplitLines(this.columns);
+        this.columns.set(result.columns);
+        this.#dashboardIndexService.saveSplitLines(result.columns);
       }
     });
   }
@@ -270,7 +216,7 @@ export class IndexComponent implements OnInit {
   }
 
   onSaveChange() {
-    this.hasOnlyOneLine = this.lines.length === 1;
+    this.hasOnlyOneLine.set(this.lines.length === 1);
     this.#dashboardIndexService.saveLines(this.lines);
   }
 }

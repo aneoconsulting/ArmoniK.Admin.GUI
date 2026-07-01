@@ -10,13 +10,7 @@ import { CustomColumn } from '@app/types/data';
 
 @Component({
   selector: 'app-add-custom-col-dialog',
-  standalone: true,
-  templateUrl: './manage-custom-dialog.component.html',
-  styles: [`
-  mat-form-field {
-    width: 100%
-  }
-  `],
+  templateUrl: 'manage-custom-dialog.component.html',
   imports: [
     MatDialogModule,
     MatFormFieldModule,

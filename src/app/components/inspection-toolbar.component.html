@@ -1,7 +1,7 @@
 <mat-toolbar>
   <mat-toolbar-row>
     <section>
-      <button mat-flat-button color="primary" i18n-matTooltip matTooltip="Refresh Data">
+      <button mat-flat-button color="primary" i18n-matTooltip matTooltip="Refresh Data" (click)="onRefresh()">
         <mat-icon [fontIcon]="refreshIcon" />
         Refresh
       </button>

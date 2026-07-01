@@ -1,83 +1,69 @@
-<mat-toolbar color="primary">
+<mat-toolbar class="header-toolbar" color="primary">
   @if (isHandset$ | async) {
-    <button mat-icon-button (click)="drawer.toggle()">
-      <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-    </button>
+  <button mat-icon-button (click)="drawer.toggle()">
+    <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+  </button>
   }
-  <button mat-icon-button (click)="toggleSideBar()">
-    @if (sideBarOpened) {
-      <mat-icon [fontIcon]="getIcon('menu-open')" [dir]="'rtl'"/>
+  <button mat-icon-button (click)="toggleSidebar()">
+    @if (navigationService.sideBarOpened()) {
+    <mat-icon [fontIcon]="getIcon('menu-open')" [dir]="'rtl'" />
     } @else {
-      <mat-icon [fontIcon]="getIcon('menu')" [dir]="'rtl'"/>
+    <mat-icon [fontIcon]="getIcon('menu')" [dir]="'rtl'" />
     }
   </button>
   <div class="title">
     <span>ArmoniK</span>
-    <span> - </span>
-    <span class="greeting">{{ greeting() }}</span>
   </div>
   <div class="spacer"></div>
-  <div class="environment" [style]="'color:' + environment.color + ';'" [matTooltip]="environment.description">
-    {{ environment.name }} {{ environment.version }}
-  </div>
+  <app-environment />
   <div class="spacer"></div>
   <app-change-language-button />
   <app-healthcheck />
   <app-external-services />
-  <button mat-button class="version" [matMenuTriggerFor]="versionMenu" matTooltip="More Infos" i18n-matTooltip>
-    <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('arrow-down')"></mat-icon>
-    <span>
-      v{{ version }}
-    </span>
+  <app-versions-menu />
+  <button mat-icon-button [routerLink]="'/profile'" [disabled]="isProfileButtonDisabled()" matTooltip="Profile"
+    i18n-matTooltip="Profile button tooltip">
+    <mat-icon [fontIcon]="getIcon('profile')"/>
   </button>
-  <mat-menu #versionMenu="matMenu">
-    <a mat-menu-item [href]="'https://github.com/aneoconsulting/ArmoniK.Admin.GUI/releases/v' + version" target="_blank" rel="noopener noreferrer">
-      <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('update')"></mat-icon>
-      <span i18n="Button">Changelog</span>
-    </a>
-    <a mat-menu-item href="https://aneoconsulting.github.io/ArmoniK.Admin.GUI" target="_blank" rel="noopener">
-      <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('help')"></mat-icon>
-      <span i18n="Button">Documentation</span>
-    </a>
-    <!-- Api does not prefix tag with a v -->
-    <a mat-menu-item target="_blank" [href]="'https://github.com/aneoconsulting/ArmoniK.Api/releases/' + apiVersion">
-      <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('api')"></mat-icon>
-      <span>
-        <span i18n="Button">API</span> - v{{ apiVersion }}
-      </span>
-    </a>
-    <!-- Core does not prefix tag with a v -->
-    <a mat-menu-item target="_blank" [href]="'https://github.com/aneoconsulting/ArmoniK.Core/releases/' + coreVersion">
-        <mat-icon matSuffix aria-hidden="true" [fontIcon]="getIcon('hub')"></mat-icon>
-      <span>
-        <span i18n="Button">Core</span> - v{{ coreVersion }}
-      </span>
-    </a>
-  </mat-menu>
-  <app-theme-selector/>
+  <app-settings-button />
 </mat-toolbar>
 <mat-sidenav-container autosize class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav"
-  [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-  [mode]="(isHandset$ | async) ? 'over' : 'side'"
-  [opened]="(isHandset$ | async) === false && sideBarOpened">
-    <mat-nav-list>
-      @for (item of sidebar; track $index) {
-        @if(item.type !== 'divider') {
-          <a mat-list-item [routerLink]="item.route" routerLinkActive="navbar-item-selected">
-            <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon(item.id)"></mat-icon>
-            <span matListItemTitle> {{ item.display}} </span>
-          </a>
-        } @else {
-          <mat-divider/>
-        }
+  <mat-sidenav #drawer class="sidenav" [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) === false && navigationService.sideBarOpened()">
+    @let isEditing = navigationService.edit();
+    <div class="nav-container" [style.height]="isEditing ? '100%' : 'fit-content'">
+      <mat-nav-list cdkDropList (cdkDropListDropped)="drop($event)">
+        <ul [style.gap]="isEditing ? '0.25rem' : ''">
+          @for (item of navigationService.currentSidebar; track $index) {
+          <li cdkDrag>
+            @if (isEditing) {
+            <mat-icon class="handle" cdkDragHandle [fontIcon]="getIcon('drag')" i18n-matTooltip matTooltip="Drag this to change the position of the item" />
+            }
+            @if(item.type !== 'divider') {
+            <a mat-list-item [routerLink]="!isEditing ? item.route : null" routerLinkActive="navbar-item-selected" [disabled]="isEditing">
+              <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon(item.id)"></mat-icon>
+              <span matListItemTitle> {{ item.display}} </span>
+            </a>
+            } @else {
+            <mat-divider />
+            }
+            @if (isEditing) {
+            <button mat-icon-button (click)="deleteSideBarItem($index)" i18n-matTooltip matTooltip="Delete this item">
+              <mat-icon [fontIcon]="getIcon('delete')" />
+            </button>
+            }
+          </li>
+          }
+        </ul>
+      </mat-nav-list>
+      @if (isEditing) {
+      <button id="add-item-button" mat-flat-button color="primary" (click)="addNewSideBarItem()" i18n>Add item</button>
       }
-      <a mat-list-item [routerLink]="'/settings'" routerLinkActive="navbar-item-selected">
-        <mat-icon matListItemIcon aria-hidden="true" fontIcon="settings"></mat-icon>
-        <span matListItemTitle> {{ settingsItem }} </span>
-      </a>
-    </mat-nav-list>
-
+    </div>
+    @if (!isEditing) {
+      <app-scheme-switcher />
+    }
   </mat-sidenav>
   <mat-sidenav-content>
     <main>

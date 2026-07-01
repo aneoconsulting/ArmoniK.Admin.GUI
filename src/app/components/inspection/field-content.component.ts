@@ -6,10 +6,11 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
-import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { TaskOptions } from '@app/tasks/types';
 import { ColumnType, Field } from '@app/types/column.type';
-import { DataRaw, Status } from '@app/types/data';
+import { DataRaw } from '@app/types/data';
+import { Status } from '@app/types/status';
+import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { PrettyPipe } from '@pipes/pretty.pipe';
@@ -19,7 +20,6 @@ import { NotificationService } from '@services/notification.service';
 @Component({
   selector: 'app-field-content',
   templateUrl: 'field-content.component.html',
-  standalone: true,
   imports: [
     MatChipsModule,
     DatePipe,
@@ -36,7 +36,7 @@ import { NotificationService } from '@services/notification.service';
     NotificationService,
     IconsService
   ],
-  styleUrl: '../../../inspections.css',
+  styleUrl: '../../../inspections.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FieldContentComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null> {
@@ -142,7 +142,7 @@ export class FieldContentComponent<T extends DataRaw, S extends Status, O extend
    * If `false`, the provided type does not change.
    */
   private checkIfArray() {
-    if (this._value instanceof Array) {
+    if ((this._value as unknown[])?.values) { // Values is a method for arrays, checking its existence is checking it is an array.
       this.type = 'array';
     }
   }

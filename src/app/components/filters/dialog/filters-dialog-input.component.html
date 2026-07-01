@@ -1,0 +1,40 @@
+@switch (type) {
+  @default {
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label i18n="Input label">Value</mat-label>
+      <input matInput i18n-placeholder placeholder="Value" [value]="value" (change)="onChange($event)">
+    </mat-form-field>
+  }
+  @case ('number') {
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label i18n="Input label">Value</mat-label>
+      <input matInput type="number" i18n-placeholder placeholder="Value" [value]="value" (change)="onChange($event)">
+    </mat-form-field>
+  }
+  @case ('date') {
+    <mat-form-field class="dateForm" appearance="outline" subscriptSizing="dynamic">
+    <mat-label i18n="Input label">Choose a date</mat-label>
+    <input matInput [ngxMatDatetimePicker]="picker" (dateChange)="onDateChange($event)"  [formControl]="dateForm" i18n-placeholder placeholder="Choose a date">
+    <ngx-mat-datepicker-toggle matSuffix [for]="picker"/>
+    <ngx-mat-datetime-picker #picker [showSpinners]="true" [showSeconds]="true" >
+      <ngx-mat-datepicker-actions>
+        <button mat-button ngxMatDatepickerCancel i18n>Cancel</button>
+        <button mat-flat-button color="primary" ngxMatDatepickerApply i18n>Apply</button>
+      </ngx-mat-datepicker-actions>
+    </ngx-mat-datetime-picker>
+    </mat-form-field>
+  }
+  @case ('status') {
+    <app-autocomplete [options]="statusesList" [value]="valueAsStatus(value)" (valueChange)="onAutoCompleteChange($event)" />
+  }
+  @case ('boolean') {
+    <app-autocomplete [options]="['true', 'false']" [value]="value?.toString()" (valueChange)="onBooleanChange($event)" />
+  }
+  @case ('duration') {
+    <mat-form-field id="durationForm" appearance="outline" subscriptSizing="dynamic">
+      <input matInput style="width: 25%; margin-right: 5px;" type="number" min="0" [value]="getDurationInputValue('hours')" (change)="onDurationChange($event, 0)" placeholder="hh">:
+      <input matInput style="width: 30%; margin-right: 5px;" type="number" min="0" [value]="getDurationInputValue('minutes')" (change)="onDurationChange($event, 1)" placeholder="mm">:
+      <input matInput style="width: 25%;" type="number" min="0" [value]="getDurationInputValue('seconds')" (change)="onDurationChange($event, 2)" placeholder="ss">
+    </mat-form-field>
+  }
+}

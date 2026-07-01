@@ -8,7 +8,7 @@
       [displayedColumns]="displayedColumnsKeys"
       [availableColumns]="availableColumns"
       [lockColumns]="lockColumns"
-      (refresh)="onRefresh()"
+      (refresh)="refresh()"
       (intervalValueChange)="onIntervalValueChange($event)"
       (displayedColumnsChange)="onColumnsChange($event)"
       (resetColumns)="onColumnsReset()"
@@ -27,12 +27,15 @@
       (showFiltersChange)="onShowFiltersChange($event)"
     />
   </mat-toolbar-row>
+
+  <mat-toolbar-row class="grpc-actions">
+    <app-table-grpc-actions [refresh$]="tableDataService.refresh$" [selection]="selection" [selectDisplayed]="hasSelectColumnDisplayed()" />
+  </mat-toolbar-row>
 </mat-toolbar>
 <app-results-table
-  [filters$]="filters$"
-  [options]="options"
-  [displayedColumns]="displayedColumns"
+  [displayedColumns]="displayedColumns()"
   [lockColumns]="lockColumns"
-  [refresh$]="refresh$"
-  [loading]="loading"
+  (optionsUpdate)="onOptionsChange()"
+  (selectionChange)="onSelectionChange($event)"
+  (columnUpdate)="onColumnsChange($event)"
 />

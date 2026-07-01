@@ -1,18 +1,19 @@
 import { TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, of, throwError } from 'rxjs';
-import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
+import TasksDataService from '@app/tasks/services/tasks-data.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TaskOptions, TaskSummary } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, CustomColumn } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { of } from 'rxjs';
 import { TasksLineComponent } from './tasks-line.component';
 import { TableLine } from '../../types';
 
@@ -21,7 +22,7 @@ describe('TasksLineComponent', () => {
 
   const defaultConfigService = new DefaultConfigService();
 
-  const defaultColumns: ColumnKey<TaskSummary, TaskOptions>[] = ['id', 'options.applicationName', 'actions', 'status'];
+  const defaultColumns: ColumnKey<TaskSummary, TaskOptions>[] = ['id', 'options.applicationName', 'actions', 'status', 'select'];
   const customColumns: CustomColumn[] = ['options.options.FastCompute'];
 
   const displayedColumns: TableColumn<TaskSummary, TaskOptions>[] = [
@@ -34,7 +35,7 @@ describe('TasksLineComponent', () => {
     },
     {
       key: 'options.applicationName',
-      name: 'Application Name',
+      name: 'Task Name',
       type: 'object',
       sortable: true
     },
@@ -49,7 +50,13 @@ describe('TasksLineComponent', () => {
       key: 'status',
       type: 'status',
       sortable: true
-    }
+    },
+    {
+      name: $localize`Select`,
+      key: 'select',
+      type: 'select',
+      sortable: false,
+    },
   ];
 
   const options: ListOptions<TaskSummary, TaskOptions> = {
@@ -90,6 +97,18 @@ describe('TasksLineComponent', () => {
     urlTemplate: 'url',
   };
 
+  const mockTasksDataService = {
+    data: [],
+    total: 0,
+    loading: false,
+    options: {},
+    filters: [] as FiltersOr<TaskSummaryEnumField>,
+    refresh$: {
+      next: jest.fn()
+    },
+    cancelTasks: jest.fn(),
+  };
+
   const mockTasksIndexService = {
     availableTableColumns: displayedColumns,
     defaultColumns: defaultColumns,
@@ -103,8 +122,8 @@ describe('TasksLineComponent', () => {
     error: jest.fn(),
   };
 
-  const mockTasksGrpcService = {
-    cancel$: jest.fn((): Observable<unknown> => of({})),
+  const mockGrpcService = {
+    actions: [],
   };
 
   beforeEach(() => {
@@ -114,10 +133,11 @@ describe('TasksLineComponent', () => {
         { provide: MatDialog, useValue: mockMatDialog },
         AutoRefreshService,
         IconsService,
+        { provide: TasksDataService, useValue: mockTasksDataService },
         { provide: TasksIndexService, useValue: mockTasksIndexService },
         DefaultConfigService,
         { provide: NotificationService, useValue: mockNotificationService },
-        { provide: TasksGrpcService, useValue: mockTasksGrpcService },
+        { provide: GrpcActionsService, useValue: mockGrpcService },
       ]
     }).inject(TasksLineComponent);
     component.line = line;
@@ -130,11 +150,14 @@ describe('TasksLineComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should load properly', () => {
+    expect(component.loading).toEqual(mockTasksDataService.loading);
+  });
+
   describe('on init', () => {
     it('should init with line values', () => {
       const intervalSpy = jest.spyOn(component.interval, 'next');
       component.ngOnInit();
-      expect(component.loading).toBeTruthy();
       expect(component.filters).toBe(line.filters);
       expect(intervalSpy).toHaveBeenCalledWith(line.interval);
     });
@@ -165,6 +188,21 @@ describe('TasksLineComponent', () => {
     component.ngOnDestroy();
     expect(subSpy).toHaveBeenCalled();
   });
+  
+  describe('handleAutoRefreshStart', () => {
+    it('should start interval if interval value is not 0', () => {
+      const spy = jest.spyOn(component.interval, 'next');
+      component.handleAutoRefreshStart();
+      expect(spy).toHaveBeenCalledWith(component.intervalValue);
+    });
+
+    it('should stop interval if interval value is 0', () => {
+      const spy = jest.spyOn(component.stopInterval, 'next');
+      component.intervalValue = 0;
+      component.handleAutoRefreshStart();
+      expect(spy).toHaveBeenCalled();
+    });
+  });
 
   it('should get icon', () => {
     expect(component.getIcon('tune')).toEqual('tune');
@@ -175,9 +213,22 @@ describe('TasksLineComponent', () => {
   });
 
   it('should refresh', () => {
-    const refreshSpy = jest.spyOn(component.refresh, 'next');
-    component.onRefresh();
-    expect(refreshSpy).toHaveBeenCalled();
+    component.refresh();
+    expect(mockTasksDataService.refresh$.next).toHaveBeenCalled();
+  });
+
+  describe('On Options Change', () => {
+    beforeEach(() => {
+      component.onOptionsChange();
+    });
+
+    it('should save options', () => {
+      expect(component.line.options).toEqual(mockTasksDataService.options);
+    });
+
+    it('should refresh', () => {
+      expect(mockTasksDataService.refresh$.next).toHaveBeenCalled();
+    });
   });
 
   describe('onIntervalValueChange', () => {
@@ -237,14 +288,13 @@ describe('TasksLineComponent', () => {
     });
 
     it('should refresh', () => {
-      const spyFilters = jest.spyOn(component.filters$, 'next');
-      component.onFiltersChange(newFilters);
-      expect(spyFilters).toHaveBeenCalled();
+      component.onFiltersReset();
+      expect(mockTasksDataService.refresh$.next).toHaveBeenCalled();
     });
   });
 
   describe('OnColumnsChange', () => {
-    const newColumns: ColumnKey<TaskSummary, TaskOptions>[] = ['id', 'acquiredAt', 'creationToEndDuration'];
+    const newColumns: ColumnKey<TaskSummary, TaskOptions>[] = ['id', 'acquiredAt', 'creationToEndDuration', 'select'];
 
     beforeEach(() => {
       component.displayedColumnsKeys = ['count', 'id'] as ColumnKey<TaskSummary, TaskOptions>[];
@@ -292,9 +342,8 @@ describe('TasksLineComponent', () => {
   });
 
   describe('onFiltersReset', () => {
-
     beforeEach(() => {
-      component.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
+      mockTasksDataService.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
       component.line.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
     });
 
@@ -315,9 +364,8 @@ describe('TasksLineComponent', () => {
     });
 
     it('should refresh', () => {
-      const spyFilters = jest.spyOn(component.filters$, 'next');
       component.onFiltersReset();
-      expect(spyFilters).toHaveBeenCalled();
+      expect(mockTasksDataService.refresh$.next).toHaveBeenCalled();
     });
   });
 
@@ -345,36 +393,9 @@ describe('TasksLineComponent', () => {
   });
 
   it('should update selection', () => {
-    const selection = ['1', '2'];
+    const selection = [{ id: 'taskId1' }, { id: 'taskId2' }] as unknown as TaskSummary[];
     component.onSelectionChange(selection);
     expect(component.selection).toEqual(selection);
-  });
-
-  describe('cancelTasks', () => {
-    it('should cancel task', () => {
-      const tasksIds = ['1', '2'];
-      component.cancelTasks(tasksIds);
-      expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith(tasksIds);
-    });
-
-    it('should notify on success', () => {
-      component.cancelTasks(['1', '2']);
-      expect(mockNotificationService.success).toHaveBeenCalled();
-    });
-
-    it('should notify on error', () => {
-      jest.spyOn(console, 'error').mockImplementation(() => {});
-      mockTasksGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error('error')));
-      component.cancelTasks(['1', '2']);
-      expect(mockNotificationService.error).toHaveBeenCalled();
-    });
-  });
-
-  it('should cancel tasks selection', () => {
-    const selection = ['1', '2'];
-    component.selection = selection;
-    component.onCancelTasksSelection();
-    expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith(selection);
   });
 
   it('should update view in logs', () => {
@@ -394,7 +415,7 @@ describe('TasksLineComponent', () => {
   });
 
   describe('addCustomColumn', () => {
-    const newCustom: CustomColumn[] = ['options.options.newColumn', 'options.options.FastCompute'];
+    const newCustom: CustomColumn[] = ['options.options.newColumn'];
 
     beforeEach(() => {
       mockMatDialog.open.mockReturnValueOnce({
@@ -403,16 +424,11 @@ describe('TasksLineComponent', () => {
         }
       });
       component.customColumns = customColumns;
-      component.displayedColumnsKeys.filter(c => c === 'options.options.FastCompute');
       component.addCustomColumn();
     });
 
     it('should update custom columns', () => {
       expect(component.customColumns).toEqual(newCustom);
-    });
-
-    it('should update available columns', () => {
-      expect(component.availableColumns).toEqual([...defaultColumns, ...newCustom]);
     });
 
     it('should update displayed columns', () => {
@@ -425,6 +441,18 @@ describe('TasksLineComponent', () => {
 
     it('should update line custom columns', () => {
       expect(component.line.customColumns).toEqual(newCustom);
+    });
+  });
+
+  describe('hasSelectColumnDisplayed', () => {
+    it('should return true if the column is displayed', () => {
+      component.displayedColumnsKeys.push('select');
+      expect(component.hasSelectColumnDisplayed()).toBeTruthy();
+    });
+
+    it('should return false if the column is not displayed', () => {
+      component.displayedColumnsKeys = component.displayedColumnsKeys.filter(k => k !== 'select');
+      expect(component.hasSelectColumnDisplayed()).toBeFalsy();
     });
   });
 

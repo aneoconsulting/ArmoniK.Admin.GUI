@@ -7,12 +7,15 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { DashboardStorageService } from '@app/dashboard/services/dashboard-storage.service';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { TableHandlerCustomValues } from '@app/types/components';
+import { SelectionTableHandler, TableHandlerCustomValues } from '@app/types/components';
 import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
+import { DataFilterService } from '@app/types/services/data-filter.service';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
+import { StatusService } from '@app/types/status';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { TableGrpcActionsComponent } from '@components/table/table-grpc-actions.component';
 import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
@@ -26,7 +29,9 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { ManageViewInLogsDialogComponent } from './components/manage-view-in-logs-dialog.component';
 import { TasksTableComponent } from './components/table.component';
+import TasksDataService from './services/tasks-data.service';
 import { TasksFiltersService } from './services/tasks-filters.service';
+import { TasksGrpcActionsService } from './services/tasks-grpc-actions.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksIndexService } from './services/tasks-index.service';
 import { TasksStatusesService } from './services/tasks-statuses.service';
@@ -35,7 +40,6 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
 @Component({
   selector: 'app-tasks-index',
   templateUrl: './index.component.html',
-  standalone: true,
   imports: [
     FiltersToolbarComponent,
     TableIndexActionsToolbarComponent,
@@ -44,17 +48,16 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
-    MatIconModule,
     MatSnackBarModule,
     TasksTableComponent,
+    TableGrpcActionsComponent,
   ],
   providers: [
     TasksGrpcService,
     TasksFiltersService,
-    TasksStatusesService,
     TasksIndexService,
     {
-      provide: DATA_FILTERS_SERVICE,
+      provide: DataFilterService,
       useExisting: TasksFiltersService
     },
     TableService,
@@ -69,17 +72,26 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
     DashboardIndexService,
     DashboardStorageService,
     GrpcSortFieldService,
+    TasksDataService,
+    {
+      provide: StatusService,
+      useClass: TasksStatusesService,
+    },
+    {
+      provide: GrpcActionsService, 
+      useClass: TasksGrpcActionsService,
+    },
   ],
 })
-export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
-  readonly tasksGrpcService = inject(TasksGrpcService);
+export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy, SelectionTableHandler<TaskSummary> {
   readonly notificationService = inject(NotificationService);
   readonly indexService = inject(TasksIndexService);
   readonly filtersService = inject(TasksFiltersService);
+  readonly tableDataService = inject(TasksDataService);
 
   tableType: TableType = 'Tasks';
 
-  selection: string[] = [];
+  selection: TaskSummary[] = [];
 
   serviceIcon: string | null = null;
   serviceName: string | null = null;
@@ -113,25 +125,12 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSu
     this.onFiltersChange([[filter]]);
   }
 
-  onSelectionChange(selection: string[]): void {
+  onSelectionChange(selection: TaskSummary[]): void {
     this.selection = selection;
   }
 
-  onCancelTasksSelection():void {
-    this.cancelTasks(this.selection);
-  }
-
-  cancelTasks(tasksIds: string[]): void {
-    this.tasksGrpcService.cancel$(tasksIds).subscribe({
-      complete: () => {
-        this.notificationService.success('Tasks canceled');
-        this.refresh$.next();
-      },
-      error: (error) => {
-        console.error(error);
-        this.notificationService.error('Unable to cancel tasks');
-      },
-    });
+  hasSelectColumnDisplayed() {
+    return this.displayedColumnsKeys.includes('select');
   }
 
   manageViewInLogs(): void {

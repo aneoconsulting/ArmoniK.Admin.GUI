@@ -1,75 +1,54 @@
-import { FilterStringOperator, ListResultsResponse, ResultRawEnumField, SessionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { GrpcAction } from '@app/types/actions.type';
 import { AbstractTableComponent } from '@app/types/components/table';
-import { Scope } from '@app/types/config';
-import { ArmonikData, ResultData } from '@app/types/data';
+import { ArmonikData } from '@app/types/data';
+import { GrpcActionsService } from '@app/types/services/grpc-actions.service';
+import { StatusService } from '@app/types/status';
 import { TableComponent } from '@components/table/table.component';
-import { FiltersService } from '@services/filters.service';
-import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { NotificationService } from '@services/notification.service';
-import { ResultsFiltersService } from '../services/results-filters.service';
+import ResultsDataService from '../services/results-data.service';
 import { ResultsGrpcService } from '../services/results-grpc.service';
-import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
 import { ResultRaw } from '../types';
 
 @Component({
   selector: 'app-results-table',
-  standalone: true,
-  templateUrl: './table.component.html', 
+  templateUrl: './table.component.html',
   providers: [
     ResultsGrpcService,
-    ResultsIndexService,
-    MatDialog,
-    FiltersService,
-    NotificationService,
     ResultsStatusesService,
-    ResultsFiltersService,
-    GrpcSortFieldService,
+    NotificationService,
   ],
   imports: [
     TableComponent,
   ]
 })
-export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, ResultRawEnumField>
-  implements OnInit, AfterViewInit {
-  scope: Scope = 'results';
+export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, ResultRawEnumField> implements OnInit {
+  readonly tableDataService = inject(ResultsDataService);
+  readonly statusesService: ResultsStatusesService = inject(StatusService);
   readonly grpcService = inject(ResultsGrpcService);
-  readonly indexService = inject(ResultsIndexService);
-  readonly statusesService = inject(ResultsStatusesService);
+  readonly resultsNotificationService = inject(NotificationService);
+  private readonly grpcActions = inject(GrpcActionsService);
+
+  actions: GrpcAction<ResultRaw>[] = [];
+  
+  @Output() selectionChange = new EventEmitter<ResultRaw[]>();
 
   ngOnInit(): void {
-    this.initTable();
-  }
-
-  ngAfterViewInit(): void {
-    this.subscribeToData();
-  }
-
-  createSessionIdQueryParams(sessionId: string) {
-    const keySession = this.filtersService.createQueryParamsKey<SessionRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID);
-
-    return {
-      [keySession]: sessionId,
-    };
-  }
-
-  computeGrpcData(entries: ListResultsResponse): ResultRaw[] | undefined {
-    return entries.results;
+    this.initTableDataService();
+    this.actions.push(...this.grpcActions.actions);
   }
 
   isDataRawEqual(value: ResultRaw, entry: ResultRaw): boolean {
     return value.resultId === entry.resultId;
   }
-  
-  createNewLine(entry: ResultRaw): ResultData {
-    return {
-      raw: entry,
-    };
-  }
 
   trackBy(index: number, item: ArmonikData<ResultRaw>): string | number {
     return item.raw.resultId;
+  }
+
+  onSelectionChange($event: ResultRaw[]): void {
+    this.selectionChange.emit($event);
   }
 }

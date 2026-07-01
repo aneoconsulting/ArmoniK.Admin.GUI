@@ -1,18 +1,15 @@
 import { ApplicationRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Scope } from '@app/types/config';
 import { FilterFor } from '@app/types/filter-definition';
-import { FiltersServiceInterface } from '@app/types/services/filtersService';
-import { DefaultConfigService } from '@services/default-config.service';
-import { TableService } from '@services/table.service';
+import { DataFilterService } from '@app/types/services/data-filter.service';
 import { ApplicationFilterField, ApplicationRawFilters, ApplicationsFiltersDefinition } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ApplicationsFiltersService implements FiltersServiceInterface<ApplicationRawEnumField> {
-  readonly defaultConfigService = inject(DefaultConfigService);
-  readonly tableService = inject(TableService);
-
+export class ApplicationsFiltersService extends DataFilterService<ApplicationRawEnumField> {
+  protected readonly scope: Scope = 'applications';
   readonly rootField: Record<ApplicationRawEnumField, string> = {
     [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME]: $localize`Name`,
     [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE]: $localize`Namespace`,
@@ -46,36 +43,17 @@ export class ApplicationsFiltersService implements FiltersServiceInterface<Appli
 
   readonly defaultFilters: ApplicationRawFilters = this.defaultConfigService.defaultApplications.filters;
 
-  saveFilters(filters: ApplicationRawFilters): void {
-    this.tableService.saveFilters('applications-filters', filters);
-  }
-
-  restoreFilters(): ApplicationRawFilters {
-    return this.tableService.restoreFilters<ApplicationRawEnumField, null>('applications-filters', this.filtersDefinitions) ?? this.defaultFilters;
-  }
-
-  resetFilters(): ApplicationRawFilters {
-    this.tableService.resetFilters('applications-filters');
-
-    return this.defaultFilters;
-  }
-
-  saveShowFilters(showFilters: boolean): void {
-    this.tableService.saveShowFilters('applications-show-filters', showFilters);
-  }
-
-  restoreShowFilters(): boolean {
-    return this.tableService.restoreShowFilters('applications-show-filters') ?? this.defaultConfigService.defaultApplications.showFilters;
+  constructor() {
+    super();
+    this.getFromCache();
   }
 
   retrieveLabel(filterFor: FilterFor<ApplicationRawEnumField, null>, filterField:  ApplicationFilterField): string {
-    switch (filterFor) {
-    case 'root':
+    if (filterFor === 'root') {
       return this.rootField[filterField as ApplicationRawEnumField];
-    case 'options':
-      throw new Error('Impossible case');
-    default:
-      throw new Error(`Unknown filter type: ${filterFor} ${filterField}}`);
+    } else {
+      console.error(`Unknown filter type: ${filterFor} ${filterField}`);
+      return '';
     }
   }
 
@@ -83,9 +61,7 @@ export class ApplicationsFiltersService implements FiltersServiceInterface<Appli
     return this.filtersDefinitions;
   }
 
-  retrieveField(filterField: string): ApplicationFilterField  {
-    const values = Object.values(this.rootField);
-    const index = values.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
-    return { for: 'root', index: index };
+  retrieveField(filterField: string): ApplicationFilterField | undefined  {
+    return this.findKeyFromLabel(this.rootField, filterField, 'root');
   }
 }

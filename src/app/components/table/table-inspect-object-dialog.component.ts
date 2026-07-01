@@ -11,15 +11,12 @@ export interface TableInspectObjectDialogData {
 @Component({
   selector: 'app-table-inspect-object-dialog',
   templateUrl: './table-inspect-object-dialog.component.html',
-  styles: [`
-  `],
-  standalone: true,
   imports: [
     ShowCardContentComponent,
     MatDialogModule,
     MatButtonModule
   ],
-  providers: [],
+  providers: []
 })
 export class TableInspectObjectDialogComponent implements OnInit {
 
@@ -27,8 +24,8 @@ export class TableInspectObjectDialogComponent implements OnInit {
   object: object | null = null;
 
   constructor(
-    public dialogRef: MatDialogRef<TableInspectObjectDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: TableInspectObjectDialogData
+    public readonly dialogRef: MatDialogRef<TableInspectObjectDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public readonly data: TableInspectObjectDialogData
   ) {}
 
   ngOnInit(): void {

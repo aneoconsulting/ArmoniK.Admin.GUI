@@ -1,5 +1,5 @@
-import { Subject } from 'rxjs';
 import { ShowActionButton } from '@app/types/components/show';
+import { Subject } from 'rxjs';
 import { ShowActionAreaComponent } from './show-action-area.component';
 
 describe('ShowActionAreaComponent', () => {

@@ -2,7 +2,6 @@ import { FilterStringOperator, SessionRawEnumField, TaskOptionEnumField } from '
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { TableLine } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
@@ -14,17 +13,31 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { of } from 'rxjs';
 import { IndexComponent } from './index.component';
+import { SessionsDataService } from './services/sessions-data.service';
 import { SessionsFiltersService } from './services/sessions-filters.service';
-import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionRaw } from './types';
 
 describe('Sessions Index Component', () => {
   let component: IndexComponent;
 
-  const mockSessionsGrpcService = {
-    cancel$: jest.fn(() => of()),
+  const mockSessionsDataService = {
+    data: [],
+    total: 0,
+    loading: false,
+    options: {},
+    filters: [],
+    refresh$: {
+      next: jest.fn()
+    },
+    onPause: jest.fn(),
+    onResume: jest.fn(),
+    onCancel: jest.fn(),
+    onPurge: jest.fn(),
+    onClose: jest.fn(),
+    onDelete: jest.fn(),
   };
 
   const newCustomColumns: CustomColumn[] = ['options.options.FastCompute', 'options.options.NewCustom'];
@@ -96,6 +109,12 @@ describe('Sessions Index Component', () => {
       key: 'options.applicationNamespace',
       sortable: true,
     },
+    {
+      name: $localize`Select`,
+      key: 'select',
+      type: 'select',
+      sortable: false,
+    },
   ];
 
   const defaultIntervalValue = 10;
@@ -150,7 +169,7 @@ describe('Sessions Index Component', () => {
         IconsService,
         AutoRefreshService,
         { provide: SessionsIndexService, useValue: mockSessionsIndexService },
-        { provide: SessionsGrpcService, useValue: mockSessionsGrpcService },
+        { provide: SessionsDataService, useValue: mockSessionsDataService },
         { provide: MatDialog, useValue: mockMatDialog },
         { provide: DashboardIndexService, useValue: mockDashboardIndexService },
         { provide: Router, useValue: mockRouter },
@@ -175,9 +194,9 @@ describe('Sessions Index Component', () => {
   describe('initialisation', () => {
     it('should initialise columns (with customs)', () => {
       expect(component.displayedColumnsKeys).toEqual([...defaultColumns, ...defaultCustomColumns]);
-      expect(component.availableColumns).toEqual([...availableTableColumns.map(column => column.key), ...defaultCustomColumns]);
+      expect(component.availableColumns).toEqual(availableTableColumns);
       expect(component.customColumns).toEqual(defaultCustomColumns);
-      expect(component.displayedColumns).toEqual([
+      expect(component.displayedColumns()).toEqual([
         {
           name: $localize`Session ID`,
           key: 'sessionId',
@@ -215,7 +234,6 @@ describe('Sessions Index Component', () => {
 
     it('should initialise filters', () => {
       expect(component.filters).toEqual([]);
-      expect(component.filters$).toBeDefined();
     });
 
     it('should init options', () => {
@@ -234,14 +252,31 @@ describe('Sessions Index Component', () => {
     });
   });
 
+  it('should load properly', () => {
+    expect(component.loading).toEqual(mockSessionsDataService.loading);
+  });
+
   it('should get icons', () => {
     expect(component.getIcon('refresh')).toEqual('refresh');
   });
 
   it('should refresh', () => {
-    const spy = jest.spyOn(component.refresh$, 'next');
-    component.onRefresh();
-    expect(spy).toHaveBeenCalled();
+    component.refresh();
+    expect(mockSessionsDataService.refresh$.next).toHaveBeenCalled();
+  });
+
+  describe('On Options Change', () => {
+    beforeEach(() => {
+      component.onOptionsChange();
+    });
+
+    it('should save options', () => {
+      expect(mockSessionsIndexService.saveOptions).toHaveBeenCalledWith(mockSessionsDataService.options);
+    });
+
+    it('should refresh', () => {
+      expect(mockSessionsDataService.refresh$.next).toHaveBeenCalled();
+    });
   });
 
   describe('On interval value change', () => {
@@ -257,9 +292,8 @@ describe('Sessions Index Component', () => {
     });
 
     it('should refresh if the value is not null', () => {
-      const spy = jest.spyOn(component.refresh$, 'next');
       component.onIntervalValueChange(5);
-      expect(spy).toHaveBeenCalled();
+      expect(mockSessionsDataService.refresh$.next).toHaveBeenCalled();
     });
 
     it('should stop the interval if the value is 0', () => {
@@ -275,7 +309,7 @@ describe('Sessions Index Component', () => {
   });
 
   describe('On columns change', () => {
-    const newColumns: ColumnKey<SessionRaw, TaskOptions>[] = ['sessionId', 'createdAt'];
+    const newColumns: ColumnKey<SessionRaw, TaskOptions>[] = ['sessionId', 'createdAt', 'select'];
     beforeEach(() => {
       component.onColumnsChange(newColumns);
     });
@@ -285,7 +319,7 @@ describe('Sessions Index Component', () => {
     });
 
     it('should update displayed columns', () => {
-      expect(component.displayedColumns).toEqual([
+      expect(component.displayedColumns()).toEqual([
         {
           name: $localize`Session ID`,
           key: 'sessionId',
@@ -299,11 +333,22 @@ describe('Sessions Index Component', () => {
           type: 'date',
           sortable: true,
         },
+        {
+          name: $localize`Select`,
+          key: 'select',
+          type: 'select',
+          sortable: false,
+        },
       ]);
     });
 
     it('should save columns', () => {
-      expect(mockSessionsIndexService.saveColumns).toHaveBeenCalledWith(['sessionId', 'createdAt']);
+      expect(mockSessionsIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
+    });
+
+    it('should refresh if duration is included', () => {
+      component.onColumnsChange(['duration']);
+      expect(mockSessionsDataService.refresh$.next).toHaveBeenCalled();
     });
   });
 
@@ -317,7 +362,7 @@ describe('Sessions Index Component', () => {
     });
 
     it('should update displayed columns', () => {
-      expect(component.displayedColumns).toEqual([
+      expect(component.displayedColumns()).toEqual([
         {
           name: $localize`Session ID`,
           key: 'sessionId',
@@ -360,10 +405,7 @@ describe('Sessions Index Component', () => {
       ]
     ];
 
-    let filterSpy: jest.SpyInstance;
-
     beforeEach(() => {
-      filterSpy = jest.spyOn(component.filters$, 'next');
       component.onFiltersChange(newFilters);
     });
 
@@ -378,17 +420,10 @@ describe('Sessions Index Component', () => {
     it('should update page index', () => {
       expect(component.options.pageIndex).toEqual(0);
     });
-
-    it('should emit filters', () => {
-      expect(filterSpy).toHaveBeenCalledWith(newFilters);
-    });
   });
 
   describe('On Filter Reset', () => {
-    let filterSpy: jest.SpyInstance;
-
     beforeEach(() => {
-      filterSpy = jest.spyOn(component.filters$, 'next');
       component.onFiltersReset();
     });
 
@@ -398,10 +433,6 @@ describe('Sessions Index Component', () => {
 
     it('should reset page index', () => {
       expect(component.options.pageIndex).toEqual(0);
-    });
-
-    it('should emit empty filters', () => {
-      expect(filterSpy).toHaveBeenCalledWith([]);
     });
   });
 
@@ -465,10 +496,6 @@ describe('Sessions Index Component', () => {
       expect(component.customColumns).toEqual(newCustomColumns);
     });
 
-    it('should update available columns', () => {
-      expect(component.availableColumns).toEqual([...availableTableColumns.map(column => column.key), ...newCustomColumns]);
-    });
-
     it('should update displayed columns', () => {
       expect(component.displayedColumnsKeys).toEqual([...defaultColumns, ...newCustomColumns]);
     });
@@ -482,6 +509,17 @@ describe('Sessions Index Component', () => {
     });
   });
 
+  describe('hasSelectColumnDisplayed', () => {
+    it('should return true if the column is displayed', () => {
+      component.displayedColumnsKeys.push('select');
+      expect(component.hasSelectColumnDisplayed()).toBeTruthy();
+    });
+
+    it('should return false if the column is not displayed', () => {
+      component.displayedColumnsKeys = component.displayedColumnsKeys.filter(k => k !== 'select');
+      expect(component.hasSelectColumnDisplayed()).toBeFalsy();
+    });
+  });
   
   describe('onShowFiltersChange', () => {
     it('should update show filters', () => {
@@ -495,5 +533,11 @@ describe('Sessions Index Component', () => {
       component.onShowFiltersChange(newShowFilters);
       expect(mockSessionFiltersService.saveShowFilters).toHaveBeenCalledWith(newShowFilters);
     });
+  });
+
+  it('should emit on selection change', () => {
+    const event = [{ id: 'sessionId1' }, { id: 'sessionId2' }] as unknown as SessionRaw[];
+    component.onSelectionChange(event);
+    expect(component.selection).toBe(event);
   });
 });

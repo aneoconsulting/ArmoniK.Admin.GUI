@@ -5,7 +5,7 @@ import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 
 export type ApplicationRaw = GrpcApplicationRaw.AsObject;
-export type ApplicationRawColumnKey = ColumnKey<ApplicationRaw, never> | 'count';
+export type ApplicationRawColumnKey = ColumnKey<ApplicationRaw, never>;
 export type ApplicationRawFieldKey = FieldKey<ApplicationRaw>;
 export type ApplicationRawListOptions = ListOptions<ApplicationRaw>;
 

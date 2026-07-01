@@ -1,0 +1,6 @@
+<mat-chip [ngStyle]="{ 'background-color': color }" disableRipple>
+  @if (icon !== undefined) {
+    <mat-icon matChipAvatar [fontIcon]="icon" />
+  }
+  <p>{{label}}</p>
+</mat-chip>

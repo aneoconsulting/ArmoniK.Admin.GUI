@@ -1,0 +1,25 @@
+@use 'styles' as *;
+
+.permissions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.2rem;
+}
+
+.permission-title {
+  @include flex-row($gap: 0.5rem, $justify: start);
+
+  text-transform: capitalize;
+
+  margin-bottom: 0.5rem;
+}
+
+.permission h3 mat-icon {
+  height: 1.25rem;
+  width: 1.25rem;
+  font-size: 1.25rem;
+}
+
+.permission ul {
+  margin: 0;
+}

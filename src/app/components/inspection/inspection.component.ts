@@ -1,22 +1,23 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { TaskOptions } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
-import { DataRaw, Status } from '@app/types/data';
+import { DataRaw } from '@app/types/data';
 import { InspectionObjectComponent } from './inspection-object.component';
 
 @Component({
   selector: 'app-inspection',
   templateUrl: 'inspection.component.html',
-  standalone: true,
   imports: [
     InspectionObjectComponent,
     MatExpansionModule,
+    MatToolbarModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styleUrl: '../../../inspections.css',
+  styleUrl: '../../../inspections.scss'
 })
-export class InspectionComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null> {
+export class InspectionComponent<T extends DataRaw, O extends TaskOptions | null = null> {
   private _data: T = {} as T;
   private _options: NonNullable<O> = {} as NonNullable<O>;
 
@@ -36,11 +37,6 @@ export class InspectionComponent<T extends DataRaw, S extends Status, O extends 
       }
     }
   }
-
-  /**
-   * Required to display a status label.
-   */
-  @Input({ required: false }) statuses: Record<S, string>;
 
   get data(): T {
     return this._data;

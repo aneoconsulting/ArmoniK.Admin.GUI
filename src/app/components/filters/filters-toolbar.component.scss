@@ -1,0 +1,35 @@
+@use 'styles' as *;
+
+.filters-toolbar {
+  @include flex-row(0, $align: start);
+}
+
+.filters-list {
+  @include flex-col(0.5rem);
+}
+
+.filters-list-text {
+  font-size: 1rem;
+  font-weight: 400;
+
+  min-width: 3rem;
+  text-align: end;
+}
+
+.filters-list-and {
+  @include flex-row(0.5rem, $justify: start);
+}
+
+button {
+  align-self: flex-start;
+}
+
+.manage-filters {
+  @include flex-col();
+  padding: 0.5rem;
+  border-radius: 1rem;
+  mat-icon {
+    transform: scale(1.5);
+    margin: 0;
+  }
+}

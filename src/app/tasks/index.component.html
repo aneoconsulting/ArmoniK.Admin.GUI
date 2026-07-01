@@ -12,8 +12,9 @@
       [columnsLabels]="columnsLabels"
       [displayedColumns]="displayedColumnsKeys"
       [availableColumns]="availableColumns"
+      [customColumns]="customColumns"
       [lockColumns]="lockColumns"
-      (refresh)="onRefresh()"
+      (refresh)="refresh()"
       (intervalValueChange)="onIntervalValueChange($event)"
       (displayedColumnsChange)="onColumnsChange($event)"
       (resetColumns)="onColumnsReset()"
@@ -21,13 +22,7 @@
       (lockColumnsChange)="onLockColumnsChange()"
       (addToDashboard)="onAddToDashboard()"
       >
-        <ng-container extra-buttons-right>
-          <button mat-flat-button color="accent" (click)="onCancelTasksSelection()" [disabled]="!selection.length">
-            <mat-icon matListIcon aria-hidden="true" fontIcon="stop"/>
-            <span i18n> Cancel Tasks </span>
-          </button>
-        </ng-container>
-        <ng-container extra-menu-items>
+      <ng-container ng-container extra-menu-items>
         <button mat-menu-item (click)="manageViewInLogs()">
           <mat-icon aria-hidden="true" [fontIcon]="getIcon('find-logs')"/>
           <span i18n appNoWrap>
@@ -53,19 +48,21 @@
       (showFiltersChange)="onShowFiltersChange($event)"
     />
   </mat-toolbar-row>
+  
+  <mat-toolbar-row>
+    <app-table-grpc-actions [refresh$]="tableDataService.refresh$" [selection]="selection" [selectDisplayed]="hasSelectColumnDisplayed()" />
+  </mat-toolbar-row>
 </mat-toolbar>
 
 <app-tasks-table
-  [filters$]="filters$"
-  [displayedColumns]="displayedColumns"
+  [displayedColumns]="displayedColumns()"
   [lockColumns]="lockColumns"
-  [options]="options"
   [serviceName]="serviceName"
   [serviceIcon]="serviceIcon"
   [urlTemplate]="urlTemplate"
-  [refresh$]="refresh$"
-  [loading]="loading"
-  (selectionChange)="onSelectionChange($event)"
   (retries)="onRetries($event)"
+  (optionsUpdate)="onOptionsChange()"
+  (selectionChange)="onSelectionChange($event)"
+  (columnUpdate)="onColumnsChange($event)"
 />
   

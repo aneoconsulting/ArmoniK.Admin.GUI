@@ -11,14 +11,7 @@ import { IconsService } from '@services/icons.service';
 @Component({
   selector: 'app-icon-picker',
   templateUrl: './icon-picker-dialog.component.html',
-  styles: [`
-article {
-  max-height: 300px;
-  overflow-y: auto;
-  display: grid;
-}
-  `],
-  standalone: true,
+  styleUrl: 'icon-picker-dialog.component.scss',
   providers: [
     IconsService
   ],
@@ -35,7 +28,7 @@ article {
 export class IconPickerDialogComponent {
   readonly iconsService = inject(IconsService);
 
-  @Input({ required: true }) icon: string = '';
+  @Input({ required: true }) icon: string | null | undefined = '';
   @Output() iconChange = new EventEmitter<string>();
 
   icons: string[] = this.iconsService.getAllIcons();

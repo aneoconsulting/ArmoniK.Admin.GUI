@@ -4,7 +4,7 @@ import { GrpcResponse } from '@app/types/data';
 
 @Injectable()
 export class CacheService {
-  private tableCache: Map<Scope, GrpcResponse> = new Map();
+  private readonly tableCache: Map<Scope, GrpcResponse> = new Map();
 
   save(scope: Scope, data: GrpcResponse) {
     this.tableCache.set(scope, data);

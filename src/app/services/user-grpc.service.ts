@@ -5,13 +5,13 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class UserGrpcService {
   constructor(
-    private _authenticationService: AuthenticationClient,
+    private readonly authenticationService: AuthenticationClient,
   ) {}
   /**
    *@returns an Observable<GetCurrentUserResponse> fetching a user
    */
   getUser$(): Observable<GetCurrentUserResponse> {
     const request = new GetCurrentUserRequest();
-    return this._authenticationService.getCurrentUser(request);
+    return this.authenticationService.getCurrentUser(request);
   }
 }

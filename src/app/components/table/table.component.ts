@@ -6,26 +6,24 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
+import { GrpcAction } from '@app/types/actions.type';
 import { TableColumn } from '@app/types/column.type';
-import { ArmonikData, ColumnKey, DataRaw, Status } from '@app/types/data';
+import { ArmonikData, ColumnKey, DataRaw } from '@app/types/data';
 import { ListOptions } from '@app/types/options';
-import { StatusesServiceI } from '@app/types/services';
-import { ActionTable } from '@app/types/table';
+import { Status, StatusService } from '@app/types/status';
 import { TableContainerComponent } from '@components/table-container.component';
 import { TableActionsComponent } from './table-actions.component';
 import { TableCellComponent } from './table-cell.component';
 import { TableColumnHeaderComponent } from './table-column-header.component';
-import { TableEmptyDataComponent } from './table-empty-data.component';
 
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
-  standalone: true,
+  styleUrl: 'table.component.scss',
   imports: [
     TableColumnHeaderComponent,
     TableCellComponent,
     MatPaginatorModule,
-    TableEmptyDataComponent,
     DragDropModule,
     MatTableModule,
     MatSortModule,
@@ -37,6 +35,10 @@ import { TableEmptyDataComponent } from './table-empty-data.component';
 export class TableComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null> implements AfterViewInit, OnDestroy {
   // Required inputs
   @Input({ required: true }) set columns(entries: TableColumn<T, O>[]) {
+    const selectColumn = entries.find(column => column.key === 'select');
+    if (selectColumn) {
+      entries = [selectColumn, ...entries.filter(column => column.key !== 'select')];
+    }
     this._columns = entries;
     this._columnsKeys = entries.map((entry) => entry.key);
   }
@@ -47,7 +49,8 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
       const selection = entries.filter(entry => this.isSelected(entry.raw)).map(entry => entry.raw);
       this.selection.clear();
       this.selection.select(...selection);
-      this._isAllSelected = this.selection.selected.length === entries.length;
+      this._isAllSelected = this.selection.selected.length === entries.length && entries.length > 0;
+      this.emitSelectionChange();
     }
   }
 
@@ -57,8 +60,8 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   @Input({ required: true }) lockColumns: boolean;
 
   // Optional inputs
-  @Input({ required: false }) actions: ActionTable<T, O>[];
-  @Input({ required: false }) statusesService: StatusesServiceI<S>;
+  @Input({ required: false }) actions: GrpcAction<T>[];
+  @Input({ required: false }) statusesService: StatusService<S>;
   @Input({ required: false }) statusesGroups: TasksStatusesGroup[];
   @Input({ required: false }) dataComparator: ((a: T, b: T) => boolean) | undefined;
 
@@ -70,7 +73,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   @Output() columnDrop = new EventEmitter<ColumnKey<T, O>[]>();
   @Output() optionsChange = new EventEmitter<never>();
   @Output() selectionChange = new EventEmitter<T[]>();
-  @Output() personnalizeTasksByStatus = new EventEmitter<void>();
+  @Output() personalizeTasksByStatus = new EventEmitter<void>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -133,13 +136,13 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   }
 
   isSelected(row: T): boolean {
-    return this.selection.selected.find(selectedRow => {
+    return this.selection.selected.some(selectedRow => {
       if (this.dataComparator) {
         return this.dataComparator(row, selectedRow);
       } else {
         return false;
       }
-    }) !== undefined;
+    });
   }
 
   toggleAllRows(): void {
@@ -162,7 +165,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
     this.emitSelectionChange();
   }
 
-  onPersonnalizeTasksByStatus(): void {
-    this.personnalizeTasksByStatus.emit();
+  onPersonalizeTasksByStatus(): void {
+    this.personalizeTasksByStatus.emit();
   }
 }

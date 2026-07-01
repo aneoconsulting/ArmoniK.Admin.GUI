@@ -1,0 +1,13 @@
+@use 'styles' as *;
+
+:host {
+  grid-column-start: 1;
+}
+
+#byte-array-header {
+  @include flex-row($justify: start);
+}
+
+mat-chip, .binary-indicator {
+  margin-left: 0.25rem;
+}

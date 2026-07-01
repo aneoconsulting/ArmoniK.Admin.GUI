@@ -12,35 +12,7 @@ import { IconsService } from '@services/icons.service';
 @Component({
   selector: 'app-tasks-manage-view-in-logs-dialog',
   templateUrl: './manage-view-in-logs-dialog.component.html',
-  styles: [`
-mat-dialog-content {
-  padding-top: 0!important;
-  overflow: visible!important;
-  display: flex;
-  flex-direction: column;
-}
-
-.service-decoration {
-  display: flex;
-  align-items: start;
-  gap: 1rem;
-}
-
-.url-service {
-  width: 100%;
-}
-
-.preview {
-  display: flex;
-  align-items: center;
-  margin-top: 2px;
-}
-
-.manage-presentation {
-  max-width: 425px;
-}
-  `],
-  standalone: true,
+  styleUrl: 'manage-view-in-logs-dialog.component.scss',
   imports: [
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -49,7 +21,7 @@ mat-dialog-content {
     MatButtonModule,
     MatIconModule,
     IconPickerDialogComponent,
-  ],
+  ]
 })
 export class ManageViewInLogsDialogComponent implements OnInit {
   readonly #dialogRef = inject(MatDialogRef<ManageViewInLogsDialogComponent, ManageViewInLogsDialogResult>);

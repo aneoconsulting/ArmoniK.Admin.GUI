@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -10,33 +10,29 @@ import { TableInspectObjectDialogComponent, TableInspectObjectDialogData } from 
 @Component({
   selector: 'app-table-inspect-object',
   templateUrl: './table-inspect-object.component.html',
-  styles: [`
-  `],
-  standalone: true,
   imports: [
     MatTooltipModule,
     MatDialogModule,
     MatButtonModule,
-    MatIconModule,
-    CommonModule
+    MatIconModule
   ],
-  providers: [],
+  providers: []
 })
 export class TableInspectObjectComponent
 {
   @Input({ required: true }) object: Record<string, unknown> | undefined;
   @Input({ required: true }) label: string;
 
-  #iconsService = inject(IconsService);
-  #dialog = inject(MatDialog);
+  private readonly iconsService = inject(IconsService);
+  private readonly dialog = inject(MatDialog);
 
   getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   onViewObject(): void {
     if (this.object) {
-      this.#dialog.open<TableInspectObjectDialogComponent, TableInspectObjectDialogData, void>(TableInspectObjectDialogComponent, {
+      this.dialog.open<TableInspectObjectDialogComponent, TableInspectObjectDialogData, void>(TableInspectObjectDialogComponent, {
         data: {
           label: this.label,
           object: this.object,

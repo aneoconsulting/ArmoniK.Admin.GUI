@@ -2,8 +2,8 @@ import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Observable, of } from 'rxjs';
 import { IconsService } from '@services/icons.service';
+import { Observable, of } from 'rxjs';
 import { ReorganizeLinesDialogComponent } from './reorganize-lines-dialog.component';
 import { CountLine, Line } from '../types';
 

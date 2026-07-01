@@ -1,0 +1,105 @@
+@use 'styles' as *;
+@use '@angular/material' as mat;
+
+app-page-section + app-page-section {
+  display: block;
+  margin-top: 2rem;
+}
+
+main {
+  @include flex-row($align: start);
+}
+
+.sidebar-items {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+
+  @include flex-col(1rem);
+}
+
+.sidebar-items li {
+  @include flex-row($gap: 1rem, $justify: start);
+}
+
+.add-sidebar-item {
+  margin-top: 1rem;
+  width: 66%;
+}
+
+.storage ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+
+  display: grid;
+  grid-template-columns: min-content min-content min-content;
+  column-gap: 0.5rem;
+}
+
+.storage li {
+  /* do not wrap word */
+  white-space: nowrap;
+}
+
+.export, .storage, .sidebar, .import, .filters-cache {
+  @include flex-col(0.5rem);
+
+  button {
+    width: fit-content;
+  }
+}
+
+.import .file {
+  @include flex-row(1rem)
+}
+
+.file {
+  align-items: center;
+}
+
+.actions {
+  @include flex-row(1rem);
+  width: fit-content;
+}
+
+.between {
+  justify-content: space-between;
+  width: 100%;
+}
+
+.storage {
+  margin-top: 1rem;
+}
+
+.import {
+  margin-top: 1rem;
+}
+
+.navbar {
+  margin-bottom: 1rem;
+}
+
+mat-form-field {
+  width: fit-content;
+}
+
+.custom-file-upload {
+  border: 1px solid var(--armonik-file-upload-color);
+  color: var(--armonik-file-upload-color);
+  border-radius: 0.4em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background-color 200ms linear;
+}
+
+.custom-file-upload > span {
+  padding-left: 10px;
+}
+
+.custom-file-upload:hover {
+  background-color: var(--armonik-file-background);
+}

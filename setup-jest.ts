@@ -1,5 +1,6 @@
-import 'jest-preset-angular/setup-jest';
+import { setupZonelessTestEnv } from 'jest-preset-angular/setup-env/zoneless';
 import '@angular/localize/init';
-import { TextEncoder } from 'util';
+import { TextEncoder } from 'node:util';
 
-global.TextEncoder = TextEncoder;
+setupZonelessTestEnv();
+globalThis.TextEncoder = TextEncoder;

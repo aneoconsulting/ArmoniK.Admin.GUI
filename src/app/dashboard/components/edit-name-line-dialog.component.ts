@@ -8,9 +8,7 @@ import { EditNameLineData } from '@app/types/dialog';
 @Component({
   selector: 'app-edit-name-line-dialog',
   templateUrl: 'edit-name-line-dialog.component.html',
-  standalone: true,
-  providers: [
-  ],
+  providers: [],
   imports: [
     MatDialogModule,
     MatInputModule,

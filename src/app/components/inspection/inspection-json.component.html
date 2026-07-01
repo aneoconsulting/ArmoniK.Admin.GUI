@@ -1,0 +1,22 @@
+<mat-toolbar>
+  <section>
+    <span i18n>Raw JSON</span>
+    <button mat-icon-button (click)="copy()" i18n-matTooltip matTooltip="Copy JSON">
+      <mat-icon [fontIcon]="copyIcon" />
+    </button>
+  </section>
+  <button mat-icon-button (click)="toggleDisplay()" [matTooltip]="display ? hideToolTip : displayToolTip">
+    @if (!display) {
+      <mat-icon [fontIcon]="arrowDownIcon" />
+    } @else {
+      <mat-icon [fontIcon]="arrowUpIcon" />
+    }
+  </button>
+</mat-toolbar>
+@if (display) {
+  <mat-card>
+    <span>&#x7b;</span>
+    <app-json [data]="data" />
+    <span>&#x7d;</span>
+  </mat-card>
+}

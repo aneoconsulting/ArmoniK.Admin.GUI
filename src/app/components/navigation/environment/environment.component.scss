@@ -1,0 +1,37 @@
+.env-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  padding-left: 0.75rem;
+  height: 2rem;
+}
+
+.env-item > section {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.env-item > mat-icon {
+  margin: 0.75rem;
+}
+
+.env-item > section > p {
+  padding: 0;
+  margin: 0;
+}
+
+:host {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+::ng-deep.mat-mdc-menu-panel {
+  max-width: none !important;
+}
+
+#menu-trigger {
+  color: var(--armonik-header-color) !important
+}

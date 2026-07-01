@@ -2,10 +2,10 @@ import { TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { BehaviorSubject } from 'rxjs';
 import { SessionRaw } from '@app/sessions/types';
 import { TaskOptions } from '@app/tasks/types';
 import { IconsService } from '@services/icons.service';
+import { BehaviorSubject } from 'rxjs';
 import { ColumnsButtonComponent } from './columns-button.component';
 
 describe('Auto-refresh component', () => {

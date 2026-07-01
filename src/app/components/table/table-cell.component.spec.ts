@@ -1,12 +1,12 @@
 import { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { Timestamp } from '@ngx-grpc/well-known-types';
-import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
 import { SessionRaw, SessionRawColumnKey } from '@app/sessions/types';
 import { TaskOptions, TaskSummaryFilters } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { ApplicationData, ArmonikData, DataRaw, PartitionData, SessionData } from '@app/types/data';
+import { StatusService } from '@app/types/status';
+import { Timestamp } from '@ngx-grpc/well-known-types';
 import { TableCellComponent } from './table-cell.component';
 
 describe('TableCellComponent', () => {
@@ -68,6 +68,23 @@ describe('TableCellComponent', () => {
     navigate: jest.fn()
   };
 
+  const mockStatusService = {
+    statuses: {
+      [SessionStatus.SESSION_STATUS_CANCELLED]: {
+        label: 'Cancelled',
+      },
+      [SessionStatus.SESSION_STATUS_CLOSED]: {
+        label: 'Closed'
+      },
+      [SessionStatus.SESSION_STATUS_RUNNING]: {
+        label: 'Running',
+      }
+    },
+    statusToLabel: jest.fn((s: SessionStatus) => {
+      return (mockStatusService.statuses[s]);
+    }),
+  } as unknown as StatusService<SessionStatus>;
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -76,7 +93,7 @@ describe('TableCellComponent', () => {
       ]
     }).inject(TableCellComponent<SessionRaw, SessionStatus, TaskOptions>);
 
-    component.statusesService = new SessionsStatusesService();
+    component.statusesService = mockStatusService;
     component.column = column;
     component.element = element;
   });
@@ -109,6 +126,17 @@ describe('TableCellComponent', () => {
 
     it('should set value', () => {
       expect(component.value).toEqual('session-id');
+    });
+  });
+
+  describe('string value', () => {
+    beforeEach(() => {
+      component.column = column;
+      component.element = element;
+    });
+
+    it('should set value', () => {
+      expect(component.string).toEqual('session-id');
     });
   });
 
@@ -177,12 +205,8 @@ describe('TableCellComponent', () => {
       component.element = element;
     });
 
-    it('should set statusValue', () => {
-      expect(component.statusValue).toEqual(SessionStatus.SESSION_STATUS_RUNNING);
-    });
-
     it('should get status label', () => {
-      expect(component.statusLabel()).toEqual('Running');
+      expect(component.statusLabel()).toEqual(mockStatusService.statuses[SessionStatus.SESSION_STATUS_RUNNING]);
     });
   });
 
@@ -219,6 +243,22 @@ describe('TableCellComponent', () => {
 
     it('should set value', () => {
       expect(component.value).toEqual(options);
+    });
+  });
+
+  describe('Byte Array', () => {
+    beforeEach(() => {
+      component.column = {
+        key: 'duration',
+        type: 'byte-array',
+        sortable: false,
+        name: 'Mock byte array',
+      };
+      component.element = element;
+    });
+
+    it('should set byteArray', () => {
+      expect(component.byteArray).toEqual(element.raw.duration);
     });
   });
 

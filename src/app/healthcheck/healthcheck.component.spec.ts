@@ -1,9 +1,9 @@
 import { HealthStatusEnum } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { of, throwError } from 'rxjs';
 import { HealthCheckComponent } from './healthcheck.component';
 import { HealthCheckGrpcService } from './services/healthcheck-grpc.service';
 import { ServiceHealth } from './types';

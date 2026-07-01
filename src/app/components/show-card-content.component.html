@@ -5,9 +5,7 @@
         <!-- Key -->
         <span class="key">{{ key | pretty }}: </span>
         <!-- Value -->
-        @if (isStatus(key)) {  
-          <span>{{ statusToLabel(key) | emptyCell }}</span>
-        } @else if (isString(key) || isNumber(key)) {
+        @if (isString(key) || isNumber(key)) {
           <span>{{ data[key] | emptyCell }}</span>
         } @else if (isTimestamp(key)) {
           <span>{{ toDate(key) | date: 'yyyy-MM-dd &nbsp;HH:mm:ss' | emptyCell}}</span>
@@ -28,7 +26,7 @@
     } @else {
       <!-- Object -->
       <span class="key">{{ key | pretty }}:</span>
-      <app-show-card-content [data]="findObject(key)" [statuses]="statuses"/>
+      <app-show-card-content [data]="findObject(key)"/>
     }
   }
 } @else if (isArray(data) && hasLength(data)) {

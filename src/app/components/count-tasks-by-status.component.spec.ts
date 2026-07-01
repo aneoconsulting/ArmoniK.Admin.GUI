@@ -1,10 +1,10 @@
 import { TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
-import { Observable, Subject, of } from 'rxjs';
 import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
+import { Observable, Subject, of } from 'rxjs';
 import { CountTasksByStatusComponent } from './count-tasks-by-status.component';
 
 describe('CountTasksByStatusComponent', () => {

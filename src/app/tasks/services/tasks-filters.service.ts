@@ -1,18 +1,18 @@
 import { TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
-import { DefaultConfigService } from '@services/default-config.service';
-import { TableService } from '@services/table.service';
+import { Scope } from '@app/types/config';
+import { DataFilterService, FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/data-filter.service';
+import { StatusService } from '@app/types/status';
 import { TasksStatusesService } from './tasks-statuses.service';
 import { TaskFilterDefinition, TaskFilterField, TaskFilterFor, TaskSummaryFilters } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskSummaryEnumField, TaskOptionEnumField>, FiltersServiceStatusesInterface {
-  readonly statusService = inject(TasksStatusesService);
-  readonly defaultConfigService = inject(DefaultConfigService);
-  readonly tableService = inject(TableService);
+export class TasksFiltersService extends DataFilterService<TaskSummaryEnumField, TaskOptionEnumField>
+  implements FiltersServiceOptionsInterface<TaskOptionEnumField>, FiltersServiceStatusesInterface<TaskStatus> {
+  protected readonly scope: Scope = 'tasks';
+  readonly statusService = inject(StatusService) as TasksStatusesService;
 
   readonly rootField: Record<TaskSummaryEnumField, string> = {
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID]: $localize`Task ID`,
@@ -20,6 +20,7 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_OWNER_POD_ID]: $localize`Owner Pod ID`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_INITIAL_TASK_ID]: $localize`Initial Task ID`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS]: $localize`Status`,
+    [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_BY]: $localize`Created By`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT]: $localize`Created at`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SUBMITTED_AT]: $localize`Submitted at`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STARTED_AT]: $localize`Started at`,
@@ -76,7 +77,7 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
       statuses: Object.keys(this.statusService.statuses).map(status => {
         return {
           key: status,
-          value: this.statusService.statuses[Number(status) as TaskStatus],
+          value: this.statusService.statuses[Number(status) as TaskStatus].label,
         };
       }),
     },
@@ -140,6 +141,11 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
       field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PAYLOAD_ID,
       type: 'string'
     },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_BY,
+      type: 'string',
+    },
     {  
       for: 'options',
       field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
@@ -184,26 +190,9 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
 
   readonly defaultFilters: TaskSummaryFilters = this.defaultConfigService.defaultTasks.filters;
 
-  saveFilters(filters: TaskSummaryFilters): void {
-    this.tableService.saveFilters('tasks-filters', filters);
-  }
-
-  restoreFilters(): TaskSummaryFilters {
-    return this.tableService.restoreFilters<TaskSummaryEnumField, TaskOptionEnumField>('tasks-filters', this.filtersDefinitions) ?? this.defaultFilters;
-  }
-
-  resetFilters(): TaskSummaryFilters {
-    this.tableService.resetFilters('tasks-filters');
-
-    return this.defaultFilters;
-  }
-
-  saveShowFilters(showFilters: boolean): void {
-    this.tableService.saveShowFilters('tasks-show-filters', showFilters);
-  }
-
-  restoreShowFilters(): boolean {
-    return this.tableService.restoreShowFilters('tasks-show-filters') ?? true;
+  constructor() {
+    super();
+    this.getFromCache();
   }
 
   retrieveLabel(filterFor: TaskFilterFor, filterField: TaskFilterField): string {
@@ -213,7 +202,8 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
     case 'options':
       return this.optionsFields[filterField as TaskOptionEnumField];
     default:
-      throw new Error(`Unknown filter type: ${filterFor} ${filterField}`);
+      console.error(`Unknown filter type: ${filterFor} ${filterField}`);
+      return '';
     }
   }
 
@@ -221,16 +211,7 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
     return this.filtersDefinitions;
   }
 
-  retrieveField(filterField: string): TaskFilterField  {
-    const rootValues = Object.values(this.rootField);
-    let index = rootValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
-
-    if (index >= 0) {
-      return { for: 'root', index: index };
-    }
-
-    const optionsValues = Object.values(this.optionsFields);
-    index = optionsValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
-    return { for: 'options', index: index };
+  retrieveField(filterField: string): TaskFilterField | undefined  {
+    return this.findKeyFromLabel(this.rootField, filterField, 'root') ?? this.findKeyFromLabel(this.optionsFields as Record<TaskSummaryEnumField, string>, filterField, 'options');
   }
 }

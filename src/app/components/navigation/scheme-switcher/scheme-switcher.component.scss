@@ -1,0 +1,4 @@
+.mat-button-toggle:not(.mat-button-toggle-checked) {
+  opacity: 0.5;
+  transition: opacity 0.5s ease-in-out;
+}

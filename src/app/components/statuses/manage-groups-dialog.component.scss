@@ -1,0 +1,65 @@
+@use 'styles' as *;
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.groups {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 2rem;
+}
+
+.groups ul {
+  min-height: 2rem;
+}
+
+.groups ul li {
+  @include flex-row($gap: 0.5rem, $justify: start);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.addGroup {
+  @include flex-row($justify: center);
+  height: 100% !important;
+}
+
+.addGroup button {
+  @include flex-col(0.5rem);
+  min-height: 5rem;
+  width: 80%;
+  border-radius: 1rem;
+}
+
+.addGroup button mat-icon {
+  transform: scale(1.5);
+  margin: 0 !important;
+  margin-top: 0.5rem !important;
+}
+
+.groups ul li mat-icon {
+  cursor: move;
+}
+
+.group-header {
+  @include flex-row(1rem);
+}
+
+.group-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.group-header-actions {
+  @include flex-row(0.5rem);
+}
+
+.cdk-drag-preview {
+  list-style: none;
+  padding: 0 0.5rem;
+  border-radius: 0.5rem;
+}

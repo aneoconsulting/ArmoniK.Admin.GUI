@@ -12,51 +12,8 @@ import { Line } from '../types';
 
 @Component({
   selector: 'app-dashboard-reorganize-lines-dialog',
-  templateUrl: './reorganize-lines-dialog.component.html',
-  styles: [`
-.lines {
-  display: flex;
-  flex-direction: column;
-}
-
-.line {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  cursor: move;
-}
-
-.line-name {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-}
-
-.line-actions {
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-}
-
-.cdk-drag-preview {
-  color: rgba(0, 0, 0, 0.6);
-}
-
-.cdk-drag-placeholder {
-  opacity: 0;
-}
-
-.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.lines.cdk-drop-list-dragging .line:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-  `],
-  standalone: true,
+  templateUrl: 'reorganize-lines-dialog.component.html',
+  styleUrl: 'reorganize-lines-dialog.component.scss',
   providers: [
     IconsService,
   ],
@@ -74,9 +31,9 @@ export class ReorganizeLinesDialogComponent implements OnInit {
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
   @Output() lineDelete: EventEmitter<Line> = new EventEmitter<Line>();
 
-  readonly #dialogRef = inject(MatDialogRef<ReorganizeLinesDialogData, ReorganizeLinesDialogResult>);
-  readonly #iconsService = inject(IconsService);
-  readonly #dialog = inject(MatDialog);
+  private readonly dialogRef = inject(MatDialogRef<ReorganizeLinesDialogData, ReorganizeLinesDialogResult>);
+  private readonly iconsService = inject(IconsService);
+  private readonly dialog = inject(MatDialog);
 
   lines: Line[] = [];
 
@@ -89,11 +46,11 @@ export class ReorganizeLinesDialogComponent implements OnInit {
   }
 
   getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   onNoClick(): void {
-    this.#dialogRef.close();
+    this.dialogRef.close();
   }
 
   onDrop(event: CdkDragDrop<Line[]>) {
@@ -108,7 +65,7 @@ export class ReorganizeLinesDialogComponent implements OnInit {
   }
 
   onEditNameLine(line: Line, index: number) {
-    const dialogRef: MatDialogRef<EditNameLineDialogComponent, string> = this.#dialog.open<EditNameLineDialogComponent, EditNameLineData, string>(EditNameLineDialogComponent, {
+    const dialogRef: MatDialogRef<EditNameLineDialogComponent, string> = this.dialog.open<EditNameLineDialogComponent, EditNameLineData, string>(EditNameLineDialogComponent, {
       data: {
         name: line.name
       }
@@ -122,7 +79,9 @@ export class ReorganizeLinesDialogComponent implements OnInit {
             line.name = result;
           }
         };
-        this.lines.map(line => changeSelectedNameLine(line, selectedLine.name));
+        for (const line of this.lines) {
+          changeSelectedNameLine(line, selectedLine.name);
+        }
       }
     });
   }

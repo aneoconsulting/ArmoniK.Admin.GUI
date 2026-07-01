@@ -1,7 +1,7 @@
 import { SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
+import { SessionsDataService } from '@app/sessions/services/sessions-data.service';
 import { SessionsIndexService } from '@app/sessions/services/sessions-index.service';
 import { SessionRaw } from '@app/sessions/types';
 import { TaskOptions } from '@app/tasks/types';
@@ -13,6 +13,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { of } from 'rxjs';
 import { SessionsLineComponent } from './sessions-line.component';
 import { TableLine } from '../../types';
 
@@ -49,7 +50,13 @@ describe('SessionsLineComponent', () => {
       key: 'count',
       type: 'count',
       sortable: true
-    }
+    },
+    {
+      name: $localize`Select`,
+      key: 'select',
+      type: 'select',
+      sortable: false,
+    },
   ];
 
   const options: ListOptions<SessionRaw, TaskOptions> = {
@@ -84,6 +91,17 @@ describe('SessionsLineComponent', () => {
     }),
   };
 
+  const mockSessionsDataService = {
+    data: [],
+    total: 0,
+    loading: false,
+    options: {},
+    filters: [] as FiltersOr<SessionRawEnumField>,
+    refresh$: {
+      next: jest.fn()
+    },
+  };
+
   const mockSessionsIndexService = {
     availableTableColumns: displayedColumns,
     defaultColumns: defaultColumns,
@@ -103,6 +121,7 @@ describe('SessionsLineComponent', () => {
         { provide: MatDialog, useValue: mockMatDialog },
         AutoRefreshService,
         IconsService,
+        { provide: SessionsDataService, useValue: mockSessionsDataService },
         { provide: SessionsIndexService, useValue: mockSessionsIndexService },
         DefaultConfigService,
         { provide: NotificationService, useValue: mockNotificationService },
@@ -117,11 +136,14 @@ describe('SessionsLineComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should load properly', () => {
+    expect(component.loading).toEqual(mockSessionsDataService.loading);
+  });
+
   describe('on init', () => {
     it('should init with line values', () => {
       const intervalSpy = jest.spyOn(component.interval, 'next');
       component.ngOnInit();
-      expect(component.loading).toBeTruthy();
       expect(component.filters).toBe(line.filters);
       expect(intervalSpy).toHaveBeenCalledWith(line.interval);
     });
@@ -147,6 +169,21 @@ describe('SessionsLineComponent', () => {
     expect(subSpy).toHaveBeenCalled();
   });
 
+  describe('handleAutoRefreshStart', () => {
+    it('should start interval if interval value is not 0', () => {
+      const spy = jest.spyOn(component.interval, 'next');
+      component.handleAutoRefreshStart();
+      expect(spy).toHaveBeenCalledWith(component.intervalValue);
+    });
+
+    it('should stop interval if interval value is 0', () => {
+      const spy = jest.spyOn(component.stopInterval, 'next');
+      component.intervalValue = 0;
+      component.handleAutoRefreshStart();
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
   it('should get icon', () => {
     expect(component.getIcon('tune')).toEqual('tune');
   });
@@ -156,9 +193,22 @@ describe('SessionsLineComponent', () => {
   });
 
   it('should refresh', () => {
-    const refreshSpy = jest.spyOn(component.refresh, 'next');
-    component.onRefresh();
-    expect(refreshSpy).toHaveBeenCalled();
+    component.refresh();
+    expect(mockSessionsDataService.refresh$.next).toHaveBeenCalled();
+  });
+
+  describe('On Options Change', () => {
+    beforeEach(() => {
+      component.onOptionsChange();
+    });
+
+    it('should save options', () => {
+      expect(component.line.options).toEqual(mockSessionsDataService.options);
+    });
+
+    it('should refresh', () => {
+      expect(mockSessionsDataService.refresh$.next).toHaveBeenCalled();
+    });
   });
 
   describe('onIntervalValueChange', () => {
@@ -218,14 +268,12 @@ describe('SessionsLineComponent', () => {
     });
 
     it('should refresh', () => {
-      const spyFilters = jest.spyOn(component.filters$, 'next');
-      component.onFiltersChange(newFilters);
-      expect(spyFilters).toHaveBeenCalled();
-    });
+      expect(mockSessionsDataService.refresh$.next).toHaveBeenCalled();
+    });  
   });
 
   describe('OnColumnsChange', () => {
-    const newColumns: ColumnKey<SessionRaw, TaskOptions>[] = ['sessionId', 'count', 'duration'];
+    const newColumns: ColumnKey<SessionRaw, TaskOptions>[] = ['sessionId', 'count', 'duration', 'select'];
 
     beforeEach(() => {
       component.displayedColumnsKeys = ['count', 'id'] as ColumnKey<SessionRaw, TaskOptions>[];
@@ -273,9 +321,8 @@ describe('SessionsLineComponent', () => {
   });
 
   describe('onFiltersReset', () => {
-
     beforeEach(() => {
-      component.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
+      mockSessionsDataService.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
       component.line.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
     });
 
@@ -296,10 +343,8 @@ describe('SessionsLineComponent', () => {
     });
 
     it('should refresh', () => {
-      const spyFilters = jest.spyOn(component.filters$, 'next');
-      component.onFiltersReset();
-      expect(spyFilters).toHaveBeenCalled();
-    });
+      expect(mockSessionsDataService.refresh$.next).toHaveBeenCalled();
+    });  
   });
 
   describe('onLockColumnChange', () => {
@@ -326,7 +371,7 @@ describe('SessionsLineComponent', () => {
   });
 
   describe('addCustomColumn', () => {
-    const newCustom: CustomColumn[] = ['options.options.newColumn', 'options.options.FastCompute'];
+    const newCustom: CustomColumn[] = ['options.options.newColumn'];
 
     beforeEach(() => {
       mockMatDialog.open.mockReturnValueOnce({
@@ -335,17 +380,12 @@ describe('SessionsLineComponent', () => {
         }
       });
       component.customColumns = customColumns;
-      component.availableColumns = [...defaultColumns, ...customColumns];
-      component.displayedColumnsKeys.filter(c => c === 'options.options.FastCompute');
+      component.availableColumns = displayedColumns;
       component.addCustomColumn();
     });
 
     it('should update custom columns', () => {
       expect(component.customColumns).toEqual(newCustom);
-    });
-
-    it('should update available columns', () => {
-      expect(component.availableColumns).toEqual([...defaultColumns, ...newCustom]);
     });
 
     it('should update displayed columns', () => {
@@ -358,6 +398,18 @@ describe('SessionsLineComponent', () => {
 
     it('should update line custom columns', () => {
       expect(component.line.customColumns).toEqual(newCustom);
+    });
+  });
+
+  describe('hasSelectColumnDisplayed', () => {
+    it('should return true if the column is displayed', () => {
+      component.displayedColumnsKeys.push('select');
+      expect(component.hasSelectColumnDisplayed()).toBeTruthy();
+    });
+
+    it('should return false if the column is not displayed', () => {
+      component.displayedColumnsKeys = component.displayedColumnsKeys.filter(k => k !== 'select');
+      expect(component.hasSelectColumnDisplayed()).toBeFalsy();
     });
   });
 

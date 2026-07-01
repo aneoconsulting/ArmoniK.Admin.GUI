@@ -98,6 +98,7 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
     {
       name: $localize`Status Message`,
       key: 'statusMessage',
+      type: 'message',
       sortable: false,
     },
     {
@@ -147,6 +148,7 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
     {
       name: $localize`Error`,
       key: 'error',
+      type: 'output',
       sortable: false,
     },
     {
@@ -177,6 +179,11 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
       name: $localize`Payload ID`,
       key: 'payloadId',
       type: 'duration',
+      sortable: true
+    },
+    {
+      name: $localize`Created By`,
+      key: 'createdBy',
       sortable: true
     },
     {

@@ -1,10 +1,10 @@
 import { inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
-import { Observable, Subject, Subscription, catchError, map, of, switchMap } from 'rxjs';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { Observable, Subject, Subscription, catchError, map, of, switchMap } from 'rxjs';
 import { Field } from '../column.type';
 import { DataRaw } from '../data';
 import { GetResponse, GrpcGetInterface } from '../services/grpcService';
