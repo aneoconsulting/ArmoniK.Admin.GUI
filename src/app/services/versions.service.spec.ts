@@ -15,9 +15,9 @@ describe('versions service', () => {
       expect(service.core()).toBe(coreVersion);
     });
 
-    it('should send an error message when core version does not contain only numbers', () => {
+    it('should keep the raw string when core version does not contain only numbers', () => {
       service.setCoreVersion('nouvelle.8.de.3');
-      expect(service.core()).toBeUndefined();
+      expect(service.core()).toBe('nouvelle.8.de.3');
     });
 
     it('should send an error message when core version is equal to null', () => {
@@ -33,9 +33,9 @@ describe('versions service', () => {
       expect(service.api()).toEqual(apiVersion);
     });
 
-    it('should only be numbers', () => {
+    it('should keep the raw string when API version does not contain only numbers', () => {
       service.setAPIVersion('nouvelle.5.de.aping');
-      expect(service.api()).toBeUndefined();
+      expect(service.api()).toBe('nouvelle.5.de.aping');
     });
     it('should send an error message when API version is equal to null', () => {
       service.setAPIVersion();
