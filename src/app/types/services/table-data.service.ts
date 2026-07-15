@@ -82,7 +82,7 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
       })
     ).subscribe((entries) => {
       const total = this.total();
-      if (entries.length === 0 && total !== 0) {
+      if (this.shouldClampToLastPage(entries.length, total)) {
         this.setToLastPage(total);
       } else {
         this.handleData(entries);
@@ -114,13 +114,42 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
   }
 
   /**
+   * Compute the index of the last page that actually contains data.
+   * Pages are zero-indexed, so for a total that is an exact multiple of the page size
+   * the last page index is `total / pageSize - 1` (hence `ceil(total / pageSize) - 1`).
+   * @param total the total number of data stored in the database
+   */
+  private computeLastPageIndex(total: number): number {
+    if (total === 0 || this.options.pageSize <= 0) {
+      return 0;
+    }
+    return Math.ceil(total / this.options.pageSize) - 1;
+  }
+
+  /**
+   * Whether the current page must be clamped to the last page that holds data.
+   *
+   * Returns `true` only when the latest fetch came back empty while the database still
+   * holds data (`total !== 0`) and the current page is not already the last one.
+   * - The `total !== 0` check lets a genuinely empty result render as an empty table
+   *   instead of triggering a clamp.
+   * - The page-index check prevents an infinite refresh loop when the last page itself
+   *   returns no data (e.g. a stale `total` after a deletion).
+   * @param entriesCount number of entries returned by the latest fetch
+   * @param total the total number of data stored in the database
+   */
+  private shouldClampToLastPage(entriesCount: number, total: number): boolean {
+    return entriesCount === 0 && total !== 0 && this.options.pageIndex !== this.computeLastPageIndex(total);
+  }
+
+  /**
    * Called when no data are received while there is still some in the database.
    * This case generally happens when data is filtered or deleted while the user is on one of the latest page of the table.
-   * Refreshes automatically the data.
+   * Clamps the current page to the last page that holds data and refreshes automatically.
    * @param total the total number of data stored in the database
    */
   private setToLastPage(total: number) {
-    this.options.pageIndex = Math.floor(total / this.options.pageSize);
+    this.options.pageIndex = this.computeLastPageIndex(total);
     this.refresh$.next();
   }
 

@@ -6,16 +6,18 @@ export class VersionsService {
   readonly api = signal<string | undefined>(undefined);
 
   /**
-   * Check if the version is only composed from numbers.
-   * If it is, returns it. If not, returns the VERSION_NOT_FOUND.
+   * Format the version as "major.minor.patch", ignoring any pre-release or build suffix.
+   * Falls back to the raw string when it cannot be parsed as numbers,
+   * and to undefined when there is no version at all.
    */
   private formatVersion(version: string | null): string | undefined {
     if (version !== null) {
-      const versionNumber = version.split('.').map(Number);
+      const versionNumber = version.split(/[+-]/)[0].split('.').map(Number);
       const isInvalidNumber = versionNumber.some(number => Number.isNaN(number));
       if (!isInvalidNumber) {
         return this.fixVersion(versionNumber);
       }
+      return version;
     }
     return undefined;
   }

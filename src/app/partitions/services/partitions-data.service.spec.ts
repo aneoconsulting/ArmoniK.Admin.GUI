@@ -200,7 +200,7 @@ describe('PartitionsDataService', () => {
         expect(mockPartitionsGrpcService.list$).toHaveBeenCalledWith(
           {
             ...service.options,
-            pageIndex: Math.floor(total / service.options.pageSize),
+            pageIndex: 9, // last page for 100 items with a pageSize of 10
           },
           service.filters
         );
