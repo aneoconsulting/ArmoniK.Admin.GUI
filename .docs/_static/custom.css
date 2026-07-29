@@ -1,0 +1,10 @@
+.wy-nav-content {
+    max-width: 100%;
+}
+
+/* Centered images (converted from the former Docus ::center component). */
+img.centered-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
