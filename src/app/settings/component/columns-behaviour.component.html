@@ -1,0 +1,12 @@
+<app-page-section-header icon="grid_goldenratio">
+  <span i18n>Columns behaviour</span>
+</app-page-section-header>
+
+<section>
+  @for (column of columns.entries(); track $index) {
+    <div>
+      <p>{{ column[1].label }} <span i18n>columns:</span></p>
+      <app-autocomplete [options]="behaviours" [value]="column[1].value" i18n-label label="Behaviour" (valueChange)="updateBehaviour(column[0], $event)" />
+    </div>
+  }
+</section>

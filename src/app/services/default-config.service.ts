@@ -6,6 +6,7 @@ import { PartitionRaw } from '@app/partitions/types';
 import { ResultRaw } from '@app/results/types';
 import { SessionRaw } from '@app/sessions/types';
 import { TaskOptions, TaskSummary } from '@app/tasks/types';
+import { ColumnsBehaviourValues } from '@app/types/column.type';
 import { ExportedDefaultConfig, ScopeConfig } from '@app/types/config';
 import { ExternalService } from '@app/types/external-service';
 import { LinkType } from '@app/types/graph.types';
@@ -244,6 +245,8 @@ export class DefaultConfigService {
     },
   };
 
+  readonly #defaultTableColumnsBehaviour: Record<string, ColumnsBehaviourValues> = {};
+
   readonly #defaultTasks: ScopeConfig<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> = {
     interval: 10,
     lockColumns: false,
@@ -445,6 +448,10 @@ export class DefaultConfigService {
     return structuredClone(this.#defaultGraphHighlightChildren);
   }
 
+  get defaultTableColumnsBehaviour() {
+    return structuredClone(this.#defaultTableColumnsBehaviour);
+  }
+
   readonly #exportedDefaultConfig: ExportedDefaultConfig = {
     'language': this.#defaultLanguage,
     'navigation-sidebar': this.#defaultSidebar,
@@ -483,6 +490,7 @@ export class DefaultConfigService {
     'results-lock-columns': this.#defaultResults.lockColumns,
     'results-show-filters': this.#defaultResults.showFilters,
     'results-statuses': this.#defaultResultsStatuses,
+    'table-columns-behaviour': this.#defaultTableColumnsBehaviour,
     'tasks-columns': this.#defaultTasks.columns,
     'tasks-options': this.#defaultTasks.options,
     'tasks-filters': this.#defaultTasks.filters,

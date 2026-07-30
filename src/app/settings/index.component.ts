@@ -19,6 +19,7 @@ import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { StorageService } from '@services/storage.service';
 import { ClearAllDialogComponent } from './component/clear-all-dialog.component';
+import { ColumnsBehaviourComponent } from './component/columns-behaviour.component';
 import { ThemeSelectorComponent } from './component/theme-selector.component';
 
 @Component({
@@ -41,6 +42,7 @@ import { ThemeSelectorComponent } from './component/theme-selector.component';
     MatSnackBarModule,
     MatMenuModule,
     ThemeSelectorComponent,
+    ColumnsBehaviourComponent
   ],
 })
 export class IndexComponent implements OnInit {

@@ -24,6 +24,7 @@ export type Key =
   'navigation-theme' |
   'navigation-color-scheme' |
   'navigation-external-services' |
+  'table-columns-behaviour' |
   'dashboard-lines'|
   'dashboard-split-lines' |
   'applications-tasks-by-status' |

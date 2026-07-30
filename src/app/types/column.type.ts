@@ -3,7 +3,8 @@ import { ColumnKey, DataRaw } from '@app/types/data';
 import { Scope } from './config';
 
 export type DataType = 'raw' | 'link' | 'object' | 'date' | 'duration' | 'status' | 'array' | 'output' | 'message' | 'byte-array'; 
-export type ColumnType = DataType | 'count' | 'actions' | 'select';
+export type SpecialColumn = 'actions' | 'select';
+export type ColumnType = DataType | SpecialColumn | 'count';
 
 export type Field<T extends DataRaw | TaskOptions | null> = {
   key: keyof T;
@@ -18,4 +19,10 @@ export type TableColumn<T extends DataRaw, O extends TaskOptions | null = null> 
   type?: ColumnType;
   sortable: boolean;
   link?: string;
+};
+
+export enum ColumnsBehaviourValues {
+  UNSET = 0,
+  LEFT = 1,
+  RIGHT = 2,
 };
