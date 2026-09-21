@@ -2586,5 +2586,158 @@
         <source>Tasks by status</source>
       </segment>
     </unit>
+    <unit id="1368650342006604903">
+      <notes>
+        <note category="location">src/app/sessions/components/histogram-card.component.html:27,28</note>
+      </notes>
+      <segment>
+        <source>Compute</source>
+      </segment>
+    </unit>
+    <unit id="1532028751816502639">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-statistics.service.ts:299</note>
+      </notes>
+      <segment>
+        <source>0 o</source>
+      </segment>
+    </unit>
+    <unit id="1702535951961158470">
+      <notes>
+        <note category="location">src/app/sessions/statistics.component.html:33,34</note>
+      </notes>
+      <segment>
+        <source>Tasks per duration</source>
+      </segment>
+    </unit>
+    <unit id="2135425806606523117">
+      <notes>
+        <note category="location">src/app/sessions/components/table.component.ts:87</note>
+        <note category="location">src/app/sessions/show.component.html:12,13</note>
+      </notes>
+      <segment>
+        <source>See Statistics</source>
+      </segment>
+    </unit>
+    <unit id="2881999858956793814">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-statistics.service.ts:98</note>
+      </notes>
+      <segment>
+        <source>Received to end</source>
+      </segment>
+    </unit>
+    <unit id="2905302405512429053">
+      <notes>
+        <note category="location">src/app/sessions/statistics.component.html:8,9</note>
+      </notes>
+      <segment>
+        <source>Copy the session Id</source>
+      </segment>
+    </unit>
+    <unit id="3310276188885022898">
+      <notes>
+        <note category="location">src/app/sessions/statistics.component.html:43,44</note>
+      </notes>
+      <segment>
+        <source>Results per size</source>
+      </segment>
+    </unit>
+    <unit id="3773859326264425030">
+      <notes>
+        <note category="location">src/app/sessions/components/histogram-card.component.html:44,45</note>
+      </notes>
+      <segment>
+        <source>Nothing to display for this session.</source>
+      </segment>
+    </unit>
+    <unit id="3841292303471641238">
+      <notes>
+        <note category="location">src/app/sessions/statistics.component.html:38,39</note>
+      </notes>
+      <segment>
+        <source>Results per time unit</source>
+      </segment>
+    </unit>
+    <unit id="4003606999821628193">
+      <notes>
+        <note category="location">src/app/sessions/components/histogram-card.component.html:57,58</note>
+      </notes>
+      <segment>
+        <source>Pick a field and click Compute.</source>
+      </segment>
+    </unit>
+    <unit id="4310421644728026112">
+      <notes>
+        <note category="location">src/app/sessions/components/histogram-card.component.html:18</note>
+      </notes>
+      <segment>
+        <source>Buckets</source>
+      </segment>
+    </unit>
+    <unit id="4510345391293663252">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-statistics.service.ts:295</note>
+      </notes>
+      <segment>
+        <source>0s</source>
+      </segment>
+    </unit>
+    <unit id="4820528532769775314">
+      <notes>
+        <note category="location">src/app/sessions/components/histogram-card.component.html:9</note>
+      </notes>
+      <segment>
+        <source>Field</source>
+      </segment>
+    </unit>
+    <unit id="4914893731580885290">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-statistics.service.ts:97</note>
+      </notes>
+      <segment>
+        <source>Processing to end</source>
+      </segment>
+    </unit>
+    <unit id="7185369236175420850">
+      <notes>
+        <note category="location">src/app/sessions/components/histogram-card.component.html:51,52</note>
+      </notes>
+      <segment>
+        <source><ph id="0" equiv="INTERPOLATION" disp="{{ missing() }}"/> items outside of the computed range</source>
+      </segment>
+    </unit>
+    <unit id="803297003372517395">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-statistics.service.ts:96</note>
+      </notes>
+      <segment>
+        <source>Creation to end</source>
+      </segment>
+    </unit>
+    <unit id="8903163071432818971">
+      <notes>
+        <note category="location">src/app/sessions/statistics.component.html:28,29</note>
+      </notes>
+      <segment>
+        <source>Tasks per time unit</source>
+      </segment>
+    </unit>
+    <unit id="925610902501884869">
+      <notes>
+        <note category="location">src/app/sessions/components/histogram-card.component.html:49,50</note>
+      </notes>
+      <segment>
+        <source><ph id="0" equiv="INTERPOLATION" disp="{{ data.total }}"/> items across <ph id="1" equiv="INTERPOLATION_1" disp="{{ data.counts.length }}"/> buckets</source>
+      </segment>
+    </unit>
+    <unit id="1274235227150170038">
+      <notes>
+        <note category="location">src/app/sessions/components/histogram-card.component.html:26,27</note>
+      </notes>
+      <segment>
+        <source> Log scale </source>
+      </segment>
+    </unit>
   </file>
 </xliff>

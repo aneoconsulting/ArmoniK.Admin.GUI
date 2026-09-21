@@ -253,6 +253,13 @@ describe('SessionsTableComponent', () => {
       action.click([session]);
       expect(spy).toHaveBeenCalledWith(['/sessions', 'graph', session.sessionId]);
     });
+
+    it('should allow to see the session statistics', () => {
+      const action = getAction(component.actions, 'See Statistics');
+      const spy = jest.spyOn(component.router, 'navigate');
+      action.click([session]);
+      expect(spy).toHaveBeenCalledWith(['/sessions', 'statistics', session.sessionId]);
+    });
   });
 
   describe('isDataRawEqual', () => {

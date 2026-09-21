@@ -1,0 +1,46 @@
+<mat-card appearance="outlined">
+  <mat-card-content>
+    <section>
+      <h2>
+        <span i18n>Session:</span>
+        {{ id }}
+      </h2>
+      <button mat-icon-button (click)="copySessionId()" i18n-matTooltip matTooltip="Copy the session Id">
+        <mat-icon [fontIcon]="getIcon('copy')" />
+      </button>
+    </section>
+    <section>
+      <a mat-flat-button color="primary" routerLink="/sessions">
+        <span i18n>Back to Sessions List</span>
+      </a>
+      <a mat-flat-button color="primary" [routerLink]="'/sessions/' + id">
+        <span i18n>See Session</span>
+      </a>
+      <a mat-flat-button color="primary" [routerLink]="'/sessions/graph/' + id">
+        <span i18n>See Graph</span>
+      </a>
+    </section>
+  </mat-card-content>
+</mat-card>
+
+<div class="histograms">
+  <app-histogram-card
+    i18n-title title="Tasks per time unit"
+    i18n-unit unit="Tasks"
+    [fields]="statisticsService.taskDateFields"
+    [loader]="tasksOverTime" />
+  <app-histogram-card
+    i18n-title title="Tasks per duration"
+    i18n-unit unit="Tasks"
+    [fields]="statisticsService.taskDurationFields"
+    [loader]="tasksByDuration" />
+  <app-histogram-card
+    i18n-title title="Results per time unit"
+    i18n-unit unit="Results"
+    [fields]="statisticsService.resultDateFields"
+    [loader]="resultsOverTime" />
+  <app-histogram-card
+    i18n-title title="Results per size"
+    i18n-unit unit="Results"
+    [loader]="resultsBySize" />
+</div>

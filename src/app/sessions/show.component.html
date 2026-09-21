@@ -8,6 +8,10 @@
       <span i18n>See Graph</span>
       <mat-icon [fontIcon]="getIcon('graph')" />
     </button>
+    <button mat-button [routerLink]="'/sessions/statistics/' + id">
+      <span i18n>See Statistics</span>
+      <mat-icon [fontIcon]="getIcon('statistics')" />
+    </button>
     <button mat-button [routerLink]="'/tasks'" [queryParams]="tasksQueryParams">
       <span i18n>See Tasks</span>
       <mat-icon [fontIcon]="getIcon('tasks')" />
