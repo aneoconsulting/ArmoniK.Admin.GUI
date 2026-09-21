@@ -2739,5 +2739,13 @@
         <source> Log scale </source>
       </segment>
     </unit>
+    <unit id="1981261362964717569">
+      <notes>
+        <note category="location">src/app/sessions/components/histogram-card.component.html:51,52</note>
+      </notes>
+      <segment>
+        <source>This field is not reported by the server.</source>
+      </segment>
+    </unit>
   </file>
 </xliff>

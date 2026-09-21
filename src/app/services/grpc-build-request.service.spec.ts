@@ -302,6 +302,14 @@ describe('GrpcBuildRequestService', () => {
       });
     });
 
+    it('should keep both components on the same sign', () => {
+      // Protobuf rejects a mixed sign pair such as { seconds: -2, nanos: 500000000 }.
+      expect(buildDurationFilter(filterField, createFilter(-1.5, FilterDurationOperator.FILTER_DURATION_OPERATOR_LONGER_THAN)).filterDuration.value).toEqual({
+        seconds: '-1',
+        nanos: -500000000,
+      });
+    });
+
     it('should build a filter with default values', () => {
       expect(buildDurationFilter(filterField, createFilter(null, null))).toEqual({
         field: filterField,

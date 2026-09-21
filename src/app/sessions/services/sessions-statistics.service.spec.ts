@@ -181,12 +181,25 @@ describe('SessionsStatisticsService', () => {
       expect(inner[1]).toEqual(expect.objectContaining({ seconds: '11', nanos: 0 }));
     });
 
-    it('should not bin a field the server does not report', async () => {
+    it('should not bin a field the server does not report, but keep its total', async () => {
       taskBounds(0, 0, 12);
 
       const data = await new Promise(resolve => compute(20).subscribe(resolve));
 
-      expect(data).toEqual({ labels: [], intervals: [], counts: [], total: 0 });
+      expect(data).toEqual({ labels: [], intervals: [], counts: [], total: 12 });
+      expect(taskRequests()).toHaveLength(2);
+    });
+
+    it('should not issue a count request for a lone bucket', async () => {
+      mockTasksClient.listTasks
+        .mockReturnValueOnce(of({ tasks: [{ createdAt: { seconds: '10', nanos: 0 } }], total: 6 } as unknown as ListTasksResponse))
+        .mockReturnValueOnce(of({ tasks: [{ createdAt: { seconds: '10', nanos: 0 } }], total: 6 } as unknown as ListTasksResponse));
+
+      const data = await new Promise<HistogramData>(resolve => compute(20).subscribe(resolve as (value: unknown) => void));
+
+      // The bounds requests already answered it: their filter set is the lone bucket's.
+      expect(data.counts).toEqual([6]);
+      expect(data.total).toBe(6);
       expect(taskRequests()).toHaveLength(2);
     });
 

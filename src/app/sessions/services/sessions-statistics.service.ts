@@ -177,6 +177,16 @@ export class SessionsStatisticsService {
     );
   }
 
+  private describe(ranges: BucketRange[], label: (value: number, width: number) => string) {
+    return {
+      labels: ranges.map(range => label(range.lower, range.upper - range.lower)),
+      intervals: ranges.map(range => {
+        const width = range.upper - range.lower;
+        return `${label(range.lower, width)} → ${label(range.upper, width)}`;
+      }),
+    };
+  }
+
   /**
    * The outer buckets are left open ended, and carry the "is set" guard instead of their outer
    * boundary. An epoch expressed in fractional seconds cannot hold nanosecond precision (a double
@@ -194,22 +204,25 @@ export class SessionsStatisticsService {
   private histogram$(bounds: Bounds, buckets: number, minWidth: number, count: (range: BucketRange) => Observable<number>, label: (value: number, width: number) => string): Observable<HistogramData> {
     // A guarded field left at 0 on both bounds is not reported by the server at all: comparison
     // filters do not exclude unset values, so binning it would draw one bar labelled "0s" holding
-    // every row, which reads as "everything took no time" instead of "nothing was measured".
+    // every row, which reads as "everything took no time" instead of "nothing was measured". The
+    // total is kept, so the card can say "not reported" rather than "this session is empty".
     if (bounds.total === 0 || (minWidth === 0 && bounds.min === 0 && bounds.max === 0)) {
-      return of({ labels: [], intervals: [], counts: [], total: 0 });
+      return of({ labels: [], intervals: [], counts: [], total: bounds.total });
     }
 
     const ranges = toRanges(computeBoundaries(bounds.min, bounds.max, buckets, minWidth));
+
+    // A lone bucket carries the guard alone, which is the filter set of the bounds requests: its
+    // count is already known.
+    if (ranges.length === 1) {
+      return of({ ...this.describe(ranges, label), counts: [bounds.total], total: bounds.total });
+    }
 
     return from(ranges).pipe(
       mergeMap((range, index) => count(range).pipe(map(value => ({ index, value }))), MAX_CONCURRENT_HISTOGRAM_REQUESTS),
       toArray(),
       map(entries => ({
-        labels: ranges.map(range => label(range.lower, range.upper - range.lower)),
-        intervals: ranges.map(range => {
-          const width = range.upper - range.lower;
-          return `${label(range.lower, width)} → ${label(range.upper, width)}`;
-        }),
+        ...this.describe(ranges, label),
         counts: entries.sort((a, b) => a.index - b.index).map(entry => entry.value),
         total: bounds.total,
       })),
@@ -327,8 +340,7 @@ export class SessionsStatisticsService {
   }
 
   private durationLabel(seconds: number): string {
-    const whole = Math.floor(seconds);
-    return this.durationPipe.transform(new Duration({ seconds: whole.toString(), nanos: Math.round((seconds - whole) * 1e9) })) ?? $localize`0s`;
+    return this.durationPipe.transform(new Duration(toProtobufSeconds(seconds))) ?? $localize`0s`;
   }
 
   private sizeLabel(bytes: number): string {

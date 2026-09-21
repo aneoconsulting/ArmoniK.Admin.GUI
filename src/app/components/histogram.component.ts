@@ -69,7 +69,7 @@ export class HistogramComponent implements OnDestroy {
             legend: { display: false },
             tooltip: {
               callbacks: {
-                title: items => this.intervals()[items[0].dataIndex] ?? items[0].label,
+                title: items => (items.length === 0 ? '' : this.intervals()[items[0].dataIndex] ?? items[0].label),
               },
             },
           },
@@ -89,8 +89,12 @@ export class HistogramComponent implements OnDestroy {
     this.#chart = null;
   }
 
+  /**
+   * The theme custom properties are declared on `body.<theme>` and custom properties only inherit
+   * downward, so reading them off the documentElement would always miss.
+   */
   private color(): string {
-    const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--armonik-header-background').trim();
+    const themeColor = getComputedStyle(document.body).getPropertyValue('--armonik-header-background').trim();
     return themeColor === '' ? FALLBACK_COLOR : themeColor;
   }
 }

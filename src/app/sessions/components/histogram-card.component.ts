@@ -44,12 +44,24 @@ export class HistogramCardComponent implements OnInit, OnDestroy {
   readonly histogram = signal<HistogramData | null>(null);
 
   /**
-   * Counts are computed bucket by bucket: a mismatch with the total means the server did not
-   * interpret the bucket boundaries the way this page assumes.
+   * Counts are computed bucket by bucket: rows short of the total mean the server did not interpret
+   * the bucket boundaries the way this page assumes. Only a shortfall is meaningful — the outer
+   * buckets are open ended, so a session still running can answer more than the bounds announced.
    */
   readonly missing = computed(() => {
     const data = this.histogram();
-    return data === null ? 0 : data.total - data.counts.reduce((sum, count) => sum + count, 0);
+
+    if (data === null || data.counts.length === 0) {
+      return 0;
+    }
+
+    return Math.max(0, data.total - data.counts.reduce((sum, count) => sum + count, 0));
+  });
+
+  /** The server does not fill this field in: there is nothing to bin, yet rows do exist. */
+  readonly unreported = computed(() => {
+    const data = this.histogram();
+    return data !== null && data.counts.length === 0 && data.total > 0;
   });
 
   private readonly compute$ = new Subject<void>();
@@ -88,6 +100,15 @@ export class HistogramCardComponent implements OnInit, OnDestroy {
 
   compute(): void {
     this.compute$.next();
+  }
+
+  /**
+   * Dropping the rendered data keeps the card honest: the controls above it always describe the
+   * chart below, never a previous run.
+   */
+  invalidate(): void {
+    this.histogram.set(null);
+    this.error.set(null);
   }
 
   getIcon(name: string): string {

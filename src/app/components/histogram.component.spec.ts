@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Chart, ChartConfiguration, TooltipItem } from 'chart.js';
+import { BarController, BarElement, CategoryScale, Chart, ChartConfiguration, Legend, LinearScale, LogarithmicScale, Tooltip, TooltipItem } from 'chart.js';
 import { HistogramComponent } from './histogram.component';
 
 type MockChart = Chart & { update: jest.Mock, destroy: jest.Mock, config: ChartConfiguration<'bar'> };
@@ -17,6 +17,15 @@ class TestHostComponent {
   readonly intervals = signal(['0s → 1s', '1s → 2s']);
   readonly logarithmic = signal(false);
 }
+
+// The component registers these at module load; a mock missing one would register undefined and
+// every assertion below would still pass.
+describe('chart.js components used by the histogram', () => {
+  it('should all be available', () => {
+    expect([BarController, BarElement, CategoryScale, LinearScale, LogarithmicScale, Tooltip, Legend])
+      .not.toContain(undefined);
+  });
+});
 
 describe('HistogramComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;

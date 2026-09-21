@@ -93,10 +93,13 @@ export function buildDurationFilter(filterField: FilterField, filter: Filter<Fil
  */
 export function toProtobufSeconds(value: FilterInputValue) {
   const total = Number(value) || 0;
-  const seconds = Math.floor(total);
+  // Protobuf requires both components to share a sign, so the split truncates towards zero.
+  const seconds = Math.trunc(total);
+  const nanos = Math.round((total - seconds) * 1e9);
+  const sign = nanos < 0 ? -1 : 1;
 
   return {
     seconds: seconds.toString(),
-    nanos: Math.min(999999999, Math.round((total - seconds) * 1e9)),
+    nanos: sign * Math.min(999999999, Math.abs(nanos)),
   };
 }

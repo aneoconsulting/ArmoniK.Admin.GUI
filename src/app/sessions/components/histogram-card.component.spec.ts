@@ -127,6 +127,54 @@ describe('HistogramCardComponent', () => {
     expect(component.missing()).toBe(0);
   });
 
+  it('should drop the rendered data when the controls change', () => {
+    const subject = new Subject<HistogramData>();
+    loader.mockReturnValue(subject);
+    component.ngOnInit();
+    component.compute();
+    subject.next(data);
+
+    component.invalidate();
+
+    expect(component.histogram()).toBeNull();
+    expect(component.error()).toBeNull();
+  });
+
+  it('should never report a negative shortfall', () => {
+    const subject = new Subject<HistogramData>();
+    loader.mockReturnValue(subject);
+    component.ngOnInit();
+    component.compute();
+
+    // The last bucket is open ended, so a running session can answer more than the bounds announced.
+    subject.next({ labels: ['a'], intervals: ['a → b'], counts: [10], total: 4 });
+
+    expect(component.missing()).toBe(0);
+  });
+
+  it('should tell an unreported field apart from an empty session', () => {
+    const subject = new Subject<HistogramData>();
+    loader.mockReturnValue(subject);
+    component.ngOnInit();
+    component.compute();
+
+    subject.next({ labels: [], intervals: [], counts: [], total: 139 });
+
+    expect(component.unreported()).toBe(true);
+    expect(component.missing()).toBe(0);
+  });
+
+  it('should not call an empty session unreported', () => {
+    const subject = new Subject<HistogramData>();
+    loader.mockReturnValue(subject);
+    component.ngOnInit();
+    component.compute();
+
+    subject.next({ labels: [], intervals: [], counts: [], total: 0 });
+
+    expect(component.unreported()).toBe(false);
+  });
+
   it('should use a linear scale by default', () => {
     component.ngOnInit();
     expect(component.logarithmic()).toBe(false);

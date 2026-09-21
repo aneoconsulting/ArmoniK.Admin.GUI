@@ -1,6 +1,7 @@
 class Chart {
   static register = jest.fn();
 
+  /** Every chart ever built, destroyed ones included: specs reset it and count constructions. */
   static instances = [];
 
   constructor(canvas, config) {
@@ -20,6 +21,7 @@ module.exports = {
   BarElement: class {},
   CategoryScale: class {},
   LinearScale: class {},
+  LogarithmicScale: class {},
   Tooltip: class {},
   Legend: class {},
   registerables: [],

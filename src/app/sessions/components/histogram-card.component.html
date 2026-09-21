@@ -7,7 +7,7 @@
       @if (fields().length > 0) {
         <mat-form-field class="field" appearance="outline" subscriptSizing="dynamic">
           <mat-label i18n>Field</mat-label>
-          <mat-select [value]="selectedField()" (valueChange)="selectedField.set($event)">
+          <mat-select [value]="selectedField()" (valueChange)="selectedField.set($event); invalidate()">
             @for (field of fields(); track field.label) {
               <mat-option [value]="field">{{ field.label }}</mat-option>
             }
@@ -16,7 +16,7 @@
       }
       <mat-form-field class="buckets" appearance="outline" subscriptSizing="dynamic">
         <mat-label i18n>Buckets</mat-label>
-        <mat-select [value]="bucketCount()" (valueChange)="bucketCount.set($event)">
+        <mat-select [value]="bucketCount()" (valueChange)="bucketCount.set($event); invalidate()">
           @for (count of bucketCounts; track count) {
             <mat-option [value]="count">{{ count }}</mat-option>
           }
@@ -45,6 +45,10 @@
         @if (data.total === 0) {
           <div class="placeholder">
             <span i18n>Nothing to display for this session.</span>
+          </div>
+        } @else if (unreported()) {
+          <div class="placeholder">
+            <span i18n>This field is not reported by the server.</span>
           </div>
         } @else {
           <app-histogram [labels]="data.labels" [counts]="data.counts" [intervals]="data.intervals" [datasetLabel]="unit()" [logarithmic]="logarithmic()" />
