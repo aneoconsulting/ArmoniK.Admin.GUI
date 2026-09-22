@@ -105,7 +105,57 @@ describe('Auto-refresh service', () => {
 
       setVisibility('visible');
       jest.advanceTimersByTime(2000);
-      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy).toHaveBeenCalledTimes(3);
+
+      subscription.unsubscribe();
+    });
+
+    it('Should emit right away when the tab was hidden longer than the period', () => {
+      const intervalSubject: Subject<number> = new Subject();
+      const stopIntervalSubject: Subject<void> = new Subject();
+      const spy = jest.fn();
+
+      const subscription = service.createInterval(intervalSubject, stopIntervalSubject).subscribe(spy);
+      intervalSubject.next(10);
+      setVisibility('hidden');
+      jest.advanceTimersByTime(60000);
+
+      setVisibility('visible');
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      subscription.unsubscribe();
+    });
+
+    it('Should wait for the next tick when the tab was hidden less than the period', () => {
+      const intervalSubject: Subject<number> = new Subject();
+      const stopIntervalSubject: Subject<void> = new Subject();
+      const spy = jest.fn();
+
+      const subscription = service.createInterval(intervalSubject, stopIntervalSubject).subscribe(spy);
+      intervalSubject.next(10);
+      setVisibility('hidden');
+      jest.advanceTimersByTime(5000);
+
+      setVisibility('visible');
+      expect(spy).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(10000);
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      subscription.unsubscribe();
+    });
+
+    it('Should not emit right away when the period changes', () => {
+      const intervalSubject: Subject<number> = new Subject();
+      const stopIntervalSubject: Subject<void> = new Subject();
+      const spy = jest.fn();
+
+      const subscription = service.createInterval(intervalSubject, stopIntervalSubject).subscribe(spy);
+      intervalSubject.next(60);
+      jest.advanceTimersByTime(30000);
+
+      intervalSubject.next(10);
+      expect(spy).not.toHaveBeenCalled();
 
       subscription.unsubscribe();
     });
