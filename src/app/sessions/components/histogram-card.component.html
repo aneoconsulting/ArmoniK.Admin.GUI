@@ -51,7 +51,7 @@
             <span i18n>This field is not reported by the server.</span>
           </div>
         } @else {
-          <app-histogram [labels]="data.labels" [counts]="data.counts" [intervals]="data.intervals" [datasetLabel]="unit()" [logarithmic]="logarithmic()" />
+          <app-histogram [boundaries]="data.boundaries" [counts]="data.counts" [boundaryLabels]="data.boundaryLabels" [intervals]="data.intervals" [datasetLabel]="unit()" [logarithmic]="logarithmic()" />
           <div class="footer">
             <span i18n>{{ data.total }} items across {{ data.counts.length }} buckets</span>
             @if (missing() !== 0) {

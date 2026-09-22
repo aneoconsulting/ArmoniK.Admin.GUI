@@ -15,9 +15,11 @@ export type HistogramField<P extends string = string> = {
 };
 
 export type HistogramData = {
-  /** Compact axis tick, the lower boundary of the bucket. */
-  labels: string[];
-  /** Full `lower → upper` range, shown as the tooltip title. */
+  /** The N+1 bucket edges, in the value domain of the axis. */
+  boundaries: number[];
+  /** The same edges, formatted: axis ticks sit on them, between the bars. */
+  boundaryLabels: string[];
+  /** Full `lower → upper` range of each bucket, shown as the tooltip title. */
   intervals: string[];
   counts: number[];
   total: number;

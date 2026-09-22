@@ -12,7 +12,7 @@ describe('HistogramCardComponent', () => {
     { label: 'Ended at', field: 5, property: 'endedAt' },
   ];
 
-  const data: HistogramData = { labels: ['a', 'b'], intervals: ['a → b', 'b → c'], counts: [1, 2], total: 3 };
+  const data: HistogramData = { boundaries: [0, 1, 2], boundaryLabels: ['a', 'b', 'c'], intervals: ['a → b', 'b → c'], counts: [1, 2], total: 3 };
 
   let loader: jest.Mock<Observable<HistogramData>, [HistogramField | null, number]>;
 
@@ -111,7 +111,7 @@ describe('HistogramCardComponent', () => {
     component.ngOnInit();
     component.compute();
 
-    subject.next({ labels: ['a'], intervals: ['a → b'], counts: [1], total: 4 });
+    subject.next({ boundaries: [0, 1], boundaryLabels: ['a', 'b'], intervals: ['a → b'], counts: [1], total: 4 });
 
     expect(component.missing()).toBe(3);
   });
@@ -147,7 +147,7 @@ describe('HistogramCardComponent', () => {
     component.compute();
 
     // The last bucket is open ended, so a running session can answer more than the bounds announced.
-    subject.next({ labels: ['a'], intervals: ['a → b'], counts: [10], total: 4 });
+    subject.next({ boundaries: [0, 1], boundaryLabels: ['a', 'b'], intervals: ['a → b'], counts: [10], total: 4 });
 
     expect(component.missing()).toBe(0);
   });
@@ -158,7 +158,7 @@ describe('HistogramCardComponent', () => {
     component.ngOnInit();
     component.compute();
 
-    subject.next({ labels: [], intervals: [], counts: [], total: 139 });
+    subject.next({ boundaries: [], boundaryLabels: [], intervals: [], counts: [], total: 139 });
 
     expect(component.unreported()).toBe(true);
     expect(component.missing()).toBe(0);
@@ -170,7 +170,7 @@ describe('HistogramCardComponent', () => {
     component.ngOnInit();
     component.compute();
 
-    subject.next({ labels: [], intervals: [], counts: [], total: 0 });
+    subject.next({ boundaries: [], boundaryLabels: [], intervals: [], counts: [], total: 0 });
 
     expect(component.unreported()).toBe(false);
   });

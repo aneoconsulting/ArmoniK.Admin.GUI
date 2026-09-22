@@ -102,10 +102,12 @@ describe('SessionsStatisticsService', () => {
 
       const data = await new Promise<HistogramData>(resolve => compute(2).subscribe(resolve as (value: unknown) => void));
 
+      // N buckets, N+1 edges: the edges are what the axis draws, between the bars.
+      expect(data.boundaries).toHaveLength(3);
+      expect(data.boundaryLabels).toHaveLength(3);
       expect(data.intervals).toHaveLength(2);
-      expect(data.intervals[0]).toContain(' → ');
-      expect(data.intervals[0].split(' → ')[1]).toEqual(data.labels[1]);
-      expect(data.intervals[1].split(' → ')[0]).toEqual(data.labels[1]);
+      expect(data.intervals[0]).toEqual(`${data.boundaryLabels[0]} → ${data.boundaryLabels[1]}`);
+      expect(data.intervals[1]).toEqual(`${data.boundaryLabels[1]} → ${data.boundaryLabels[2]}`);
     });
 
     it('should return one count per bucket', async () => {
@@ -115,7 +117,8 @@ describe('SessionsStatisticsService', () => {
       const data = await new Promise(resolve => compute(10).subscribe(resolve));
 
       expect(data).toEqual({
-        labels: expect.any(Array),
+        boundaries: expect.any(Array),
+        boundaryLabels: expect.any(Array),
         intervals: expect.any(Array),
         counts: [7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
         total: 42,
@@ -186,7 +189,7 @@ describe('SessionsStatisticsService', () => {
 
       const data = await new Promise(resolve => compute(20).subscribe(resolve));
 
-      expect(data).toEqual({ labels: [], intervals: [], counts: [], total: 12 });
+      expect(data).toEqual({ boundaries: [], boundaryLabels: [], intervals: [], counts: [], total: 12 });
       expect(taskRequests()).toHaveLength(2);
     });
 
@@ -217,7 +220,7 @@ describe('SessionsStatisticsService', () => {
 
       const data = await new Promise(resolve => compute(20).subscribe(resolve));
 
-      expect(data).toEqual({ labels: [], intervals: [], counts: [], total: 0 });
+      expect(data).toEqual({ boundaries: [], boundaryLabels: [], intervals: [], counts: [], total: 0 });
       expect(taskRequests()).toHaveLength(2);
     });
 
@@ -278,7 +281,7 @@ describe('SessionsStatisticsService', () => {
 
       const data = await new Promise(resolve => service.resultSizeHistogram$(sessionId, 2).subscribe(resolve));
 
-      expect(data).toEqual({ labels: expect.any(Array), intervals: expect.any(Array), counts: [4, 4], total: 8 });
+      expect(data).toEqual({ boundaries: expect.any(Array), boundaryLabels: expect.any(Array), intervals: expect.any(Array), counts: [4, 4], total: 8 });
       expect(resultRequests().slice(2).every(request => request.pageSize === 0)).toBe(true);
       expect(resultRequests()[2].filters?.or?.[0].and?.[1].filterNumber?.operator).toBe(FilterNumberOperator.FILTER_NUMBER_OPERATOR_LESS_THAN);
       expect(resultRequests()[3].filters?.or?.[0].and?.[1].filterNumber?.operator).toBe(FilterNumberOperator.FILTER_NUMBER_OPERATOR_GREATER_THAN_OR_EQUAL);
@@ -296,7 +299,7 @@ describe('SessionsStatisticsService', () => {
       const option = { label: 'Completed at', field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_COMPLETED_AT, property: 'completedAt' as const };
       const data = await new Promise(resolve => service.resultDateHistogram$(sessionId, option, 2).subscribe(resolve));
 
-      expect(data).toEqual({ labels: expect.any(Array), intervals: expect.any(Array), counts: [1, 1], total: 3 });
+      expect(data).toEqual({ boundaries: expect.any(Array), boundaryLabels: expect.any(Array), intervals: expect.any(Array), counts: [1, 1], total: 3 });
       expect(resultRequests()[0].sort?.field?.resultRawField?.field).toBe(ResultRawEnumField.RESULT_RAW_ENUM_FIELD_COMPLETED_AT);
     });
   });

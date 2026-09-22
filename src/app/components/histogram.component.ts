@@ -12,8 +12,10 @@ const FALLBACK_COLOR = '#3f51b5';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HistogramComponent implements OnDestroy {
-  readonly labels = input.required<string[]>();
+  /** The N+1 bucket edges. The axis is continuous, so a bar spans its two edges. */
+  readonly boundaries = input.required<number[]>();
   readonly counts = input.required<number[]>();
+  readonly boundaryLabels = input<string[]>([]);
   readonly intervals = input<string[]>([]);
   readonly datasetLabel = input<string>('');
   readonly logarithmic = input<boolean>(false);
@@ -29,12 +31,12 @@ export class HistogramComponent implements OnDestroy {
   constructor() {
     effect(() => {
       const canvas = this.canvasRef()?.nativeElement;
-      const labels = this.labels();
+      const boundaries = this.boundaries();
       const counts = this.counts();
       const datasetLabel = this.datasetLabel();
       const logarithmic = this.logarithmic();
 
-      if (!canvas) {
+      if (!canvas || boundaries.length < 2) {
         return;
       }
 
@@ -44,10 +46,13 @@ export class HistogramComponent implements OnDestroy {
         this.#chart = null;
       }
 
+      const points = this.points(boundaries, counts);
+
       if (this.#chart) {
-        this.#chart.data.labels = labels;
-        this.#chart.data.datasets[0].data = counts;
+        this.#chart.data.datasets[0].data = points;
         this.#chart.data.datasets[0].label = datasetLabel;
+        this.#chart.options.scales!['x']!.min = boundaries[0];
+        this.#chart.options.scales!['x']!.max = boundaries[boundaries.length - 1];
         this.#chart.update();
         return;
       }
@@ -56,8 +61,7 @@ export class HistogramComponent implements OnDestroy {
       this.#chart = new Chart(canvas, {
         type: 'bar',
         data: {
-          labels,
-          datasets: [{ label: datasetLabel, data: counts, backgroundColor: this.color() }],
+          datasets: [{ label: datasetLabel, data: points, backgroundColor: this.color(), barThickness: 'flex' }],
         },
         options: {
           responsive: true,
@@ -69,7 +73,7 @@ export class HistogramComponent implements OnDestroy {
             legend: { display: false },
             tooltip: {
               callbacks: {
-                title: items => (items.length === 0 ? '' : this.intervals()[items[0].dataIndex] ?? items[0].label),
+                title: items => (items.length === 0 ? '' : this.intervals()[items[0].dataIndex] ?? ''),
               },
             },
           },
@@ -77,7 +81,23 @@ export class HistogramComponent implements OnDestroy {
             y: logarithmic
               ? { type: 'logarithmic' }
               : { type: 'linear', beginAtZero: true, ticks: { precision: 0 } },
-            x: { ticks: { maxRotation: 90 } },
+            // Continuous, so a boundary is drawn where it belongs: between two bars, never under
+            // one. The ticks are pinned to the boundaries rather than to whatever round values the
+            // scale would pick on its own.
+            x: {
+              type: 'linear',
+              offset: false,
+              min: boundaries[0],
+              max: boundaries[boundaries.length - 1],
+              afterBuildTicks: axis => {
+                axis.ticks = this.boundaries().map(value => ({ value }));
+              },
+              ticks: {
+                maxRotation: 90,
+                autoSkip: true,
+                callback: value => this.boundaryLabels()[this.boundaries().indexOf(Number(value))] ?? '',
+              },
+            },
           },
         },
       });
@@ -87,6 +107,14 @@ export class HistogramComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.#chart?.destroy();
     this.#chart = null;
+  }
+
+  /** A bar is placed on the middle of its bucket, so that it spans both of its edges. */
+  private points(boundaries: number[], counts: number[]): { x: number, y: number }[] {
+    return counts.map((count, index) => ({
+      x: (boundaries[index] + boundaries[index + 1]) / 2,
+      y: count,
+    }));
   }
 
   /**

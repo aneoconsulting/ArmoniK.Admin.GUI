@@ -1,19 +1,21 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { BarController, BarElement, CategoryScale, Chart, ChartConfiguration, Legend, LinearScale, LogarithmicScale, Tooltip, TooltipItem } from 'chart.js';
+import { BarController, BarElement, CategoryScale, Chart, ChartConfiguration, Legend, LinearScale, LogarithmicScale, Scale, Tooltip, TooltipItem } from 'chart.js';
 import { HistogramComponent } from './histogram.component';
 
 type MockChart = Chart & { update: jest.Mock, destroy: jest.Mock, config: ChartConfiguration<'bar'> };
 
+
 const chartInstances = () => (Chart as unknown as { instances: MockChart[] }).instances;
 
 @Component({
-  template: '<app-histogram [labels]="labels()" [counts]="counts()" [intervals]="intervals()" [logarithmic]="logarithmic()" datasetLabel="Tasks" />',
+  template: '<app-histogram [boundaries]="boundaries()" [counts]="counts()" [boundaryLabels]="boundaryLabels()" [intervals]="intervals()" [logarithmic]="logarithmic()" datasetLabel="Tasks" />',
   imports: [HistogramComponent],
 })
 class TestHostComponent {
-  readonly labels = signal(['0s', '1s']);
+  readonly boundaries = signal([0, 1, 2]);
   readonly counts = signal([1, 2]);
+  readonly boundaryLabels = signal(['0s', '1s', '2s']);
   readonly intervals = signal(['0s → 1s', '1s → 2s']);
   readonly logarithmic = signal(false);
 }
@@ -49,10 +51,27 @@ describe('HistogramComponent', () => {
     expect(chartInstances()).toHaveLength(1);
   });
 
-  it('should draw the provided data', () => {
-    const chart = chartInstances()[0];
-    expect(chart.data.labels).toEqual(['0s', '1s']);
-    expect(chart.data.datasets[0].data).toEqual([1, 2]);
+  it('should place each bar on the middle of its bucket', () => {
+    // A bar spans its two edges, so the boundaries land between the bars rather than under them.
+    expect(chartInstances()[0].data.datasets[0].data).toEqual([{ x: 0.5, y: 1 }, { x: 1.5, y: 2 }]);
+  });
+
+  it('should span the whole boundary range', () => {
+    const x = chartInstances()[0].config.options?.scales?.['x'];
+    expect(x?.type).toEqual('linear');
+    expect(x?.min).toBe(0);
+    expect(x?.max).toBe(2);
+  });
+
+  it('should pin the ticks to the boundaries and label them', () => {
+    const x = chartInstances()[0].config.options?.scales?.['x'];
+    const axis = { ticks: [] } as unknown as Scale;
+
+    x?.afterBuildTicks?.(axis);
+
+    expect(axis.ticks).toEqual([{ value: 0 }, { value: 1 }, { value: 2 }]);
+    const label = x?.ticks?.callback;
+    expect(label?.call({} as never, 1, 1, [])).toEqual('1s');
   });
 
   it('should trigger the tooltip anywhere in the column', () => {
@@ -67,14 +86,15 @@ describe('HistogramComponent', () => {
     expect(title?.call({} as never, items)).toEqual('1s → 2s');
   });
 
-  it('should fall back to the axis label when no range is known', async () => {
+  it('should not title the tooltip when no range is known', async () => {
+    // A continuous axis has no per bar label to fall back to: its label is the raw x value.
     fixture.componentInstance.intervals.set([]);
     await fixture.whenStable();
 
     const title = chartInstances()[0].config.options?.plugins?.tooltip?.callbacks?.title;
     const items = [{ dataIndex: 1, label: '1s' }] as TooltipItem<'bar'>[];
 
-    expect(title?.call({} as never, items)).toEqual('1s');
+    expect(title?.call({} as never, items)).toEqual('');
   });
 
   it('should use a linear axis by default', () => {
@@ -99,7 +119,18 @@ describe('HistogramComponent', () => {
 
     expect(chartInstances()).toHaveLength(1);
     expect(chart.update).toHaveBeenCalled();
-    expect(chart.data.datasets[0].data).toEqual([5, 6]);
+    expect(chart.data.datasets[0].data).toEqual([{ x: 0.5, y: 5 }, { x: 1.5, y: 6 }]);
+  });
+
+  it('should follow the boundaries when they move', async () => {
+    const chart = chartInstances()[0];
+
+    fixture.componentInstance.boundaries.set([10, 20, 30]);
+    await fixture.whenStable();
+
+    expect(chart.options.scales?.['x']?.min).toBe(10);
+    expect(chart.options.scales?.['x']?.max).toBe(30);
+    expect(chart.data.datasets[0].data).toEqual([{ x: 15, y: 1 }, { x: 25, y: 2 }]);
   });
 
   it('should destroy the chart when the component is destroyed', () => {

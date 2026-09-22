@@ -177,9 +177,12 @@ export class SessionsStatisticsService {
     );
   }
 
-  private describe(ranges: BucketRange[], label: (value: number, width: number) => string) {
+  private describe(boundaries: number[], ranges: BucketRange[], label: (value: number, width: number) => string) {
+    const step = boundaries[1] - boundaries[0];
+
     return {
-      labels: ranges.map(range => label(range.lower, range.upper - range.lower)),
+      boundaries,
+      boundaryLabels: boundaries.map(value => label(value, step)),
       intervals: ranges.map(range => {
         const width = range.upper - range.lower;
         return `${label(range.lower, width)} → ${label(range.upper, width)}`;
@@ -207,22 +210,23 @@ export class SessionsStatisticsService {
     // every row, which reads as "everything took no time" instead of "nothing was measured". The
     // total is kept, so the card can say "not reported" rather than "this session is empty".
     if (bounds.total === 0 || (minWidth === 0 && bounds.min === 0 && bounds.max === 0)) {
-      return of({ labels: [], intervals: [], counts: [], total: bounds.total });
+      return of({ boundaries: [], boundaryLabels: [], intervals: [], counts: [], total: bounds.total });
     }
 
-    const ranges = toRanges(computeBoundaries(bounds.min, bounds.max, buckets, minWidth));
+    const boundaries = computeBoundaries(bounds.min, bounds.max, buckets, minWidth);
+    const ranges = toRanges(boundaries);
 
     // A lone bucket carries the guard alone, which is the filter set of the bounds requests: its
     // count is already known.
     if (ranges.length === 1) {
-      return of({ ...this.describe(ranges, label), counts: [bounds.total], total: bounds.total });
+      return of({ ...this.describe(boundaries, ranges, label), counts: [bounds.total], total: bounds.total });
     }
 
     return from(ranges).pipe(
       mergeMap((range, index) => count(range).pipe(map(value => ({ index, value }))), MAX_CONCURRENT_HISTOGRAM_REQUESTS),
       toArray(),
       map(entries => ({
-        ...this.describe(ranges, label),
+        ...this.describe(boundaries, ranges, label),
         counts: entries.sort((a, b) => a.index - b.index).map(entry => entry.value),
         total: bounds.total,
       })),

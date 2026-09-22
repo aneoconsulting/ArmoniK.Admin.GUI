@@ -8,6 +8,8 @@ class Chart {
     this.canvas = canvas;
     this.config = config;
     this.data = (config && config.data) || { labels: [], datasets: [{ data: [] }] };
+    // The real Chart exposes its resolved options; code updates scales through them.
+    this.options = (config && config.options) || {};
     this.update = jest.fn();
     this.destroy = jest.fn();
     this.resize = jest.fn();
