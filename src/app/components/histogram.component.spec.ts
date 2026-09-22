@@ -74,6 +74,33 @@ describe('HistogramComponent', () => {
     expect(label?.call({} as never, 1, 1, [])).toEqual('1s');
   });
 
+  it('should keep a grid line on every boundary', () => {
+    // autoSkip drops ticks from the list the grid is drawn from, so the grid lives on its own axis.
+    const grid = chartInstances()[0].config.options?.scales?.['xGrid'];
+
+    expect(grid?.ticks?.autoSkip).toBe(false);
+    expect(grid?.ticks?.display).toBe(false);
+    expect(grid?.grid?.display).toBe(true);
+    // The bar controller overrides grid.offset to true, which would shift every line by half a
+    // bucket, onto the middle of a bar.
+    expect(grid?.grid?.offset).toBe(false);
+    expect(grid?.min).toBe(0);
+    expect(grid?.max).toBe(2);
+  });
+
+  it('should pin the grid axis to the boundaries too', () => {
+    const grid = chartInstances()[0].config.options?.scales?.['xGrid'];
+    const axis = { ticks: [] } as unknown as Scale;
+
+    grid?.afterBuildTicks?.(axis);
+
+    expect(axis.ticks).toEqual([{ value: 0 }, { value: 1 }, { value: 2 }]);
+  });
+
+  it('should let only the labelled axis draw its own grid', () => {
+    expect(chartInstances()[0].config.options?.scales?.['x']?.grid?.display).toBe(false);
+  });
+
   it('should leave a gap between the bars', () => {
     // The grid line sits on the boundary; overriding these would hide it under the bars.
     const dataset = chartInstances()[0].config.data.datasets[0];
@@ -142,6 +169,8 @@ describe('HistogramComponent', () => {
 
     expect(chart.options.scales?.['x']?.min).toBe(10);
     expect(chart.options.scales?.['x']?.max).toBe(30);
+    expect(chart.options.scales?.['xGrid']?.min).toBe(10);
+    expect(chart.options.scales?.['xGrid']?.max).toBe(30);
     expect(chart.data.datasets[0].data).toEqual([{ x: 15, y: 1 }, { x: 25, y: 2 }]);
   });
 

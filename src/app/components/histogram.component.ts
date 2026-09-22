@@ -51,8 +51,12 @@ export class HistogramComponent implements OnDestroy {
       if (this.#chart) {
         this.#chart.data.datasets[0].data = points;
         this.#chart.data.datasets[0].label = datasetLabel;
-        this.#chart.options.scales!['x']!.min = boundaries[0];
-        this.#chart.options.scales!['x']!.max = boundaries[boundaries.length - 1];
+
+        for (const id of ['x', 'xGrid']) {
+          this.#chart.options.scales![id]!.min = boundaries[0];
+          this.#chart.options.scales![id]!.max = boundaries[boundaries.length - 1];
+        }
+
         this.#chart.update();
         return;
       }
@@ -97,19 +101,27 @@ export class HistogramComponent implements OnDestroy {
             // Continuous, so a boundary is drawn where it belongs: between two bars, never under
             // one. The ticks are pinned to the boundaries rather than to whatever round values the
             // scale would pick on its own.
+            //
+            // Two axes, because autoSkip drops ticks from the very list the grid is drawn from, and
+            // `afterAutoSkip` is an empty method rather than an options hook. So this one thins the
+            // labels as it sees fit and draws nothing, while `xGrid` keeps every boundary.
             x: {
-              type: 'linear',
-              offset: false,
-              min: boundaries[0],
-              max: boundaries[boundaries.length - 1],
-              afterBuildTicks: axis => {
-                axis.ticks = this.boundaries().map(value => ({ value }));
-              },
+              ...this.boundaryAxis(boundaries),
               ticks: {
                 maxRotation: 90,
                 autoSkip: true,
                 callback: value => this.boundaryLabels()[this.boundaries().indexOf(Number(value))] ?? '',
               },
+              grid: { display: false, offset: false },
+            },
+            xGrid: {
+              ...this.boundaryAxis(boundaries),
+              ticks: { display: false, autoSkip: false },
+              // `grid.offset` is a separate option from the scale's own, and the bar controller
+              // overrides it to true: that shifts every line by half a bucket, landing it on the
+              // middle of a bar instead of on the boundary between two.
+              grid: { display: true, drawTicks: false, offset: false },
+              border: { display: false },
             },
           },
         },
@@ -120,6 +132,19 @@ export class HistogramComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.#chart?.destroy();
     this.#chart = null;
+  }
+
+  /** The shared part of both x axes: the same span, with a tick pinned on every boundary. */
+  private boundaryAxis(boundaries: number[]) {
+    return {
+      type: 'linear' as const,
+      offset: false,
+      min: boundaries[0],
+      max: boundaries[boundaries.length - 1],
+      afterBuildTicks: (axis: { ticks: { value: number }[] }) => {
+        axis.ticks = this.boundaries().map(value => ({ value }));
+      },
+    };
   }
 
   /** A bar is placed on the middle of its bucket, so that it spans both of its edges. */
