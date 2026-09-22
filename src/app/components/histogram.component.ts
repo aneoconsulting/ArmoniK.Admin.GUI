@@ -61,7 +61,20 @@ export class HistogramComponent implements OnDestroy {
       this.#chart = new Chart(canvas, {
         type: 'bar',
         data: {
-          datasets: [{ label: datasetLabel, data: points, backgroundColor: this.color(), barThickness: 'flex' }],
+          datasets: [{
+            label: datasetLabel,
+            data: points,
+            backgroundColor: this.color(),
+            // 'flex' sizes each bar from its own neighbours, so a bucket wider than the others
+            // (size boundaries are rounded to integers, which can merge two) is drawn wider.
+            barThickness: 'flex',
+            // The bar stays narrower than its bucket (the chart.js default of 0.8 x 0.9), so the
+            // grid line sitting on the boundary shows in the gap instead of being covered by the
+            // junction of two bars.
+            // 'auto' would inflate every bar by 0.33px, since 'flex' reports a ratio of 1 whatever
+            // those percentages are -- including bars of height zero, drawn as a sliver on the axis.
+            inflateAmount: 0,
+          }],
         },
         options: {
           responsive: true,

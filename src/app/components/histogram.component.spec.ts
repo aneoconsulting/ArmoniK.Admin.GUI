@@ -74,6 +74,18 @@ describe('HistogramComponent', () => {
     expect(label?.call({} as never, 1, 1, [])).toEqual('1s');
   });
 
+  it('should leave a gap between the bars', () => {
+    // The grid line sits on the boundary; overriding these would hide it under the bars.
+    const dataset = chartInstances()[0].config.data.datasets[0];
+    expect(dataset.categoryPercentage).toBeUndefined();
+    expect(dataset.barPercentage).toBeUndefined();
+  });
+
+  it('should not inflate the bars', () => {
+    // 'auto' would inflate by 0.33px at a ratio of 1, drawing a sliver for an empty bucket.
+    expect(chartInstances()[0].config.data.datasets[0].inflateAmount).toBe(0);
+  });
+
   it('should trigger the tooltip anywhere in the column', () => {
     // A bucket holding a single row is a one pixel bar, unreachable with the default settings.
     expect(chartInstances()[0].config.options?.interaction).toEqual({ mode: 'index', intersect: false });
