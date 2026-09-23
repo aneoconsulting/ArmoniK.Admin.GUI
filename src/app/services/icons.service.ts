@@ -98,6 +98,7 @@ export class IconsService {
     'line': 'remove',
     'back': 'arrow_back_ios_new',
     'graph': 'insights',
+    'statistics': 'bar_chart',
   };
 
   getIcon(name: string | null | undefined): string {

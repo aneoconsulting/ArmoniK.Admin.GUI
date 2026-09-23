@@ -1,6 +1,6 @@
-import { FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, SessionRawEnumField, SessionStatus, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterDurationOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Filter } from '@app/types/filters';
-import { FilterField, buildArrayFilter, buildBooleanFilter, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter } from './grpc-build-request.service';
+import { FilterField, buildArrayFilter, buildBooleanFilter, buildDateFilter, buildDurationFilter, buildNumberFilter, buildStatusFilter, buildStringFilter } from './grpc-build-request.service';
 
 describe('GrpcBuildRequestService', () => {
   describe('buildStringFilter', () => {
@@ -256,6 +256,66 @@ describe('GrpcBuildRequestService', () => {
         filterBoolean: {
           value: false,
           operator: FilterBooleanOperator.FILTER_BOOLEAN_OPERATOR_IS,
+        }
+      });
+    });
+  });
+
+  describe('buildDurationFilter', () => {
+    const filterField: FilterField = {
+      taskSummaryField: {
+        field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATION_TO_END_DURATION
+      }
+    };
+
+    const createFilter = (value: number | null, operator: number | null): Filter<SessionRawEnumField, TaskOptionEnumField> => ({
+      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
+      operator,
+      for: 'root',
+      value
+    });
+
+    it('should build a duration filter from whole seconds', () => {
+      expect(buildDurationFilter(filterField, createFilter(12, FilterDurationOperator.FILTER_DURATION_OPERATOR_LONGER_THAN))).toEqual({
+        field: filterField,
+        filterDuration: {
+          value: { seconds: '12', nanos: 0 },
+          operator: FilterDurationOperator.FILTER_DURATION_OPERATOR_LONGER_THAN,
+        }
+      });
+    });
+
+    it('should keep the sub second part in nanos', () => {
+      expect(buildDurationFilter(filterField, createFilter(1.5, FilterDurationOperator.FILTER_DURATION_OPERATOR_SHORTER_THAN))).toEqual({
+        field: filterField,
+        filterDuration: {
+          value: { seconds: '1', nanos: 500000000 },
+          operator: FilterDurationOperator.FILTER_DURATION_OPERATOR_SHORTER_THAN,
+        }
+      });
+    });
+
+    it('should clamp nanos to 999999999', () => {
+      expect(buildDurationFilter(filterField, createFilter(0.9999999999, FilterDurationOperator.FILTER_DURATION_OPERATOR_SHORTER_THAN)).filterDuration.value).toEqual({
+        seconds: '0',
+        nanos: 999999999,
+      });
+    });
+
+    it('should keep both components on the same sign', () => {
+      // Protobuf rejects a mixed sign pair such as { seconds: -2, nanos: 500000000 }.
+      expect(buildDurationFilter(filterField, createFilter(-1.5, FilterDurationOperator.FILTER_DURATION_OPERATOR_LONGER_THAN)).filterDuration.value).toEqual({
+        seconds: '-1',
+        nanos: -500000000,
+      });
+    });
+
+    it('should build a filter with default values', () => {
+      expect(buildDurationFilter(filterField, createFilter(null, null))).toEqual({
+        field: filterField,
+        filterDuration: {
+          value: { seconds: '0', nanos: 0 },
+          operator: FilterDurationOperator.FILTER_DURATION_OPERATOR_EQUAL,
         }
       });
     });

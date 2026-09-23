@@ -1,0 +1,69 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>{{ title() }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="controls">
+      @if (fields().length > 0) {
+        <mat-form-field class="field" appearance="outline" subscriptSizing="dynamic">
+          <mat-label i18n>Field</mat-label>
+          <mat-select [value]="selectedField()" (valueChange)="selectedField.set($event); invalidate()">
+            @for (field of fields(); track field.label) {
+              <mat-option [value]="field">{{ field.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
+      <mat-form-field class="buckets" appearance="outline" subscriptSizing="dynamic">
+        <mat-label i18n>Buckets</mat-label>
+        <mat-select [value]="bucketCount()" (valueChange)="bucketCount.set($event); invalidate()">
+          @for (count of bucketCounts; track count) {
+            <mat-option [value]="count">{{ count }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-checkbox [checked]="logarithmic()" (change)="logarithmic.set($event.checked)" i18n>
+        Log scale
+      </mat-checkbox>
+      <button mat-flat-button color="primary" (click)="compute()" [disabled]="loading()">
+        <mat-icon [fontIcon]="getIcon('refresh')" />
+        <span i18n>Compute</span>
+      </button>
+    </div>
+
+    @if (loading()) {
+      <div class="placeholder">
+        <app-spinner />
+      </div>
+    } @else if (error()) {
+      <div class="placeholder">
+        <mat-icon class="warning" [fontIcon]="getIcon('error')" />
+        <span>{{ error() }}</span>
+      </div>
+    } @else {
+      @if (histogram(); as data) {
+        @if (data.total === 0) {
+          <div class="placeholder">
+            <span i18n>Nothing to display for this session.</span>
+          </div>
+        } @else if (unreported()) {
+          <div class="placeholder">
+            <span i18n>This field is not reported by the server.</span>
+          </div>
+        } @else {
+          <app-histogram [boundaries]="data.boundaries" [counts]="data.counts" [boundaryLabels]="data.boundaryLabels" [intervals]="data.intervals" [datasetLabel]="unit()" [logarithmic]="logarithmic()" />
+          <div class="footer">
+            <span i18n>{{ data.total }} items across {{ data.counts.length }} buckets</span>
+            @if (missing() !== 0) {
+              <span class="warning" i18n>{{ missing() }} items outside of the computed range</span>
+            }
+          </div>
+        }
+      } @else {
+        <div class="placeholder">
+          <span i18n>Pick a field and click Compute.</span>
+        </div>
+      }
+    }
+  </mat-card-content>
+</mat-card>

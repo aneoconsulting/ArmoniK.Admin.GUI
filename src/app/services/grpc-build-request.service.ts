@@ -1,6 +1,6 @@
-import { ApplicationFilterField, SortDirection as ArmoniKSortDirection, FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, PartitionFilterField, ResultFilterField, SessionFilterField, TaskFilterField } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationFilterField, SortDirection as ArmoniKSortDirection, FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterDurationOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, PartitionFilterField, ResultFilterField, SessionFilterField, TaskFilterField } from '@aneoconsultingfr/armonik.api.angular';
 import { SortDirection } from '@angular/material/sort';
-import { Filter, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
+import { Filter, FilterInputValue, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
 
 export type FilterField = SessionFilterField.AsObject['field'] | TaskFilterField.AsObject['field'] | ApplicationFilterField.AsObject['field'] | PartitionFilterField.AsObject['field'] | ResultFilterField.AsObject['field'];
 
@@ -71,5 +71,35 @@ export function buildBooleanFilter(filterField: FilterField, filter: Filter<Filt
       value: filter.value ?? false,
       operator: FilterBooleanOperator.FILTER_BOOLEAN_OPERATOR_IS,
     }
+  };
+}
+
+/**
+ * The value is expressed in seconds and may be fractional: 1.5 becomes 1s and 500000000ns.
+ */
+export function buildDurationFilter(filterField: FilterField, filter: Filter<FiltersEnums, FiltersOptionsEnums>) {
+  return {
+    field: filterField,
+    filterDuration: {
+      value: toProtobufSeconds(filter.value),
+      operator: filter.operator ?? FilterDurationOperator.FILTER_DURATION_OPERATOR_EQUAL,
+    }
+  };
+}
+
+/**
+ * Splits a possibly fractional number of seconds into the protobuf seconds/nanos pair. The server
+ * honours nanos on both date and duration filters, which is what allows sub second boundaries.
+ */
+export function toProtobufSeconds(value: FilterInputValue) {
+  const total = Number(value) || 0;
+  // Protobuf requires both components to share a sign, so the split truncates towards zero.
+  const seconds = Math.trunc(total);
+  const nanos = Math.round((total - seconds) * 1e9);
+  const sign = nanos < 0 ? -1 : 1;
+
+  return {
+    seconds: seconds.toString(),
+    nanos: sign * Math.min(999999999, Math.abs(nanos)),
   };
 }

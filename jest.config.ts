@@ -20,6 +20,7 @@ export default {
     '@app/(.*)': '<rootDir>/src/app/$1',
     '^d3$': '<rootDir>/test/d3.js',
     '^force-graph$': '<rootDir>/test/force-graph.js',
+    '^chart\\.js$': '<rootDir>/test/chart.js',
   },
   testEnvironment: './JSDOMEnvironmentPatch.ts',
   testEnvironmentOptions: {
