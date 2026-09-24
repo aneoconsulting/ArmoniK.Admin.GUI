@@ -4,7 +4,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { ResultsStatusesService } from '@app/results/services/results-statuses.service';
-import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { LinkType } from '@app/types/graph.types';
 import { PrettyPipe } from '@pipes/pretty.pipe';
@@ -26,7 +25,6 @@ import { IconsService } from '@services/icons.service';
 })
 export class GraphLegendComponent {
   private readonly iconsService = inject(IconsService);
-  readonly sessionsStatusesService = inject(SessionsStatusesService);
   readonly tasksStatusesService = inject(TasksStatusesService);
   readonly resultsStatusesService = inject(ResultsStatusesService);
 

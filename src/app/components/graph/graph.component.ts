@@ -1,6 +1,7 @@
-import { ResultStatus, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { ResultStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { KeyValuePipe } from '@angular/common';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -10,24 +11,83 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { ResultsStatusesService } from '@app/results/services/results-statuses.service';
-import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { ArmoniKGraphNode, GraphData, GraphLink, LinkType } from '@app/types/graph.types';
-import { StatusLabelColor } from '@app/types/status';
+import { ArmoniKGraphNode, GraphLink, GraphUpdate, LinkType } from '@app/types/graph.types';
+import { PrettyPipe } from '@pipes/pretty.pipe';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { StorageService } from '@services/storage.service';
-import { forceLink, forceManyBody } from 'd3';
 import ForceGraph from 'force-graph';
-import { Observable, Subject, Subscription, switchMap } from 'rxjs';
+import { Observable, Subscription, bufferTime, filter } from 'rxjs';
 import { AutoCompleteComponent } from '../auto-complete.component';
+import { Coordinates, LayoutInput, LayoutResponse, NODE_GAP, NODE_SIZE, prepareLayout, provisionalLayout } from './graph-layout';
+import { createLayoutWorker } from './graph-layout-worker.factory';
 import { GraphLegendComponent } from './graph-legend.component';
 
+type Node = ArmoniKGraphNode;
+type Link = GraphLink<Node>;
+
+/** What the debug panel shows, refreshed every DEBUG_REFRESH_MS while it is open. */
+export type GraphDebug = {
+  tasks: number;
+  results: number;
+  links: Record<LinkType, number>;
+  events: {
+    structure: number;
+    status: number;
+    perSecond: number;
+    /** Seconds after which the initial graph was over, null while it is still arriving. */
+    initialGraphSeconds: number | null;
+  };
+  layout: {
+    state: 'provisional' | 'running' | 'laid-out';
+    runs: number;
+    lastSeconds: number | null;
+    runningSeconds: number | null;
+    /** Nodes added since the last layout, placed provisionally. */
+    waitingNodes: number;
+  };
+  rendering: {
+    framesPerSecond: number;
+    drawsPerSecond: number;
+    drawMs: number;
+    lastBatchMs: number;
+    heapMb: number | null;
+  };
+};
+
+/** Events are handled in batches: the initial graph alone is thousands of them. */
+const BATCH_MS = 250;
+/** The layout runs once the structure has stopped changing for this long… */
+const QUIET_MS = 1000;
+/** …or this long after the first change, for a running session never stops changing. */
+const MAX_WAIT_MS = 10000;
+/**
+ * The events start with the whole current graph, thousands per batch, then trickle. A batch with
+ * fewer structural changes than this tells the initial graph is over.
+ */
+const INITIAL_BATCH_SIZE = 200;
+/** Refresh period of the debug panel. */
+const DEBUG_REFRESH_MS = 1000;
+/** Duration of the move of the nodes to the places the layout gave them. */
+const ANIMATION_MS = 600;
+/** Resolution the icons are rasterised at, so that they stay sharp once zoomed in. */
+const SPRITE_SIZE = 128;
+/** Under this size on screen, a node is drawn as a plain square: an icon would not be readable. */
+const MIN_ICON_SCREEN_SIZE = 8;
+/** Opacity of what is not around the hovered node. */
+const FADED_ALPHA = 0.08;
+/** How far the hovered node's neighbourhood reaches: task → data → task. */
+const HOVER_DEPTH = 2;
+
+/**
+ * Draws the graph of a session. Nodes are placed by ELK in a worker, not by a simulation: until it
+ * has run, and for the nodes added since, a provisional placement is shown.
+ */
 @Component({
   selector: 'app-graph',
   templateUrl: 'graph.component.html',
   styleUrl: 'graph.component.scss',
-  standalone: true,
   imports: [
     MatCardModule,
     MatIconModule,
@@ -38,123 +98,186 @@ import { GraphLegendComponent } from './graph-legend.component';
     RouterModule,
     GraphLegendComponent,
     MatTooltipModule,
-    AutoCompleteComponent
+    AutoCompleteComponent,
+    KeyValuePipe,
+    PrettyPipe,
   ],
   providers: [
-    SessionsStatusesService,
     TasksStatusesService,
     ResultsStatusesService,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> implements OnInit, AfterViewInit, OnDestroy {
-  @Input({ required: true }) grpcObservable: Observable<GraphData<N, L>>;
+export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
+  @Input({ required: true }) updates: Observable<GraphUpdate>;
   @Input({ required: true }) sessionId: string;
 
-  @ViewChild('graph', { static: false }) private graphRef: ElementRef | null = null;
+  @ViewChild('graph', { static: false }) private graphRef: ElementRef<HTMLDivElement> | null = null;
 
-  private graph: ForceGraph<N, L>;
-  private canvasWidth: number = window.innerWidth;
-  private canvasHeight: number = window.innerHeight;
+  private graph: ForceGraph<Node, Link> | null = null;
 
-  private readonly nodesToHighlight: Set<string> = new Set();
   highlightParentNodes = false;
   highlightChildrenNodes = false;
-  private nodeToHighlight: string | null;
-  
+  private readonly nodesToHighlight = new Set<string>();
+  private nodeToHighlight: string | null = null;
+
   colorMap: Record<LinkType, string>;
 
   private readonly iconsService = inject(IconsService);
-  private readonly sessionsStatusesService = inject(SessionsStatusesService);
   private readonly tasksStatusesService = inject(TasksStatusesService);
   private readonly resultsStatusesService = inject(ResultsStatusesService);
   private readonly storageService = inject(StorageService);
   private readonly defaultConfigService = inject(DefaultConfigService);
   private readonly clipboard = inject(Clipboard);
 
-  private readonly redrawGraph$ = new Subject<void>();
-
   private readonly subscription = new Subscription();
 
-  private nodes: N[] = [];
-  private links: L[] = [];
+  private nodes: Node[] = [];
+  private links: Link[] = [];
+  private predecessors = new Map<string, string[]>();
+  private successors = new Map<string, string[]>();
+  private nodesById = new Map<string, Node>();
 
-  nodesIds: string[] = [];
+  readonly nodesIds = signal<string[]>([]);
+  readonly nodeCount = signal<number>(0);
+  readonly layingOut = signal<boolean>(false);
   readonly highlightLabel = $localize`Highlight a task`;
+
+  readonly debugEnabled = signal<boolean>(false);
+  readonly debug = signal<GraphDebug | null>(null);
+  private readonly createdAt = Date.now();
+  private readonly eventCounts = { structure: 0, status: 0 };
+  private eventsAtLastTick = 0;
+  private initialGraphEndedAt: number | null = null;
+  private layoutRuns = 0;
+  private layoutStartedAt: number | null = null;
+  private lastLayoutMs: number | null = null;
+  private lastLayoutNodes = 0;
+  private lastBatchMs = 0;
+  private frames = 0;
+  private drawStart = 0;
+  private drawDurations: number[] = [];
+  private debugInterval: ReturnType<typeof setInterval> | undefined;
+  private debugFrame = 0;
+
+  /** Whether ELK has placed the graph once: until then, every node is placed provisionally. */
+  private laidOut = false;
+  private layoutTimer: ReturnType<typeof setTimeout> | undefined;
+  /** When the first change not laid out yet happened. */
+  private firstChangeAt: number | null = null;
+  /** Whether the initial graph is still arriving: the wait is not capped until it is over. */
+  private initialGraph = true;
+  /** Once the user has moved the view, it is not fitted to the graph anymore. */
+  private viewMoved = false;
+  /**
+   * Nodes given a position by this component. Not `x !== undefined`: the renderer gives a position
+   * of its own, on a spiral around the origin, to any node that reaches it without one.
+   */
+  private readonly placed = new Set<string>();
+  private worker: Worker | null = null;
+  /** The structure changed while ELK was running: its result is already out of date. */
+  private layoutPending = false;
+  private animationFrame = 0;
+
+  /** Zoom of the frame being drawn, read by the link accessors. */
+  private scale = 1;
+  private hovered: Set<string> | null = null;
+  private readonly sprites = new Map<string, HTMLCanvasElement>();
+  private readonly linkColorCache = new Map<string, string>();
+  private readonly paintNode = (node: Node, ctx: CanvasRenderingContext2D, scale: number) => this.drawNode(node, ctx, scale);
 
   ngOnInit(): void {
     const storedColorMap = this.storageService.getItem<Record<LinkType, string>>('graph-links-colors', true) as Record<LinkType, string> | null;
-    this.colorMap = storedColorMap ?? this.defaultConfigService.defaultGraphLinksColors;
-    
+    // Stored maps may predate a link type.
+    this.colorMap = { ...this.defaultConfigService.defaultGraphLinksColors, ...storedColorMap };
+
     const storedHighlightParents = this.storageService.getItem<boolean>('graph-highlight-parents', true) as boolean;
     this.highlightParentNodes = storedHighlightParents ?? this.defaultConfigService.defaultGraphHighlightParents;
 
     const storedHighlightChildren = this.storageService.getItem<boolean>('graph-highlight-children', true) as boolean;
     this.highlightChildrenNodes = storedHighlightChildren ?? this.defaultConfigService.defaultGraphHighlightChildren;
+
+    const storedDebug = this.storageService.getItem<boolean>('graph-debug', true) as boolean | null;
+    this.setDebug(storedDebug ?? this.defaultConfigService.defaultGraphDebug);
   }
 
-  ngAfterViewInit(): void {
-    if (this.graphRef) {
-      this.graph = new ForceGraph<N, L>(this.graphRef.nativeElement);
-
-      this.graph
-        .d3Force('charge', forceManyBody().strength(-1000))
-        .d3Force('link', forceLink().distance(50).iterations(10))
-        .dagMode('td')
-        .dagLevelDistance(100)
-        .nodeCanvasObject((node: N, ctx: CanvasRenderingContext2D) =>
-          this.drawNode(node, ctx)
-        )
-        .linkColor((link: L) => {
-          return this.getLinkColor(link);
-        })
-        .linkDirectionalParticleWidth(15)
-        .linkWidth(4)
-        .nodeLabel('id')
-        .onNodeClick((node: N) => {
-          this.graph.centerAt(node.x, node.y);
-          this.graph.zoom(4, 2000);
-        });
-
-      this.subscription.add(this.grpcObservable.subscribe((result) => this.subscribeToData(result)));
-
-      this.subscription.add(this.redrawGraph$
-        .pipe(switchMap(() => this.grpcObservable))
-        .subscribe((result) => this.subscribeToData(result)));
+  async ngAfterViewInit(): Promise<void> {
+    if (!this.graphRef) {
+      return;
     }
+    // The icons are rasterised once: the font has to be there, or they would hold the ligature
+    // text instead of the glyph.
+    await document.fonts?.load(`${SPRITE_SIZE}px "Material Icons"`);
+
+    const element = this.graphRef.nativeElement;
+    for (const type of ['pointerdown', 'wheel']) {
+      element.addEventListener(type, () => (this.viewMoved = true), { once: true, passive: true });
+    }
+    this.graph = new ForceGraph<Node, Link>(element)
+      .width(element.clientWidth)
+      .height(element.clientHeight)
+      // Positions come from the layout: no simulation runs.
+      .d3Force('charge', null)
+      .d3Force('link', null)
+      .d3Force('center', null)
+      .cooldownTicks(0)
+      .nodeLabel('id')
+      .nodeCanvasObject(this.paintNode)
+      .nodePointerAreaPaint((node, color, ctx) => {
+        ctx.fillStyle = color;
+        ctx.fillRect(node.x! - NODE_SIZE / 2, node.y! - NODE_SIZE / 2, NODE_SIZE, NODE_SIZE);
+      })
+      .linkColor(link => this.getLinkColor(link))
+      // In screen pixels whatever the zoom: thick lines over thousands of links cover the whole
+      // overview, so they get thinner as it zooms out.
+      .linkWidth(() => Math.min(4, Math.max(0.5, NODE_SIZE * this.scale / 12)))
+      .linkDirectionalParticleWidth(4)
+      .onRenderFramePre((_, scale) => {
+        this.scale = scale;
+        this.drawStart = performance.now();
+      })
+      .onRenderFramePost(() => {
+        if (this.debugEnabled()) {
+          this.drawDurations.push(performance.now() - this.drawStart);
+        }
+      })
+      .onNodeHover(node => this.hover(node))
+      .onNodeClick(node => {
+        this.graph?.centerAt(node.x, node.y);
+        this.graph?.zoom(4, 2000);
+      });
+
+    this.subscription.add(this.updates.pipe(
+      bufferTime(BATCH_MS),
+      filter(batch => batch.length !== 0),
+    ).subscribe(batch => this.apply(batch)));
   }
 
   ngOnDestroy(): void {
+    this.setDebug(false);
     this.subscription.unsubscribe();
+    clearTimeout(this.layoutTimer);
+    cancelAnimationFrame(this.animationFrame);
+    this.worker?.terminate();
+    this.graph?._destructor();
+    this.graph = null;
   }
 
   /**
-   * Redraw the graph by refreshing the graph data.
+   * Places the graph again from scratch.
    */
   redraw(): void {
-    this.redrawGraph$.next();
+    this.runLayout();
   }
 
-  /**
-   * Returns the associated icon
-   * @param name string | undefined, icon to search 
-   * @returns string
-   */
   getIcon(name: string | undefined): string {
     return this.iconsService.getIcon(name);
   }
 
-  /**
-   * Copy the Id of the session
-   */
   copySessionId() {
     this.clipboard.copy(this.sessionId);
   }
 
-  /**
-   * Updates and stores highlightParentNodes.
-   * @param checked boolean
-   */
   toggleHighlightParentNodes(checked: boolean) {
     this.highlightParentNodes = checked;
     this.storageService.setItem('graph-highlight-parents', checked);
@@ -163,10 +286,6 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
     }
   }
 
-  /**
-   * Updates and stores highlightChildrenNodes.
-   * @param checked boolean
-   */
   toggleHighlightChildrenNodes(checked: boolean) {
     this.highlightChildrenNodes = checked;
     this.storageService.setItem('graph-highlight-children', checked);
@@ -192,174 +311,530 @@ export class GraphComponent<N extends ArmoniKGraphNode, L extends GraphLink<N>> 
   }
 
   /**
-   * Hightlight nodes with names included the searched value.
-   * If there is only one node, will display all its parents and children
-   * @param searchedValue 
+   * Highlights the nodes whose id contains the searched value. When a single one does, centres on
+   * it and, as configured, highlights its ancestors and descendants too.
    */
   highlightNodes(searchedValue: string) {
     this.nodesToHighlight.clear();
     this.nodeToHighlight = searchedValue;
-    this.nodes.forEach((node: ArmoniKGraphNode) => {
-      if (
-        searchedValue !== '' &&
-        node.id.includes(searchedValue)
-      ) {
-        this.nodesToHighlight.add(node.id);
+    if (searchedValue !== '') {
+      for (const node of this.nodes) {
+        if (node.id.includes(searchedValue)) {
+          this.nodesToHighlight.add(node.id);
+        }
       }
-    });
+    }
     if (this.nodesToHighlight.size === 1) {
-      const nodeId = [...(this.nodesToHighlight).values()][0];
-      const node = this.nodes.find(node => node.id === nodeId) as ArmoniKGraphNode;
-      this.graph.centerAt(node.x, node.y, 500);
+      const [nodeId] = this.nodesToHighlight;
+      const node = this.nodesById.get(nodeId)!;
+      this.graph?.centerAt(node.x, node.y, 500);
       if (this.highlightParentNodes) {
-        this.getParentNodes(nodeId).forEach(id => this.nodesToHighlight.add(id));
+        this.reach(nodeId, this.predecessors, Infinity).forEach(id => this.nodesToHighlight.add(id));
       }
       if (this.highlightChildrenNodes) {
-        this.getChildrenNodes(nodeId).forEach(id => this.nodesToHighlight.add(id));
+        this.reach(nodeId, this.successors, Infinity).forEach(id => this.nodesToHighlight.add(id));
       }
     }
-
-    this.graph.nodeCanvasObject((node: N, ctx: CanvasRenderingContext2D) =>
-      this.drawNode(node, ctx)
-    );
+    this.requestRedraw();
   }
 
-  /**
-   * Retrieves all parent nodes of the provided node.
-   * @param nodeId string
-   * @returns string[]
-   */
-  private getParentNodes(nodeId: string): string[] {
-    const parentIds: string[] = [];
-    const links = this.getLinksByTargetId(nodeId);
-    const idBuffer: L[] = [...links];
-    while (idBuffer.length !== 0) {
-      const link = idBuffer.pop();
-      if (link) {
-        const parentId = (link.source as N)?.id ?? link.source;
-        parentIds.push(parentId);
-        idBuffer.push(...this.getLinksByTargetId(parentId));
-      }
-    }
-    return parentIds;
-  }
-
-  /**
-   * Retrieves all children nodes of the provided node.
-   * @param nodeId string
-   * @returns string[]
-   */
-  private getChildrenNodes(nodeId: string): string[] {
-    const childrenIds: string[] = [];
-    const links = this.getLinksBySourceId(nodeId);
-    const idBuffer: L[] = [...links];
-    while (idBuffer.length !== 0) {
-      const link = idBuffer.pop();
-      if (link) {
-        const childrenId = (link.target as N)?.id ?? link.target;
-        childrenIds.push(childrenId);
-        idBuffer.push(...this.getLinksBySourceId(childrenId));
-      }
-    }
-    return childrenIds;
-  }
-
-  /**
-   * Retrieves the source link from the provided nodeId.
-   * @param nodeId string
-   * @returns L[]
-   */
-  private getLinksBySourceId(nodeId: string): L[] {
-    return this.links.filter(link => link.source === nodeId || (link.source as N).id === nodeId);
-  }
-
-  /**
-   * Retrieves the target link from the provided nodeId
-   * @param nodeId string
-   * @returns L[]
-   */
-  private getLinksByTargetId(nodeId: string): L[] {
-    return this.links.filter(link => link.target === nodeId || (link.target as N).id === nodeId);
-  }
-
-  /**
-   * Handles the resize event (zoom in or out)
-   */
   onResize(event: UIEvent): void {
-    const newCanvasDimension = event.target as Window;
-    this.canvasWidth = newCanvasDimension.innerWidth;
-    this.canvasHeight = newCanvasDimension.innerHeight;
-    this.graph.width(this.canvasWidth);
-    this.graph.height(this.canvasHeight);
+    const window = event.target as Window;
+    this.graph?.width(window.innerWidth).height(window.innerHeight);
   }
-  
-  /**
-   * Displays particles on the graph
-   * @param checked boolean
-   */
+
   setParticles(checked: boolean): void {
-    this.graph.linkDirectionalParticles(checked ? 1 : 0);
+    this.graph?.linkDirectionalParticles(checked ? 1 : 0);
+  }
+
+  toggleDebug(checked: boolean): void {
+    this.storageService.setItem('graph-debug', checked);
+    this.setDebug(checked);
+  }
+
+  /** The panel costs nothing while closed: nothing is counted per frame, nothing is refreshed. */
+  private setDebug(enabled: boolean): void {
+    this.debugEnabled.set(enabled);
+    clearInterval(this.debugInterval);
+    cancelAnimationFrame(this.debugFrame);
+    if (!enabled) {
+      this.debug.set(null);
+      return;
+    }
+    const countFrame = () => {
+      this.frames++;
+      this.debugFrame = requestAnimationFrame(countFrame);
+    };
+    this.debugFrame = requestAnimationFrame(countFrame);
+    this.refreshDebug();
+    this.debugInterval = setInterval(() => this.refreshDebug(), DEBUG_REFRESH_MS);
+  }
+
+  private refreshDebug(): void {
+    const links: Record<LinkType, number> = { parent: 0, dependency: 0, output: 0, payload: 0 };
+    for (const link of this.links) {
+      links[link.type]++;
+    }
+    const tasks = this.nodes.filter(node => node.type === 'task').length;
+    const events = this.eventCounts.structure + this.eventCounts.status;
+    const memory = (performance as Performance & { memory?: { usedJSHeapSize: number } }).memory;
+    const seconds = (from: number | null, to: number = Date.now()) => (from === null ? null : (to - from) / 1000);
+
+    this.debug.set({
+      tasks,
+      results: this.nodes.length - tasks,
+      links,
+      events: {
+        ...this.eventCounts,
+        perSecond: Math.round((events - this.eventsAtLastTick) * 1000 / DEBUG_REFRESH_MS),
+        initialGraphSeconds: this.initialGraphEndedAt === null ? null : seconds(this.createdAt, this.initialGraphEndedAt),
+      },
+      layout: {
+        state: this.worker ? 'running' : this.laidOut ? 'laid-out' : 'provisional',
+        runs: this.layoutRuns,
+        lastSeconds: this.lastLayoutMs === null ? null : this.lastLayoutMs / 1000,
+        runningSeconds: seconds(this.layoutStartedAt),
+        waitingNodes: this.laidOut ? Math.max(0, this.nodes.length - this.lastLayoutNodes) : this.nodes.length,
+      },
+      rendering: {
+        framesPerSecond: this.frames,
+        drawsPerSecond: this.drawDurations.length,
+        drawMs: this.drawDurations.length === 0 ? 0 : this.drawDurations.reduce((sum, value) => sum + value, 0) / this.drawDurations.length,
+        lastBatchMs: this.lastBatchMs,
+        heapMb: memory ? memory.usedJSHeapSize / 1024 / 1024 : null,
+      },
+    });
+    this.eventsAtLastTick = events;
+    this.frames = 0;
+    this.drawDurations = [];
+  }
+
+  private apply(batch: GraphUpdate[]): void {
+    const start = performance.now();
+    for (const update of batch) {
+      this.eventCounts[update.kind]++;
+    }
+    this.applyBatch(batch);
+    this.lastBatchMs = performance.now() - start;
+  }
+
+  private applyBatch(batch: GraphUpdate[]): void {
+    const last = batch[batch.length - 1];
+    // Copies: the service keeps adding to its arrays as events arrive, and the renderer reads them
+    // a moment later. Nodes added in between would reach it without a position.
+    this.nodes = [...last.nodes];
+    this.links = [...last.links];
+
+    const structural = batch.filter(update => update.kind === 'structure').length;
+    if (this.initialGraph && structural < INITIAL_BATCH_SIZE) {
+      this.initialGraph = false;
+      this.initialGraphEndedAt = Date.now();
+      // The capped wait starts now, not with the first event of the initial graph.
+      this.firstChangeAt = null;
+    }
+    if (structural === 0) {
+      this.requestRedraw();
+      return;
+    }
+
+    this.indexGraph();
+    if (this.laidOut) {
+      this.placeIncrementally();
+    } else {
+      this.move(this.provisionalCoordinates());
+    }
+    this.graph?.graphData({ nodes: this.nodes, links: this.links });
+    if (!this.laidOut && !this.viewMoved) {
+      this.graph?.zoomToFit(0, 40);
+    }
+    this.nodesIds.set(this.nodes.map(node => node.id));
+    this.nodeCount.set(this.nodes.length);
+    this.scheduleLayout();
   }
 
   /**
-   * Subscription of the data observable.
-   * Draws the graph and refreshes the nodes array.
-   * @param result 
+   * The initial graph arrives in one go and has an end: only once it is over is the wait capped,
+   * or the layout would run on half of it, then again on the whole.
    */
-  private subscribeToData(result: GraphData<N, L>) {
-    this.nodes = result.nodes;
-    this.links = result.links;
-    this.nodesIds = result.nodes.map((node) => node.id);
-    this.graph.graphData({ nodes: result.nodes, links: result.links });
+  private scheduleLayout(): void {
+    const now = Date.now();
+    this.firstChangeAt ??= now;
+    const delay = this.initialGraph ? QUIET_MS : Math.min(QUIET_MS, this.firstChangeAt + MAX_WAIT_MS - now);
+    clearTimeout(this.layoutTimer);
+    this.layoutTimer = setTimeout(() => {
+      this.firstChangeAt = null;
+      this.runLayout();
+    }, delay);
   }
 
-  /**
-   * Draws a node in the canvas
-   * @param node N, must have valid x and y coordinates.
-   * @param ctx CanvasRenderingContext2D
-   */
-  private drawNode(node: N, ctx: CanvasRenderingContext2D) {
-    if (node.x !== undefined && node.y !== undefined) {
-      const label = this.getNodeStatusData(node);
-      if (this.nodesToHighlight.has(node.id)) {
-        ctx.font = '70px Material Icons';
-        const complementary = this.getComplementaryColor(label.color);
-        ctx.fillStyle = complementary;
-        ctx.fillText(this.iconsService.getIcon(`${node.type}-graph-icon`), node.x - 35, node.y + 35);
+  /** Runs ELK in a worker, then moves the nodes to the places it gave them. */
+  private runLayout(): void {
+    if (this.worker) {
+      this.layoutPending = true;
+      return;
+    }
+    const input = this.layoutInput();
+    this.layingOut.set(true);
+    this.layoutRuns++;
+    this.layoutStartedAt = Date.now();
+    this.worker = createLayoutWorker();
+    const startedAt = this.layoutStartedAt;
+    this.worker.onmessage = ({ data }: MessageEvent<LayoutResponse>) => {
+      this.stopWorker();
+      if ('error' in data) {
+        console.error(data.error);
+        return;
       }
-      ctx.font = '50px Material Icons';
-      ctx.fillStyle = label.color;
-      ctx.fillText(this.iconsService.getIcon(`${node.type}-graph-icon`), node.x - 25, node.y + 25);
-    }
+      this.lastLayoutMs = Date.now() - startedAt;
+      this.lastLayoutNodes = input.nodes.length;
+      const targets: Coordinates = new Map();
+      input.nodes.forEach((id, index) => targets.set(id, [data.positions[index * 2], data.positions[index * 2 + 1]]));
+      const first = !this.laidOut;
+      this.laidOut = true;
+      this.animateTo(targets, () => {
+        if (first && !this.viewMoved) {
+          this.graph?.zoomToFit(ANIMATION_MS, 40);
+        }
+      });
+      if (this.layoutPending) {
+        this.layoutPending = false;
+        this.scheduleLayout();
+      }
+    };
+    this.worker.onerror = event => {
+      this.stopWorker();
+      console.error(event.message);
+    };
+    this.worker.postMessage(input);
+  }
+
+  private stopWorker(): void {
+    this.worker?.terminate();
+    this.worker = null;
+    this.layoutStartedAt = null;
+    this.layingOut.set(false);
+  }
+
+  private layoutInput(): LayoutInput {
+    return {
+      nodes: this.nodes.map(node => node.id),
+      types: this.nodes.map(node => node.type),
+      links: this.links.map(link => ({ source: endId(link.source), target: endId(link.target), type: link.type })),
+    };
+  }
+
+  private provisionalCoordinates(): Coordinates {
+    const prepared = prepareLayout(this.layoutInput());
+    return prepared.placeData(provisionalLayout(prepared.graph));
   }
 
   /**
-   * Get the data associated to the node status.
-   * @param node N
-   * @returns StatusLabelColor, contains label, color and icon.
+   * Nodes added since the last layout, placed with its rules until it runs again: a new task one
+   * layer below the tasks it depends on, at the mean of their x, moved to the nearest free spot of
+   * its row; the data around their task, as a layout leaves them.
    */
-  private getNodeStatusData(node: N): StatusLabelColor {
-    switch (node.type) {
-    case 'session':
-      return this.sessionsStatusesService.statusToLabel(node.status as SessionStatus);
-    case 'task':
-      return this.tasksStatusesService.statusToLabel(node.status as TaskStatus);
-    case 'result':
-      return this.resultsStatusesService.statusToLabel(node.status as ResultStatus);
-    default:
-      return {
-        label: $localize`Unknown`,
-        color: 'grey',
-      };
+  private placeIncrementally(): void {
+    const prepared = prepareLayout(this.layoutInput());
+    const { graph } = prepared;
+    const rowStep = NODE_SIZE + graph.layerGap;
+    const width = (id: string) => graph.widths.get(id) ?? NODE_SIZE;
+
+    const coordinates: Coordinates = new Map();
+    const rows = new Map<number, Row>();
+    const occupy = (id: string, x: number, y: number) => {
+      coordinates.set(id, [x, y]);
+      (rows.get(y) ?? rows.set(y, new Row()).get(y)!).add(x - width(id) / 2, x + width(id) / 2);
+    };
+    let top = Infinity;
+    let right = -Infinity;
+    for (const id of graph.ids) {
+      if (this.placed.has(id)) {
+        const node = this.nodesById.get(id)!;
+        occupy(id, node.x!, node.y!);
+        top = Math.min(top, node.y!);
+        right = Math.max(right, node.x! + width(id) / 2);
+      }
+    }
+    top = Number.isFinite(top) ? top : 0;
+    right = Number.isFinite(right) ? right : 0;
+
+    const predecessors = new Map<string, string[]>();
+    for (const link of graph.links) {
+      push(predecessors, link.target, link.source);
+    }
+
+    // A task waits for its new predecessors to be placed first. When none of the waiting ones can
+    // go (a cycle, which a DAG should not have), they go with whatever is placed.
+    let waiting = graph.ids.filter(id => !coordinates.has(id));
+    let stuck = false;
+    while (waiting.length !== 0) {
+      const next: string[] = [];
+      for (const id of waiting) {
+        const all = predecessors.get(id) ?? [];
+        const known = all.filter(predecessor => coordinates.has(predecessor)).map(predecessor => coordinates.get(predecessor)!);
+        if (known.length < all.length && !stuck) {
+          next.push(id);
+          continue;
+        }
+        if (known.length === 0) {
+          occupy(id, right + NODE_GAP + width(id) / 2, top);
+          right += NODE_GAP + width(id);
+        } else {
+          const y = snap(Math.max(...known.map(([, knownY]) => knownY)) + rowStep, rows, rowStep / 2);
+          const x = known.reduce((sum, [knownX]) => sum + knownX, 0) / known.length;
+          occupy(id, rows.get(y)?.nearestFree(x, width(id), NODE_GAP) ?? x, y);
+        }
+      }
+      stuck = next.length === waiting.length;
+      waiting = next;
+    }
+
+    this.move(prepared.placeData(coordinates));
+  }
+
+  private move(coordinates: Coordinates): void {
+    for (const node of this.nodes) {
+      const position = coordinates.get(node.id);
+      if (position) {
+        this.setPosition(node, position[0], position[1]);
+      }
     }
   }
 
+  private setPosition(node: Node, x: number, y: number): void {
+    node.x = node.fx = x;
+    node.y = node.fy = y;
+    this.placed.add(node.id);
+  }
+
+  /** Moves the nodes to their targets over ANIMATION_MS, so that the eye can follow them. */
+  private animateTo(targets: Coordinates, done: () => void): void {
+    cancelAnimationFrame(this.animationFrame);
+    const moves = this.nodes
+      .filter(node => targets.has(node.id))
+      .map(node => {
+        const [x, y] = targets.get(node.id)!;
+        return { node, fromX: node.x ?? x, fromY: node.y ?? y, x, y };
+      });
+    const start = performance.now();
+    const step = () => {
+      const t = Math.min(1, (performance.now() - start) / ANIMATION_MS);
+      const eased = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+      for (const move of moves) {
+        this.setPosition(move.node, move.fromX + (move.x - move.fromX) * eased, move.fromY + (move.y - move.fromY) * eased);
+      }
+      this.requestRedraw();
+      if (t < 1) {
+        this.animationFrame = requestAnimationFrame(step);
+      } else {
+        done();
+      }
+    };
+    this.animationFrame = requestAnimationFrame(step);
+  }
+
+  private indexGraph(): void {
+    this.nodesById = new Map(this.nodes.map(node => [node.id, node]));
+    this.predecessors = new Map();
+    this.successors = new Map();
+    for (const link of this.links) {
+      push(this.successors, endId(link.source), endId(link.target));
+      push(this.predecessors, endId(link.target), endId(link.source));
+    }
+  }
+
+  /** The nodes reachable from `id` in at most `depth` steps, each visited once. */
+  private reach(id: string, neighbours: Map<string, string[]>, depth: number): Set<string> {
+    const reached = new Set<string>();
+    let frontier = [id];
+    for (let step = 0; step < depth && frontier.length !== 0; step++) {
+      const next: string[] = [];
+      for (const current of frontier) {
+        for (const neighbour of neighbours.get(current) ?? []) {
+          if (neighbour !== id && !reached.has(neighbour)) {
+            reached.add(neighbour);
+            next.push(neighbour);
+          }
+        }
+      }
+      frontier = next;
+    }
+    return reached;
+  }
+
+  private hover(node: Node | null): void {
+    this.hovered = node === null
+      ? null
+      : new Set([node.id, ...this.reach(node.id, this.predecessors, HOVER_DEPTH), ...this.reach(node.id, this.successors, HOVER_DEPTH)]);
+    this.requestRedraw();
+  }
+
   /**
-   * Returns the associated link color.
-   * @param link L
-   * @returns string
+   * Nothing force-graph watches changes when a status or a highlight does, so it would not redraw:
+   * setting the painter again makes it.
    */
-  private getLinkColor(link: L): string {
-    return this.colorMap[link.type];
+  private requestRedraw(): void {
+    this.graph?.nodeCanvasObject(this.paintNode);
+  }
+
+  private drawNode(node: Node, ctx: CanvasRenderingContext2D, scale: number): void {
+    if (node.x === undefined || node.y === undefined) {
+      return;
+    }
+    const color = this.getNodeColor(node);
+    const faded = this.hovered !== null && !this.hovered.has(node.id);
+    if (faded) {
+      ctx.globalAlpha = FADED_ALPHA;
+    }
+
+    if (NODE_SIZE * scale < MIN_ICON_SCREEN_SIZE) {
+      ctx.fillStyle = color;
+      ctx.fillRect(node.x - NODE_SIZE / 2, node.y - NODE_SIZE / 2, NODE_SIZE, NODE_SIZE);
+    } else {
+      if (this.nodesToHighlight.has(node.id)) {
+        const size = NODE_SIZE * 1.4;
+        ctx.drawImage(this.sprite(node.type, this.getComplementaryColor(color)), node.x - size / 2, node.y - size / 2, size, size);
+      }
+      ctx.drawImage(this.sprite(node.type, color), node.x - NODE_SIZE / 2, node.y - NODE_SIZE / 2, NODE_SIZE, NODE_SIZE);
+    }
+
+    if (faded) {
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  private getNodeColor(node: Node): string {
+    const status = node.type === 'task'
+      ? this.tasksStatusesService.statusToLabel(node.status as TaskStatus)
+      : this.resultsStatusesService.statusToLabel(node.status as ResultStatus);
+    return status?.color ?? 'grey';
+  }
+
+  /** The icon of a node type in a given color, drawn once and reused by every node sharing them. */
+  private sprite(type: Node['type'], color: string): HTMLCanvasElement {
+    const key = `${type}|${color}`;
+    let sprite = this.sprites.get(key);
+    if (!sprite) {
+      sprite = document.createElement('canvas');
+      sprite.width = sprite.height = SPRITE_SIZE;
+      const ctx = sprite.getContext('2d')!;
+      ctx.font = `${SPRITE_SIZE}px "Material Icons"`;
+      ctx.fillStyle = color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(this.iconsService.getIcon(`${type}-graph-icon`), SPRITE_SIZE / 2, SPRITE_SIZE / 2);
+      this.sprites.set(key, sprite);
+    }
+    return sprite;
+  }
+
+  /**
+   * Translucent while zoomed out, where links pile up, opaque once they can be told apart. Faded
+   * when they do not belong to the hovered neighbourhood.
+   */
+  private getLinkColor(link: Link): string {
+    const inHovered = this.hovered === null || (this.hovered.has(endId(link.source)) && this.hovered.has(endId(link.target)));
+    const alpha = !inHovered
+      ? FADED_ALPHA
+      : this.hovered !== null ? 1 : Math.min(1, Math.max(0.15, NODE_SIZE * this.scale / 40));
+    // Rounded so that the cache stays small and the canvas batches links of the same color.
+    const rounded = Math.round(alpha * 20) / 20;
+    const key = `${link.type}|${rounded}`;
+    let color = this.linkColorCache.get(key);
+    if (!color) {
+      color = withAlpha(this.colorMap[link.type], rounded);
+      this.linkColorCache.set(key, color);
+    }
+    return color;
+  }
+}
+
+/** The renderer replaces the ends of a link, given as ids, with the node objects. */
+function endId(end: Link['source']): string {
+  return typeof end === 'object' ? (end as Node).id : String(end);
+}
+
+/** `#rgb`, `#rrggbb` or `#rrggbbaa`, its own alpha multiplied by `alpha`. Other colors are kept. */
+function withAlpha(color: string, alpha: number): string {
+  if (!/^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(color)) {
+    return color;
+  }
+  let value = color.slice(1);
+  if (value.length === 3) {
+    value = value.split('').map(char => char + char).join('');
+  }
+  const r = Number.parseInt(value.slice(0, 2), 16);
+  const g = Number.parseInt(value.slice(2, 4), 16);
+  const b = Number.parseInt(value.slice(4, 6), 16);
+  const a = value.length === 8 ? Number.parseInt(value.slice(6, 8), 16) / 255 : 1;
+  return `rgba(${r}, ${g}, ${b}, ${a * alpha})`;
+}
+
+function push(map: Map<string, string[]>, key: string, value: string): void {
+  const list = map.get(key);
+  if (list) {
+    list.push(value);
+  } else {
+    map.set(key, [value]);
+  }
+}
+
+/** The y of the existing row closest to `y`, if one is within `tolerance`: layouts space rows unevenly. */
+function snap(y: number, rows: Map<number, unknown>, tolerance: number): number {
+  let best = y;
+  let distance = tolerance;
+  for (const row of rows.keys()) {
+    if (Math.abs(row - y) < distance) {
+      best = row;
+      distance = Math.abs(row - y);
+    }
+  }
+  return best;
+}
+
+/** The intervals taken on a row of the graph, sorted, to find where a new node fits. */
+class Row {
+  private readonly starts: number[] = [];
+  private readonly ends: number[] = [];
+
+  add(start: number, end: number): void {
+    const index = this.insertionIndex(start);
+    this.starts.splice(index, 0, start);
+    this.ends.splice(index, 0, end);
+  }
+
+  /** The x closest to `x` where a node of `width` fits, `gap` away from its neighbours. */
+  nearestFree(x: number, width: number, gap: number): number {
+    const step = width + gap;
+    for (let offset = 0; ; offset += step) {
+      if (this.isFree(x + offset, width, gap)) {
+        return x + offset;
+      }
+      if (offset !== 0 && this.isFree(x - offset, width, gap)) {
+        return x - offset;
+      }
+    }
+  }
+
+  private isFree(x: number, width: number, gap: number): boolean {
+    const start = x - width / 2 - gap;
+    const end = x + width / 2 + gap;
+    // Intervals do not overlap, so only the ones around `start` can reach into [start, end].
+    const index = this.insertionIndex(start);
+    return !(index > 0 && this.ends[index - 1] > start) && !(index < this.starts.length && this.starts[index] < end);
+  }
+
+  private insertionIndex(value: number): number {
+    let low = 0;
+    let high = this.starts.length;
+    while (low < high) {
+      const middle = (low + high) >> 1;
+      if (this.starts[middle] < value) {
+        low = middle + 1;
+      } else {
+        high = middle;
+      }
+    }
+    return low;
   }
 }

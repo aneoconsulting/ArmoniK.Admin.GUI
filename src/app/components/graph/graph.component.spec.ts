@@ -1,406 +1,255 @@
-import { ResultStatus, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { ResultStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ResultsStatusesService } from '@app/results/services/results-statuses.service';
-import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { ArmoniKGraphNode, GraphData, GraphLink, LinkType } from '@app/types/graph.types';
+import { ArmoniKGraphNode, GraphLink, GraphUpdate } from '@app/types/graph.types';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { StorageService } from '@services/storage.service';
-import { Subject } from 'rxjs';
+import { createLayoutWorker } from './graph-layout-worker.factory';
 import { GraphComponent } from './graph.component';
 
 describe('GraphComponent', () => {
-  let component: GraphComponent<ArmoniKGraphNode, GraphLink<ArmoniKGraphNode>>;
-
-  const grpcObservable = new Subject<GraphData<ArmoniKGraphNode, GraphLink<ArmoniKGraphNode>>>();
+  let component: GraphComponent;
 
   const mockStorageService = {
     getItem: jest.fn(),
     setItem: jest.fn(),
   };
 
-  const mockSessionsStatuses = {
-    statusToLabel: jest.fn(() => ({
-      label: 'Running',
-      color: 'green'
-    })),
-  };
-
-  const mockTasksStatuses = {
-    statusToLabel: jest.fn(() => ({
-      label: 'Completed',
-      color: 'green'
-    })),
-  };
-
-  const mockResultsStatuses = {
-    statusToLabel: jest.fn(() => ({
-      label: 'Completed',
-      color: 'green'
-    })),
+  const mockStatuses = {
+    statusToLabel: jest.fn(() => ({ label: 'Completed', color: '#00ff00' })),
   };
 
   const mockClipboard = {
     copy: jest.fn(),
   };
 
-  const mockIconsService = {
-    getIcon: jest.fn(v => v)
+  const mockWorker = {
+    postMessage: jest.fn(),
+    terminate: jest.fn(),
+    onmessage: null as ((event: MessageEvent) => void) | null,
+    onerror: null,
   };
 
-  const mockGraph = {
-    nativeElement: {}
-  } as ElementRef;
+  // parent → payload-child → child → output
+  const nodes = (): ArmoniKGraphNode[] => [
+    { id: 'parent', type: 'task', status: TaskStatus.TASK_STATUS_COMPLETED },
+    { id: 'payload-child', type: 'result', status: ResultStatus.RESULT_STATUS_COMPLETED },
+    { id: 'child', type: 'task', status: TaskStatus.TASK_STATUS_PROCESSING },
+    { id: 'output', type: 'result', status: ResultStatus.RESULT_STATUS_CREATED },
+  ];
+  const links = (): GraphLink<ArmoniKGraphNode>[] => [
+    { source: 'parent', target: 'payload-child', type: 'parent' },
+    { source: 'payload-child', target: 'child', type: 'payload' },
+    { source: 'child', target: 'output', type: 'output' },
+  ];
+  const structure = (): GraphUpdate => ({ nodes: nodes(), links: links(), kind: 'structure' });
 
   beforeEach(() => {
+    jest.useFakeTimers();
+    (createLayoutWorker as jest.Mock).mockReturnValue(mockWorker);
     component = TestBed.configureTestingModule({
       providers: [
         GraphComponent,
         DefaultConfigService,
         { provide: StorageService, useValue: mockStorageService },
-        { provide: IconsService, useValue: mockIconsService },
-        { provide: SessionsStatusesService, useValue: mockSessionsStatuses },
-        { provide: TasksStatusesService, useValue: mockTasksStatuses },
-        { provide: ResultsStatusesService, useValue: mockResultsStatuses },
+        { provide: IconsService, useValue: { getIcon: jest.fn(icon => icon) } },
+        { provide: TasksStatusesService, useValue: mockStatuses },
+        { provide: ResultsStatusesService, useValue: mockStatuses },
         { provide: Clipboard, useValue: mockClipboard },
-      ]
-    }).inject(GraphComponent<ArmoniKGraphNode, GraphLink<ArmoniKGraphNode>>);
-
-    component.grpcObservable = grpcObservable;
-    component['canvasHeight'] = 100;
-    component['canvasWidth'] = 100;
-    component['graphRef'] = mockGraph;
+      ],
+    }).inject(GraphComponent);
+    component.sessionId = 'session';
     component.ngOnInit();
-    component.ngAfterViewInit();
+  });
+
+  afterEach(() => {
+    component.ngOnDestroy();
+    jest.useRealTimers();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('Initialisation', () => {
-    it('should set the graph', () => {
-      expect(component['graph']).toBeDefined();
-    });
-    
-    it('should subscribe the provided observable', () => {
-      expect(grpcObservable.observed).toBeTruthy();
-    });
+  describe('initialisation', () => {
+    it('should complete a stored color map with the default colors', () => {
+      mockStorageService.getItem.mockImplementation(key => (key === 'graph-links-colors' ? { parent: '#123456' } : null));
+      component.ngOnInit();
 
-    it('should subscribe the refresh observable', () => {
-      expect(component['redrawGraph$'].observed).toBeTruthy();
+      expect(component.colorMap).toEqual({ ...new DefaultConfigService().defaultGraphLinksColors, parent: '#123456' });
+      mockStorageService.getItem.mockReset();
     });
   });
 
-  it('should redraw properly', () => {
-    const spy = jest.spyOn(component['redrawGraph$'], 'next');
-    component.redraw();
-    expect(spy).toHaveBeenCalled();
-  });
+  describe('updates', () => {
+    it('should place every node before the layout has run', () => {
+      const update = structure();
+      component['apply']([update]);
 
-  it('should get icons', () => {
-    const name = 'heart';
-    component.getIcon(name);
-    expect(mockIconsService.getIcon).toHaveBeenCalledWith(name);
-  });
+      expect(update.nodes.every(node => node.x !== undefined && node.y !== undefined)).toBe(true);
+      expect(component.nodeCount()).toEqual(4);
+    });
 
-  it('should copy the session Id', () => {
-    component.copySessionId();
-    expect(mockClipboard.copy).toHaveBeenCalledWith(component.sessionId);
-  });
+    it('should lay the graph out once the structure stops changing', () => {
+      component['apply']([structure()]);
+      expect(mockWorker.postMessage).not.toHaveBeenCalled();
 
-  describe('highlightNodes', () => {
-    const nodes = [
-      {
-        id: 'abc',
-      },
-      {
-        id: '123abc',
-      },
-      {
-        id: '123',
-      },
-      {
-        id: '1234',
-      },
-    ] as ArmoniKGraphNode[];
+      jest.advanceTimersByTime(1000);
+      expect(mockWorker.postMessage).toHaveBeenCalledWith(expect.objectContaining({
+        nodes: ['parent', 'payload-child', 'child', 'output'],
+        types: ['task', 'result', 'task', 'result'],
+      }));
+    });
 
-    const links = [
-      {
-        source: '123',
-        target: '123abc',
-      },
-      {
-        source: '123abc',
-        target: '1234',
+    it('should lay the graph out even when the structure never stops changing', () => {
+      for (let elapsed = 0; elapsed < 10000; elapsed += 500) {
+        component['apply']([structure()]);
+        jest.advanceTimersByTime(500);
       }
-    ] as GraphLink<ArmoniKGraphNode>[];
 
+      expect(mockWorker.postMessage).toHaveBeenCalled();
+    });
+
+    it('should wait for the end of the initial graph before the first layout', () => {
+      const initialBatch = Array.from({ length: 200 }, () => structure());
+      for (let elapsed = 0; elapsed < 10000; elapsed += 500) {
+        component['apply'](initialBatch);
+        jest.advanceTimersByTime(500);
+      }
+
+      expect(mockWorker.postMessage).not.toHaveBeenCalled();
+    });
+
+    it('should give the renderer a copy of the nodes, not the array the service keeps filling', () => {
+      const update = structure();
+      component['apply']([update]);
+      update.nodes.push({ id: 'late', type: 'task', status: TaskStatus.TASK_STATUS_CREATING });
+
+      expect(component['nodes']).toHaveLength(4);
+    });
+
+    it('should not lay the graph out for a status change', () => {
+      component['apply']([{ ...structure(), kind: 'status' }]);
+      jest.advanceTimersByTime(1000);
+
+      expect(mockWorker.postMessage).not.toHaveBeenCalled();
+    });
+
+    it('should wait for the running layout before starting another one', () => {
+      component['apply']([structure()]);
+      jest.advanceTimersByTime(1000);
+      component.redraw();
+
+      expect(createLayoutWorker).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('nodes added after a layout', () => {
+    it('should put new subtasks below their parent, side by side, with their data around them', () => {
+      // The service keeps the same node objects from one update to the next.
+      const update = structure();
+      component['apply']([update]);
+      component['laidOut'] = true;
+      const [parent, , child] = update.nodes;
+      const siblings = ['sibling-1', 'sibling-2'];
+      for (const sibling of siblings) {
+        update.nodes.push(
+          { id: `${sibling}-payload`, type: 'result', status: ResultStatus.RESULT_STATUS_COMPLETED },
+          { id: sibling, type: 'task', status: TaskStatus.TASK_STATUS_CREATING },
+        );
+        update.links.push(
+          { source: 'parent', target: `${sibling}-payload`, type: 'parent' },
+          { source: `${sibling}-payload`, target: sibling, type: 'payload' },
+        );
+      }
+      component['apply']([update]);
+
+      const placed = (id: string) => update.nodes.find(node => node.id === id)!;
+      const xs = ['child', ...siblings].map(id => placed(id).x);
+      expect(new Set(xs).size).toEqual(3);
+      for (const sibling of siblings) {
+        expect(placed(sibling).y).toEqual(child.y);
+        expect(placed(sibling).y).toBeGreaterThan(parent.y!);
+        expect(placed(`${sibling}-payload`).x).toEqual(placed(sibling).x);
+        expect(placed(`${sibling}-payload`).y).toBeLessThan(placed(sibling).y!);
+      }
+    });
+  });
+
+  describe('highlight', () => {
     beforeEach(() => {
-      component['nodes'] = nodes;
-      component['links'] = links;
+      component['apply']([structure()]);
     });
 
-    it('should highlight nodes correctly', () => {
-      const event = 'abc';
-      component.highlightNodes(event);
-      expect(component['nodesToHighlight']).toEqual(new Set(['abc', '123abc']));
+    it('should highlight the nodes matching the search', () => {
+      component.highlightChildrenNodes = false;
+      component.highlightNodes('child');
+
+      expect([...component['nodesToHighlight']]).toEqual(['payload-child', 'child']);
     });
 
-    it('should highlight all parents nodes if there is only one matching node and highlightParentNodes is true', () => {
-      const event = '123abc';
+    it('should highlight the ancestors and descendants of a single match', () => {
       component.highlightParentNodes = true;
-      component.highlightNodes(event);
-      expect(component['nodesToHighlight']).toEqual(new Set(['123', '123abc']));
-    });
-
-    it('should highlight all parents nodes if there is only one matching node and highlightChildrenNodes is true', () => {
-      const event = '123abc';
       component.highlightChildrenNodes = true;
-      component.highlightNodes(event);
-      expect(component['nodesToHighlight']).toEqual(new Set(['123abc', '1234']));
+      component.highlightNodes('output');
+
+      expect(component['nodesToHighlight']).toEqual(new Set(['output', 'child', 'payload-child', 'parent']));
     });
 
-    it('should highlight both parents and children nodes if there is only one matching node and highlightChildrenNodes and highlightParentNodes are true', () => {
-      const event = '123abc';
-      component.highlightChildrenNodes = true;
-      component.highlightParentNodes = true;
-      component.highlightNodes(event);
-      expect(component['nodesToHighlight']).toEqual(new Set(['123', '123abc', '1234']));
-    });
-  });
-
-  describe('onResize', () => {
-    const dimensions = {
-      innerHeight: 10,
-      innerWidth: 10,
-    };
-    const event = {
-      target: dimensions,
-    } as unknown as UIEvent;
-
-    beforeEach(() => {
-      component.onResize(event);
-    });
-    
-    it('should update the canvas width', () => {
-      expect(component['canvasWidth']).toEqual(dimensions.innerWidth);
+    it('should store the parents highlight setting', () => {
+      component.toggleHighlightParentNodes(true);
+      expect(mockStorageService.setItem).toHaveBeenCalledWith('graph-highlight-parents', true);
     });
 
-    it('should set the canvas width to the graph', () => {
-      expect(component['graph'].width).toHaveBeenCalledWith(dimensions.innerWidth);
-    });
-
-    it('should update the canvas height', () => {
-      expect(component['canvasHeight']).toEqual(dimensions.innerHeight);
-    });
-
-    it('should set the canvas height to the graph', () => {
-      expect(component['graph'].height).toHaveBeenCalledWith(dimensions.innerHeight);
+    it('should store the children highlight setting', () => {
+      component.toggleHighlightChildrenNodes(true);
+      expect(mockStorageService.setItem).toHaveBeenCalledWith('graph-highlight-children', true);
     });
   });
 
-  describe('setParticles', () => {
-    it('should display particles', () => {
-      component.setParticles(true);
-      expect(component['graph'].linkDirectionalParticles).toHaveBeenCalledWith(1);
-    });
-    
-    it('should stop displaying particles', () => {
-      component.setParticles(false);
-      expect(component['graph'].linkDirectionalParticles).toHaveBeenCalledWith(0);
-    });
-  });
-
-  describe('drawNode', () => {
-    let mockCtx: CanvasRenderingContext2D;
-
-    const node = {
-      id: '1',
-      x: 0,
-      y: 0,
-      type: 'session',
-    } as ArmoniKGraphNode;
-
-    beforeEach(() => {
-      mockCtx = {
-        fillText: jest.fn(),
-      } as unknown as CanvasRenderingContext2D;
+  describe('debug', () => {
+    it('should stay closed by default', () => {
+      expect(component.debug()).toBeNull();
     });
 
-    it('should draw a node', () => {
-      component['drawNode'](node, mockCtx);
-
-      expect(mockCtx.fillText).toHaveBeenCalledWith(
-        `${node.type}-graph-icon`,
-        node.x! - 25,
-        node.y! + 25,
-      );
+    it('should store the setting', () => {
+      component.toggleDebug(true);
+      expect(mockStorageService.setItem).toHaveBeenCalledWith('graph-debug', true);
     });
 
-    it('should highlight a node if its id is in the nodesToHighlight', () => {
-      component['nodesToHighlight'].add('1');
-      component['drawNode'](node, mockCtx);
+    it('should describe the graph, its events and its layout', () => {
+      component.toggleDebug(true);
+      component['apply']([structure(), { ...structure(), kind: 'status' }]);
+      // The layout starts after 1 s, the panel refreshed after it reads it running.
+      jest.advanceTimersByTime(2000);
 
-      expect(mockCtx.fillText).toHaveBeenCalledTimes(2);
+      expect(component.debug()).toEqual(expect.objectContaining({
+        tasks: 2,
+        results: 2,
+        links: { parent: 1, dependency: 0, output: 1, payload: 1 },
+        events: expect.objectContaining({ structure: 1, status: 1 }),
+        layout: expect.objectContaining({ state: 'running', runs: 1, waitingNodes: 4 }),
+      }));
+    });
+
+    it('should stop refreshing once closed', () => {
+      component.toggleDebug(true);
+      component.toggleDebug(false);
+      jest.advanceTimersByTime(1000);
+
+      expect(component.debug()).toBeNull();
     });
   });
 
-  describe('getNodeStatusData', () => {
-    it('should return the running session label', () => {
-      const node = {
-        type: 'session',
-        status: SessionStatus.SESSION_STATUS_RUNNING,
-      } as ArmoniKGraphNode;
-      expect(component['getNodeStatusData'](node)).toEqual(
-        mockSessionsStatuses.statusToLabel()
-      );
-    });
-
-    it('should return the running task label', () => {
-      const node = {
-        type: 'task',
-        status: TaskStatus.TASK_STATUS_COMPLETED,
-      } as ArmoniKGraphNode;
-      expect(component['getNodeStatusData'](node)).toEqual(
-        mockTasksStatuses.statusToLabel()
-      );
-    });
-
-    it('should return the running result label', () => {
-      const node = {
-        type: 'result',
-        status: ResultStatus.RESULT_STATUS_COMPLETED,
-      } as ArmoniKGraphNode;
-      expect(component['getNodeStatusData'](node)).toEqual(
-        mockResultsStatuses.statusToLabel()
-      );
-    });
-    
-
-    it('should get the default color', () => {
-      const node = {
-        type: 'unknown',
-        status: ResultStatus.RESULT_STATUS_COMPLETED,
-      } as unknown as ArmoniKGraphNode;
-
-      expect(component['getNodeStatusData'](node)).toEqual({
-        label: 'Unknown',
-        color: 'grey'
-      });
-    });
+  it('should copy the session id', () => {
+    component.copySessionId();
+    expect(mockClipboard.copy).toHaveBeenCalledWith('session');
   });
 
-  describe('getLinkColor', () => {
-    it('should get all kind of link colors', () => {
-      const types: LinkType[] = ['dependency', 'output', 'parent', 'payload'];
-      types.forEach(type => {
-        const link = {
-          type: type
-        } as GraphLink<ArmoniKGraphNode>;
-        expect(component['getLinkColor'](link)).toEqual(component.colorMap[type]);
-      });
-    });
-  });
-
-  describe('On new node data', () => {
-    const nodes = [
-      {
-        id: 'abc',
-      },
-      {
-        id: '123',
-      },
-    ] as ArmoniKGraphNode[];
-
-    const links = [
-      {
-        source: 'abc',
-        target: '123',
-      },
-    ] as GraphLink<ArmoniKGraphNode>[];
-
-    beforeEach(() => {
-      grpcObservable.next({
-        nodes: nodes,
-        links: links,
-      });
-    });
-
-    it('should update the component nodes', () => {
-      expect(component['nodes']).toEqual(nodes);
-    });
-
-    it('should redraw the graph', () => {
-      expect(component['graph'].graphData).toHaveBeenCalledWith({
-        nodes: nodes,
-        links: links,
-      });
-    });
-
-    it('should center the node', () => {
-      expect(component['graph'].centerAt).toHaveBeenCalled();
-    });
-
-    it('should zoom on the node' ,() => {
-      expect(component['graph'].zoom).toHaveBeenCalled();
-    });
-  });
-
-  describe('toggleHighlightChildrenNodes', () => {
-    const checked = true;
-    let spy: jest.SpyInstance;
-
-    beforeEach(() => {
-      spy = jest.spyOn(component, 'highlightNodes');
-      component['highlightChildrenNodes'] = !checked;
-      component['nodeToHighlight'] = null;
-    });
-
-    it('should set the provided value as highlightChildrenNodes', () => {
-      component.toggleHighlightChildrenNodes(checked);
-      expect(component['highlightChildrenNodes']).toEqual(checked);
-    });
-
-    it('should not highlight the nodes if there is no nodes to hightlight', () => {
-      component.toggleHighlightChildrenNodes(checked);
-      expect(spy).not.toHaveBeenCalled();
-    });
-
-    it('should hightlight the nodes if there is a node to highlight', () => {
-      component['nodeToHighlight'] = 'some node';
-      component.toggleHighlightChildrenNodes(checked);
-      expect(spy).toHaveBeenCalled();
-    });
-  });
-
-  describe('toggleHighlightChildrenNodes', () => {
-    const checked = true;
-    let spy: jest.SpyInstance;
-
-    beforeEach(() => {
-      spy = jest.spyOn(component, 'highlightNodes');
-      component['highlightParentNodes'] = !checked;
-      component['nodeToHighlight'] = null;
-    });
-
-    it('should set the provided value as highlightChildrenNodes', () => {
-      component.toggleHighlightChildrenNodes(checked);
-      expect(component['highlightChildrenNodes']).toEqual(checked);
-    });
-
-    it('should not highlight the nodes if there is no nodes to hightlight', () => {
-      component.toggleHighlightParentNodes(checked);
-      expect(spy).not.toHaveBeenCalled();
-    });
-
-    it('should hightlight the nodes if there is a node to highlight', () => {
-      component['nodeToHighlight'] = 'some node';
-      component.toggleHighlightParentNodes(checked);
-      expect(spy).toHaveBeenCalled();
-    });
+  it('should compute the complementary color', () => {
+    expect(component.getComplementaryColor('#00ff00')).toEqual('#ff00ff');
   });
 });

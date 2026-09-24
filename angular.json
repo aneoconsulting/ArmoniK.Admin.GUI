@@ -45,6 +45,7 @@
             },
             "index": "src/index.html",
             "tsConfig": "tsconfig.app.json",
+            "webWorkerTsConfig": "tsconfig.worker.json",
             "assets": [
               "src/favicon.ico",
               "src/assets"

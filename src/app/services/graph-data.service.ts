@@ -1,11 +1,14 @@
-import { EventSubscriptionResponse, ResultStatus, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { EventSubscriptionResponse, ResultStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { ArmoniKGraphNode, GraphLink, LinkType, NodeEventType } from '@app/types/graph.types';
-import { GraphData } from 'force-graph';
-import { Observable, Subject, of, switchMap } from 'rxjs';
+import { ArmoniKGraphNode, GraphLink, GraphUpdate, LinkType, NodeEventType } from '@app/types/graph.types';
+import { Observable, map } from 'rxjs';
 import { GrpcEventsService } from './grpc-events.service';
 import { Status } from '../types/status';
 
+/**
+ * The graph of a session: its tasks and results, and the links between them. The events of the
+ * session start with the whole current graph, then follow its changes.
+ */
 @Injectable()
 export class GraphDataService {
   private readonly grpcEventsService = inject(GrpcEventsService);
@@ -15,193 +18,125 @@ export class GraphDataService {
   readonly nodes: ArmoniKGraphNode[] = [];
   readonly links: GraphLink<ArmoniKGraphNode>[] = [];
 
-  readonly updateGraphSubject = new Subject<GraphData>();
+  private readonly nodesById = new Map<string, ArmoniKGraphNode>();
+  private readonly linksByEnds = new Map<string, GraphLink<ArmoniKGraphNode>>();
 
-  /**
-   * Add the session node to the nodes array.
-   * Subscribe to the ArmoniK events associated to the current session.
-   * Handles :
-   * - New Task event: create a task node and its links
-   * - New Result event: create a result node and its links
-   * - Task status update event: update the status of a task node
-   * - Result status update event: update the status of a result node
-   * - Result Owner update event: update the task owner of a result
-   */
-  listenToEvents(): Observable<GraphData<ArmoniKGraphNode, GraphLink<ArmoniKGraphNode>>> {
-    this.addSession();
-    return this.grpcEventsService.getEvents$(this.sessionId)
-      .pipe(
-        switchMap((event: EventSubscriptionResponse) => {
-          switch(event.update) {
-          case (EventSubscriptionResponse.UpdateCase.newTask): {
-            this.addTask(event.newTask);
-            break;
-          }
-          case (EventSubscriptionResponse.UpdateCase.newResult): {
-            this.addResult(event.newResult);
-            break;
-          }
-          case (EventSubscriptionResponse.UpdateCase.taskStatusUpdate): {
-            this.updateStatus(
-              event.taskStatusUpdate!.taskId,
-              event.taskStatusUpdate!.status
-            );
-            break;
-          }
-          case (EventSubscriptionResponse.UpdateCase.resultStatusUpdate): {
-            this.updateStatus(
-              event.resultStatusUpdate!.resultId,
-              event.resultStatusUpdate!.status
-            );
-            break;
-          }
-          case (EventSubscriptionResponse.UpdateCase.resultOwnerUpdate): {
-            this.updateTaskOwner(
-              event.resultOwnerUpdate!.resultId,
-              event.resultOwnerUpdate!.previousOwnerId,
-              event.resultOwnerUpdate!.currentOwnerId
-            );
-            break;
-          }
-          default: {
-            console.warn('Unknown Grpc Update Event.');
-          }
-          }
-          return of({ nodes: this.nodes, links: this.links });
-        })
-      );
+  /** Emits after each event, telling whether it changed the structure or only a status. */
+  graph$(): Observable<GraphUpdate> {
+    return this.grpcEventsService.getEvents$(this.sessionId).pipe(
+      map(event => ({ nodes: this.nodes, links: this.links, kind: this.applyEvent(event) })),
+    );
   }
 
   /**
-   * Return a node based on its Id. If none is found, return `undefined`.
+   * 'structure' only when a node or a link was actually added or moved: the initial graph sends
+   * results that its tasks already brought in, and reporting them as new would keep delaying the
+   * layout.
    */
-  private getNodeById(id: string): ArmoniKGraphNode | undefined {
-    return this.nodes.find(node => node.id === id);
+  private applyEvent(event: EventSubscriptionResponse): GraphUpdate['kind'] {
+    const before = this.nodes.length + this.links.length;
+    switch (event.update) {
+    case EventSubscriptionResponse.UpdateCase.newTask:
+      this.addTask(event.newTask!);
+      return this.nodes.length + this.links.length === before ? 'status' : 'structure';
+    case EventSubscriptionResponse.UpdateCase.newResult:
+      this.addResult(event.newResult!);
+      return this.nodes.length + this.links.length === before ? 'status' : 'structure';
+    case EventSubscriptionResponse.UpdateCase.taskStatusUpdate:
+      this.setStatus(event.taskStatusUpdate!.taskId, event.taskStatusUpdate!.status);
+      return 'status';
+    case EventSubscriptionResponse.UpdateCase.resultStatusUpdate:
+      this.setStatus(event.resultStatusUpdate!.resultId, event.resultStatusUpdate!.status);
+      return 'status';
+    case EventSubscriptionResponse.UpdateCase.resultOwnerUpdate: {
+      const update = event.resultOwnerUpdate!;
+      this.moveOutput(update.resultId, update.previousOwnerId, update.currentOwnerId);
+      return 'structure';
+    }
+    default:
+      console.warn('Unknown Grpc Update Event.');
+      return 'status';
+    }
   }
 
   /**
-   * Check if a node with the same Id exists. If none are found, creates the node.
-   * If a node is found and its status is different, updates the status.
-   * @param id 
-   * @param status 
-   * @param type 
+   * A task, its payload and its data dependencies. Its parent feeds its payload, unless the parent
+   * is the session itself: a session node would link every root task to it.
    */
-  private createNode(id: string, status: Status, type: NodeEventType) {
-    const node = this.getNodeById(id);
-    if (!node) {
+  private addTask(task: EventSubscriptionResponse.NewTask) {
+    this.setNode(task.taskId, task.status, 'task');
+    if (task.payloadId) {
+      this.ensureNode(task.payloadId, ResultStatus.RESULT_STATUS_UNSPECIFIED, 'result');
+      this.addLink(task.payloadId, task.taskId, 'payload');
+      const parent = task.parentTaskIds.at(-1);
+      if (parent && parent !== this.sessionId) {
+        this.ensureNode(parent, TaskStatus.TASK_STATUS_UNSPECIFIED, 'task');
+        this.addLink(parent, task.payloadId, 'parent');
+      }
+    }
+    for (const dependency of task.dataDependencies) {
+      this.ensureNode(dependency, ResultStatus.RESULT_STATUS_UNSPECIFIED, 'result');
+      this.addLink(dependency, task.taskId, 'dependency');
+    }
+  }
+
+  private addResult(result: EventSubscriptionResponse.NewResult) {
+    this.setNode(result.resultId, result.status, 'result');
+    if (result.ownerId) {
+      this.ensureNode(result.ownerId, TaskStatus.TASK_STATUS_UNSPECIFIED, 'task');
+      this.addLink(result.ownerId, result.resultId, 'output');
+    }
+  }
+
+  private moveOutput(resultId: string, previousOwnerId: string, currentOwnerId: string) {
+    const key = `${previousOwnerId}|${resultId}`;
+    const link = this.linksByEnds.get(key);
+    if (link) {
+      this.linksByEnds.delete(key);
+      this.links.splice(this.links.indexOf(link), 1);
+    }
+    if (currentOwnerId) {
+      this.ensureNode(currentOwnerId, TaskStatus.TASK_STATUS_UNSPECIFIED, 'task');
+      this.addLink(currentOwnerId, resultId, 'output');
+    }
+  }
+
+  /** Creates the node, or updates its status when it exists. */
+  private setNode(id: string, status: Status, type: NodeEventType) {
+    const node = this.nodesById.get(id);
+    if (node) {
+      node.status = status;
+    } else {
+      this.ensureNode(id, status, type);
+    }
+  }
+
+  /** Creates the node if it does not exist yet, leaving an existing one untouched. */
+  private ensureNode(id: string, status: Status, type: NodeEventType) {
+    if (!this.nodesById.has(id)) {
       const node: ArmoniKGraphNode = { id, status, type };
+      this.nodesById.set(id, node);
       this.nodes.push(node);
-    } else if (node.status !== status) {
+    }
+  }
+
+  private setStatus(id: string, status: Status) {
+    const node = this.nodesById.get(id);
+    if (node) {
       node.status = status;
     }
   }
 
   /**
-   * Create a task node.
-   * If the node has dependencies, it will create dependencies link.
-   * If the node has no dependencies, it will create links with parent tasks.
+   * Links are indexed by their ends as ids: the renderer replaces `source` and `target` with the
+   * node objects, so comparing them would miss.
    */
-  private addTask(newTask: EventSubscriptionResponse.NewTask | undefined) {
-    if (newTask) {
-      this.createNode(newTask.taskId, newTask.status, 'task');
-      if (newTask.payloadId?.length !== 0) {
-        this.addPayload(newTask);
-      }
-      if (newTask.dataDependencies.length !== 0) {
-        for (const dependencyId of newTask.dataDependencies) {
-          this.addDependency(newTask.taskId, dependencyId);
-        }
-      }
-    }
-  }
-
-  private addPayload(task: EventSubscriptionResponse.NewTask) {
-    if (!this.getNodeById(task.payloadId)) {
-      this.createNode(task.payloadId, ResultStatus.RESULT_STATUS_UNSPECIFIED, 'result');
-    }
-    this.addLink(task.taskId, task.payloadId, 'payload');
-    if (task.parentTaskIds.length !== 0) {
-      this.addParentTask(task.payloadId, task.parentTaskIds.at(-1) as string);
-    }
-  }
-
-  /**
-   * Creates the session node.
-   */
-  private addSession() {
-    this.createNode(this.sessionId, SessionStatus.SESSION_STATUS_RUNNING, 'session');
-  }
-
-  /**
-   * Create a result ands its link with the owner task.
-   */
-  private addResult(newResult: EventSubscriptionResponse.NewResult | undefined) {
-    if (newResult) {
-      this.createNode(newResult.resultId, newResult.status, 'result');
-      this.addTaskOwner(newResult.resultId, newResult.ownerId);
-    }
-  }
-
-  /**
-   * Update the status of a result or task node
-   */
-  private updateStatus(nodeId: string, newStatus: TaskStatus | ResultStatus) {
-    const node = this.getNodeById(nodeId);
-    if (node) {
-      node.status = newStatus;
-    }
-  }
-
-  /**
-   * Check if a link with the same source and target exist in the Link array.
-   * If none is found, creates the link.
-   * @param target end of the link
-   * @param source start of the link
-   * @param type parent | dependency | output
-   */
-  private addLink(target: string, source: string, type: LinkType) {
-    if (!this.links.some(link => link.source === source && link.target === target)) {
-      this.links.push({source, target, type});
-    }
-  }
-
-  /**
-   * Creates a link between a task (target) and its parent task (source)
-   */
-  private addParentTask(taskId: string, parentTaskId: string) {
-    this.addLink(taskId, parentTaskId, 'parent');
-  }
-
-  /**
-   * Creates a link between a result (source) and a task (target).
-   */
-  private addDependency(taskId: string, dependencyId: string) {
-    this.addLink(taskId, dependencyId, 'dependency');
-  }
-
-  /**
-   * Creates a link between a result (target) and its owner task (source)
-   * @param resultId 
-   * @param taskOwnerId 
-   */
-  private addTaskOwner(resultId: string, taskOwnerId?: string) {
-    if (taskOwnerId && taskOwnerId !== '') {
-      if (!this.getNodeById(taskOwnerId)) {
-        this.createNode(taskOwnerId, TaskStatus.TASK_STATUS_UNSPECIFIED, 'task');
-      }
-      this.addLink(resultId, taskOwnerId, 'output');
-    }
-  }
-
-  /**
-   * Update the owner task id of a result.
-   */
-  private updateTaskOwner(resultId: string, previousTaskOwnerId: string, newTaskOwnerId: string) {
-    const link = this.links.find(link => link.target === resultId && link.source === previousTaskOwnerId);
-    if (link) {
-      link.source = newTaskOwnerId;
-    } else {
-      this.addTaskOwner(resultId, newTaskOwnerId);
+  private addLink(source: string, target: string, type: LinkType) {
+    const key = `${source}|${target}`;
+    if (!this.linksByEnds.has(key)) {
+      const link = { source, target, type };
+      this.linksByEnds.set(key, link);
+      this.links.push(link);
     }
   }
 }
