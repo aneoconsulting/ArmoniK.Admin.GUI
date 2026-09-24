@@ -12,11 +12,11 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { HealthCheckComponent } from '@app/healthcheck/healthcheck.component';
-import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
 import { SidebarItem } from '@app/types/navigation';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
+import { UserService } from '@services/user.service';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { AddSideBarItemDialogComponent } from './add-sidebar-item-dialog/add-sidebar-item.dialog.component';
@@ -64,13 +64,13 @@ export class NavigationComponent implements OnInit {
   private readonly breakpointObserver = inject(BreakpointObserver);
   readonly navigationService = inject(NavigationService);
   private readonly iconsService = inject(IconsService);
-  private readonly userConnectedGuard = inject(UserConnectedGuard);
+  private readonly userService = inject(UserService);
   private readonly dialog = inject(MatDialog);
   private readonly changeDetector = inject(ChangeDetectorRef);
 
   settingsItem = $localize`Settings`;
 
-  private readonly userConnected = signal(this.userConnectedGuard.canActivate());
+  private readonly userConnected = signal(this.isUserConnected());
   readonly isProfileButtonDisabled = computed(() => !this.userConnected());
 
   sidebar = this.navigationService.currentSidebar;
@@ -96,7 +96,15 @@ export class NavigationComponent implements OnInit {
   }
 
   public updateUserConnectionStatus(): void {
-    this.userConnected.set(this.userConnectedGuard.canActivate());
+    this.userConnected.set(this.isUserConnected());
+  }
+
+  /**
+   * Not `UserConnectedGuard.canActivate`: it redirects to the dashboard when nobody is connected,
+   * which would send every page opened by URL there.
+   */
+  private isUserConnected(): boolean {
+    return this.userService.user !== undefined;
   }
 
   toggleSidebar() {
