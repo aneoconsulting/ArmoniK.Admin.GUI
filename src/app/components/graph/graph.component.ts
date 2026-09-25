@@ -221,6 +221,18 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly linkColorCache = new Map<LinkType, string[]>();
   private readonly paintNode = (node: Node, ctx: CanvasRenderingContext2D, scale: number) => this.drawNode(node, ctx, scale);
 
+  /**
+   * Once its registry of pick colors is full, force-graph gives the new nodes none: painting them
+   * would keep the color of the previous one, and hovering them would pick it instead.
+   */
+  private readonly paintPointerArea = (node: Node, color: string | null, ctx: CanvasRenderingContext2D) => {
+    if (!color) {
+      return;
+    }
+    ctx.fillStyle = color;
+    ctx.fillRect(node.x! - NODE_SIZE / 2, node.y! - NODE_SIZE / 2, NODE_SIZE, NODE_SIZE);
+  };
+
   ngOnInit(): void {
     const storedColorMap = this.storageService.getItem<Record<LinkType, string>>('graph-links-colors', true) as Record<LinkType, string> | null;
     // Stored maps may predate a link type.
@@ -267,10 +279,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       .nodeRelSize(NODE_SIZE / 2)
       .nodeLabel('id')
       .nodeCanvasObject(this.paintNode)
-      .nodePointerAreaPaint((node, color, ctx) => {
-        ctx.fillStyle = color;
-        ctx.fillRect(node.x! - NODE_SIZE / 2, node.y! - NODE_SIZE / 2, NODE_SIZE, NODE_SIZE);
-      })
+      .nodePointerAreaPaint(this.paintPointerArea)
       .linkColor(link => this.getLinkColor(link))
       // In screen pixels whatever the zoom: thick lines over thousands of links cover the whole
       // overview, so they get thinner as it zooms out.

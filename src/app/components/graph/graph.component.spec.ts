@@ -533,6 +533,15 @@ describe('GraphComponent', () => {
       expect(ctx.fillRect).toHaveBeenCalledTimes(2);
     });
 
+    it('should not paint a pointer area for a node force-graph gave no pick color', () => {
+      const ctx = { fillRect: jest.fn(), fillStyle: '#000001' } as unknown as CanvasRenderingContext2D;
+
+      component['paintPointerArea'](component['nodes'][0], null, ctx);
+
+      expect(ctx.fillRect).not.toHaveBeenCalled();
+      expect(ctx.fillStyle).toEqual('#000001');
+    });
+
     it('should leave the highlights to the icons when zoomed in', () => {
       const ctx = { fillRect: jest.fn() } as unknown as CanvasRenderingContext2D;
       component.highlightNodes('output');
