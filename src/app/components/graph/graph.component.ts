@@ -68,6 +68,8 @@ const MAX_WAIT_MS = 10000;
  * it out twice, but a session never quiet enough to end it must still show up.
  */
 const INITIAL_MAX_WAIT_MS = 30000;
+/** A layout still running after this long is given up: ELK takes seconds, even on large graphs. */
+const LAYOUT_TIMEOUT_MS = 120000;
 /** Refresh period of the loading counters. */
 const LOADING_REFRESH_MS = 500;
 /**
@@ -151,6 +153,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly nodesIds = signal<string[]>([]);
   readonly nodeCount = signal<number>(0);
   readonly layingOut = signal<boolean>(false);
+  /** Why the last layout failed, null when it did not. */
+  readonly layoutError = signal<string | null>(null);
+  private layoutTimeout: ReturnType<typeof setTimeout> | undefined;
   /** What arrived so far, shown instead of the graph until its first layout. Null once shown. */
   readonly loading = signal<{ tasks: number, results: number, seconds: number } | null>({ tasks: 0, results: 0, seconds: 0 });
   private loadingInterval: ReturnType<typeof setInterval> | undefined;
@@ -268,6 +273,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     clearInterval(this.loadingInterval);
     this.subscription.unsubscribe();
     clearTimeout(this.layoutTimer);
+    clearTimeout(this.layoutTimeout);
     cancelAnimationFrame(this.animationFrame);
     this.worker?.terminate();
     this.graph?._destructor();
@@ -498,16 +504,18 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     const input = this.layoutInput();
     this.layingOut.set(true);
+    this.layoutError.set(null);
     this.layoutRuns++;
     this.layoutStartedAt = Date.now();
     this.worker = createLayoutWorker();
+    this.layoutTimeout = setTimeout(() => this.layoutFailed($localize`The layout did not finish within ${LAYOUT_TIMEOUT_MS / 60000} minutes.`), LAYOUT_TIMEOUT_MS);
     const startedAt = this.layoutStartedAt;
     this.worker.onmessage = ({ data }: MessageEvent<LayoutResponse>) => {
-      this.stopWorker();
       if ('error' in data) {
-        console.error(data.error);
+        this.layoutFailed(data.error);
         return;
       }
+      this.stopWorker();
       this.lastLayoutMs = Date.now() - startedAt;
       this.lastLayoutNodes = input.nodes.length;
       const targets: Coordinates = new Map();
@@ -532,14 +540,28 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         this.scheduleLayout();
       }
     };
-    this.worker.onerror = event => {
-      this.stopWorker();
-      console.error(event.message);
-    };
+    // Also what happens when the worker cannot even load, its script gone after a deployment: the
+    // event then has no message.
+    this.worker.onerror = event => this.layoutFailed(event.message || $localize`The layout could not run.`);
     this.worker.postMessage(input);
   }
 
+  /**
+   * Nothing is drawn until a first layout succeeds, so its failure must show, and leave a way to
+   * try again. A change that came in meanwhile gets its layout anyway.
+   */
+  private layoutFailed(message: string): void {
+    this.stopWorker();
+    console.error(message);
+    this.layoutError.set(message);
+    if (this.layoutPending) {
+      this.layoutPending = false;
+      this.scheduleLayout();
+    }
+  }
+
   private stopWorker(): void {
+    clearTimeout(this.layoutTimeout);
     this.worker?.terminate();
     this.worker = null;
     this.layoutStartedAt = null;

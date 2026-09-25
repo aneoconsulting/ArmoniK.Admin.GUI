@@ -173,6 +173,37 @@ describe('GraphComponent', () => {
     });
   });
 
+  describe('layout failure', () => {
+    beforeEach(() => {
+      component['apply']([structure()]);
+      jest.advanceTimersByTime(1000);
+    });
+
+    it('should show why the layout failed and allow a retry', () => {
+      mockWorker.onmessage!({ data: { error: 'ELK exploded' } } as MessageEvent);
+
+      expect(component.layoutError()).toEqual('ELK exploded');
+      expect(component.layingOut()).toBe(false);
+      component.redraw();
+      expect(createLayoutWorker).toHaveBeenCalledTimes(2);
+    });
+
+    it('should lay out a change that came in during the failed run', () => {
+      component.redraw();
+      mockWorker.onmessage!({ data: { error: 'ELK exploded' } } as MessageEvent);
+      jest.advanceTimersByTime(1000);
+
+      expect(createLayoutWorker).toHaveBeenCalledTimes(2);
+    });
+
+    it('should give up a layout that never ends', () => {
+      jest.advanceTimersByTime(120000);
+
+      expect(mockWorker.terminate).toHaveBeenCalled();
+      expect(component.layoutError()).not.toBeNull();
+    });
+  });
+
   describe('nodes added after a layout', () => {
     it('should put new subtasks below their parent, side by side, with their data around them', () => {
       // The service keeps the same node objects from one update to the next.

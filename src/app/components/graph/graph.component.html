@@ -16,7 +16,7 @@
       <a mat-flat-button color="primary" [routerLink]="'/sessions/' + sessionId">
         <span i18n>See Session</span> 
       </a>
-      <button mat-flat-button color="accent" (click)="redraw()" [disabled]="layingOut() || loading()">
+      <button mat-flat-button color="accent" (click)="redraw()" [disabled]="layingOut() || (loading() && !layoutError())">
         <mat-icon>{{ getIcon('refresh') }}</mat-icon>
         <span i18n-matTooltip matTooltip="Place every node again" i18n>Redraw</span>
       </button>
@@ -25,6 +25,9 @@
       <span i18n>{{ nodeCount() }} nodes</span>
       @if (layingOut()) {
         <span i18n>Laying out…</span>
+      }
+      @if (layoutError() && !loading()) {
+        <span class="warning" [matTooltip]="layoutError()" i18n>The last layout failed</span>
       }
     </section>
   </mat-card-content>
@@ -48,13 +51,19 @@
 @if (loading(); as loading) {
   <mat-card class="loading" appearance="outlined">
     <mat-card-content>
-      <app-spinner />
-      @if (layingOut()) {
-        <span i18n>Laying out {{ loading.tasks }} tasks and {{ loading.results }} results…</span>
+      @if (layoutError(); as error) {
+        <mat-icon class="warning" [fontIcon]="getIcon('error')" />
+        <span i18n>The layout failed: {{ error }}</span>
+        <button mat-flat-button color="primary" (click)="redraw()" [disabled]="layingOut()" i18n>Retry</button>
       } @else {
-        <span i18n>Receiving the graph: {{ loading.tasks }} tasks, {{ loading.results }} results</span>
+        <app-spinner />
+        @if (layingOut()) {
+          <span i18n>Laying out {{ loading.tasks }} tasks and {{ loading.results }} results…</span>
+        } @else {
+          <span i18n>Receiving the graph: {{ loading.tasks }} tasks, {{ loading.results }} results</span>
+        }
+        <span>{{ loading.seconds.toFixed(0) }} s</span>
       }
-      <span>{{ loading.seconds.toFixed(0) }} s</span>
     </mat-card-content>
   </mat-card>
 }
