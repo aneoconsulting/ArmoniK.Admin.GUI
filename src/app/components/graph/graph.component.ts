@@ -433,7 +433,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
     }
-    if (this.nodesToHighlight.size === 1) {
+    // Before the first layout nothing is indexed nor placed: the search is applied again after it.
+    if (this.nodesToHighlight.size === 1 && this.laidOut) {
       const [nodeId] = this.nodesToHighlight;
       const node = this.nodesById.get(nodeId)!;
       this.graph?.centerAt(node.x, node.y, 500);
@@ -656,6 +657,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         this.display();
         this.loading.set(null);
         this.fitView();
+        if (this.nodeToHighlight !== null) {
+          this.highlightNodes(this.nodeToHighlight);
+        }
       }
       if (this.layoutPending) {
         this.layoutPending = false;

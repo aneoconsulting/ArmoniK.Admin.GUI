@@ -498,6 +498,27 @@ describe('GraphComponent', () => {
     });
   });
 
+  describe('highlight before the first layout', () => {
+    it('should wait for the layout to centre on a single match and highlight its ancestors', () => {
+      const graph: Record<string, jest.Mock> = {};
+      for (const method of ['centerAt', 'graphData', 'nodeCanvasObject', 'zoomToFit', 'zoom', '_destructor']) {
+        graph[method] = jest.fn(() => graph);
+      }
+      component['graph'] = graph as unknown as typeof component['graph'];
+      component.highlightParentNodes = true;
+      component['apply']([structure()]);
+
+      expect(() => component.highlightNodes('output')).not.toThrow();
+      expect(graph['centerAt']).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(1000);
+      mockWorker.onmessage!({ data: { positions: new Float64Array([0, 0, 0, 180, 0, 250, 0, 320]) } } as MessageEvent);
+
+      expect(graph['centerAt']).toHaveBeenCalledWith(0, 320, 500);
+      expect(component['nodesToHighlight']).toEqual(new Set(['output', 'child', 'payload-child', 'parent']));
+    });
+  });
+
   describe('highlight', () => {
     beforeEach(() => {
       component['laidOut'] = true;
