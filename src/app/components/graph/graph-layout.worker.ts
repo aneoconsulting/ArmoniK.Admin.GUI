@@ -24,7 +24,7 @@ addEventListener('message', async ({ data }: MessageEvent<LayoutInput>) => {
 /** Loaded once for the life of the worker, which the page keeps from one layout to the next. */
 let elk: ReturnType<typeof createElk> | undefined;
 
-/** ELK layered: layers, crossing minimisation, and the connected components packed. */
+/** ELK layered: layers and crossing minimisation. */
 async function elkLayout(graph: TaskGraph): Promise<Coordinates> {
   // Forgotten when it fails to load, or every later layout would fail with it.
   elk ??= createElk().catch(error => {
