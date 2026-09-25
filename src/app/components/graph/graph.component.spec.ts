@@ -8,6 +8,7 @@ import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { StorageService } from '@services/storage.service';
 import { Subject, defer } from 'rxjs';
+import { NODE_SIZE } from './graph-layout';
 import { createLayoutWorker } from './graph-layout-worker.factory';
 import { GraphComponent } from './graph.component';
 
@@ -270,6 +271,38 @@ describe('GraphComponent', () => {
         expect(placed(`${sibling}-payload`).x).toEqual(placed(sibling).x);
         expect(placed(`${sibling}-payload`).y).toBeLessThan(placed(sibling).y!);
       }
+    });
+  });
+
+  describe('many nodes added after a layout', () => {
+    it('should place thousands of subtasks of one parent quickly, without overlaps', () => {
+      const parent: ArmoniKGraphNode = { id: 'parent', type: 'task', status: TaskStatus.TASK_STATUS_COMPLETED };
+      const update: GraphUpdate = { nodes: [parent], links: [], kind: 'structure' };
+      component['laidOut'] = true;
+      component['apply']([update]);
+
+      const children = 10000;
+      for (let index = 0; index < children; index++) {
+        update.nodes.push(
+          { id: `payload-${index}`, type: 'result', status: ResultStatus.RESULT_STATUS_COMPLETED },
+          { id: `child-${index}`, type: 'task', status: TaskStatus.TASK_STATUS_CREATING },
+        );
+        update.links.push(
+          { source: 'parent', target: `payload-${index}`, type: 'parent' },
+          { source: `payload-${index}`, target: `child-${index}`, type: 'payload' },
+        );
+      }
+      // The real clock: fake timers fake performance.now too.
+      const start = jest.getRealSystemTime();
+      component['apply']([update]);
+      const elapsed = jest.getRealSystemTime() - start;
+
+      const xs = update.nodes.filter(node => node.id.startsWith('child-')).map(node => node.x!).sort((a, b) => a - b);
+      for (let index = 1; index < xs.length; index++) {
+        expect(xs[index] - xs[index - 1]).toBeGreaterThanOrEqual(NODE_SIZE);
+      }
+      // One step per sibling made it quadratic: about 50 million steps for 10000 of them.
+      expect(elapsed).toBeLessThan(1000);
     });
   });
 

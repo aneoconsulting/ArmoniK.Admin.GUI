@@ -621,7 +621,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     const rows = new Map<number, Row>();
     const occupy = (id: string, x: number, y: number) => {
       coordinates.set(id, [x, y]);
-      (rows.get(y) ?? rows.set(y, new Row()).get(y)!).add(x - width(id) / 2, x + width(id) / 2);
+      (rows.get(y) ?? rows.set(y, new Row(NODE_GAP)).get(y)!).add(x - width(id) / 2, x + width(id) / 2);
     };
     let top = Infinity;
     let right = -Infinity;
@@ -660,7 +660,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
           const y = snap(Math.max(...known.map(([, knownY]) => knownY)) + rowStep, rows, rowStep / 2);
           const x = known.reduce((sum, [knownX]) => sum + knownX, 0) / known.length;
-          occupy(id, rows.get(y)?.nearestFree(x, width(id), NODE_GAP) ?? x, y);
+          occupy(id, rows.get(y)?.nearestFree(x, width(id)) ?? x, y);
         }
       }
       stuck = next.length === waiting.length;
@@ -890,39 +890,60 @@ function snap(y: number, rows: Map<number, unknown>, tolerance: number): number 
   return best;
 }
 
-/** The intervals taken on a row of the graph, sorted, to find where a new node fits. */
+/**
+ * The spans taken on a row of the graph, sorted and disjoint, to find where a new node fits. Spans
+ * closer than `gap` are merged, since no node fits between them: siblings placed side by side form
+ * a single span, crossed in one step instead of one step per sibling.
+ */
 class Row {
   private readonly starts: number[] = [];
   private readonly ends: number[] = [];
 
+  constructor(private readonly gap: number) {}
+
   add(start: number, end: number): void {
-    const index = this.insertionIndex(start);
-    this.starts.splice(index, 0, start);
-    this.ends.splice(index, 0, end);
+    const first = this.firstEndingAfter(start - this.gap);
+    let last = first;
+    while (last < this.starts.length && this.starts[last] <= end + this.gap) {
+      start = Math.min(start, this.starts[last]);
+      end = Math.max(end, this.ends[last]);
+      last++;
+    }
+    this.starts.splice(first, last - first, start);
+    this.ends.splice(first, last - first, end);
   }
 
   /** The x closest to `x` where a node of `width` fits, `gap` away from its neighbours. */
-  nearestFree(x: number, width: number, gap: number): number {
-    const step = width + gap;
-    for (let offset = 0; ; offset += step) {
-      if (this.isFree(x + offset, width, gap)) {
-        return x + offset;
-      }
-      if (offset !== 0 && this.isFree(x - offset, width, gap)) {
-        return x - offset;
+  nearestFree(x: number, width: number): number {
+    const clearance = width / 2 + this.gap;
+    let right = x;
+    for (let index = this.firstEndingAfter(right - clearance); index < this.starts.length && this.starts[index] < right + clearance; index++) {
+      right = this.ends[index] + clearance;
+    }
+    let left = x;
+    for (let index = this.lastStartingBefore(left + clearance); index >= 0 && this.ends[index] > left - clearance; index--) {
+      left = this.starts[index] - clearance;
+    }
+    return right - x <= x - left ? right : left;
+  }
+
+  /** Index of the first span ending after `value`. */
+  private firstEndingAfter(value: number): number {
+    let low = 0;
+    let high = this.ends.length;
+    while (low < high) {
+      const middle = (low + high) >> 1;
+      if (this.ends[middle] <= value) {
+        low = middle + 1;
+      } else {
+        high = middle;
       }
     }
+    return low;
   }
 
-  private isFree(x: number, width: number, gap: number): boolean {
-    const start = x - width / 2 - gap;
-    const end = x + width / 2 + gap;
-    // Intervals do not overlap, so only the ones around `start` can reach into [start, end].
-    const index = this.insertionIndex(start);
-    return !(index > 0 && this.ends[index - 1] > start) && !(index < this.starts.length && this.starts[index] < end);
-  }
-
-  private insertionIndex(value: number): number {
+  /** Index of the last span starting before `value`, -1 when there is none. */
+  private lastStartingBefore(value: number): number {
     let low = 0;
     let high = this.starts.length;
     while (low < high) {
@@ -933,6 +954,6 @@ class Row {
         high = middle;
       }
     }
-    return low;
+    return low - 1;
   }
 }
