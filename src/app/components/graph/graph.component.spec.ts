@@ -553,6 +553,19 @@ describe('GraphComponent', () => {
     });
   });
 
+  describe('colors', () => {
+    it('should fade the links as it zooms out', () => {
+      const link: GraphLink<ArmoniKGraphNode> = { source: 'a', target: 'b', type: 'output' };
+      component['scale'] = 10;
+      const zoomedIn = component['getLinkColor'](link);
+      component['scale'] = 0.01;
+      const zoomedOut = component['getLinkColor'](link);
+
+      expect(zoomedIn).not.toEqual(zoomedOut);
+      expect(component['getLinkColor'](link)).toBe(zoomedOut);
+    });
+  });
+
   it('should copy the session id', () => {
     component.copySessionId();
     expect(mockClipboard.copy).toHaveBeenCalledWith('session');

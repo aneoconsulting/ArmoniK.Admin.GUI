@@ -217,8 +217,11 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Zoom of the frame being drawn, read by the link accessors. */
   private scale = 1;
   private hovered: Set<string> | null = null;
-  private readonly sprites = new Map<string, HTMLCanvasElement>();
-  private readonly linkColorCache = new Map<string, string>();
+  // Looked up for every node and link of every frame: keyed without building a string each time.
+  /** Icons by node type, then color. */
+  private readonly sprites = new Map<Node['type'], Map<string, HTMLCanvasElement>>();
+  /** Link colors by link type, then opacity in twentieths. */
+  private readonly linkColorCache = new Map<LinkType, string[]>();
   private readonly paintNode = (node: Node, ctx: CanvasRenderingContext2D, scale: number) => this.drawNode(node, ctx, scale);
 
   ngOnInit(): void {
@@ -896,8 +899,12 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** The icon of a node type in a given color, drawn once and reused by every node sharing them. */
   private sprite(type: Node['type'], color: string): HTMLCanvasElement {
-    const key = `${type}|${color}`;
-    let sprite = this.sprites.get(key);
+    let byColor = this.sprites.get(type);
+    if (!byColor) {
+      byColor = new Map();
+      this.sprites.set(type, byColor);
+    }
+    let sprite = byColor.get(color);
     if (!sprite) {
       sprite = document.createElement('canvas');
       sprite.width = sprite.height = SPRITE_SIZE;
@@ -907,7 +914,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(this.iconsService.getIcon(`${type}-graph-icon`), SPRITE_SIZE / 2, SPRITE_SIZE / 2);
-      this.sprites.set(key, sprite);
+      byColor.set(color, sprite);
     }
     return sprite;
   }
@@ -922,14 +929,13 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       ? FADED_ALPHA
       : this.hovered !== null ? 1 : Math.min(1, Math.max(0.15, NODE_SIZE * this.scale / 40));
     // Rounded so that the cache stays small and the canvas batches links of the same color.
-    const rounded = Math.round(alpha * 20) / 20;
-    const key = `${link.type}|${rounded}`;
-    let color = this.linkColorCache.get(key);
-    if (!color) {
-      color = withAlpha(this.colorMap[link.type], rounded);
-      this.linkColorCache.set(key, color);
+    const twentieths = Math.round(alpha * 20);
+    let byAlpha = this.linkColorCache.get(link.type);
+    if (!byAlpha) {
+      byAlpha = [];
+      this.linkColorCache.set(link.type, byAlpha);
     }
-    return color;
+    return byAlpha[twentieths] ??= withAlpha(this.colorMap[link.type], twentieths / 20);
   }
 }
 
