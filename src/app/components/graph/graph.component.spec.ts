@@ -123,7 +123,8 @@ describe('GraphComponent', () => {
     });
 
     it('should lay the graph out even when the structure never stops changing', () => {
-      for (let elapsed = 0; elapsed < 10000; elapsed += 500) {
+      // The initial graph ends with the second batch, the first one telling nothing: 10 s after.
+      for (let elapsed = 0; elapsed < 11000; elapsed += 500) {
         component['apply']([structure()]);
         jest.advanceTimersByTime(500);
       }
@@ -139,6 +140,28 @@ describe('GraphComponent', () => {
       }
 
       expect(mockWorker.postMessage).toHaveBeenCalled();
+    });
+
+    it('should not take a short first batch for the end of the initial graph', () => {
+      const initialBatch = Array.from({ length: 200 }, () => structure());
+      component['apply']([structure()]);
+      for (let elapsed = 0; elapsed < 10000; elapsed += 500) {
+        component['apply'](initialBatch);
+        jest.advanceTimersByTime(500);
+      }
+
+      expect(mockWorker.postMessage).not.toHaveBeenCalled();
+    });
+
+    it('should not take a batch of results already known for the end of the initial graph', () => {
+      const knownResults = Array.from({ length: 200 }, (): GraphUpdate => ({ ...structure(), kind: 'status' }));
+      for (let elapsed = 0; elapsed < 10000; elapsed += 500) {
+        component['apply']([structure(), ...knownResults]);
+        component['apply'](knownResults);
+        jest.advanceTimersByTime(500);
+      }
+
+      expect(mockWorker.postMessage).not.toHaveBeenCalled();
     });
 
     it('should wait for the end of the initial graph before the first layout', () => {

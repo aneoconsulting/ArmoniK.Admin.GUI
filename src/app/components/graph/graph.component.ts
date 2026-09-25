@@ -77,7 +77,8 @@ const LAYOUT_TIMEOUT_MS = 120000;
 const LOADING_REFRESH_MS = 500;
 /**
  * The events start with the whole current graph, thousands per batch, then trickle. A batch with
- * fewer structural changes than this tells the initial graph is over.
+ * fewer events than this tells the initial graph is over. All events count, not only structural
+ * ones: the initial graph sends results its tasks already brought in, which change no structure.
  */
 const INITIAL_BATCH_SIZE = 200;
 /** Refresh period of the debug panel. */
@@ -192,6 +193,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   private firstChangeAt: number | null = null;
   /** Whether the initial graph is still arriving: the wait is not capped until it is over. */
   private initialGraph = true;
+  /** Batches received so far: the first one tells nothing, see applyBatch. */
+  private batches = 0;
   /**
    * Nodes given a position by this component. Not `x !== undefined`: the renderer gives a position
    * of its own, on a spiral around the origin, to any node that reaches it without one.
@@ -473,7 +476,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     this.links = [...last.links];
 
     const structural = batch.filter(update => update.kind === 'structure').length;
-    if (this.initialGraph && structural < INITIAL_BATCH_SIZE) {
+    // The first batch is often cut short: its window opened with the subscription, not with the
+    // first event, so it being small does not tell the initial graph is over.
+    if (this.initialGraph && this.batches++ > 0 && batch.length < INITIAL_BATCH_SIZE) {
       this.initialGraph = false;
       this.initialGraphEndedAt = Date.now();
       // The capped wait starts now, not with the first event of the initial graph.
