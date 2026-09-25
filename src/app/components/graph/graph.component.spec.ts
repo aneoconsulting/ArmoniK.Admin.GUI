@@ -294,6 +294,29 @@ describe('GraphComponent', () => {
       expect(component['nodesToHighlight']).toEqual(new Set(['output', 'child', 'payload-child', 'parent']));
     });
 
+    it('should mark the highlighted nodes on top of the frame when zoomed out', () => {
+      const ctx = { fillRect: jest.fn(), fillStyle: '' } as unknown as CanvasRenderingContext2D;
+      component['nodes'].forEach((node, index) => component['setPosition'](node, index * 100, 0));
+      component.highlightChildrenNodes = false;
+      component.highlightParentNodes = false;
+      component.highlightNodes('output');
+
+      component['drawHighlights'](ctx, 0.01);
+
+      // 12 px on screen at a zoom of 0.01: 1200 units, then its centre.
+      expect(ctx.fillRect).toHaveBeenCalledWith(300 - 600, -600, 1200, 1200);
+      expect(ctx.fillRect).toHaveBeenCalledTimes(2);
+    });
+
+    it('should leave the highlights to the icons when zoomed in', () => {
+      const ctx = { fillRect: jest.fn() } as unknown as CanvasRenderingContext2D;
+      component.highlightNodes('output');
+
+      component['drawHighlights'](ctx, 1);
+
+      expect(ctx.fillRect).not.toHaveBeenCalled();
+    });
+
     it('should store the parents highlight setting', () => {
       component.toggleHighlightParentNodes(true);
       expect(mockStorageService.setItem).toHaveBeenCalledWith('graph-highlight-parents', true);

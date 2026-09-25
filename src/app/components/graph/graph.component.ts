@@ -88,6 +88,8 @@ const ANIMATION_MS = 600;
 const SPRITE_SIZE = 128;
 /** Under this size on screen, a node is drawn as a plain square: an icon would not be readable. */
 const MIN_ICON_SCREEN_SIZE = 8;
+/** Smallest size on screen of the mark of a highlighted node, however far zoomed out. */
+const HIGHLIGHT_SCREEN_SIZE = 12;
 /** Opacity of what is not around the hovered node. */
 const FADED_ALPHA = 0.08;
 /** How far the hovered node's neighbourhood reaches: task → data → task. */
@@ -256,7 +258,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         this.scale = scale;
         this.drawStart = performance.now();
       })
-      .onRenderFramePost(() => {
+      .onRenderFramePost((ctx, scale) => {
+        this.drawHighlights(ctx, scale);
         if (this.debugEnabled()) {
           this.drawDurations.push(performance.now() - this.drawStart);
         }
@@ -773,6 +776,28 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (faded) {
       ctx.globalAlpha = 1;
+    }
+  }
+
+  /**
+   * Zoomed out, a highlighted node is a square of a few pixels among thousands: it is marked on top
+   * of the whole frame, big enough to be seen. Zoomed in, drawNode draws it behind its icon.
+   */
+  private drawHighlights(ctx: CanvasRenderingContext2D, scale: number): void {
+    if (this.nodesToHighlight.size === 0 || NODE_SIZE * scale >= MIN_ICON_SCREEN_SIZE) {
+      return;
+    }
+    const size = Math.max(NODE_SIZE, HIGHLIGHT_SCREEN_SIZE / scale);
+    for (const id of this.nodesToHighlight) {
+      const node = this.nodesById.get(id);
+      if (node?.x === undefined || node.y === undefined) {
+        continue;
+      }
+      const color = this.getNodeColor(node);
+      ctx.fillStyle = this.getComplementaryColor(color);
+      ctx.fillRect(node.x - size / 2, node.y - size / 2, size, size);
+      ctx.fillStyle = color;
+      ctx.fillRect(node.x - size / 4, node.y - size / 4, size / 2, size / 2);
     }
   }
 
