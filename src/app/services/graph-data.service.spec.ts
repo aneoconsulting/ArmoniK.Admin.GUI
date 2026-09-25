@@ -111,6 +111,13 @@ describe('GraphDataService', () => {
 
       expect(links()).toEqual(['task -output-> output']);
     });
+
+    it('should not turn the session owning an uploaded result into a task', () => {
+      events.next(newResult('input', sessionId));
+
+      expect(service.nodes.map(node => node.id)).toEqual(['input']);
+      expect(service.links).toEqual([]);
+    });
   });
 
   describe('status update', () => {
@@ -135,6 +142,17 @@ describe('GraphDataService', () => {
       } as unknown as EventSubscriptionResponse);
 
       expect(links()).toEqual(['current -output-> output']);
+    });
+
+    it('should not turn the session into a task when it becomes the owner', () => {
+      events.next(newResult('output', 'previous'));
+      events.next({
+        update: EventSubscriptionResponse.UpdateCase.resultOwnerUpdate,
+        resultOwnerUpdate: { resultId: 'output', previousOwnerId: 'previous', currentOwnerId: sessionId },
+      } as unknown as EventSubscriptionResponse);
+
+      expect(service.nodes.map(node => node.id)).not.toContain(sessionId);
+      expect(service.links).toEqual([]);
     });
 
     it('should find the previous link once the renderer replaced its ends with nodes', () => {

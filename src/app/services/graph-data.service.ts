@@ -80,9 +80,13 @@ export class GraphDataService {
     }
   }
 
+  /**
+   * A result and its link to its owner. The results the client uploads are owned by the session
+   * itself: a session node would link every one of them to it.
+   */
   private addResult(result: EventSubscriptionResponse.NewResult) {
     this.setNode(result.resultId, result.status, 'result');
-    if (result.ownerId) {
+    if (result.ownerId && result.ownerId !== this.sessionId) {
       this.ensureNode(result.ownerId, TaskStatus.TASK_STATUS_UNSPECIFIED, 'task');
       this.addLink(result.ownerId, result.resultId, 'output');
     }
@@ -95,7 +99,7 @@ export class GraphDataService {
       this.linksByEnds.delete(key);
       this.links.splice(this.links.indexOf(link), 1);
     }
-    if (currentOwnerId) {
+    if (currentOwnerId && currentOwnerId !== this.sessionId) {
       this.ensureNode(currentOwnerId, TaskStatus.TASK_STATUS_UNSPECIFIED, 'task');
       this.addLink(currentOwnerId, resultId, 'output');
     }
