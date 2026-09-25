@@ -7,6 +7,7 @@ import { ArmoniKGraphNode, GraphLink, GraphUpdate } from '@app/types/graph.types
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { StorageService } from '@services/storage.service';
+import { Subject, defer } from 'rxjs';
 import { createLayoutWorker } from './graph-layout-worker.factory';
 import { GraphComponent } from './graph.component';
 
@@ -170,6 +171,42 @@ describe('GraphComponent', () => {
       component.redraw();
 
       expect(createLayoutWorker).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('events stream', () => {
+    let streams: Subject<GraphUpdate>[];
+
+    beforeEach(() => {
+      streams = [];
+      component.updates = defer(() => {
+        const stream = new Subject<GraphUpdate>();
+        streams.push(stream);
+        return stream;
+      });
+      component['listen']();
+    });
+
+    it('should reconnect once the stream is lost, and say so meanwhile', () => {
+      streams[0].error({ statusCode: 14, statusMessage: 'unavailable' });
+
+      expect(component.streamError()).toEqual('unavailable');
+      jest.advanceTimersByTime(1000);
+      expect(streams).toHaveLength(2);
+
+      streams[1].next(structure());
+      expect(component.streamError()).toBeNull();
+    });
+
+    it('should wait longer after each failed attempt', () => {
+      streams[0].error(new Error('down'));
+      jest.advanceTimersByTime(1000);
+      streams[1].error(new Error('down'));
+      jest.advanceTimersByTime(1000);
+
+      expect(streams).toHaveLength(2);
+      jest.advanceTimersByTime(1000);
+      expect(streams).toHaveLength(3);
     });
   });
 

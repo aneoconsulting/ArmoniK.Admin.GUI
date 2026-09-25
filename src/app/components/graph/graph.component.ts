@@ -19,7 +19,7 @@ import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { StorageService } from '@services/storage.service';
 import ForceGraph from 'force-graph';
-import { Observable, Subscription, bufferTime, filter } from 'rxjs';
+import { Observable, Subscription, bufferTime, filter, retry, tap, timer } from 'rxjs';
 import { AutoCompleteComponent } from '../auto-complete.component';
 import { Coordinates, LayoutInput, LayoutResponse, NODE_GAP, NODE_SIZE, prepareLayout } from './graph-layout';
 import { createLayoutWorker } from './graph-layout-worker.factory';
@@ -68,6 +68,9 @@ const MAX_WAIT_MS = 10000;
  * it out twice, but a session never quiet enough to end it must still show up.
  */
 const INITIAL_MAX_WAIT_MS = 30000;
+/** Delays before reconnecting to the events: doubling from the first, up to the last. */
+const RECONNECT_FIRST_MS = 1000;
+const RECONNECT_MAX_MS = 30000;
 /** A layout still running after this long is given up: ELK takes seconds, even on large graphs. */
 const LAYOUT_TIMEOUT_MS = 120000;
 /** Refresh period of the loading counters. */
@@ -153,6 +156,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly nodesIds = signal<string[]>([]);
   readonly nodeCount = signal<number>(0);
   readonly layingOut = signal<boolean>(false);
+  /** Why the events stream was lost, null while it is up. */
+  readonly streamError = signal<string | null>(null);
   /** Why the last layout failed, null when it did not. */
   readonly layoutError = signal<string | null>(null);
   private layoutTimeout: ReturnType<typeof setTimeout> | undefined;
@@ -262,7 +267,29 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         this.graph?.zoom(4, 2000);
       });
 
+    this.listen();
+  }
+
+  /**
+   * A lost stream is opened again: a new one starts with the whole current graph, which the
+   * service merges with what it has. Without it, the graph would freeze until the page reloads.
+   */
+  private listen(): void {
     this.subscription.add(this.updates.pipe(
+      tap(() => {
+        if (this.streamError() !== null) {
+          this.streamError.set(null);
+        }
+      }),
+      retry({
+        delay: (error: unknown, attempt: number) => {
+          const message = (error as { statusMessage?: string, message?: string })?.statusMessage || (error as Error)?.message || String(error);
+          console.error(error);
+          this.streamError.set(message);
+          return timer(Math.min(RECONNECT_FIRST_MS * 2 ** (attempt - 1), RECONNECT_MAX_MS));
+        },
+        resetOnSuccess: true,
+      }),
       bufferTime(BATCH_MS),
       filter(batch => batch.length !== 0),
     ).subscribe(batch => this.apply(batch)));

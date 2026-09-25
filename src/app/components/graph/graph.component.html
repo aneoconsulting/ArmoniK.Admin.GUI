@@ -26,6 +26,9 @@
       @if (layingOut()) {
         <span i18n>Laying out…</span>
       }
+      @if (streamError()) {
+        <span class="warning" [matTooltip]="streamError()" i18n>Connection lost, reconnecting…</span>
+      }
       @if (layoutError() && !loading()) {
         <span class="warning" [matTooltip]="layoutError()" i18n>The last layout failed</span>
       }
