@@ -40,6 +40,12 @@ async function elkLayout(graph: TaskGraph): Promise<Coordinates> {
       'elk.layered.spacing.nodeNodeBetweenLayers': String(graph.layerGap),
       // Links are drawn as straight lines: routing them any smarter is wasted time.
       'elk.edgeRouting': 'POLYLINE',
+      // Chrome gives a worker a small stack, and ELK recurses once per task in the components
+      // search and in the default layering (network simplex): a connected graph of a few thousand
+      // tasks overflowed it. With neither, chains of several thousand tasks fit. Each task still
+      // goes one layer below its deepest predecessor.
+      'elk.separateConnectedComponents': 'false',
+      'elk.layered.layering.strategy': 'LONGEST_PATH_SOURCE',
     },
     children: graph.ids.map(id => ({ id, width: graph.widths.get(id) ?? NODE_SIZE, height: graph.height })),
     edges: graph.links.map((link, index) => ({ id: `e${index}`, sources: [link.source], targets: [link.target] })),
