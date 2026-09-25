@@ -148,7 +148,8 @@ export function prepareLayout(input: LayoutInput): PreparedLayout {
   };
 }
 
-function push<T>(map: Map<string, T[]>, key: string, value: T) {
+/** Appends `value` to the list of `key`, creating it on first use. */
+export function push<T>(map: Map<string, T[]>, key: string, value: T) {
   const list = map.get(key);
   if (list) {
     list.push(value);

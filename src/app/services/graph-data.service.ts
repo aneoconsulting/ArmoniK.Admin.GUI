@@ -110,12 +110,8 @@ export class GraphDataService {
 
   /** Creates the node, or updates its status when it exists. */
   private setNode(id: string, status: Status, type: NodeEventType) {
-    const node = this.nodesById.get(id);
-    if (node) {
-      node.status = status;
-    } else {
-      this.ensureNode(id, status, type);
-    }
+    this.ensureNode(id, status, type);
+    this.setStatus(id, status);
   }
 
   /** Creates the node if it does not exist yet, leaving an existing one untouched. */

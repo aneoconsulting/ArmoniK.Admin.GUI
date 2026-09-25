@@ -21,7 +21,7 @@ import { StorageService } from '@services/storage.service';
 import ForceGraph from 'force-graph';
 import { Observable, Subscription, bufferTime, filter, retry, tap, timer } from 'rxjs';
 import { AutoCompleteComponent } from '../auto-complete.component';
-import { Coordinates, LayoutInput, LayoutResponse, NODE_GAP, NODE_SIZE, prepareLayout } from './graph-layout';
+import { Coordinates, LayoutInput, LayoutResponse, NODE_GAP, NODE_SIZE, prepareLayout, push } from './graph-layout';
 import { createLayoutWorker } from './graph-layout-worker.factory';
 import { GraphLegendComponent } from './graph-legend.component';
 
@@ -958,15 +958,6 @@ function withAlpha(color: string, alpha: number): string {
   const b = Number.parseInt(value.slice(4, 6), 16);
   const a = value.length === 8 ? Number.parseInt(value.slice(6, 8), 16) / 255 : 1;
   return `rgba(${r}, ${g}, ${b}, ${a * alpha})`;
-}
-
-function push(map: Map<string, string[]>, key: string, value: string): void {
-  const list = map.get(key);
-  if (list) {
-    list.push(value);
-  } else {
-    map.set(key, [value]);
-  }
 }
 
 /** The y of the existing row closest to `y`, if one is within `tolerance`: layouts space rows unevenly. */
