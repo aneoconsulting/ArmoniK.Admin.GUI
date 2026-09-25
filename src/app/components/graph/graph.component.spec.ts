@@ -386,6 +386,39 @@ describe('GraphComponent', () => {
     });
   });
 
+  describe('rows of a layer', () => {
+    it('should not put a new task on one whose y differs by a pixel', () => {
+      // Two subtasks of the parent on the same layer, a pixel apart as ELK can leave them.
+      const update = structure();
+      update.nodes.push(
+        { id: 'sibling-payload', type: 'result', status: ResultStatus.RESULT_STATUS_COMPLETED },
+        { id: 'sibling', type: 'task', status: TaskStatus.TASK_STATUS_CREATING },
+      );
+      update.links.push(
+        { source: 'parent', target: 'sibling-payload', type: 'parent' },
+        { source: 'sibling-payload', target: 'sibling', type: 'payload' },
+      );
+      component['apply']([update]);
+      jest.advanceTimersByTime(1000);
+      mockWorker.onmessage!({ data: { positions: new Float64Array([0, 0, 0, 180, 0, 250, 0, 320, 60, 180, 60, 251]) } } as MessageEvent);
+
+      update.nodes.push(
+        { id: 'new-payload', type: 'result', status: ResultStatus.RESULT_STATUS_COMPLETED },
+        { id: 'new', type: 'task', status: TaskStatus.TASK_STATUS_CREATING },
+      );
+      update.links.push(
+        { source: 'parent', target: 'new-payload', type: 'parent' },
+        { source: 'new-payload', target: 'new', type: 'payload' },
+      );
+      component['apply']([update]);
+
+      const placed = (id: string) => update.nodes.find(node => node.id === id)!;
+      for (const other of ['child', 'sibling']) {
+        expect(Math.abs(placed('new').x! - placed(other).x!)).toBeGreaterThanOrEqual(NODE_SIZE);
+      }
+    });
+  });
+
   describe('many nodes added after a layout', () => {
     it('should place thousands of subtasks of one parent quickly, without overlaps', () => {
       const parent: ArmoniKGraphNode = { id: 'parent', type: 'task', status: TaskStatus.TASK_STATUS_COMPLETED };

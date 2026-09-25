@@ -694,9 +694,12 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const coordinates: Coordinates = new Map();
     const rows = new Map<number, Row>();
+    // A layout does not give one layer the same y in every component, but a pixel or so apart:
+    // they share a row all the same, or a node could be put on one whose y differs by a pixel.
     const occupy = (id: string, x: number, y: number) => {
       coordinates.set(id, [x, y]);
-      (rows.get(y) ?? rows.set(y, new Row(NODE_GAP)).get(y)!).add(x - width(id) / 2, x + width(id) / 2);
+      const row = snap(y, rows, rowStep / 2);
+      (rows.get(row) ?? rows.set(row, new Row(NODE_GAP)).get(row)!).add(x - width(id) / 2, x + width(id) / 2);
     };
     let top = Infinity;
     let right = -Infinity;
