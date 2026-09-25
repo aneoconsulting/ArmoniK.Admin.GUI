@@ -144,6 +144,22 @@ describe('GraphDataService', () => {
       expect(links()).toEqual(['current -output-> output']);
     });
 
+    it('should keep the other links when one is moved from the middle', () => {
+      events.next(newResult('first', 'a'));
+      events.next(newResult('output', 'previous'));
+      events.next(newResult('last', 'b'));
+      events.next({
+        update: EventSubscriptionResponse.UpdateCase.resultOwnerUpdate,
+        resultOwnerUpdate: { resultId: 'output', previousOwnerId: 'previous', currentOwnerId: 'current' },
+      } as unknown as EventSubscriptionResponse);
+      events.next({
+        update: EventSubscriptionResponse.UpdateCase.resultOwnerUpdate,
+        resultOwnerUpdate: { resultId: 'last', previousOwnerId: 'b', currentOwnerId: 'c' },
+      } as unknown as EventSubscriptionResponse);
+
+      expect(links().sort()).toEqual(['a -output-> first', 'c -output-> last', 'current -output-> output']);
+    });
+
     it('should create a result whose owner changes before it arrives', () => {
       events.next({
         update: EventSubscriptionResponse.UpdateCase.resultOwnerUpdate,

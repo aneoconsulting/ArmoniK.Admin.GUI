@@ -23,6 +23,8 @@ export class GraphDataService {
 
   private readonly nodesById = new Map<string, ArmoniKGraphNode>();
   private readonly linksByEnds = new Map<string, GraphLink<ArmoniKGraphNode>>();
+  /** Where each link is in `links`, so that removing one does not search them all. */
+  private readonly linkIndexes = new Map<GraphLink<ArmoniKGraphNode>, number>();
 
   /** Emits after each event, telling whether it changed the structure or only a status. */
   graph$(): Observable<GraphUpdate> {
@@ -96,12 +98,7 @@ export class GraphDataService {
   }
 
   private moveOutput(resultId: string, previousOwnerId: string, currentOwnerId: string) {
-    const key = `${previousOwnerId}|${resultId}`;
-    const link = this.linksByEnds.get(key);
-    if (link) {
-      this.linksByEnds.delete(key);
-      this.links.splice(this.links.indexOf(link), 1);
-    }
+    this.removeLink(`${previousOwnerId}|${resultId}`);
     if (currentOwnerId && currentOwnerId !== this.sessionId) {
       // The change can come before the result itself: live events and the initial graph share
       // the stream. A link to a node that does not exist would break the renderer.
@@ -146,7 +143,24 @@ export class GraphDataService {
     if (!this.linksByEnds.has(key)) {
       const link = { source, target, type };
       this.linksByEnds.set(key, link);
+      this.linkIndexes.set(link, this.links.length);
       this.links.push(link);
     }
+  }
+
+  /** The last link takes the place of the removed one: the order of the links does not matter. */
+  private removeLink(key: string) {
+    const link = this.linksByEnds.get(key);
+    if (!link) {
+      return;
+    }
+    const index = this.linkIndexes.get(link)!;
+    const last = this.links.pop()!;
+    if (last !== link) {
+      this.links[index] = last;
+      this.linkIndexes.set(last, index);
+    }
+    this.linksByEnds.delete(key);
+    this.linkIndexes.delete(link);
   }
 }
