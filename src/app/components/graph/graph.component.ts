@@ -992,11 +992,15 @@ function snap(y: number, rows: Map<number, unknown>, tolerance: number): number 
  * closer than `gap` are merged, since no node fits between them: siblings placed side by side form
  * a single span, crossed in one step instead of one step per sibling.
  */
-class Row {
+export class Row {
   private readonly starts: number[] = [];
   private readonly ends: number[] = [];
 
   constructor(private readonly gap: number) {}
+
+  get spans(): number {
+    return this.starts.length;
+  }
 
   add(start: number, end: number): void {
     const first = this.firstEndingAfter(start - this.gap);

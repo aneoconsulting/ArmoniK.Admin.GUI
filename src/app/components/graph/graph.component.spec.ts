@@ -8,9 +8,9 @@ import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { StorageService } from '@services/storage.service';
 import { Subject, defer } from 'rxjs';
-import { NODE_SIZE } from './graph-layout';
+import { NODE_GAP, NODE_SIZE } from './graph-layout';
 import { createLayoutWorker } from './graph-layout-worker.factory';
-import { GraphComponent } from './graph.component';
+import { GraphComponent, Row } from './graph.component';
 
 describe('GraphComponent', () => {
   let component: GraphComponent;
@@ -458,17 +458,23 @@ describe('GraphComponent', () => {
           { source: `payload-${index}`, target: `child-${index}`, type: 'payload' },
         );
       }
-      // The real clock: fake timers fake performance.now too.
-      const start = jest.getRealSystemTime();
       component['apply']([update]);
-      const elapsed = jest.getRealSystemTime() - start;
 
       const xs = update.nodes.filter(node => node.id.startsWith('child-')).map(node => node.x!).sort((a, b) => a - b);
       for (let index = 1; index < xs.length; index++) {
         expect(xs[index] - xs[index - 1]).toBeGreaterThanOrEqual(NODE_SIZE);
       }
-      // One step per sibling made it quadratic: about 50 million steps for 10000 of them.
-      expect(elapsed).toBeLessThan(1000);
+    });
+
+    it('should merge siblings placed around their parent into a few spans, crossed in a few steps', () => {
+      // One span per sibling made the placement quadratic: about 50 million steps for 10000.
+      const row = new Row(NODE_GAP);
+      for (let index = 0; index < 10000; index++) {
+        const x = row.nearestFree(0, NODE_SIZE);
+        row.add(x - NODE_SIZE / 2, x + NODE_SIZE / 2);
+      }
+
+      expect(row.spans).toBeLessThanOrEqual(2);
     });
   });
 
