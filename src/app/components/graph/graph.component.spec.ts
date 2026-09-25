@@ -8,9 +8,9 @@ import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { StorageService } from '@services/storage.service';
 import { Subject, defer } from 'rxjs';
-import { NODE_GAP, NODE_SIZE } from './graph-layout';
+import { NODE_SIZE } from './graph-layout';
 import { createLayoutWorker } from './graph-layout-worker.factory';
-import { GraphComponent, Row } from './graph.component';
+import { GraphComponent } from './graph.component';
 
 describe('GraphComponent', () => {
   let component: GraphComponent;
@@ -347,39 +347,83 @@ describe('GraphComponent', () => {
   });
 
   describe('nodes added after a layout', () => {
-    it('should put new subtasks below their parent, side by side, with their data around them', () => {
-      // The service keeps the same node objects from one update to the next.
+    // parent at the top, its subtask child below it, and a result of the parent on the side.
+    const laidOut = () => {
       const update = structure();
+      update.nodes.push({ id: 'parent-output', type: 'result', status: ResultStatus.RESULT_STATUS_COMPLETED });
+      update.links.push({ source: 'parent', target: 'parent-output', type: 'output' });
       component['apply']([update]);
-      component['laidOut'] = true;
-      const [parent, , child] = update.nodes;
-      const siblings = ['sibling-1', 'sibling-2'];
-      for (const sibling of siblings) {
-        update.nodes.push(
-          { id: `${sibling}-payload`, type: 'result', status: ResultStatus.RESULT_STATUS_COMPLETED },
-          { id: sibling, type: 'task', status: TaskStatus.TASK_STATUS_CREATING },
-        );
-        update.links.push(
-          { source: 'parent', target: `${sibling}-payload`, type: 'parent' },
-          { source: `${sibling}-payload`, target: sibling, type: 'payload' },
-        );
+      jest.advanceTimersByTime(1000);
+      mockWorker.onmessage!({ data: { positions: new Float64Array([0, 0, 0, 180, 0, 250, 0, 320, 100, 70]) } } as MessageEvent);
+      return update;
+    };
+    const place = (update: GraphUpdate, id: string) => {
+      const node = update.nodes.find(candidate => candidate.id === id)!;
+      return [node.x, node.y];
+    };
+    const addTask = (update: GraphUpdate, id: string, parent?: string) => {
+      update.nodes.push(
+        { id: `${id}-payload`, type: 'result', status: ResultStatus.RESULT_STATUS_COMPLETED },
+        { id, type: 'task', status: TaskStatus.TASK_STATUS_CREATING },
+        { id: `${id}-output`, type: 'result', status: ResultStatus.RESULT_STATUS_CREATED },
+      );
+      update.links.push(
+        { source: `${id}-payload`, target: id, type: 'payload' },
+        { source: id, target: `${id}-output`, type: 'output' },
+      );
+      if (parent) {
+        update.links.push({ source: parent, target: `${id}-payload`, type: 'parent' });
+      }
+    };
+
+    it('should put new subtasks and their data on their parent, for the next layout to spread them', () => {
+      const update = laidOut();
+      addTask(update, 'sibling-1', 'parent');
+      addTask(update, 'sibling-2', 'parent');
+      component['apply']([update]);
+
+      for (const id of ['sibling-1', 'sibling-1-payload', 'sibling-1-output', 'sibling-2', 'sibling-2-payload', 'sibling-2-output']) {
+        expect(place(update, id)).toEqual([0, 0]);
+      }
+    });
+
+    it('should put a chain of thousands of new subtasks on its placed end', () => {
+      const update = laidOut();
+      addTask(update, 'chain-0', 'child');
+      for (let index = 1; index < 10000; index++) {
+        addTask(update, `chain-${index}`, `chain-${index - 1}`);
       }
       component['apply']([update]);
 
-      const placed = (id: string) => update.nodes.find(node => node.id === id)!;
-      const xs = ['child', ...siblings].map(id => placed(id).x);
-      expect(new Set(xs).size).toEqual(3);
-      for (const sibling of siblings) {
-        expect(placed(sibling).y).toEqual(child.y);
-        expect(placed(sibling).y).toBeGreaterThan(parent.y!);
-        expect(placed(`${sibling}-payload`).x).toEqual(placed(sibling).x);
-        expect(placed(`${sibling}-payload`).y).toBeLessThan(placed(sibling).y!);
-      }
+      expect(place(update, 'chain-9999')).toEqual([0, 250]);
+    });
+
+    it('should put a task the client submitted on the deepest producer of its data', () => {
+      const update = laidOut();
+      addTask(update, 'reduce');
+      update.links.push(
+        { source: 'parent-output', target: 'reduce', type: 'dependency' },
+        { source: 'output', target: 'reduce', type: 'dependency' },
+      );
+      component['apply']([update]);
+
+      expect(place(update, 'reduce')).toEqual([0, 250]);
+    });
+
+    it('should put a new root to the right of the graph, on its top row', () => {
+      const update = laidOut();
+      addTask(update, 'root');
+      component['apply']([update]);
+
+      const [x, y] = place(update, 'root');
+      expect(x).toBeGreaterThan(100 + NODE_SIZE);
+      expect(y).toEqual(0);
+      expect(place(update, 'root-output')).toEqual([x, y]);
     });
   });
 
   describe('nodes added during a layout', () => {
-    it('should move them with the tasks they depend on once it is done', () => {
+    it('should move them with the node they are on once it is done', () => {
       const update = structure();
       component['apply']([update]);
       jest.advanceTimersByTime(1000);
@@ -402,105 +446,34 @@ describe('GraphComponent', () => {
       jest.advanceTimersByTime(1000);
 
       const late = update.nodes.find(node => node.id === 'late')!;
-      expect(Math.abs(late.x! - 5000)).toBeLessThan(200);
-      expect(late.y).toBeGreaterThan(0);
+      expect([late.x, late.y]).toEqual([5000, 0]);
     });
-  });
 
-  describe('rows of a layer', () => {
-    it('should not put a new task on one whose y differs by a pixel', () => {
-      // Two subtasks of the parent on the same layer, a pixel apart as ELK can leave them.
+    it('should put one arriving while the nodes move where its parent goes', () => {
       const update = structure();
+      component['apply']([update]);
+      jest.advanceTimersByTime(1000);
+      mockWorker.onmessage!({ data: { positions: new Float64Array([0, 0, 0, 180, 0, 250, 0, 320]) } } as MessageEvent);
+      component.redraw();
+      mockWorker.onmessage!({ data: { positions: new Float64Array([5000, 0, 5000, 180, 5000, 250, 5000, 320]) } } as MessageEvent);
+
+      // Halfway through the move.
+      jest.advanceTimersByTime(300);
       update.nodes.push(
-        { id: 'sibling-payload', type: 'result', status: ResultStatus.RESULT_STATUS_COMPLETED },
-        { id: 'sibling', type: 'task', status: TaskStatus.TASK_STATUS_CREATING },
+        { id: 'late-payload', type: 'result', status: ResultStatus.RESULT_STATUS_COMPLETED },
+        { id: 'late', type: 'task', status: TaskStatus.TASK_STATUS_CREATING },
       );
       update.links.push(
-        { source: 'parent', target: 'sibling-payload', type: 'parent' },
-        { source: 'sibling-payload', target: 'sibling', type: 'payload' },
+        { source: 'parent', target: 'late-payload', type: 'parent' },
+        { source: 'late-payload', target: 'late', type: 'payload' },
       );
       component['apply']([update]);
       jest.advanceTimersByTime(1000);
-      mockWorker.onmessage!({ data: { positions: new Float64Array([0, 0, 0, 180, 0, 250, 0, 320, 60, 180, 60, 251]) } } as MessageEvent);
 
-      update.nodes.push(
-        { id: 'new-payload', type: 'result', status: ResultStatus.RESULT_STATUS_COMPLETED },
-        { id: 'new', type: 'task', status: TaskStatus.TASK_STATUS_CREATING },
-      );
-      update.links.push(
-        { source: 'parent', target: 'new-payload', type: 'parent' },
-        { source: 'new-payload', target: 'new', type: 'payload' },
-      );
-      component['apply']([update]);
-
-      const placed = (id: string) => update.nodes.find(node => node.id === id)!;
-      for (const other of ['child', 'sibling']) {
-        expect(Math.abs(placed('new').x! - placed(other).x!)).toBeGreaterThanOrEqual(NODE_SIZE);
-      }
-    });
-  });
-
-  describe('many nodes added after a layout', () => {
-    it('should place thousands of subtasks of one parent quickly, without overlaps', () => {
-      const parent: ArmoniKGraphNode = { id: 'parent', type: 'task', status: TaskStatus.TASK_STATUS_COMPLETED };
-      const update: GraphUpdate = { nodes: [parent], links: [], kind: 'structure' };
-      component['laidOut'] = true;
-      component['apply']([update]);
-
-      const children = 10000;
-      for (let index = 0; index < children; index++) {
-        update.nodes.push(
-          { id: `payload-${index}`, type: 'result', status: ResultStatus.RESULT_STATUS_COMPLETED },
-          { id: `child-${index}`, type: 'task', status: TaskStatus.TASK_STATUS_CREATING },
-        );
-        update.links.push(
-          { source: 'parent', target: `payload-${index}`, type: 'parent' },
-          { source: `payload-${index}`, target: `child-${index}`, type: 'payload' },
-        );
-      }
-      component['apply']([update]);
-
-      const xs = update.nodes.filter(node => node.id.startsWith('child-')).map(node => node.x!).sort((a, b) => a - b);
-      for (let index = 1; index < xs.length; index++) {
-        expect(xs[index] - xs[index - 1]).toBeGreaterThanOrEqual(NODE_SIZE);
-      }
-    });
-
-    it('should merge siblings placed around their parent into a few spans, crossed in a few steps', () => {
-      // One span per sibling made the placement quadratic: about 50 million steps for 10000.
-      const row = new Row(NODE_GAP);
-      for (let index = 0; index < 10000; index++) {
-        const x = row.nearestFree(0, NODE_SIZE);
-        row.add(x - NODE_SIZE / 2, x + NODE_SIZE / 2);
-      }
-
-      expect(row.spans).toBeLessThanOrEqual(2);
-    });
-  });
-
-  describe('task with many dependencies added after a layout', () => {
-    it('should place it below them all when they are more than a call takes arguments', () => {
-      // Spread into Math.max, 200000 of them overflow the stack.
-      const count = 200000;
-      const update: GraphUpdate = { nodes: [], links: [], kind: 'structure' };
-      for (let index = 0; index < count; index++) {
-        update.nodes.push(
-          { id: `map-${index}`, type: 'task', status: TaskStatus.TASK_STATUS_COMPLETED },
-          { id: `output-${index}`, type: 'result', status: ResultStatus.RESULT_STATUS_COMPLETED },
-        );
-        update.links.push({ source: `map-${index}`, target: `output-${index}`, type: 'output' });
-      }
-      component['laidOut'] = true;
-      component['apply']([update]);
-
-      const reduce: ArmoniKGraphNode = { id: 'reduce', type: 'task', status: TaskStatus.TASK_STATUS_CREATING };
-      update.nodes.push(reduce);
-      for (let index = 0; index < count; index++) {
-        update.links.push({ source: `output-${index}`, target: 'reduce', type: 'dependency' });
-      }
-      component['apply']([update]);
-
-      expect(reduce.y).toBeGreaterThan(update.nodes[0].y!);
+      const late = update.nodes.find(node => node.id === 'late')!;
+      const parent = update.nodes.find(node => node.id === 'parent')!;
+      expect([late.x, late.y]).toEqual([5000, 0]);
+      expect([parent.x, parent.y]).toEqual([5000, 0]);
     });
   });
 

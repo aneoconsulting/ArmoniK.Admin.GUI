@@ -21,7 +21,7 @@ import { StorageService } from '@services/storage.service';
 import ForceGraph from 'force-graph';
 import { Observable, Subscription, bufferTime, filter, retry, tap, timer } from 'rxjs';
 import { AutoCompleteComponent } from '../auto-complete.component';
-import { Coordinates, LayoutInput, LayoutResponse, NODE_GAP, NODE_SIZE, prepareLayout, push } from './graph-layout';
+import { Coordinates, LayoutInput, LayoutResponse, NODE_GAP, NODE_SIZE, push } from './graph-layout';
 import { createLayoutWorker } from './graph-layout-worker.factory';
 import { GraphLegendComponent } from './graph-legend.component';
 
@@ -45,7 +45,7 @@ export type GraphDebug = {
     runs: number;
     lastSeconds: number | null;
     runningSeconds: number | null;
-    /** Nodes added since the last layout, placed next to the others until it runs again. */
+    /** Nodes added since the last layout, put on placed ones until it runs again. */
     waitingNodes: number;
   };
   rendering: {
@@ -101,7 +101,7 @@ const HOVER_DEPTH = 2;
 /**
  * Draws the graph of a session. Nodes are placed by ELK in a worker, not by a simulation. Nothing
  * is drawn until its first layout, which shows the whole graph at once; the nodes added since are
- * placed with its rules until it runs again.
+ * put on their parent until it runs again, and spreads them from there.
  */
 @Component({
   selector: 'app-graph',
@@ -210,6 +210,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   /** The structure changed while ELK was running: its result is already out of date. */
   private layoutPending = false;
   private animationFrame = 0;
+  /** Where the nodes being moved go: a node arriving meanwhile is put where its parent goes. */
+  private animationTargets: Coordinates | null = null;
 
   /** Zoom of the frame being drawn, read by the link accessors. */
   private scale = 1;
@@ -575,12 +577,12 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     this.scheduleLayout();
   }
 
-  /** Hands the graph to the renderer, the nodes without a place put next to the placed ones. */
+  /** Hands the graph to the renderer, the nodes without a place put on placed ones. */
   private display(): void {
     this.indexGraph();
-    this.move(this.incrementalCoordinates(id => {
+    this.placeNew(this.incrementalCoordinates(id => {
       const node = this.nodesById.get(id)!;
-      return this.placed.has(id) ? [node.x!, node.y!] : undefined;
+      return this.animationTargets?.get(id) ?? (this.placed.has(id) ? [node.x!, node.y!] : undefined);
     }));
     this.graph?.graphData({ nodes: this.nodes, links: this.links });
     this.nodesIds.set(this.nodes.map(node => node.id));
@@ -705,78 +707,106 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Nodes added since the last layout, placed with its rules until it runs again: a new task one
-   * layer below the tasks it depends on, at the mean of their x, moved to the nearest free spot of
-   * its row; the data around their task, as a layout leaves them. `positionOf` gives the tasks
-   * already placed, undefined for the others.
+   * Nodes added since the last layout, put on a node already placed until it runs again, which
+   * spreads them from there: a task on its parent, or for one the client submitted, on the
+   * deepest producer of its data; a data on the task it belongs to. The others go to the right of
+   * the graph, on its top row. `positionOf` gives the nodes already placed, undefined for the
+   * others.
    */
   private incrementalCoordinates(positionOf: (id: string) => [number, number] | undefined): Coordinates {
-    const prepared = prepareLayout(this.layoutInput());
-    const { graph } = prepared;
-    const rowStep = graph.height + graph.layerGap;
-    const width = (id: string) => graph.widths.get(id) ?? NODE_SIZE;
+    const payloads = new Map<string, string>();
+    const parents = new Map<string, string>();
+    const owners = new Map<string, string>();
+    const fed = new Map<string, string>();
+    const inputs = new Map<string, string[]>();
+    for (const link of this.links) {
+      const source = endId(link.source);
+      const target = endId(link.target);
+      if (link.type === 'payload') {
+        payloads.set(target, source);
+        fed.set(source, target);
+      } else if (link.type === 'parent') {
+        parents.set(target, source);
+      } else if (link.type === 'output') {
+        owners.set(target, source);
+      } else {
+        push(inputs, target, source);
+        if (!fed.has(source)) {
+          fed.set(source, target);
+        }
+      }
+    }
 
     const coordinates: Coordinates = new Map();
-    const rows = new Map<number, Row>();
-    // A layout does not give one layer the same y in every component, but a pixel or so apart:
-    // they share a row all the same, or a node could be put on one whose y differs by a pixel.
-    const occupy = (id: string, x: number, y: number) => {
-      coordinates.set(id, [x, y]);
-      const row = snap(y, rows, rowStep / 2);
-      (rows.get(row) ?? rows.set(row, new Row(NODE_GAP)).get(row)!).add(x - width(id) / 2, x + width(id) / 2);
-    };
     let top = Infinity;
     let right = -Infinity;
-    for (const id of graph.ids) {
-      const position = positionOf(id);
+    for (const node of this.nodes) {
+      const position = positionOf(node.id);
       if (position) {
-        const [x, y] = position;
-        occupy(id, x, y);
-        top = Math.min(top, y);
-        right = Math.max(right, x + width(id) / 2);
+        coordinates.set(node.id, position);
+        top = Math.min(top, position[1]);
+        right = Math.max(right, position[0] + NODE_SIZE / 2);
       }
     }
     top = Number.isFinite(top) ? top : 0;
     right = Number.isFinite(right) ? right : 0;
 
-    const predecessors = new Map<string, string[]>();
-    for (const link of graph.links) {
-      push(predecessors, link.target, link.source);
-    }
-
-    // A task waits for its new predecessors to be placed first. When none of the waiting ones can
-    // go (a cycle, which a DAG should not have), they go with whatever is placed.
-    let waiting = graph.ids.filter(id => !coordinates.has(id));
-    let stuck = false;
-    while (waiting.length !== 0) {
-      const next: string[] = [];
-      for (const id of waiting) {
-        const all = predecessors.get(id) ?? [];
-        const known = all.filter(predecessor => coordinates.has(predecessor)).map(predecessor => coordinates.get(predecessor)!);
-        if (known.length < all.length && !stuck) {
-          next.push(id);
-          continue;
-        }
-        if (known.length === 0) {
-          occupy(id, right + NODE_GAP + width(id) / 2, top);
-          right += NODE_GAP + width(id);
-        } else {
-          const y = snap(known.reduce((max, [, knownY]) => Math.max(max, knownY), -Infinity) + rowStep, rows, rowStep / 2);
-          const x = known.reduce((sum, [knownX]) => sum + knownX, 0) / known.length;
-          occupy(id, rows.get(y)?.nearestFree(x, width(id)) ?? x, y);
-        }
+    // The node a new one is put on, undefined for a new root.
+    const anchor = (node: Node): string | undefined => {
+      if (node.type !== 'task') {
+        return owners.get(node.id) ?? fed.get(node.id);
       }
-      stuck = next.length === waiting.length;
-      waiting = next;
-    }
+      const payload = payloads.get(node.id);
+      const parent = payload === undefined ? undefined : parents.get(payload);
+      if (parent !== undefined) {
+        return parent;
+      }
+      let deepest: string | undefined;
+      let other: string | undefined;
+      for (const input of inputs.get(node.id) ?? []) {
+        const producer = owners.get(input);
+        const position = producer === undefined ? undefined : coordinates.get(producer);
+        if (position && (deepest === undefined || position[1] > coordinates.get(deepest)![1])) {
+          deepest = producer;
+        }
+        other ??= producer;
+      }
+      // A producer not placed yet: the task goes with it.
+      return deepest ?? other;
+    };
 
-    return prepared.placeData(coordinates);
+    // A chain of new nodes is placed from its placed end, without recursion: a new chain of
+    // subtasks may be thousands long.
+    for (const node of this.nodes) {
+      if (coordinates.has(node.id)) {
+        continue;
+      }
+      const chain: string[] = [];
+      const seen = new Set<string>();
+      let current: Node | undefined = node;
+      let position: [number, number] | undefined;
+      while (current && !(position = coordinates.get(current.id)) && !seen.has(current.id)) {
+        chain.push(current.id);
+        seen.add(current.id);
+        const next = anchor(current);
+        current = next === undefined ? undefined : this.nodesById.get(next);
+      }
+      if (!position) {
+        right += NODE_GAP + NODE_SIZE;
+        position = [right - NODE_SIZE / 2, top];
+      }
+      for (const id of chain) {
+        coordinates.set(id, position!);
+      }
+    }
+    return coordinates;
   }
 
-  private move(coordinates: Coordinates): void {
+  /** The placed nodes are left alone: they may be moving to their place. */
+  private placeNew(coordinates: Coordinates): void {
     for (const node of this.nodes) {
       const position = coordinates.get(node.id);
-      if (position) {
+      if (position && !this.placed.has(node.id)) {
         this.setPosition(node, position[0], position[1]);
       }
     }
@@ -797,6 +827,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         const [x, y] = targets.get(node.id)!;
         return { node, fromX: node.x ?? x, fromY: node.y ?? y, x, y };
       });
+    this.animationTargets = targets;
     const start = performance.now();
     const step = () => {
       const t = Math.min(1, (performance.now() - start) / ANIMATION_MS);
@@ -807,6 +838,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       this.requestRedraw();
       if (t < 1) {
         this.animationFrame = requestAnimationFrame(step);
+      } else {
+        this.animationTargets = null;
       }
     };
     this.animationFrame = requestAnimationFrame(step);
@@ -972,89 +1005,4 @@ function withAlpha(color: string, alpha: number): string {
   const b = Number.parseInt(value.slice(4, 6), 16);
   const a = value.length === 8 ? Number.parseInt(value.slice(6, 8), 16) / 255 : 1;
   return `rgba(${r}, ${g}, ${b}, ${a * alpha})`;
-}
-
-/** The y of the existing row closest to `y`, if one is within `tolerance`: layouts space rows unevenly. */
-function snap(y: number, rows: Map<number, unknown>, tolerance: number): number {
-  let best = y;
-  let distance = tolerance;
-  for (const row of rows.keys()) {
-    if (Math.abs(row - y) < distance) {
-      best = row;
-      distance = Math.abs(row - y);
-    }
-  }
-  return best;
-}
-
-/**
- * The spans taken on a row of the graph, sorted and disjoint, to find where a new node fits. Spans
- * closer than `gap` are merged, since no node fits between them: siblings placed side by side form
- * a single span, crossed in one step instead of one step per sibling.
- */
-export class Row {
-  private readonly starts: number[] = [];
-  private readonly ends: number[] = [];
-
-  constructor(private readonly gap: number) {}
-
-  get spans(): number {
-    return this.starts.length;
-  }
-
-  add(start: number, end: number): void {
-    const first = this.firstEndingAfter(start - this.gap);
-    let last = first;
-    while (last < this.starts.length && this.starts[last] <= end + this.gap) {
-      start = Math.min(start, this.starts[last]);
-      end = Math.max(end, this.ends[last]);
-      last++;
-    }
-    this.starts.splice(first, last - first, start);
-    this.ends.splice(first, last - first, end);
-  }
-
-  /** The x closest to `x` where a node of `width` fits, `gap` away from its neighbours. */
-  nearestFree(x: number, width: number): number {
-    const clearance = width / 2 + this.gap;
-    let right = x;
-    for (let index = this.firstEndingAfter(right - clearance); index < this.starts.length && this.starts[index] < right + clearance; index++) {
-      right = this.ends[index] + clearance;
-    }
-    let left = x;
-    for (let index = this.lastStartingBefore(left + clearance); index >= 0 && this.ends[index] > left - clearance; index--) {
-      left = this.starts[index] - clearance;
-    }
-    return right - x <= x - left ? right : left;
-  }
-
-  /** Index of the first span ending after `value`. */
-  private firstEndingAfter(value: number): number {
-    let low = 0;
-    let high = this.ends.length;
-    while (low < high) {
-      const middle = (low + high) >> 1;
-      if (this.ends[middle] <= value) {
-        low = middle + 1;
-      } else {
-        high = middle;
-      }
-    }
-    return low;
-  }
-
-  /** Index of the last span starting before `value`, -1 when there is none. */
-  private lastStartingBefore(value: number): number {
-    let low = 0;
-    let high = this.starts.length;
-    while (low < high) {
-      const middle = (low + high) >> 1;
-      if (this.starts[middle] < value) {
-        low = middle + 1;
-      } else {
-        high = middle;
-      }
-    }
-    return low - 1;
-  }
 }

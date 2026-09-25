@@ -1,7 +1,7 @@
 /**
  * Placement of a session graph. The graph alternates data and tasks: only the tasks go through a
- * layout algorithm, and each data then takes its place around the task it belongs to. This file
- * holds what both the worker (ELK) and the page (the nodes added between two layouts) need.
+ * layout algorithm, and each data then takes its place around the task it belongs to. The worker
+ * runs it, and the page shares its types.
  */
 
 export const NODE_SIZE = 50;
