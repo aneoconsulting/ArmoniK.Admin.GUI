@@ -100,6 +100,9 @@ export class GraphDataService {
       this.links.splice(this.links.indexOf(link), 1);
     }
     if (currentOwnerId && currentOwnerId !== this.sessionId) {
+      // The change can come before the result itself: live events and the initial graph share
+      // the stream. A link to a node that does not exist would break the renderer.
+      this.ensureNode(resultId, ResultStatus.RESULT_STATUS_UNSPECIFIED, 'result');
       this.ensureNode(currentOwnerId, TaskStatus.TASK_STATUS_UNSPECIFIED, 'task');
       this.addLink(currentOwnerId, resultId, 'output');
     }

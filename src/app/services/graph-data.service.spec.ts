@@ -144,6 +144,16 @@ describe('GraphDataService', () => {
       expect(links()).toEqual(['current -output-> output']);
     });
 
+    it('should create a result whose owner changes before it arrives', () => {
+      events.next({
+        update: EventSubscriptionResponse.UpdateCase.resultOwnerUpdate,
+        resultOwnerUpdate: { resultId: 'early', previousOwnerId: 'previous', currentOwnerId: 'current' },
+      } as unknown as EventSubscriptionResponse);
+
+      expect(service.nodes.map(node => `${node.type}:${node.id}`)).toEqual(['result:early', 'task:current']);
+      expect(links()).toEqual(['current -output-> early']);
+    });
+
     it('should not turn the session into a task when it becomes the owner', () => {
       events.next(newResult('output', 'previous'));
       events.next({
