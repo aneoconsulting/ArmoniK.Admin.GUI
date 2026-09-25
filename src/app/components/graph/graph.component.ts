@@ -536,7 +536,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   private placeIncrementally(): void {
     const prepared = prepareLayout(this.layoutInput());
     const { graph } = prepared;
-    const rowStep = NODE_SIZE + graph.layerGap;
+    const rowStep = graph.height + graph.layerGap;
     const width = (id: string) => graph.widths.get(id) ?? NODE_SIZE;
 
     const coordinates: Coordinates = new Map();

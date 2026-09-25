@@ -59,7 +59,7 @@ describe('graph layout', () => {
     });
 
     it('should not overlap the nodes of a layer', () => {
-      const coordinates = provisionalLayout({ ids: ['a', 'b'], links: [], widths: new Map([['a', 200]]), layerGap: 0 });
+      const coordinates = provisionalLayout({ ids: ['a', 'b'], links: [], widths: new Map([['a', 200]]), height: NODE_SIZE, layerGap: 0 });
 
       expect(coordinates.get('b')![0] - coordinates.get('a')![0]).toBeGreaterThanOrEqual(100 + NODE_SIZE / 2);
     });

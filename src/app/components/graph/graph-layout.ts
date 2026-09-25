@@ -7,7 +7,7 @@
 export const NODE_SIZE = 50;
 /** Horizontal space left between two nodes. */
 export const NODE_GAP = 30;
-/** Vertical space left between two layers of tasks, on top of the rows of data around them. */
+/** Vertical space left between two layers of tasks and the rows of data around them. */
 const LAYER_GAP = 60;
 /** Distance from a task to the rows of data drawn above and below it. */
 const DATA_ROW_OFFSET = NODE_SIZE + 20;
@@ -35,11 +35,18 @@ export type LayoutResponse =
   }
   | { error: string };
 
-/** What a layout algorithm places: the tasks, each as wide as its widest row of data. */
+/**
+ * What a layout algorithm places: the tasks, each as a box holding the task and its rows of data,
+ * as wide as its widest row. The algorithm must know the whole box: packing only the tasks, it
+ * would put a row of data on the tasks of a neighbouring component.
+ */
 export type TaskGraph = {
   ids: string[];
   links: { source: string, target: string }[];
   widths: Map<string, number>;
+  /** Height of every box: a task, a row of data above it and one below. */
+  height: number;
+  /** Space between the boxes of two consecutive layers. */
   layerGap: number;
 };
 
@@ -136,7 +143,8 @@ export function prepareLayout(input: LayoutInput): PreparedLayout {
       ids: [...tasks, ...alone],
       links: [...taskLinks.values()],
       widths,
-      layerGap: LAYER_GAP + 2 * DATA_ROW_OFFSET,
+      height: NODE_SIZE + 2 * DATA_ROW_OFFSET,
+      layerGap: LAYER_GAP,
     },
     placeData,
   };
@@ -174,7 +182,7 @@ export function provisionalLayout(graph: TaskGraph): Coordinates {
   }
 
   const coordinates: Coordinates = new Map();
-  const rowHeight = NODE_SIZE + graph.layerGap;
+  const rowHeight = graph.height + graph.layerGap;
   let y = 0;
   for (const layer of layers) {
     if (!layer) {

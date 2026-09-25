@@ -34,12 +34,12 @@ async function elkLayout(graph: TaskGraph): Promise<Coordinates> {
       // Links are drawn as straight lines: routing them any smarter is wasted time.
       'elk.edgeRouting': 'POLYLINE',
     },
-    children: graph.ids.map(id => ({ id, width: graph.widths.get(id) ?? NODE_SIZE, height: NODE_SIZE })),
+    children: graph.ids.map(id => ({ id, width: graph.widths.get(id) ?? NODE_SIZE, height: graph.height })),
     edges: graph.links.map((link, index) => ({ id: `e${index}`, sources: [link.source], targets: [link.target] })),
   });
 
   // ELK gives the top left corner, the graph expects the centre.
-  return new Map((result.children ?? []).map(child => [child.id, [child.x! + child.width! / 2, child.y! + NODE_SIZE / 2]]));
+  return new Map((result.children ?? []).map(child => [child.id, [child.x! + child.width! / 2, child.y! + graph.height / 2]]));
 }
 
 /**
