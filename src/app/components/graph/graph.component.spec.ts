@@ -243,14 +243,46 @@ describe('GraphComponent', () => {
   });
 
   describe('view', () => {
-    it('should fit the graph without zooming in past its natural size', () => {
-      const graph = { _destructor: jest.fn(), zoomToFit: jest.fn(), zoom: jest.fn((zoom?: number): unknown => (zoom === undefined ? 16 : graph)) };
+    // A renderer of 1080 × 680, 40 of padding left: 1000 × 600 for a graph of the given size.
+    const renderer = (width: number, height: number, zoom: number) => {
+      const graph = {
+        _destructor: jest.fn(),
+        zoomToFit: jest.fn(),
+        zoom: jest.fn((value?: number): unknown => (value === undefined ? zoom : graph)),
+        width: () => 1080,
+        height: () => 680,
+        minZoom: jest.fn((value?: number): unknown => (value === undefined ? 0.01 : graph)),
+        getGraphBbox: () => ({ x: [0, width], y: [0, height] }),
+      };
       component['graph'] = graph as never;
+      return graph;
+    };
+
+    it('should fit the graph without zooming in past its natural size', () => {
+      const graph = renderer(100, 100, 16);
 
       component['fitView']();
 
       expect(graph.zoomToFit).toHaveBeenCalled();
-      expect(graph.zoom).toHaveBeenLastCalledWith(1);
+      // Not 1: force-graph would take the view as never zoomed, and zoom it its own way.
+      expect(graph.zoom).toHaveBeenLastCalledWith(0.99);
+    });
+
+    it('should zoom out further than force-graph allows by default to fit a very wide graph', () => {
+      const graph = renderer(250000, 600, 0.004);
+
+      component['fitView']();
+
+      expect(graph.minZoom).toHaveBeenCalledWith(0.004);
+      expect(graph.zoomToFit).toHaveBeenCalled();
+    });
+
+    it('should keep the default limit for a graph that fits within it', () => {
+      const graph = renderer(5000, 600, 0.2);
+
+      component['fitView']();
+
+      expect(graph.minZoom).not.toHaveBeenCalledWith(expect.any(Number));
     });
 
     it('should size the canvas as its container, not as the window', () => {
@@ -304,6 +336,10 @@ describe('GraphComponent', () => {
       for (const method of ['graphData', 'nodeCanvasObject', 'zoomToFit', 'zoom', '_destructor']) {
         graph[method] = jest.fn(() => graph);
       }
+      graph['getGraphBbox'] = jest.fn(() => ({ x: [0, 100], y: [0, 400] }));
+      graph['width'] = jest.fn(() => 1000);
+      graph['height'] = jest.fn(() => 800);
+      graph['minZoom'] = jest.fn(() => 0.01);
       component['graph'] = graph as unknown as typeof component['graph'];
       jest.advanceTimersByTime(5000);
 
@@ -512,6 +548,10 @@ describe('GraphComponent', () => {
       for (const method of ['centerAt', 'graphData', 'nodeCanvasObject', 'zoomToFit', 'zoom', '_destructor']) {
         graph[method] = jest.fn(() => graph);
       }
+      graph['getGraphBbox'] = jest.fn(() => ({ x: [0, 100], y: [0, 400] }));
+      graph['width'] = jest.fn(() => 1000);
+      graph['height'] = jest.fn(() => 800);
+      graph['minZoom'] = jest.fn(() => 0.01);
       component['graph'] = graph as unknown as typeof component['graph'];
       component.highlightParentNodes = true;
       component['apply']([structure()]);

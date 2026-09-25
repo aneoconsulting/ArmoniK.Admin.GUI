@@ -92,8 +92,12 @@ const ANIMATION_MS = 600;
 const SPRITE_SIZE = 128;
 /** Under this size on screen, a node is drawn as a plain square: an icon would not be readable. */
 const MIN_ICON_SCREEN_SIZE = 8;
-/** Fitting a small graph to the view stops at this zoom: a single task would fill the screen. */
-const MAX_FIT_ZOOM = 1;
+/**
+ * Fitting a small graph to the view stops at this zoom: a single task would fill the screen. Not
+ * 1, the zoom force-graph starts at: left there, it believes the user never zoomed, and zooms to a
+ * size of its own after each change of the graph.
+ */
+const MAX_FIT_ZOOM = 0.99;
 /** Space left around the graph when it is fitted to the view. */
 const FIT_PADDING = 40;
 /** Smallest size on screen of the mark of a highlighted node, however far zoomed out. */
@@ -474,11 +478,26 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  /** The graph in the view, zoomed in no further than MAX_FIT_ZOOM. */
+  /**
+   * The graph in the view, zoomed in no further than MAX_FIT_ZOOM. A layer of thousands of tasks
+   * needs to zoom out further than force-graph allows by default: the limit follows the graph.
+   */
   private fitView(): void {
-    this.graph?.zoomToFit(0, FIT_PADDING);
-    if ((this.graph?.zoom() ?? 0) > MAX_FIT_ZOOM) {
-      this.graph?.zoom(MAX_FIT_ZOOM);
+    const graph = this.graph;
+    const box = graph?.getGraphBbox();
+    if (!graph || !box) {
+      return;
+    }
+    const zoom = Math.min(
+      (graph.width() - 2 * FIT_PADDING) / (box.x[1] - box.x[0]),
+      (graph.height() - 2 * FIT_PADDING) / (box.y[1] - box.y[0]),
+    );
+    if (zoom < graph.minZoom()) {
+      graph.minZoom(zoom);
+    }
+    graph.zoomToFit(0, FIT_PADDING);
+    if (graph.zoom() > MAX_FIT_ZOOM) {
+      graph.zoom(MAX_FIT_ZOOM);
     }
   }
 
