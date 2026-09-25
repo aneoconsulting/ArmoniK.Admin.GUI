@@ -231,6 +231,18 @@ describe('GraphComponent', () => {
     });
   });
 
+  describe('view', () => {
+    it('should fit the graph without zooming in past its natural size', () => {
+      const graph = { _destructor: jest.fn(), zoomToFit: jest.fn(), zoom: jest.fn((zoom?: number): unknown => (zoom === undefined ? 16 : graph)) };
+      component['graph'] = graph as never;
+
+      component['fitView']();
+
+      expect(graph.zoomToFit).toHaveBeenCalled();
+      expect(graph.zoom).toHaveBeenLastCalledWith(1);
+    });
+  });
+
   describe('events stream', () => {
     let streams: Subject<GraphUpdate>[];
 

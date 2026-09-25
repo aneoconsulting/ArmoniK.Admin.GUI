@@ -89,6 +89,10 @@ const ANIMATION_MS = 600;
 const SPRITE_SIZE = 128;
 /** Under this size on screen, a node is drawn as a plain square: an icon would not be readable. */
 const MIN_ICON_SCREEN_SIZE = 8;
+/** Fitting a small graph to the view stops at this zoom: a single task would fill the screen. */
+const MAX_FIT_ZOOM = 1;
+/** Space left around the graph when it is fitted to the view. */
+const FIT_PADDING = 40;
 /** Smallest size on screen of the mark of a highlighted node, however far zoomed out. */
 const HIGHLIGHT_SCREEN_SIZE = 12;
 /** Opacity of what is not around the hovered node. */
@@ -256,6 +260,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       .d3Force('link', null)
       .d3Force('center', null)
       .cooldownTicks(0)
+      // Only used for the box zoomToFit fits: the nodes are painted by drawNode, as big as this.
+      .nodeRelSize(NODE_SIZE / 2)
       .nodeLabel('id')
       .nodeCanvasObject(this.paintNode)
       .nodePointerAreaPaint((node, color, ctx) => {
@@ -421,6 +427,14 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   onResize(event: UIEvent): void {
     const window = event.target as Window;
     this.graph?.width(window.innerWidth).height(window.innerHeight);
+  }
+
+  /** The graph in the view, zoomed in no further than MAX_FIT_ZOOM. */
+  private fitView(): void {
+    this.graph?.zoomToFit(0, FIT_PADDING);
+    if ((this.graph?.zoom() ?? 0) > MAX_FIT_ZOOM) {
+      this.graph?.zoom(MAX_FIT_ZOOM);
+    }
   }
 
   /**
@@ -602,7 +616,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         this.display();
         this.loading.set(null);
-        this.graph?.zoomToFit(0, 40);
+        this.fitView();
       }
       if (this.layoutPending) {
         this.layoutPending = false;
