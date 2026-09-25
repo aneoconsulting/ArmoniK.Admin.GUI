@@ -48,5 +48,18 @@ describe('graph layout', () => {
 
       expect(graph.ids).toEqual(['alone']);
     });
+
+    it('should place a data shared by more consumers than a call takes arguments', () => {
+      // Spread into Math.min, 200000 of them overflow the stack.
+      const consumers = Array.from({ length: 200000 }, (_, index) => `task-${index}`);
+      const prepared = prepareLayout({
+        nodes: ['input', ...consumers],
+        types: ['result', ...consumers.map(() => 'task')],
+        links: consumers.map(consumer => ({ source: 'input', target: consumer, type: 'dependency' })),
+      });
+      const coordinates = prepared.placeData(new Map(consumers.map((id, index) => [id, [index, index % 2 === 0 ? 500 : 400]])));
+
+      expect(coordinates.get('input')![1]).toBeLessThan(400);
+    });
   });
 });

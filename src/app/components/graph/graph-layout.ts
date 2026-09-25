@@ -130,7 +130,7 @@ export function prepareLayout(input: LayoutInput): PreparedLayout {
       const points = consumers.map(consumer => coordinates.get(consumer)!);
       coordinates.set(id, [
         points.reduce((sum, [x]) => sum + x, 0) / points.length,
-        Math.min(...points.map(([, y]) => y)) - DATA_ROW_OFFSET,
+        points.reduce((min, [, y]) => Math.min(min, y), Infinity) - DATA_ROW_OFFSET,
       ]);
     }
     return coordinates;

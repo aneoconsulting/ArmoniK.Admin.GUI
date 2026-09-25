@@ -747,7 +747,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
           occupy(id, right + NODE_GAP + width(id) / 2, top);
           right += NODE_GAP + width(id);
         } else {
-          const y = snap(Math.max(...known.map(([, knownY]) => knownY)) + rowStep, rows, rowStep / 2);
+          const y = snap(known.reduce((max, [, knownY]) => Math.max(max, knownY), -Infinity) + rowStep, rows, rowStep / 2);
           const x = known.reduce((sum, [knownX]) => sum + knownX, 0) / known.length;
           occupy(id, rows.get(y)?.nearestFree(x, width(id)) ?? x, y);
         }

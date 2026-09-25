@@ -464,6 +464,32 @@ describe('GraphComponent', () => {
     });
   });
 
+  describe('task with many dependencies added after a layout', () => {
+    it('should place it below them all when they are more than a call takes arguments', () => {
+      // Spread into Math.max, 200000 of them overflow the stack.
+      const count = 200000;
+      const update: GraphUpdate = { nodes: [], links: [], kind: 'structure' };
+      for (let index = 0; index < count; index++) {
+        update.nodes.push(
+          { id: `map-${index}`, type: 'task', status: TaskStatus.TASK_STATUS_COMPLETED },
+          { id: `output-${index}`, type: 'result', status: ResultStatus.RESULT_STATUS_COMPLETED },
+        );
+        update.links.push({ source: `map-${index}`, target: `output-${index}`, type: 'output' });
+      }
+      component['laidOut'] = true;
+      component['apply']([update]);
+
+      const reduce: ArmoniKGraphNode = { id: 'reduce', type: 'task', status: TaskStatus.TASK_STATUS_CREATING };
+      update.nodes.push(reduce);
+      for (let index = 0; index < count; index++) {
+        update.links.push({ source: `output-${index}`, target: 'reduce', type: 'dependency' });
+      }
+      component['apply']([update]);
+
+      expect(reduce.y).toBeGreaterThan(update.nodes[0].y!);
+    });
+  });
+
   describe('highlight', () => {
     beforeEach(() => {
       component['laidOut'] = true;
