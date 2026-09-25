@@ -56,6 +56,17 @@ describe('AutoCompleteComponent', () => {
     it('should emit', () => {
       expect(emitSpy).toHaveBeenCalledWith(filter);
     });
+
+    it('should keep filtering options that change while typing', () => {
+      component.options = [...options, 'partitions', 'results'];
+      expect(component.filteredOptions()).toEqual(['sessions', 'applications', 'partitions']);
+    });
+
+    it('should stop filtering once given a value', () => {
+      component.value = 'tasks';
+      component.options = options;
+      expect(component.filteredOptions()).toEqual(options);
+    });
   });
 
   describe('setting a size one options list', () => {

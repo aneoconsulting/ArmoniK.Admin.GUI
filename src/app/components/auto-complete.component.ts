@@ -18,7 +18,8 @@ import { MatInputModule } from '@angular/material/input';
 export class AutoCompleteComponent implements OnInit {
   @Input({ required: true }) set options(entries: string[]) {
     this._options = entries;
-    this.filteredOptions.set(this._options);
+    // Options that change while the user types keep what was typed filtering them.
+    this.filteredOptions.set(this.typed ? this.filter() : this._options);
     this.hasOneOption = this._options.length === 1;
     if (this.formControl) {
       this.formControlStatus();
@@ -27,6 +28,7 @@ export class AutoCompleteComponent implements OnInit {
 
   @Input({ required: false }) set value(entry: string | number | null | undefined) {
     this._value = entry?.toString() ?? '';
+    this.typed = false;
     if (this.formControl) {
       this.formControl.setValue(this._value);
     }
@@ -40,6 +42,8 @@ export class AutoCompleteComponent implements OnInit {
   private _options: string[];
   private _value: string;
   hasOneOption: boolean = false;
+  /** Whether the input holds what the user typed, rather than a value given to the component. */
+  private typed = false;
   filteredOptions = signal<string[]>([]);
   formControl: FormControl<string>;
 
@@ -64,6 +68,7 @@ export class AutoCompleteComponent implements OnInit {
   }
 
   onInputChange() {
+    this.typed = true;
     this.filteredOptions.update(() => this.filter());
     this.emit();
   }
