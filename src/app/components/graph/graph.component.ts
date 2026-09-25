@@ -149,6 +149,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly clipboard = inject(Clipboard);
 
   private readonly subscription = new Subscription();
+  private destroyed = false;
 
   private nodes: Node[] = [];
   private links: Link[] = [];
@@ -234,8 +235,16 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
     // The icons are rasterised once: the font has to be there, or they would hold the ligature
-    // text instead of the glyph.
-    await document.fonts?.load(`${SPRITE_SIZE}px "Material Icons"`);
+    // text instead of the glyph. A font that fails to load is no reason not to draw the graph.
+    try {
+      await document.fonts?.load(`${SPRITE_SIZE}px "Material Icons"`);
+    } catch (error) {
+      console.warn('The icon font did not load, the graph is drawn without it.', error);
+    }
+    // Left while the font was loading: a renderer created now would never be destroyed.
+    if (this.destroyed) {
+      return;
+    }
 
     const element = this.graphRef.nativeElement;
     this.graph = new ForceGraph<Node, Link>(element)
@@ -302,6 +311,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.destroyed = true;
     this.setDebug(false);
     clearInterval(this.loadingInterval);
     this.subscription.unsubscribe();

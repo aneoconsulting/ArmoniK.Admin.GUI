@@ -198,10 +198,44 @@ describe('GraphComponent', () => {
     });
   });
 
+  describe('view initialisation', () => {
+    const fonts = (load: () => Promise<unknown>) => Object.defineProperty(document, 'fonts', { value: { load }, configurable: true });
+
+    beforeEach(() => {
+      component['graphRef'] = { nativeElement: document.createElement('div') };
+      component.updates = new Subject<GraphUpdate>();
+    });
+
+    afterEach(() => {
+      delete (document as { fonts?: unknown }).fonts;
+    });
+
+    it('should draw the graph even when the icon font fails to load', async () => {
+      jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+      fonts(() => Promise.reject(new Error('blocked')));
+      await component.ngAfterViewInit();
+
+      expect(component['graph']).not.toBeNull();
+      expect(component['subscription'].closed).toBe(false);
+    });
+
+    it('should not create the renderer once left while the font was loading', async () => {
+      let loaded!: () => void;
+      fonts(() => new Promise<void>(resolve => (loaded = resolve)));
+      const init = component.ngAfterViewInit();
+      component.ngOnDestroy();
+      loaded();
+      await init;
+
+      expect(component['graph']).toBeNull();
+    });
+  });
+
   describe('events stream', () => {
     let streams: Subject<GraphUpdate>[];
 
     beforeEach(() => {
+      jest.spyOn(console, 'error').mockImplementation(() => undefined);
       streams = [];
       component.updates = defer(() => {
         const stream = new Subject<GraphUpdate>();
