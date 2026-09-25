@@ -1,7 +1,7 @@
 /**
  * Placement of a session graph. The graph alternates data and tasks: only the tasks go through a
  * layout algorithm, and each data then takes its place around the task it belongs to. This file
- * holds what both the worker (ELK) and the page (the provisional placement) need.
+ * holds what both the worker (ELK) and the page (the nodes added between two layouts) need.
  */
 
 export const NODE_SIZE = 50;
@@ -11,8 +11,6 @@ export const NODE_GAP = 30;
 const LAYER_GAP = 60;
 /** Distance from a task to the rows of data drawn above and below it. */
 const DATA_ROW_OFFSET = NODE_SIZE + 20;
-/** The provisional placement wraps a layer wider than this, so that it stays on screen. */
-const PROVISIONAL_ROW_SIZE = 100;
 
 export type LayoutLink = {
   source: string;
@@ -148,57 +146,6 @@ export function prepareLayout(input: LayoutInput): PreparedLayout {
     },
     placeData,
   };
-}
-
-/**
- * A placement computed in a few milliseconds, shown while the real one is computed: each task on
- * the layer of its longest chain of dependencies, in arrival order, wide layers wrapped. It takes
- * no care of crossings.
- */
-export function provisionalLayout(graph: TaskGraph): Coordinates {
-  const successors = new Map<string, string[]>();
-  const remaining = new Map<string, number>(graph.ids.map(id => [id, 0]));
-  for (const { source, target } of graph.links) {
-    push(successors, source, target);
-    remaining.set(target, (remaining.get(target) ?? 0) + 1);
-  }
-  const depths = new Map<string, number>(graph.ids.map(id => [id, 0]));
-  const queue = graph.ids.filter(id => remaining.get(id) === 0);
-  for (let head = 0; head < queue.length; head++) {
-    const node = queue[head];
-    for (const next of successors.get(node) ?? []) {
-      depths.set(next, Math.max(depths.get(next)!, depths.get(node)! + 1));
-      const left = remaining.get(next)! - 1;
-      remaining.set(next, left);
-      if (left === 0) {
-        queue.push(next);
-      }
-    }
-  }
-
-  const layers: string[][] = [];
-  for (const id of graph.ids) {
-    (layers[depths.get(id)!] ??= []).push(id);
-  }
-
-  const coordinates: Coordinates = new Map();
-  const rowHeight = graph.height + graph.layerGap;
-  let y = 0;
-  for (const layer of layers) {
-    if (!layer) {
-      continue;
-    }
-    for (let start = 0; start < layer.length; start += PROVISIONAL_ROW_SIZE) {
-      let x = 0;
-      for (const id of layer.slice(start, start + PROVISIONAL_ROW_SIZE)) {
-        const width = graph.widths.get(id) ?? NODE_SIZE;
-        coordinates.set(id, [x + width / 2, y]);
-        x += width + NODE_GAP;
-      }
-      y += rowHeight;
-    }
-  }
-  return coordinates;
 }
 
 function push<T>(map: Map<string, T[]>, key: string, value: T) {

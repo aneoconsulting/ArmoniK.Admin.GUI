@@ -1,4 +1,4 @@
-import { LayoutInput, NODE_SIZE, prepareLayout, provisionalLayout } from './graph-layout';
+import { LayoutInput, NODE_SIZE, prepareLayout } from './graph-layout';
 
 describe('graph layout', () => {
   // parent → payload-child → child → output-child, and parent → output-parent → child
@@ -47,21 +47,6 @@ describe('graph layout', () => {
       const { graph } = prepareLayout({ nodes: ['alone'], types: ['result'], links: [] });
 
       expect(graph.ids).toEqual(['alone']);
-    });
-  });
-
-  describe('provisionalLayout', () => {
-    it('should put a task below the tasks it depends on', () => {
-      const { graph } = prepareLayout(input);
-      const coordinates = provisionalLayout(graph);
-
-      expect(coordinates.get('child')![1]).toBeGreaterThan(coordinates.get('parent')![1]);
-    });
-
-    it('should not overlap the nodes of a layer', () => {
-      const coordinates = provisionalLayout({ ids: ['a', 'b'], links: [], widths: new Map([['a', 200]]), height: NODE_SIZE, layerGap: 0 });
-
-      expect(coordinates.get('b')![0] - coordinates.get('a')![0]).toBeGreaterThanOrEqual(100 + NODE_SIZE / 2);
     });
   });
 });

@@ -13,6 +13,7 @@ import { RouterModule } from '@angular/router';
 import { ResultsStatusesService } from '@app/results/services/results-statuses.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { ArmoniKGraphNode, GraphLink, GraphUpdate, LinkType } from '@app/types/graph.types';
+import { SpinnerComponent } from '@components/spinner.component';
 import { PrettyPipe } from '@pipes/pretty.pipe';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
@@ -20,7 +21,7 @@ import { StorageService } from '@services/storage.service';
 import ForceGraph from 'force-graph';
 import { Observable, Subscription, bufferTime, filter } from 'rxjs';
 import { AutoCompleteComponent } from '../auto-complete.component';
-import { Coordinates, LayoutInput, LayoutResponse, NODE_GAP, NODE_SIZE, prepareLayout, provisionalLayout } from './graph-layout';
+import { Coordinates, LayoutInput, LayoutResponse, NODE_GAP, NODE_SIZE, prepareLayout } from './graph-layout';
 import { createLayoutWorker } from './graph-layout-worker.factory';
 import { GraphLegendComponent } from './graph-legend.component';
 
@@ -40,11 +41,11 @@ export type GraphDebug = {
     initialGraphSeconds: number | null;
   };
   layout: {
-    state: 'provisional' | 'running' | 'laid-out';
+    state: 'waiting' | 'running' | 'laid-out';
     runs: number;
     lastSeconds: number | null;
     runningSeconds: number | null;
-    /** Nodes added since the last layout, placed provisionally. */
+    /** Nodes added since the last layout, placed next to the others until it runs again. */
     waitingNodes: number;
   };
   rendering: {
@@ -62,6 +63,13 @@ const BATCH_MS = 250;
 const QUIET_MS = 1000;
 /** …or this long after the first change, for a running session never stops changing. */
 const MAX_WAIT_MS = 10000;
+/**
+ * The same cap while the initial graph arrives, wider: laying it out before its end means laying
+ * it out twice, but a session never quiet enough to end it must still show up.
+ */
+const INITIAL_MAX_WAIT_MS = 30000;
+/** Refresh period of the loading counters. */
+const LOADING_REFRESH_MS = 500;
 /**
  * The events start with the whole current graph, thousands per batch, then trickle. A batch with
  * fewer structural changes than this tells the initial graph is over.
@@ -81,8 +89,9 @@ const FADED_ALPHA = 0.08;
 const HOVER_DEPTH = 2;
 
 /**
- * Draws the graph of a session. Nodes are placed by ELK in a worker, not by a simulation: until it
- * has run, and for the nodes added since, a provisional placement is shown.
+ * Draws the graph of a session. Nodes are placed by ELK in a worker, not by a simulation. Nothing
+ * is drawn until its first layout, which shows the whole graph at once; the nodes added since are
+ * placed with its rules until it runs again.
  */
 @Component({
   selector: 'app-graph',
@@ -101,6 +110,7 @@ const HOVER_DEPTH = 2;
     AutoCompleteComponent,
     KeyValuePipe,
     PrettyPipe,
+    SpinnerComponent,
   ],
   providers: [
     TasksStatusesService,
@@ -141,6 +151,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly nodesIds = signal<string[]>([]);
   readonly nodeCount = signal<number>(0);
   readonly layingOut = signal<boolean>(false);
+  /** What arrived so far, shown instead of the graph until its first layout. Null once shown. */
+  readonly loading = signal<{ tasks: number, results: number, seconds: number } | null>({ tasks: 0, results: 0, seconds: 0 });
+  private loadingInterval: ReturnType<typeof setInterval> | undefined;
   readonly highlightLabel = $localize`Highlight a task`;
 
   readonly debugEnabled = signal<boolean>(false);
@@ -160,15 +173,13 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   private debugInterval: ReturnType<typeof setInterval> | undefined;
   private debugFrame = 0;
 
-  /** Whether ELK has placed the graph once: until then, every node is placed provisionally. */
+  /** Whether ELK has placed the graph once: until then, nothing is drawn. */
   private laidOut = false;
   private layoutTimer: ReturnType<typeof setTimeout> | undefined;
   /** When the first change not laid out yet happened. */
   private firstChangeAt: number | null = null;
   /** Whether the initial graph is still arriving: the wait is not capped until it is over. */
   private initialGraph = true;
-  /** Once the user has moved the view, it is not fitted to the graph anymore. */
-  private viewMoved = false;
   /**
    * Nodes given a position by this component. Not `x !== undefined`: the renderer gives a position
    * of its own, on a spiral around the origin, to any node that reaches it without one.
@@ -199,6 +210,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const storedDebug = this.storageService.getItem<boolean>('graph-debug', true) as boolean | null;
     this.setDebug(storedDebug ?? this.defaultConfigService.defaultGraphDebug);
+
+    this.loadingInterval = setInterval(() => this.refreshLoading(), LOADING_REFRESH_MS);
   }
 
   async ngAfterViewInit(): Promise<void> {
@@ -210,9 +223,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     await document.fonts?.load(`${SPRITE_SIZE}px "Material Icons"`);
 
     const element = this.graphRef.nativeElement;
-    for (const type of ['pointerdown', 'wheel']) {
-      element.addEventListener(type, () => (this.viewMoved = true), { once: true, passive: true });
-    }
     this.graph = new ForceGraph<Node, Link>(element)
       .width(element.clientWidth)
       .height(element.clientHeight)
@@ -255,6 +265,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.setDebug(false);
+    clearInterval(this.loadingInterval);
     this.subscription.unsubscribe();
     clearTimeout(this.layoutTimer);
     cancelAnimationFrame(this.animationFrame);
@@ -390,7 +401,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         initialGraphSeconds: this.initialGraphEndedAt === null ? null : seconds(this.createdAt, this.initialGraphEndedAt),
       },
       layout: {
-        state: this.worker ? 'running' : this.laidOut ? 'laid-out' : 'provisional',
+        state: this.worker ? 'running' : this.laidOut ? 'laid-out' : 'waiting',
         runs: this.layoutRuns,
         lastSeconds: this.lastLayoutMs === null ? null : this.lastLayoutMs / 1000,
         runningSeconds: seconds(this.layoutStartedAt),
@@ -437,29 +448,41 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    this.indexGraph();
-    if (this.laidOut) {
-      this.placeIncrementally();
-    } else {
-      this.move(this.provisionalCoordinates());
-    }
-    this.graph?.graphData({ nodes: this.nodes, links: this.links });
-    if (!this.laidOut && !this.viewMoved) {
-      this.graph?.zoomToFit(0, 40);
-    }
-    this.nodesIds.set(this.nodes.map(node => node.id));
     this.nodeCount.set(this.nodes.length);
+    // Until the first layout the nodes are only counted: a placement shown meanwhile would cost a
+    // pass over the whole graph on every batch, and the whole graph would move once laid out.
+    if (this.laidOut) {
+      this.display();
+    }
     this.scheduleLayout();
   }
 
+  /** Hands the graph to the renderer, the nodes without a place put next to the placed ones. */
+  private display(): void {
+    this.indexGraph();
+    this.placeIncrementally();
+    this.graph?.graphData({ nodes: this.nodes, links: this.links });
+    this.nodesIds.set(this.nodes.map(node => node.id));
+  }
+
+  private refreshLoading(): void {
+    if (!this.loading()) {
+      clearInterval(this.loadingInterval);
+      return;
+    }
+    const tasks = this.nodes.filter(node => node.type === 'task').length;
+    this.loading.set({ tasks, results: this.nodes.length - tasks, seconds: (Date.now() - this.createdAt) / 1000 });
+  }
+
   /**
-   * The initial graph arrives in one go and has an end: only once it is over is the wait capped,
+   * The initial graph arrives in one go and has an end: while it arrives the wait is capped wider,
    * or the layout would run on half of it, then again on the whole.
    */
   private scheduleLayout(): void {
     const now = Date.now();
     this.firstChangeAt ??= now;
-    const delay = this.initialGraph ? QUIET_MS : Math.min(QUIET_MS, this.firstChangeAt + MAX_WAIT_MS - now);
+    const cap = this.initialGraph ? INITIAL_MAX_WAIT_MS : MAX_WAIT_MS;
+    const delay = Math.min(QUIET_MS, this.firstChangeAt + cap - now);
     clearTimeout(this.layoutTimer);
     this.layoutTimer = setTimeout(() => {
       this.firstChangeAt = null;
@@ -489,13 +512,21 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       this.lastLayoutNodes = input.nodes.length;
       const targets: Coordinates = new Map();
       input.nodes.forEach((id, index) => targets.set(id, [data.positions[index * 2], data.positions[index * 2 + 1]]));
-      const first = !this.laidOut;
-      this.laidOut = true;
-      this.animateTo(targets, () => {
-        if (first && !this.viewMoved) {
-          this.graph?.zoomToFit(ANIMATION_MS, 40);
+      if (this.laidOut) {
+        this.animateTo(targets);
+      } else {
+        // The first layout shows the graph at once, the nodes that arrived meanwhile included.
+        this.laidOut = true;
+        for (const node of this.nodes) {
+          const target = targets.get(node.id);
+          if (target) {
+            this.setPosition(node, target[0], target[1]);
+          }
         }
-      });
+        this.display();
+        this.loading.set(null);
+        this.graph?.zoomToFit(0, 40);
+      }
       if (this.layoutPending) {
         this.layoutPending = false;
         this.scheduleLayout();
@@ -521,11 +552,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       types: this.nodes.map(node => node.type),
       links: this.links.map(link => ({ source: endId(link.source), target: endId(link.target), type: link.type })),
     };
-  }
-
-  private provisionalCoordinates(): Coordinates {
-    const prepared = prepareLayout(this.layoutInput());
-    return prepared.placeData(provisionalLayout(prepared.graph));
   }
 
   /**
@@ -608,7 +634,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /** Moves the nodes to their targets over ANIMATION_MS, so that the eye can follow them. */
-  private animateTo(targets: Coordinates, done: () => void): void {
+  private animateTo(targets: Coordinates): void {
     cancelAnimationFrame(this.animationFrame);
     const moves = this.nodes
       .filter(node => targets.has(node.id))
@@ -626,8 +652,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       this.requestRedraw();
       if (t < 1) {
         this.animationFrame = requestAnimationFrame(step);
-      } else {
-        done();
       }
     };
     this.animationFrame = requestAnimationFrame(step);

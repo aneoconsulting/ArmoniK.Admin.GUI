@@ -1,6 +1,6 @@
 @use 'styles' as *;
 
-mat-card:not(.debug) {
+mat-card:not(.debug):not(.loading) {
   position: absolute;
   z-index: 2;
   top: 1rem;
@@ -74,5 +74,19 @@ app-graph-legend {
     margin: 0;
     font-variant-numeric: tabular-nums;
     text-align: right;
+  }
+}
+
+.loading {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  mat-card-content {
+    @include flex-row($gap: 1rem);
+    min-width: auto;
+    padding: 1rem !important;
   }
 }

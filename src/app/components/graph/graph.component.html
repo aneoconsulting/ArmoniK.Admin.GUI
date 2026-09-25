@@ -16,7 +16,7 @@
       <a mat-flat-button color="primary" [routerLink]="'/sessions/' + sessionId">
         <span i18n>See Session</span> 
       </a>
-      <button mat-flat-button color="accent" (click)="redraw()" [disabled]="layingOut()">
+      <button mat-flat-button color="accent" (click)="redraw()" [disabled]="layingOut() || loading()">
         <mat-icon>{{ getIcon('refresh') }}</mat-icon>
         <span i18n-matTooltip matTooltip="Place every node again" i18n>Redraw</span>
       </button>
@@ -45,6 +45,19 @@
   </mat-card-actions>
 </mat-card>
 <app-graph-legend [links]="colorMap" />
+@if (loading(); as loading) {
+  <mat-card class="loading" appearance="outlined">
+    <mat-card-content>
+      <app-spinner />
+      @if (layingOut()) {
+        <span i18n>Laying out {{ loading.tasks }} tasks and {{ loading.results }} results…</span>
+      } @else {
+        <span i18n>Receiving the graph: {{ loading.tasks }} tasks, {{ loading.results }} results</span>
+      }
+      <span>{{ loading.seconds.toFixed(0) }} s</span>
+    </mat-card-content>
+  </mat-card>
+}
 @if (debug(); as debug) {
   <mat-card class="debug" appearance="outlined">
     <mat-card-content>
@@ -80,7 +93,7 @@
           <dt i18n>State</dt>
           <dd>
             @switch (debug.layout.state) {
-              @case ('provisional') { <span i18n>provisional</span> }
+              @case ('waiting') { <span i18n>waiting for the graph</span> }
               @case ('running') { <span i18n>running for {{ debug.layout.runningSeconds?.toFixed(0) }} s</span> }
               @case ('laid-out') { <span i18n>laid out</span> }
             }

@@ -85,12 +85,28 @@ describe('GraphComponent', () => {
   });
 
   describe('updates', () => {
-    it('should place every node before the layout has run', () => {
+    it('should only count the nodes until the first layout', () => {
       const update = structure();
       component['apply']([update]);
+      jest.advanceTimersByTime(500);
 
-      expect(update.nodes.every(node => node.x !== undefined && node.y !== undefined)).toBe(true);
-      expect(component.nodeCount()).toEqual(4);
+      expect(update.nodes.every(node => node.x === undefined)).toBe(true);
+      expect(component.loading()).toEqual(expect.objectContaining({ tasks: 2, results: 2 }));
+    });
+
+    it('should show the whole graph at once after the first layout, late nodes included', () => {
+      const update = structure();
+      component['apply']([update]);
+      jest.advanceTimersByTime(1000);
+      const late: ArmoniKGraphNode = { id: 'late', type: 'task', status: TaskStatus.TASK_STATUS_CREATING };
+      update.nodes.push(late);
+      component['apply']([update]);
+
+      mockWorker.onmessage!({ data: { positions: new Float64Array([0, 0, 0, 180, 0, 250, 0, 320]) } } as MessageEvent);
+
+      expect(component.loading()).toBeNull();
+      expect(update.nodes.slice(0, 4).map(node => [node.x, node.y])).toEqual([[0, 0], [0, 180], [0, 250], [0, 320]]);
+      expect(late.x).toBeDefined();
     });
 
     it('should lay the graph out once the structure stops changing', () => {
@@ -107,6 +123,16 @@ describe('GraphComponent', () => {
     it('should lay the graph out even when the structure never stops changing', () => {
       for (let elapsed = 0; elapsed < 10000; elapsed += 500) {
         component['apply']([structure()]);
+        jest.advanceTimersByTime(500);
+      }
+
+      expect(mockWorker.postMessage).toHaveBeenCalled();
+    });
+
+    it('should lay the initial graph out after 30 s even when it never ends', () => {
+      const initialBatch = Array.from({ length: 200 }, () => structure());
+      for (let elapsed = 0; elapsed < 30000; elapsed += 500) {
+        component['apply'](initialBatch);
         jest.advanceTimersByTime(500);
       }
 
@@ -181,6 +207,7 @@ describe('GraphComponent', () => {
 
   describe('highlight', () => {
     beforeEach(() => {
+      component['laidOut'] = true;
       component['apply']([structure()]);
     });
 
