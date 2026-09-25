@@ -559,7 +559,10 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Hands the graph to the renderer, the nodes without a place put next to the placed ones. */
   private display(): void {
     this.indexGraph();
-    this.placeIncrementally();
+    this.move(this.incrementalCoordinates(id => {
+      const node = this.nodesById.get(id)!;
+      return this.placed.has(id) ? [node.x!, node.y!] : undefined;
+    }));
     this.graph?.graphData({ nodes: this.nodes, links: this.links });
     this.nodesIds.set(this.nodes.map(node => node.id));
   }
@@ -614,7 +617,15 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       const targets: Coordinates = new Map();
       input.nodes.forEach((id, index) => targets.set(id, [data.positions[index * 2], data.positions[index * 2 + 1]]));
       if (this.laidOut) {
-        this.animateTo(targets);
+        // Nodes that arrived during the run were placed against positions it replaces: they are
+        // placed again against the new ones, and move with them.
+        for (const node of this.nodes) {
+          if (!targets.has(node.id)) {
+            this.placed.delete(node.id);
+          }
+        }
+        this.indexGraph();
+        this.animateTo(this.incrementalCoordinates(id => targets.get(id)));
       } else {
         // The first layout shows the graph at once, the nodes that arrived meanwhile included.
         this.laidOut = true;
@@ -672,9 +683,10 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * Nodes added since the last layout, placed with its rules until it runs again: a new task one
    * layer below the tasks it depends on, at the mean of their x, moved to the nearest free spot of
-   * its row; the data around their task, as a layout leaves them.
+   * its row; the data around their task, as a layout leaves them. `positionOf` gives the tasks
+   * already placed, undefined for the others.
    */
-  private placeIncrementally(): void {
+  private incrementalCoordinates(positionOf: (id: string) => [number, number] | undefined): Coordinates {
     const prepared = prepareLayout(this.layoutInput());
     const { graph } = prepared;
     const rowStep = graph.height + graph.layerGap;
@@ -689,11 +701,12 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     let top = Infinity;
     let right = -Infinity;
     for (const id of graph.ids) {
-      if (this.placed.has(id)) {
-        const node = this.nodesById.get(id)!;
-        occupy(id, node.x!, node.y!);
-        top = Math.min(top, node.y!);
-        right = Math.max(right, node.x! + width(id) / 2);
+      const position = positionOf(id);
+      if (position) {
+        const [x, y] = position;
+        occupy(id, x, y);
+        top = Math.min(top, y);
+        right = Math.max(right, x + width(id) / 2);
       }
     }
     top = Number.isFinite(top) ? top : 0;
@@ -730,7 +743,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       waiting = next;
     }
 
-    this.move(prepared.placeData(coordinates));
+    return prepared.placeData(coordinates);
   }
 
   private move(coordinates: Coordinates): void {

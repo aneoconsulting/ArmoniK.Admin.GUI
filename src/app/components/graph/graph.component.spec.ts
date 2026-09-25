@@ -357,6 +357,35 @@ describe('GraphComponent', () => {
     });
   });
 
+  describe('nodes added during a layout', () => {
+    it('should move them with the tasks they depend on once it is done', () => {
+      const update = structure();
+      component['apply']([update]);
+      jest.advanceTimersByTime(1000);
+      mockWorker.onmessage!({ data: { positions: new Float64Array([0, 0, 0, 180, 0, 250, 0, 320]) } } as MessageEvent);
+
+      // A second layout runs, and a subtask of the parent arrives meanwhile.
+      component.redraw();
+      update.nodes.push(
+        { id: 'late-payload', type: 'result', status: ResultStatus.RESULT_STATUS_COMPLETED },
+        { id: 'late', type: 'task', status: TaskStatus.TASK_STATUS_CREATING },
+      );
+      update.links.push(
+        { source: 'parent', target: 'late-payload', type: 'parent' },
+        { source: 'late-payload', target: 'late', type: 'payload' },
+      );
+      component['apply']([update]);
+
+      // The layout moves everything 5000 to the right.
+      mockWorker.onmessage!({ data: { positions: new Float64Array([5000, 0, 5000, 180, 5000, 250, 5000, 320]) } } as MessageEvent);
+      jest.advanceTimersByTime(1000);
+
+      const late = update.nodes.find(node => node.id === 'late')!;
+      expect(Math.abs(late.x! - 5000)).toBeLessThan(200);
+      expect(late.y).toBeGreaterThan(0);
+    });
+  });
+
   describe('many nodes added after a layout', () => {
     it('should place thousands of subtasks of one parent quickly, without overlaps', () => {
       const parent: ArmoniKGraphNode = { id: 'parent', type: 'task', status: TaskStatus.TASK_STATUS_COMPLETED };
