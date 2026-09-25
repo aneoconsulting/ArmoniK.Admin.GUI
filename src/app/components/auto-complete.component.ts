@@ -4,6 +4,12 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
+/**
+ * Options shown at most: each one is a component, built even while the panel is closed, and the
+ * graph gives the ids of all its nodes, tens of thousands of them.
+ */
+const MAX_OPTIONS = 100;
+
 @Component({
   selector: 'app-autocomplete',
   templateUrl: 'auto-complete.component.html',
@@ -19,7 +25,7 @@ export class AutoCompleteComponent implements OnInit {
   @Input({ required: true }) set options(entries: string[]) {
     this._options = entries;
     // Options that change while the user types keep what was typed filtering them.
-    this.filteredOptions.set(this.typed ? this.filter() : this._options);
+    this.filteredOptions.set(this.filter());
     this.hasOneOption = this._options.length === 1;
     if (this.formControl) {
       this.formControlStatus();
@@ -73,8 +79,18 @@ export class AutoCompleteComponent implements OnInit {
     this.emit();
   }
 
-  private filter() {
-    return this._options.filter(option => option.toLowerCase().includes(this.formControl.value.toLowerCase()));
+  private filter(): string[] {
+    const typed = this.typed ? this.formControl.value.toLowerCase() : '';
+    const matches: string[] = [];
+    for (const option of this._options) {
+      if (matches.length === MAX_OPTIONS) {
+        break;
+      }
+      if (option.toLowerCase().includes(typed)) {
+        matches.push(option);
+      }
+    }
+    return matches;
   }
 
   private emit() {

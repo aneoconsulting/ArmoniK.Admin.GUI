@@ -29,6 +29,24 @@ describe('AutoCompleteComponent', () => {
     });
   });
 
+  describe('many options', () => {
+    const many = Array.from({ length: 30000 }, (_, index) => `node-${index}`);
+
+    it('should show only the first hundred', () => {
+      component.options = many;
+
+      expect(component.filteredOptions()).toEqual(many.slice(0, 100));
+    });
+
+    it('should show only the first hundred matches of what is typed', () => {
+      component.options = many;
+      component.formControl.setValue('9');
+      component.onInputChange();
+
+      expect(component.filteredOptions()).toEqual(many.filter(option => option.includes('9')).slice(0, 100));
+    });
+  });
+
   describe('setting value', () => {
     it('should update formControl value', () => {
       component.value = null;
