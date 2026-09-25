@@ -1,7 +1,8 @@
 import { EventSubscriptionResponse, ResultStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { ArmoniKGraphNode, GraphLink, GraphUpdate, LinkType, NodeEventType } from '@app/types/graph.types';
-import { Observable, map } from 'rxjs';
+import { GraphData } from 'force-graph';
+import { Observable, Subject, map } from 'rxjs';
 import { GrpcEventsService } from './grpc-events.service';
 import { Status } from '../types/status';
 
@@ -17,6 +18,8 @@ export class GraphDataService {
 
   readonly nodes: ArmoniKGraphNode[] = [];
   readonly links: GraphLink<ArmoniKGraphNode>[] = [];
+
+  readonly updateGraphSubject = new Subject<GraphData>();
 
   private readonly nodesById = new Map<string, ArmoniKGraphNode>();
   private readonly linksByEnds = new Map<string, GraphLink<ArmoniKGraphNode>>();

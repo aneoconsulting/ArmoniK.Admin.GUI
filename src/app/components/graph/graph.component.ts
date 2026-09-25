@@ -105,6 +105,7 @@ const HOVER_DEPTH = 2;
   selector: 'app-graph',
   templateUrl: 'graph.component.html',
   styleUrl: 'graph.component.scss',
+  standalone: true,
   imports: [
     MatCardModule,
     MatIconModule,
@@ -330,14 +331,26 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     this.runLayout();
   }
 
+  /**
+   * Returns the associated icon
+   * @param name string | undefined, icon to search 
+   * @returns string
+   */
   getIcon(name: string | undefined): string {
     return this.iconsService.getIcon(name);
   }
 
+  /**
+   * Copy the Id of the session
+   */
   copySessionId() {
     this.clipboard.copy(this.sessionId);
   }
 
+  /**
+   * Updates and stores highlightParentNodes.
+   * @param checked boolean
+   */
   toggleHighlightParentNodes(checked: boolean) {
     this.highlightParentNodes = checked;
     this.storageService.setItem('graph-highlight-parents', checked);
@@ -346,6 +359,10 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  /**
+   * Updates and stores highlightChildrenNodes.
+   * @param checked boolean
+   */
   toggleHighlightChildrenNodes(checked: boolean) {
     this.highlightChildrenNodes = checked;
     this.storageService.setItem('graph-highlight-children', checked);
@@ -398,11 +415,18 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     this.requestRedraw();
   }
 
+  /**
+   * Handles the resize event (zoom in or out)
+   */
   onResize(event: UIEvent): void {
     const window = event.target as Window;
     this.graph?.width(window.innerWidth).height(window.innerHeight);
   }
 
+  /**
+   * Displays particles on the graph
+   * @param checked boolean
+   */
   setParticles(checked: boolean): void {
     this.graph?.linkDirectionalParticles(checked ? 1 : 0);
   }
