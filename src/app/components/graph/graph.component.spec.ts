@@ -241,6 +241,20 @@ describe('GraphComponent', () => {
       expect(graph.zoomToFit).toHaveBeenCalled();
       expect(graph.zoom).toHaveBeenLastCalledWith(1);
     });
+
+    it('should size the canvas as its container, not as the window', () => {
+      const element = document.createElement('div');
+      Object.defineProperty(element, 'clientWidth', { value: 1200 });
+      Object.defineProperty(element, 'clientHeight', { value: 700 });
+      const graph = { _destructor: jest.fn(), width: jest.fn((): unknown => graph), height: jest.fn((): unknown => graph) };
+      component['graphRef'] = { nativeElement: element };
+      component['graph'] = graph as never;
+
+      component.onResize();
+
+      expect(graph.width).toHaveBeenCalledWith(1200);
+      expect(graph.height).toHaveBeenCalledWith(700);
+    });
   });
 
   describe('events stream', () => {

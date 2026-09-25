@@ -155,6 +155,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private readonly subscription = new Subscription();
   private destroyed = false;
+  private resizeObserver: ResizeObserver | null = null;
 
   private nodes: Node[] = [];
   private links: Link[] = [];
@@ -289,6 +290,12 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         this.graph?.zoom(4, 2000);
       });
 
+    // The canvas follows its container, which the window does not always move: the sidebar folds.
+    if (typeof ResizeObserver !== 'undefined') {
+      this.resizeObserver = new ResizeObserver(() => this.onResize());
+      this.resizeObserver.observe(element);
+    }
+
     this.listen();
   }
 
@@ -319,6 +326,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.destroyed = true;
+    this.resizeObserver?.disconnect();
     this.setDebug(false);
     clearInterval(this.loadingInterval);
     this.subscription.unsubscribe();
@@ -424,9 +432,11 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * Handles the resize event (zoom in or out)
    */
-  onResize(event: UIEvent): void {
-    const window = event.target as Window;
-    this.graph?.width(window.innerWidth).height(window.innerHeight);
+  onResize(): void {
+    const element = this.graphRef?.nativeElement;
+    if (element) {
+      this.graph?.width(element.clientWidth).height(element.clientHeight);
+    }
   }
 
   /** The graph in the view, zoomed in no further than MAX_FIT_ZOOM. */
