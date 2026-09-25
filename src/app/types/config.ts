@@ -35,6 +35,7 @@ export type Key =
   'graph-links-colors' |
   'graph-highlight-parents' |
   'graph-highlight-children' |
+  'graph-debug' |
   `${CustomScope}-custom-columns` |
   `${Scope}-${Element}` |
   `${Scope}-show-filters` |

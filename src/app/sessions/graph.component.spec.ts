@@ -9,7 +9,7 @@ describe('SessionGraphComponent', () => {
 
   const mockGrpcEvent = new Observable();
   const mockGraphDataService = {
-    listenToEvents: jest.fn(() => mockGrpcEvent),
+    graph$: jest.fn(() => mockGrpcEvent),
     sessionId: null,
   };
 
@@ -45,8 +45,8 @@ describe('SessionGraphComponent', () => {
       expect(mockGraphDataService.sessionId).toEqual(sessionId);
     });
 
-    it('should set the grpcObservable', () => {
-      expect(component.grpcObservable).toBe(mockGrpcEvent);
+    it('should set the graph updates', () => {
+      expect(component.updates).toBe(mockGrpcEvent);
     });
   });
 
