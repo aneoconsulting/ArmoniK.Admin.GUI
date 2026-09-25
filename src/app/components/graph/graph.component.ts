@@ -74,6 +74,11 @@ const RECONNECT_MAX_MS = 30000;
 /** Refresh period of the loading counters. */
 const LOADING_REFRESH_MS = 500;
 /**
+ * A session with nothing in it sends no event at all: once nothing has come for this long, it is
+ * shown empty. What comes later is placed as it would be after a layout.
+ */
+const EMPTY_SESSION_MS = 5000;
+/**
  * The events start with the whole current graph, thousands per batch, then trickle. A batch with
  * fewer events than this tells the initial graph is over. All events count, not only structural
  * ones: the initial graph sends results its tasks already brought in, which change no structure.
@@ -171,6 +176,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   /** What arrived so far, shown instead of the graph until its first layout. Null once shown. */
   readonly loading = signal<{ tasks: number, results: number, seconds: number } | null>({ tasks: 0, results: 0, seconds: 0 });
   private loadingInterval: ReturnType<typeof setInterval> | undefined;
+  private emptyTimer: ReturnType<typeof setTimeout> | undefined;
   readonly highlightLabel = $localize`Highlight a task`;
 
   readonly debugEnabled = signal<boolean>(false);
@@ -317,6 +323,13 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
    * service merges with what it has. Without it, the graph would freeze until the page reloads.
    */
   private listen(): void {
+    this.emptyTimer = setTimeout(() => {
+      if (this.nodes.length === 0 && !this.laidOut) {
+        this.laidOut = true;
+        this.loading.set(null);
+        this.display();
+      }
+    }, EMPTY_SESSION_MS);
     this.subscription.add(this.updates.pipe(
       tap(() => {
         if (this.streamError() !== null) {
@@ -344,6 +357,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     clearInterval(this.loadingInterval);
     this.subscription.unsubscribe();
     clearTimeout(this.layoutTimer);
+    clearTimeout(this.emptyTimer);
     cancelAnimationFrame(this.animationFrame);
     this.worker?.terminate();
     this.graph?._destructor();
@@ -634,6 +648,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.endLayout();
       this.lastLayoutMs = Date.now() - startedAt;
+      // Laid out only when shown empty: this is the first graph to fit in the view.
+      const shownEmpty = this.laidOut && this.lastLayoutNodes === 0;
       this.lastLayoutNodes = input.nodes.length;
       const targets: Coordinates = new Map();
       input.nodes.forEach((id, index) => targets.set(id, [data.positions[index * 2], data.positions[index * 2 + 1]]));
@@ -647,6 +663,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         this.indexGraph();
         this.animateTo(this.incrementalCoordinates(id => targets.get(id)));
+        if (shownEmpty) {
+          this.fitView();
+        }
       } else {
         // The first layout shows the graph at once, the nodes that arrived meanwhile included.
         this.laidOut = true;

@@ -293,6 +293,35 @@ describe('GraphComponent', () => {
       expect(component.streamError()).toBeNull();
     });
 
+    it('should show a session that sends nothing as empty', () => {
+      jest.advanceTimersByTime(5000);
+
+      expect(component.loading()).toBeNull();
+    });
+
+    it('should fit the view on the first graph to come to a session shown empty', () => {
+      const graph: Record<string, jest.Mock> = {};
+      for (const method of ['graphData', 'nodeCanvasObject', 'zoomToFit', 'zoom', '_destructor']) {
+        graph[method] = jest.fn(() => graph);
+      }
+      component['graph'] = graph as unknown as typeof component['graph'];
+      jest.advanceTimersByTime(5000);
+
+      streams[0].next(structure());
+      // A batch, then the quiet time before the layout.
+      jest.advanceTimersByTime(1500);
+      mockWorker.onmessage!({ data: { positions: new Float64Array([0, 0, 0, 180, 0, 250, 0, 320]) } } as MessageEvent);
+
+      expect(graph['zoomToFit']).toHaveBeenCalled();
+    });
+
+    it('should keep loading a session whose graph is arriving', () => {
+      streams[0].next(structure());
+      jest.advanceTimersByTime(5000);
+
+      expect(component.loading()).not.toBeNull();
+    });
+
     it('should wait longer after each failed attempt', () => {
       streams[0].error(new Error('down'));
       jest.advanceTimersByTime(1000);
