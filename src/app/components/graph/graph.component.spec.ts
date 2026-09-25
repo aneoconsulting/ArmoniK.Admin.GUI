@@ -328,9 +328,17 @@ describe('GraphComponent', () => {
       expect(mockWorker.postMessage).toHaveBeenCalledTimes(2);
     });
 
-    it('should give up a layout that never ends, and its worker with it', () => {
-      jest.advanceTimersByTime(120000);
+    it('should let a long layout run', () => {
+      jest.advanceTimersByTime(600000);
 
+      expect(component.layingOut()).toBe(true);
+      expect(mockWorker.terminate).not.toHaveBeenCalled();
+    });
+
+    it('should stop a cancelled layout, and its worker with it', () => {
+      component.cancelLayout();
+
+      expect(component.layingOut()).toBe(false);
       expect(mockWorker.terminate).toHaveBeenCalled();
       expect(component.layoutError()).not.toBeNull();
       component.redraw();

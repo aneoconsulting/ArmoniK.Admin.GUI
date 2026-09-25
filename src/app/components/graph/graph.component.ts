@@ -71,8 +71,6 @@ const INITIAL_MAX_WAIT_MS = 30000;
 /** Delays before reconnecting to the events: doubling from the first, up to the last. */
 const RECONNECT_FIRST_MS = 1000;
 const RECONNECT_MAX_MS = 30000;
-/** A layout still running after this long is given up: ELK takes seconds, even on large graphs. */
-const LAYOUT_TIMEOUT_MS = 120000;
 /** Refresh period of the loading counters. */
 const LOADING_REFRESH_MS = 500;
 /**
@@ -170,7 +168,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly streamError = signal<string | null>(null);
   /** Why the last layout failed, null when it did not. */
   readonly layoutError = signal<string | null>(null);
-  private layoutTimeout: ReturnType<typeof setTimeout> | undefined;
   /** What arrived so far, shown instead of the graph until its first layout. Null once shown. */
   readonly loading = signal<{ tasks: number, results: number, seconds: number } | null>({ tasks: 0, results: 0, seconds: 0 });
   private loadingInterval: ReturnType<typeof setInterval> | undefined;
@@ -336,7 +333,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     clearInterval(this.loadingInterval);
     this.subscription.unsubscribe();
     clearTimeout(this.layoutTimer);
-    clearTimeout(this.layoutTimeout);
     cancelAnimationFrame(this.animationFrame);
     this.worker?.terminate();
     this.graph?._destructor();
@@ -348,6 +344,14 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   redraw(): void {
     this.runLayout();
+  }
+
+  /**
+   * A layout can take minutes on a large graph, and a worker in a layout cannot be interrupted,
+   * only replaced.
+   */
+  cancelLayout(): void {
+    this.layoutFailed($localize`The layout was cancelled.`, true);
   }
 
   /**
@@ -610,8 +614,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     this.layoutStartedAt = Date.now();
     this.layoutRunning = true;
     this.worker ??= createLayoutWorker();
-    // A worker stuck in a layout cannot be interrupted, only replaced.
-    this.layoutTimeout = setTimeout(() => this.layoutFailed($localize`The layout did not finish within ${LAYOUT_TIMEOUT_MS / 60000} minutes.`, true), LAYOUT_TIMEOUT_MS);
     const startedAt = this.layoutStartedAt;
     this.worker.onmessage = ({ data }: MessageEvent<LayoutResponse>) => {
       if ('error' in data) {
@@ -676,7 +678,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private endLayout(): void {
-    clearTimeout(this.layoutTimeout);
     this.layoutRunning = false;
     this.layoutStartedAt = null;
     this.layingOut.set(false);

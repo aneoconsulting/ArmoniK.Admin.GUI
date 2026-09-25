@@ -25,6 +25,7 @@
       <span i18n>{{ nodeCount() }} nodes</span>
       @if (layingOut()) {
         <span i18n>Laying out…</span>
+        <button mat-button (click)="cancelLayout()" i18n>Cancel</button>
       }
       @if (streamError()) {
         <span class="warning" [matTooltip]="streamError()" i18n>Connection lost, reconnecting…</span>
@@ -66,6 +67,9 @@
           <span i18n>Receiving the graph: {{ loading.tasks }} tasks, {{ loading.results }} results</span>
         }
         <span>{{ loading.seconds.toFixed(0) }} s</span>
+        @if (layingOut()) {
+          <button mat-button (click)="cancelLayout()" i18n>Cancel</button>
+        }
       }
     </mat-card-content>
   </mat-card>
