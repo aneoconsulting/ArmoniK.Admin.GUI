@@ -25,6 +25,10 @@ export class GraphDataService {
   private readonly linksByEnds = new Map<string, GraphLink<ArmoniKGraphNode>>();
   /** Where each link is in `links`, so that removing one does not search them all. */
   private readonly linkIndexes = new Map<GraphLink<ArmoniKGraphNode>, number>();
+  /** The task each result is an output of: a result has one owner at a time. */
+  private readonly owners = new Map<string, string>();
+  /** Nodes and links added or removed so far: a link replaced leaves their numbers unchanged. */
+  private changes = 0;
 
   /** Emits after each event, telling whether it changed the structure or only a status. */
   graph$(): Observable<GraphUpdate> {
@@ -39,14 +43,14 @@ export class GraphDataService {
    * layout.
    */
   private applyEvent(event: EventSubscriptionResponse): GraphUpdate['kind'] {
-    const before = this.nodes.length + this.links.length;
+    const before = this.changes;
     switch (event.update) {
     case EventSubscriptionResponse.UpdateCase.newTask:
       this.addTask(event.newTask!);
-      return this.nodes.length + this.links.length === before ? 'status' : 'structure';
+      return this.changes === before ? 'status' : 'structure';
     case EventSubscriptionResponse.UpdateCase.newResult:
       this.addResult(event.newResult!);
-      return this.nodes.length + this.links.length === before ? 'status' : 'structure';
+      return this.changes === before ? 'status' : 'structure';
     case EventSubscriptionResponse.UpdateCase.taskStatusUpdate:
       this.setStatus(event.taskStatusUpdate!.taskId, event.taskStatusUpdate!.status);
       return 'status';
@@ -92,8 +96,7 @@ export class GraphDataService {
   private addResult(result: EventSubscriptionResponse.NewResult) {
     this.setNode(result.resultId, result.status, 'result');
     if (result.ownerId && result.ownerId !== this.sessionId) {
-      this.ensureNode(result.ownerId, TaskStatus.TASK_STATUS_UNSPECIFIED, 'task');
-      this.addLink(result.ownerId, result.resultId, 'output');
+      this.setOwner(result.resultId, result.ownerId);
     }
   }
 
@@ -103,9 +106,24 @@ export class GraphDataService {
       // The change can come before the result itself: live events and the initial graph share
       // the stream. A link to a node that does not exist would break the renderer.
       this.ensureNode(resultId, ResultStatus.RESULT_STATUS_UNSPECIFIED, 'result');
-      this.ensureNode(currentOwnerId, TaskStatus.TASK_STATUS_UNSPECIFIED, 'task');
-      this.addLink(currentOwnerId, resultId, 'output');
+      this.setOwner(resultId, currentOwnerId);
+    } else {
+      this.owners.delete(resultId);
     }
+  }
+
+  /**
+   * Replaces the output link of the previous owner, which a change missed can leave: while the
+   * stream was lost, a new one then telling the result with its current owner.
+   */
+  private setOwner(resultId: string, ownerId: string) {
+    const previous = this.owners.get(resultId);
+    if (previous !== undefined && previous !== ownerId) {
+      this.removeLink(`${previous}|${resultId}`);
+    }
+    this.owners.set(resultId, ownerId);
+    this.ensureNode(ownerId, TaskStatus.TASK_STATUS_UNSPECIFIED, 'task');
+    this.addLink(ownerId, resultId, 'output');
   }
 
   /** Creates the node, or updates its status when it exists. */
@@ -120,6 +138,7 @@ export class GraphDataService {
       const node: ArmoniKGraphNode = { id, status, type };
       this.nodesById.set(id, node);
       this.nodes.push(node);
+      this.changes++;
     }
   }
 
@@ -141,6 +160,7 @@ export class GraphDataService {
       this.linksByEnds.set(key, link);
       this.linkIndexes.set(link, this.links.length);
       this.links.push(link);
+      this.changes++;
     }
   }
 
@@ -158,5 +178,6 @@ export class GraphDataService {
     }
     this.linksByEnds.delete(key);
     this.linkIndexes.delete(link);
+    this.changes++;
   }
 }

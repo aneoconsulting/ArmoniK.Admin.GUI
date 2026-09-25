@@ -181,6 +181,21 @@ describe('GraphDataService', () => {
       expect(service.links).toEqual([]);
     });
 
+    it('should replace the output of an owner whose change was missed', () => {
+      // The stream was lost while the result changed owner: the new one tells its current owner.
+      events.next(newResult('output', 'previous'));
+      events.next(newResult('output', 'current'));
+
+      expect(links()).toEqual(['current -output-> output']);
+      expect(updates.at(-1)!.kind).toEqual('structure');
+
+      events.next({
+        update: EventSubscriptionResponse.UpdateCase.resultOwnerUpdate,
+        resultOwnerUpdate: { resultId: 'output', previousOwnerId: 'current', currentOwnerId: 'next' },
+      } as unknown as EventSubscriptionResponse);
+      expect(links()).toEqual(['next -output-> output']);
+    });
+
     it('should find the previous link once the renderer replaced its ends with nodes', () => {
       events.next(newResult('output', 'previous'));
       const [link] = service.links;
