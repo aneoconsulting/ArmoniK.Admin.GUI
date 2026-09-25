@@ -194,7 +194,18 @@ describe('GraphComponent', () => {
       jest.advanceTimersByTime(1000);
       component.redraw();
 
+      expect(mockWorker.postMessage).toHaveBeenCalledTimes(1);
+    });
+
+    it('should keep the worker from one layout to the next', () => {
+      component['apply']([structure()]);
+      jest.advanceTimersByTime(1000);
+      mockWorker.onmessage!({ data: { positions: new Float64Array(8) } } as MessageEvent);
+      component.redraw();
+
       expect(createLayoutWorker).toHaveBeenCalledTimes(1);
+      expect(mockWorker.postMessage).toHaveBeenCalledTimes(2);
+      expect(mockWorker.terminate).not.toHaveBeenCalled();
     });
   });
 
@@ -306,7 +317,7 @@ describe('GraphComponent', () => {
       expect(component.layoutError()).toEqual('ELK exploded');
       expect(component.layingOut()).toBe(false);
       component.redraw();
-      expect(createLayoutWorker).toHaveBeenCalledTimes(2);
+      expect(mockWorker.postMessage).toHaveBeenCalledTimes(2);
     });
 
     it('should lay out a change that came in during the failed run', () => {
@@ -314,14 +325,16 @@ describe('GraphComponent', () => {
       mockWorker.onmessage!({ data: { error: 'ELK exploded' } } as MessageEvent);
       jest.advanceTimersByTime(1000);
 
-      expect(createLayoutWorker).toHaveBeenCalledTimes(2);
+      expect(mockWorker.postMessage).toHaveBeenCalledTimes(2);
     });
 
-    it('should give up a layout that never ends', () => {
+    it('should give up a layout that never ends, and its worker with it', () => {
       jest.advanceTimersByTime(120000);
 
       expect(mockWorker.terminate).toHaveBeenCalled();
       expect(component.layoutError()).not.toBeNull();
+      component.redraw();
+      expect(createLayoutWorker).toHaveBeenCalledTimes(2);
     });
   });
 

@@ -207,7 +207,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
    * of its own, on a spiral around the origin, to any node that reaches it without one.
    */
   private readonly placed = new Set<string>();
+  /** Kept from one layout to the next: a new one would load ELK again, hundreds of kB of it. */
   private worker: Worker | null = null;
+  private layoutRunning = false;
   /** The structure changed while ELK was running: its result is already out of date. */
   private layoutPending = false;
   private animationFrame = 0;
@@ -498,7 +500,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         initialGraphSeconds: this.initialGraphEndedAt === null ? null : seconds(this.createdAt, this.initialGraphEndedAt),
       },
       layout: {
-        state: this.worker ? 'running' : this.laidOut ? 'laid-out' : 'waiting',
+        state: this.layoutRunning ? 'running' : this.laidOut ? 'laid-out' : 'waiting',
         runs: this.layoutRuns,
         lastSeconds: this.lastLayoutMs === null ? null : this.lastLayoutMs / 1000,
         runningSeconds: seconds(this.layoutStartedAt),
@@ -594,7 +596,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** Runs ELK in a worker, then moves the nodes to the places it gave them. */
   private runLayout(): void {
-    if (this.worker) {
+    if (this.layoutRunning) {
       this.layoutPending = true;
       return;
     }
@@ -603,15 +605,17 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     this.layoutError.set(null);
     this.layoutRuns++;
     this.layoutStartedAt = Date.now();
-    this.worker = createLayoutWorker();
-    this.layoutTimeout = setTimeout(() => this.layoutFailed($localize`The layout did not finish within ${LAYOUT_TIMEOUT_MS / 60000} minutes.`), LAYOUT_TIMEOUT_MS);
+    this.layoutRunning = true;
+    this.worker ??= createLayoutWorker();
+    // A worker stuck in a layout cannot be interrupted, only replaced.
+    this.layoutTimeout = setTimeout(() => this.layoutFailed($localize`The layout did not finish within ${LAYOUT_TIMEOUT_MS / 60000} minutes.`, true), LAYOUT_TIMEOUT_MS);
     const startedAt = this.layoutStartedAt;
     this.worker.onmessage = ({ data }: MessageEvent<LayoutResponse>) => {
       if ('error' in data) {
-        this.layoutFailed(data.error);
+        this.layoutFailed(data.error, false);
         return;
       }
-      this.stopWorker();
+      this.endLayout();
       this.lastLayoutMs = Date.now() - startedAt;
       this.lastLayoutNodes = input.nodes.length;
       const targets: Coordinates = new Map();
@@ -646,7 +650,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     };
     // Also what happens when the worker cannot even load, its script gone after a deployment: the
     // event then has no message.
-    this.worker.onerror = event => this.layoutFailed(event.message || $localize`The layout could not run.`);
+    this.worker.onerror = event => this.layoutFailed(event.message || $localize`The layout could not run.`, true);
     this.worker.postMessage(input);
   }
 
@@ -654,8 +658,12 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
    * Nothing is drawn until a first layout succeeds, so its failure must show, and leave a way to
    * try again. A change that came in meanwhile gets its layout anyway.
    */
-  private layoutFailed(message: string): void {
-    this.stopWorker();
+  private layoutFailed(message: string, replaceWorker: boolean): void {
+    this.endLayout();
+    if (replaceWorker) {
+      this.worker?.terminate();
+      this.worker = null;
+    }
     console.error(message);
     this.layoutError.set(message);
     if (this.layoutPending) {
@@ -664,10 +672,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  private stopWorker(): void {
+  private endLayout(): void {
     clearTimeout(this.layoutTimeout);
-    this.worker?.terminate();
-    this.worker = null;
+    this.layoutRunning = false;
     this.layoutStartedAt = null;
     this.layingOut.set(false);
   }
