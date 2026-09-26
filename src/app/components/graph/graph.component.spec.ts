@@ -475,6 +475,39 @@ describe('GraphComponent', () => {
       expect(place(update, 'reduce')).toEqual([0, 250]);
     });
 
+    it('should put a task the client submitted on the data it uploaded, which has no producer', () => {
+      const update = laidOut();
+      addTask(update, 'consumer');
+      update.links.push({ source: 'payload-child', target: 'consumer', type: 'dependency' });
+      component['apply']([update]);
+
+      expect(place(update, 'consumer')).toEqual([0, 180]);
+    });
+
+    it('should move a task that arrived before its links to its parent once they come', () => {
+      // A result names its owner before the task itself arrives.
+      const update = laidOut();
+      update.nodes.push(
+        { id: 'early-output', type: 'result', status: ResultStatus.RESULT_STATUS_CREATED },
+        { id: 'early', type: 'task', status: TaskStatus.TASK_STATUS_UNSPECIFIED },
+      );
+      update.links.push({ source: 'early', target: 'early-output', type: 'output' });
+      component['apply']([update]);
+      expect(place(update, 'early')[1]).toEqual(0);
+      expect(place(update, 'early')[0]).toBeGreaterThan(100 + NODE_SIZE);
+
+      update.nodes.push({ id: 'early-payload', type: 'result', status: ResultStatus.RESULT_STATUS_COMPLETED });
+      update.links.push(
+        { source: 'early-payload', target: 'early', type: 'payload' },
+        { source: 'child', target: 'early-payload', type: 'parent' },
+      );
+      component['apply']([update]);
+
+      for (const id of ['early', 'early-output', 'early-payload']) {
+        expect(place(update, id)).toEqual([0, 250]);
+      }
+    });
+
     it('should put a new root to the right of the graph, on its top row', () => {
       const update = laidOut();
       addTask(update, 'root');

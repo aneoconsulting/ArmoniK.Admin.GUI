@@ -214,6 +214,12 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
    * of its own, on a spiral around the origin, to any node that reaches it without one.
    */
   private readonly placed = new Set<string>();
+  /**
+   * Nodes put on the top row for want of a placed node to be put on. A node can arrive before
+   * its links: a result names its owner before the task itself arrives. Such nodes are placed again
+   * on each change, until they can go with the node they belong to.
+   */
+  private unanchored = new Set<string>();
   /** Kept from one layout to the next: a new one would load ELK again, hundreds of kB of it. */
   private worker: Worker | null = null;
   private layoutRunning = false;
@@ -613,10 +619,15 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Hands the graph to the renderer, the nodes without a place put on placed ones. */
   private display(): void {
     this.indexGraph();
+    const unanchored = this.unanchored;
+    this.unanchored = new Set();
     this.placeNew(this.incrementalCoordinates(id => {
+      if (unanchored.has(id)) {
+        return undefined;
+      }
       const node = this.nodesById.get(id)!;
       return this.animationTargets?.get(id) ?? (this.placed.has(id) ? [node.x!, node.y!] : undefined);
-    }));
+    }), unanchored);
     this.graph?.graphData({ nodes: this.nodes, links: this.links });
     this.nodesIds.set(this.nodes.map(node => node.id));
   }
@@ -681,6 +692,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         }
         this.indexGraph();
+        this.unanchored = new Set();
         this.animateTo(this.incrementalCoordinates(id => targets.get(id)));
         if (shownEmpty) {
           this.fitView();
@@ -747,9 +759,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * Nodes added since the last layout, put on a node already placed until it runs again, which
    * spreads them from there: a task on its parent, or for one the client submitted, on the
-   * deepest producer of its data; a data on the task it belongs to. The others go to the right of
-   * the graph, on its top row. `positionOf` gives the nodes already placed, undefined for the
-   * others.
+   * deepest producer of its data, else on the deepest of its data; a data on the task it belongs
+   * to. The others go to the right of the graph, on its top row, and are kept in `unanchored`.
+   * `positionOf` gives the nodes already placed, undefined for the others.
    */
   private incrementalCoordinates(positionOf: (id: string) => [number, number] | undefined): Coordinates {
     const payloads = new Map<string, string>();
@@ -799,18 +811,26 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       if (parent !== undefined) {
         return parent;
       }
-      let deepest: string | undefined;
+      const deeper = (candidate: string | undefined, than: string | undefined) => {
+        const position = candidate === undefined ? undefined : coordinates.get(candidate);
+        return position !== undefined && (than === undefined || position[1] > coordinates.get(than)![1]);
+      };
+      let deepestProducer: string | undefined;
+      let deepestInput: string | undefined;
       let other: string | undefined;
       for (const input of inputs.get(node.id) ?? []) {
         const producer = owners.get(input);
-        const position = producer === undefined ? undefined : coordinates.get(producer);
-        if (position && (deepest === undefined || position[1] > coordinates.get(deepest)![1])) {
-          deepest = producer;
+        if (deeper(producer, deepestProducer)) {
+          deepestProducer = producer;
+        }
+        // Data the client uploaded has no producer: the task goes next to it.
+        if (deeper(input, deepestInput)) {
+          deepestInput = input;
         }
         other ??= producer;
       }
-      // A producer not placed yet: the task goes with it.
-      return deepest ?? other;
+      // Else a producer not placed yet: the task goes with it.
+      return deepestProducer ?? deepestInput ?? other;
     };
 
     // A chain of new nodes is placed from its placed end, without recursion: a new chain of
@@ -832,6 +852,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       if (!position) {
         right += NODE_GAP + NODE_SIZE;
         position = [right - NODE_SIZE / 2, top];
+        chain.forEach(id => this.unanchored.add(id));
       }
       for (const id of chain) {
         coordinates.set(id, position!);
@@ -840,11 +861,11 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     return coordinates;
   }
 
-  /** The placed nodes are left alone: they may be moving to their place. */
-  private placeNew(coordinates: Coordinates): void {
+  /** The placed nodes are left alone, but for the `unanchored` ones: they may be moving to their place. */
+  private placeNew(coordinates: Coordinates, unanchored: Set<string>): void {
     for (const node of this.nodes) {
       const position = coordinates.get(node.id);
-      if (position && !this.placed.has(node.id)) {
+      if (position && (!this.placed.has(node.id) || unanchored.has(node.id))) {
         this.setPosition(node, position[0], position[1]);
       }
     }
