@@ -959,8 +959,15 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     if (NODE_SIZE * scale < MIN_ICON_SCREEN_SIZE) {
+      // The shape of the icon, as the legend shows it: a circle for a task, a rectangle for a data.
       ctx.fillStyle = color;
-      ctx.fillRect(node.x - NODE_SIZE / 2, node.y - NODE_SIZE / 2, NODE_SIZE, NODE_SIZE);
+      if (node.type === 'task') {
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, NODE_SIZE / 2, 0, 2 * Math.PI);
+        ctx.fill();
+      } else {
+        ctx.fillRect(node.x - NODE_SIZE / 2, node.y - NODE_SIZE / 3, NODE_SIZE, NODE_SIZE * 2 / 3);
+      }
     } else {
       if (this.nodesToHighlight.has(node.id)) {
         const size = NODE_SIZE * 1.4;
