@@ -51,8 +51,16 @@ async function elkLayout(graph: TaskGraph): Promise<Coordinates> {
     edges: graph.links.map((link, index) => ({ id: `e${index}`, sources: [link.source], targets: [link.target] })),
   });
 
+  // ELK spaces two layers by the slope of the links between them, as routed: a task depending on a
+  // whole wide layer ended thousands of pixels below it. The links are drawn straight, so every
+  // layer goes a fixed step below the previous one.
+  const children = result.children ?? [];
+  const layers = [...new Set(children.map(child => Math.round(child.y!)))].sort((a, b) => a - b);
+  const layerOf = new Map(layers.map((y, index) => [y, index]));
+  const step = graph.height + graph.layerGap;
+
   // ELK gives the top left corner, the graph expects the centre.
-  return new Map((result.children ?? []).map(child => [child.id, [child.x! + child.width! / 2, child.y! + graph.height / 2]]));
+  return new Map(children.map(child => [child.id, [child.x! + child.width! / 2, layerOf.get(Math.round(child.y!))! * step + graph.height / 2]]));
 }
 
 /**
