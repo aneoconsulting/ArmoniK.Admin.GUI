@@ -4,7 +4,6 @@ import { ChangeDetectorRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
 import { SidebarItem } from '@app/types/navigation';
 import { DefaultConfigService } from '@services/default-config.service';
 import { EnvironmentService } from '@services/environment.service';
@@ -56,10 +55,6 @@ describe('NavigationComponent', () => {
       afterClosed: jest.fn(() => dialogResult)
     })),
   };
-  const mockUserConnectedGuard = {
-    canActivate: jest.fn(() => false)
-  };
-
   const mockRouter = {
     navigateByUrl: jest.fn(),
   };
@@ -81,7 +76,6 @@ describe('NavigationComponent', () => {
         DefaultConfigService,
         { provide: StorageService, useValue: mockStorageService },
         { provide: MatDialog, useValue: mockDialog },
-        { provide: UserConnectedGuard, useValue: mockUserConnectedGuard },
         { provide: Router, useValue: mockRouter },
         { provide: ChangeDetectorRef, useValue: mockChangeDetectorRef },
       ]
@@ -150,9 +144,16 @@ describe('NavigationComponent', () => {
 
   describe('profile button', () => {
     it('should disable profile button when user is not connected', () => {
-      mockUserConnectedGuard.canActivate.mockReturnValue(false);
+      mockUserService.user = undefined as unknown as {username: string};
       component.updateUserConnectionStatus();
       expect(component.isProfileButtonDisabled()).toBe(true);
+    });
+
+    it('should enable profile button when user is connected', () => {
+      mockUserService.user = { username: 'user' };
+      component.updateUserConnectionStatus();
+      expect(component.isProfileButtonDisabled()).toBe(false);
+      mockUserService.user = undefined as unknown as {username: string};
     });
 
   });
