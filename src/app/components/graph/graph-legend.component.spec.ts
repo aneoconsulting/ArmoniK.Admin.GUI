@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { ResultsStatusesService } from '@app/results/services/results-statuses.service';
-import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { LinkType } from '@app/types/graph.types';
 import { IconsService } from '@services/icons.service';
@@ -11,10 +10,6 @@ describe('GraphLegendComponent', () => {
 
   const mockTasksStatusesService = {
     keys: ['Cancelled', 'Creating'],
-  };
-
-  const mockSessionsStatusesService = {
-    keys: ['Cancelled', 'Closed'],
   };
 
   const mockResultsStatusesService = {
@@ -36,7 +31,6 @@ describe('GraphLegendComponent', () => {
     component = TestBed.configureTestingModule({
       providers: [
         GraphLegendComponent,
-        { provide: SessionsStatusesService, useValue: mockSessionsStatusesService },
         { provide: TasksStatusesService, useValue: mockTasksStatusesService },
         { provide: ResultsStatusesService, useValue: mockResultsStatusesService },
         { provide: IconsService, useValue: mockIconsService },

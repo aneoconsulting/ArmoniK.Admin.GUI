@@ -358,6 +358,7 @@ export class DefaultConfigService {
 
   readonly #defaultGraphHighlightParents: boolean = false;
   readonly #defaultGraphHighlightChildren: boolean = false;
+  readonly #defaultGraphDebug: boolean = false;
 
   // We use getters to be able to deep copy the default config and to access the default config from the outside
 
@@ -445,6 +446,10 @@ export class DefaultConfigService {
     return structuredClone(this.#defaultGraphHighlightChildren);
   }
 
+  get defaultGraphDebug() {
+    return structuredClone(this.#defaultGraphDebug);
+  }
+
   readonly #exportedDefaultConfig: ExportedDefaultConfig = {
     'language': this.#defaultLanguage,
     'navigation-sidebar': this.#defaultSidebar,
@@ -498,6 +503,7 @@ export class DefaultConfigService {
     'graph-links-colors': this.#defaultGraphLinksColors,
     'graph-highlight-parents': this.#defaultGraphHighlightParents,
     'graph-highlight-children': this.#defaultGraphHighlightChildren,
+    'graph-debug': this.#defaultGraphDebug,
   };
 
   get exportedDefaultConfig(): ExportedDefaultConfig {

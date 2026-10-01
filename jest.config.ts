@@ -18,9 +18,9 @@ export default {
     '@services/(.*)': '<rootDir>/src/app/services/$1',
     '@pipes/(.*)': '<rootDir>/src/app/pipes/$1',
     '@app/(.*)': '<rootDir>/src/app/$1',
-    '^d3$': '<rootDir>/test/d3.js',
     '^force-graph$': '<rootDir>/test/force-graph.js',
     '^chart\\.js$': '<rootDir>/test/chart.js',
+    'graph-layout-worker\\.factory$': '<rootDir>/test/graph-layout-worker.factory.js',
   },
   testEnvironment: './JSDOMEnvironmentPatch.ts',
   testEnvironmentOptions: {

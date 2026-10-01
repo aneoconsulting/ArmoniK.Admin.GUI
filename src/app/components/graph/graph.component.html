@@ -16,14 +16,27 @@
       <a mat-flat-button color="primary" [routerLink]="'/sessions/' + sessionId">
         <span i18n>See Session</span> 
       </a>
-      <button mat-flat-button color="accent" (click)="redraw()">
+      <button mat-flat-button color="accent" (click)="redraw()" [disabled]="layingOut() || (loading() && !layoutError())">
         <mat-icon>{{ getIcon('refresh') }}</mat-icon>
-        <span i18n-matToolTip matTooltip="Use this button in case the graph is not readable" i18n>Redraw</span>
+        <span i18n-matTooltip matTooltip="Place every node again" i18n>Redraw</span>
       </button>
+    </section>
+    <section>
+      <span i18n>{{ nodeCount() }} nodes</span>
+      @if (layingOut()) {
+        <span i18n>Laying out…</span>
+        <button mat-button (click)="cancelLayout()" i18n>Cancel</button>
+      }
+      @if (streamError()) {
+        <span class="warning" [matTooltip]="streamError()" i18n>Connection lost, reconnecting…</span>
+      }
+      @if (layoutError() && !loading()) {
+        <span class="warning" [matTooltip]="layoutError()" i18n>The last layout failed</span>
+      }
     </section>
   </mat-card-content>
   <mat-card-actions>
-    <app-autocomplete [options]="nodesIds" [label]="highlightLabel" (valueChange)="highlightNodes($event)" />
+    <app-autocomplete [options]="nodesIds()" [label]="highlightLabel" (valueChange)="highlightNodes($event)" />
     <mat-checkbox (change)="toggleHighlightParentNodes($event.checked)" [checked]="highlightParentNodes" i18n>
       Highlight parent nodes
     </mat-checkbox>
@@ -33,7 +46,90 @@
     <mat-checkbox (change)="setParticles($event.checked)" i18n>
       Display Particles
     </mat-checkbox>
+    <mat-checkbox (change)="toggleDebug($event.checked)" [checked]="debugEnabled()" i18n>
+      Debug
+    </mat-checkbox>
   </mat-card-actions>
 </mat-card>
 <app-graph-legend [links]="colorMap" />
-<div class="graph" #graph (window:resize)="onResize($event)"></div>
+@if (loading(); as loading) {
+  <mat-card class="loading" appearance="outlined">
+    <mat-card-content>
+      @if (layoutError(); as error) {
+        <mat-icon class="warning" [fontIcon]="getIcon('error')" />
+        <span i18n>The layout failed: {{ error }}</span>
+        <button mat-flat-button color="primary" (click)="redraw()" [disabled]="layingOut()" i18n>Retry</button>
+      } @else {
+        <app-spinner />
+        @if (layingOut()) {
+          <span i18n>Laying out {{ loading.tasks }} tasks and {{ loading.results }} results…</span>
+        } @else {
+          <span i18n>Receiving the graph: {{ loading.tasks }} tasks, {{ loading.results }} results</span>
+        }
+        <span>{{ loading.seconds.toFixed(0) }} s</span>
+        @if (layingOut()) {
+          <button mat-button (click)="cancelLayout()" i18n>Cancel</button>
+        }
+      }
+    </mat-card-content>
+  </mat-card>
+}
+@if (debug(); as debug) {
+  <mat-card class="debug" appearance="outlined">
+    <mat-card-content>
+      <section>
+        <h3 i18n>Graph</h3>
+        <dl>
+          <dt i18n>Tasks</dt><dd>{{ debug.tasks }}</dd>
+          <dt i18n>Results</dt><dd>{{ debug.results }}</dd>
+          @for (link of debug.links | keyvalue; track link.key) {
+            <dt>{{ link.key | pretty }}</dt><dd>{{ link.value }}</dd>
+          }
+        </dl>
+      </section>
+      <section>
+        <h3 i18n>Events</h3>
+        <dl>
+          <dt i18n>Structure</dt><dd>{{ debug.events.structure }}</dd>
+          <dt i18n>Status</dt><dd>{{ debug.events.status }}</dd>
+          <dt i18n>Per second</dt><dd>{{ debug.events.perSecond }}</dd>
+          <dt i18n>Initial graph</dt>
+          <dd>
+            @if (debug.events.initialGraphSeconds === null) {
+              <span i18n>arriving</span>
+            } @else {
+              <span i18n>over after {{ debug.events.initialGraphSeconds.toFixed(1) }} s</span>
+            }
+          </dd>
+        </dl>
+      </section>
+      <section>
+        <h3 i18n>Layout</h3>
+        <dl>
+          <dt i18n>State</dt>
+          <dd>
+            @switch (debug.layout.state) {
+              @case ('waiting') { <span i18n>waiting for the graph</span> }
+              @case ('running') { <span i18n>running for {{ debug.layout.runningSeconds?.toFixed(0) }} s</span> }
+              @case ('laid-out') { <span i18n>laid out</span> }
+            }
+          </dd>
+          <dt i18n>Runs</dt><dd>{{ debug.layout.runs }}</dd>
+          <dt i18n>Last run</dt><dd>{{ debug.layout.lastSeconds === null ? '-' : debug.layout.lastSeconds.toFixed(1) + ' s' }}</dd>
+          <dt i18n>Waiting nodes</dt><dd>{{ debug.layout.waitingNodes }}</dd>
+        </dl>
+      </section>
+      <section>
+        <h3 i18n>Rendering</h3>
+        <dl>
+          <dt i18n>Frames per second</dt><dd>{{ debug.rendering.framesPerSecond }}</dd>
+          <dt i18n>Draws per second</dt><dd>{{ debug.rendering.drawsPerSecond }}</dd>
+          <dt i18n>Draw</dt><dd>{{ debug.rendering.drawMs.toFixed(1) }} ms</dd>
+          <dt i18n>Last batch</dt><dd>{{ debug.rendering.lastBatchMs.toFixed(0) }} ms</dd>
+          <dt i18n>JS memory</dt><dd>{{ debug.rendering.heapMb === null ? '-' : debug.rendering.heapMb.toFixed(0) + ' MB' }}</dd>
+        </dl>
+      </section>
+    </mat-card-content>
+  </mat-card>
+}
+<div class="graph" #graph></div>
