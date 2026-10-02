@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Graph renderers benchmark</title>
+  <style>
+    body { font: 14px system-ui, sans-serif; margin: 16px; color: #222; background: #fff; }
+    form { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+    #stage { width: 1280px; height: 720px; border: 1px solid #ccc; position: relative; overflow: hidden; }
+    #status { margin: 8px 0; font-weight: 600; }
+    table { border-collapse: collapse; margin-top: 12px; }
+    th, td { border: 1px solid #ccc; padding: 4px 8px; text-align: right; }
+    th:first-child, td:first-child { text-align: left; }
+    .hint { color: #666; max-width: 1280px; }
+  </style>
+</head>
+<body>
+  <form id="form">
+    <label>Renderer
+      <select name="renderer">
+        <option value="force-graph">force-graph (main)</option>
+        <option value="pixi">PixiJS v8</option>
+        <option value="webgl">WebGL2 engine (prototype)</option>
+      </select>
+    </label>
+    <label>Tasks <input name="tasks" type="number" value="10000" min="100" step="1000"></label>
+    <label>New tasks per tick <input name="grow" type="number" value="20" min="0"></label>
+    <button>Run (reloads the page)</button>
+    <button type="button" id="all">Run all three</button>
+    <button type="button" id="copy">Copy results as Markdown</button>
+    <button type="button" id="clear">Clear results</button>
+  </form>
+  <p class="hint">Each run loads the scene (3 nodes per task), then plays a running session for 10 s: every 200 ms, 50 status changes and the new tasks. The view is then panned every frame for 5 s while the session keeps running. Keep the tab in front, and do not move the mouse over it.</p>
+  <div id="status">Idle</div>
+  <div id="stage"></div>
+  <table id="results"></table>
+  <script type="module" src="dist/bench.js"></script>
+</body>
+</html>
