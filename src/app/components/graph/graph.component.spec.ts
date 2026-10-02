@@ -249,43 +249,24 @@ describe('GraphComponent', () => {
   });
 
   describe('view initialisation', () => {
-    const fonts = (load: () => Promise<unknown>) => Object.defineProperty(document, 'fonts', { value: { load }, configurable: true });
-
     beforeEach(() => {
       component['graphRef'] = { nativeElement: document.createElement('div') };
       component.updates = new Subject<GraphUpdate>();
     });
 
-    afterEach(() => {
-      delete (document as { fonts?: unknown }).fonts;
-    });
-
-    it('should draw the graph even when the icon font fails to load', async () => {
-      jest.spyOn(console, 'warn').mockImplementation(() => undefined);
-      fonts(() => Promise.reject(new Error('blocked')));
-      await component.ngAfterViewInit();
+    it('should create the renderer and follow the session', () => {
+      component.ngAfterViewInit();
 
       expect(GraphRenderer).toHaveBeenCalled();
       expect(component['subscription'].closed).toBe(false);
     });
 
-    it('should not create the renderer once left while the font was loading', async () => {
-      let loaded!: () => void;
-      fonts(() => new Promise<void>(resolve => (loaded = resolve)));
-      const init = component.ngAfterViewInit();
-      component.ngOnDestroy();
-      loaded();
-      await init;
-
-      expect(GraphRenderer).not.toHaveBeenCalled();
-    });
-
-    it('should say why the graph cannot be drawn, and keep following the session', async () => {
+    it('should say why the graph cannot be drawn, and keep following the session', () => {
       jest.spyOn(console, 'error').mockImplementation(() => undefined);
       (GraphRenderer as unknown as jest.Mock).mockImplementationOnce(() => {
         throw new Error('WebGL2 is not available.');
       });
-      await component.ngAfterViewInit();
+      component.ngAfterViewInit();
 
       expect(component.rendererError()).toEqual('WebGL2 is not available.');
       expect(component['subscription'].closed).toBe(false);
@@ -304,7 +285,7 @@ describe('GraphComponent', () => {
     const drawn = async (positions = [0, 0, 0, 180, 0, 250, 0, 320]) => {
       component['graphRef'] = { nativeElement: element() };
       component.updates = new Subject<GraphUpdate>();
-      await component.ngAfterViewInit();
+      component.ngAfterViewInit();
       component['apply']([structure()]);
       jest.advanceTimersByTime(1000);
       mockWorker.onmessage!({ data: { positions: new Float64Array(positions) } } as MessageEvent);

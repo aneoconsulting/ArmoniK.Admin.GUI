@@ -9,11 +9,12 @@ import { Camera } from './graph-view';
  * - hovering fades what is not around the hovered node through a texture of one byte a node, which
  *   the links read too;
  * - panning and zooming change uniforms only: nothing is processed again.
- * The shader chooses what a node looks like at its size on screen: its icon, or a plain shape.
- * Everything uploaded is kept, to upload it again when the browser loses the WebGL context.
+ * The shapes are drawn by the shader from their distance to the edge, sharp at any zoom: a circle
+ * for a task, a rectangle for a data, as the icons of the legend. Everything uploaded is kept, to
+ * upload it again when the browser loses the WebGL context.
  */
 
-/** Indices of the node shapes, in the icons texture too. */
+/** Indices of the node shapes. */
 export const TASK_SHAPE = 0;
 export const RESULT_SHAPE = 1;
 
@@ -24,8 +25,6 @@ export type RendererOptions = {
   linkWidth: number;
   minLinkPixels: number;
   maxLinkPixels: number;
-  /** Under this width on screen, a node is a plain shape: an icon would not be readable. */
-  minIconPixels: number;
   /** Smallest width on screen of a node, however far zoomed out. */
   minNodePixels: number;
   /** Smallest width on screen of the mark of a highlighted node. */
@@ -49,7 +48,7 @@ uniform float u_size;
 uniform float u_minSize;
 uniform bool u_hovering;
 uniform float u_faded;
-out vec2 v_corner;
+out vec2 v_offset;
 out vec4 v_color;
 out float v_pixels;
 flat out int v_shape;
@@ -59,9 +58,11 @@ void main() {
   float focus = texelFetch(u_focus, texel, 0).r;
   vec2 corner = vec2(gl_VertexID & 1, gl_VertexID >> 1) * 2.0 - 1.0;
   float pixels = max(u_size * u_scale, u_minSize);
-  vec2 pixel = (position - u_center) * u_scale + corner * pixels * 0.5;
+  // A pixel wider than the shape, for its soft edge.
+  vec2 offset = corner * (pixels * 0.5 + 1.0);
+  vec2 pixel = (position - u_center) * u_scale + offset;
   gl_Position = vec4(pixel * 2.0 / u_viewport * vec2(1.0, -1.0), 0.0, 1.0);
-  v_corner = corner;
+  v_offset = offset;
   v_pixels = pixels;
   v_shape = int(a_shape);
   v_color = vec4(a_color.rgb, a_color.a * (u_hovering && focus < 0.5 ? u_faded : 1.0));
@@ -69,23 +70,18 @@ void main() {
 
 const NODE_FRAGMENT = `#version 300 es
 precision mediump float;
-uniform sampler2D u_icons;
-uniform float u_minIcon;
-in vec2 v_corner;
+in vec2 v_offset;
 in vec4 v_color;
 in float v_pixels;
 flat in int v_shape;
 out vec4 color;
 void main() {
-  float alpha;
-  if (v_pixels >= u_minIcon) {
-    // The icons side by side in one texture, the task's first.
-    vec2 uv = (v_corner * vec2(0.5, 0.5) + 0.5) * vec2(0.5, 1.0) + vec2(0.5 * float(v_shape), 0.0);
-    alpha = texture(u_icons, uv).a;
-  } else {
-    // As the legend shows them: a circle for a task, a rectangle for a data.
-    alpha = v_shape == 0 ? float(dot(v_corner, v_corner) <= 1.0) : float(abs(v_corner.y) <= 0.667);
-  }
+  // The distance to the edge, in pixels, negative inside: a circle for a task, a rectangle two
+  // thirds as high for a data. A pixel of soft edge, whatever the zoom.
+  float half_size = v_pixels * 0.5;
+  vec2 outside = abs(v_offset) - vec2(half_size, half_size * 0.667);
+  float distance = v_shape == 0 ? length(v_offset) - half_size : max(outside.x, outside.y);
+  float alpha = clamp(0.5 - distance, 0.0, 1.0);
   if (alpha <= 0.0) {
     discard;
   }
@@ -101,29 +97,34 @@ uniform float u_scale;
 uniform vec2 u_viewport;
 uniform float u_size;
 uniform float u_minSize;
-out vec2 v_corner;
+out vec2 v_offset;
+out float v_pixels;
 out vec4 v_color;
 void main() {
   int node = int(a_node);
   vec2 position = texelFetch(u_positions, ivec2(node % ${TEXTURE_WIDTH}, node / ${TEXTURE_WIDTH}), 0).xy;
   vec2 corner = vec2(gl_VertexID & 1, gl_VertexID >> 1) * 2.0 - 1.0;
   float pixels = max(u_size * u_scale, u_minSize);
-  vec2 pixel = (position - u_center) * u_scale + corner * pixels * 0.5;
+  vec2 offset = corner * (pixels * 0.5 + 1.0);
+  vec2 pixel = (position - u_center) * u_scale + offset;
   gl_Position = vec4(pixel * 2.0 / u_viewport * vec2(1.0, -1.0), 0.0, 1.0);
-  v_corner = corner;
+  v_offset = offset;
+  v_pixels = pixels;
   v_color = a_color;
 }`;
 
 const HIGHLIGHT_FRAGMENT = `#version 300 es
 precision mediump float;
-in vec2 v_corner;
+in vec2 v_offset;
+in float v_pixels;
 in vec4 v_color;
 out vec4 color;
 void main() {
-  if (dot(v_corner, v_corner) > 1.0) {
+  float alpha = clamp(0.5 - (length(v_offset) - v_pixels * 0.5), 0.0, 1.0);
+  if (alpha <= 0.0) {
     discard;
   }
-  color = vec4(v_color.rgb, 1.0) * v_color.a;
+  color = vec4(v_color.rgb, 1.0) * v_color.a * alpha;
 }`;
 
 const LINK_VERTEX = `#version 300 es
@@ -189,7 +190,6 @@ export class GraphRenderer {
   private buffers: Record<'colors' | 'shapes' | 'sources' | 'targets' | 'types' | 'highlightNodes' | 'highlightColors', WebGLBuffer> = {} as never;
   private positionsTexture!: WebGLTexture;
   private focusTexture!: WebGLTexture;
-  private iconsTexture!: WebGLTexture;
 
   // What was uploaded, kept for a lost context.
   private nodeCount = 0;
@@ -208,7 +208,7 @@ export class GraphRenderer {
   private highlightNodes = new Uint32Array(0);
   private highlightColors = new Uint8Array(0);
 
-  constructor(private readonly canvas: HTMLCanvasElement, private readonly icons: HTMLCanvasElement, private readonly options: RendererOptions) {
+  constructor(private readonly canvas: HTMLCanvasElement, private readonly options: RendererOptions) {
     const gl = canvas.getContext('webgl2', { antialias: true, premultipliedAlpha: true, alpha: true });
     if (!gl) {
       throw new Error('WebGL2 is not available.');
@@ -258,13 +258,6 @@ export class GraphRenderer {
     ]);
     this.positionsTexture = this.texture();
     this.focusTexture = this.texture();
-    this.iconsTexture = gl.createTexture()!;
-    gl.bindTexture(gl.TEXTURE_2D, this.iconsTexture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.icons);
-    gl.generateMipmap(gl.TEXTURE_2D);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
   }
@@ -372,8 +365,12 @@ export class GraphRenderer {
   setFocus(focused: Uint8Array | null): void {
     this.hovering = focused !== null;
     if (focused) {
+      // The texture is read normalised: a kept node is 255, read as 1.
       this.focus.fill(0);
-      this.focus.set(focused.subarray(0, Math.min(focused.length, this.focus.length)));
+      const count = Math.min(focused.length, this.focus.length);
+      for (let i = 0; i < count; i++) {
+        this.focus[i] = focused[i] ? 255 : 0;
+      }
       this.uploadFocus();
     }
   }
@@ -484,10 +481,6 @@ export class GraphRenderer {
     const uniforms = view(this.nodeProgram);
     gl.uniform1f(uniforms['u_size'], options.nodeSize);
     gl.uniform1f(uniforms['u_minSize'], options.minNodePixels * ratio);
-    gl.uniform1f(uniforms['u_minIcon'], options.minIconPixels * ratio);
-    gl.activeTexture(gl.TEXTURE2);
-    gl.bindTexture(gl.TEXTURE_2D, this.iconsTexture);
-    gl.uniform1i(uniforms['u_icons'], 2);
     gl.bindVertexArray(this.nodeVao);
     gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, this.nodeCount);
     gl.bindVertexArray(null);

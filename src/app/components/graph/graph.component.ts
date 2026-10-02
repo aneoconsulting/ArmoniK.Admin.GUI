@@ -89,10 +89,6 @@ const INITIAL_BATCH_SIZE = 200;
 const DEBUG_REFRESH_MS = 1000;
 /** Duration of the move of the nodes to the places the layout gave them. */
 const ANIMATION_MS = 600;
-/** Resolution the icons are rasterised at, so that they stay sharp once zoomed in. */
-const SPRITE_SIZE = 128;
-/** Under this size on screen, a node is drawn as a plain shape: an icon would not be readable. */
-const MIN_ICON_SCREEN_SIZE = 8;
 /** However far zoomed out, a node stays this wide on screen. */
 const MIN_NODE_SCREEN_SIZE = 2;
 /** Fitting a small graph to the view stops at this zoom: a single task would fill the screen. */
@@ -177,7 +173,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly clipboard = inject(Clipboard);
 
   private readonly subscription = new Subscription();
-  private destroyed = false;
   private resizeObserver: ResizeObserver | null = null;
 
   private nodes: Node[] = [];
@@ -276,19 +271,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loadingInterval = setInterval(() => this.refreshLoading(), LOADING_REFRESH_MS);
   }
 
-  async ngAfterViewInit(): Promise<void> {
+  ngAfterViewInit(): void {
     if (!this.graphRef) {
-      return;
-    }
-    // The icons are rasterised once: the font has to be there, or they would hold the ligature
-    // text instead of the glyph. A font that fails to load is no reason not to draw the graph.
-    try {
-      await document.fonts?.load(`${SPRITE_SIZE}px "Material Icons"`);
-    } catch (error) {
-      console.warn('The icon font did not load, the graph is drawn without it.', error);
-    }
-    // Left while the font was loading: a renderer created now would never be destroyed.
-    if (this.destroyed) {
       return;
     }
 
@@ -296,14 +280,13 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     this.canvas = document.createElement('canvas');
     element.appendChild(this.canvas);
     try {
-      this.renderer = new GraphRenderer(this.canvas, this.icons(), {
+      this.renderer = new GraphRenderer(this.canvas, {
         nodeSize: NODE_SIZE,
         // In screen pixels whatever the zoom: thick lines over thousands of links cover the whole
         // overview, so they get thinner as it zooms out.
         linkWidth: NODE_SIZE / 12,
         minLinkPixels: 1,
         maxLinkPixels: 4,
-        minIconPixels: MIN_ICON_SCREEN_SIZE,
         minNodePixels: MIN_NODE_SCREEN_SIZE,
         minHighlightPixels: HIGHLIGHT_SCREEN_SIZE,
         fadedAlpha: FADED_ALPHA,
@@ -362,7 +345,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroyed = true;
     this.resizeObserver?.disconnect();
     this.setDebug(false);
     clearInterval(this.loadingInterval);
@@ -1147,24 +1129,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     };
     this.cameraFrame = requestAnimationFrame(step);
-  }
-
-  /** The icon of a task, then of a data, side by side, white: the shader paints them. */
-  private icons(): HTMLCanvasElement {
-    const canvas = document.createElement('canvas');
-    canvas.width = 2 * SPRITE_SIZE;
-    canvas.height = SPRITE_SIZE;
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      ctx.font = `${SPRITE_SIZE}px "Material Icons"`;
-      ctx.fillStyle = '#ffffff';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      (['task', 'result'] as const).forEach((type, index) => {
-        ctx.fillText(this.iconsService.getIcon(`${type}-graph-icon`), SPRITE_SIZE * (index + 0.5), SPRITE_SIZE / 2);
-      });
-    }
-    return canvas;
   }
 
   private getNodeColor(node: Node): string {
