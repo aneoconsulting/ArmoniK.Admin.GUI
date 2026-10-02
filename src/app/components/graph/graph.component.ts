@@ -21,7 +21,7 @@ import { StorageService } from '@services/storage.service';
 import ForceGraph from 'force-graph';
 import { Observable, Subscription, bufferTime, filter, retry, tap, timer } from 'rxjs';
 import { AutoCompleteComponent } from '../auto-complete.component';
-import { Coordinates, LayoutInput, LayoutResponse, NODE_GAP, NODE_SIZE, push } from './graph-layout';
+import { Coordinates, LayoutAlgorithm, LayoutInput, LayoutResponse, NODE_GAP, NODE_SIZE, push } from './graph-layout';
 import { createLayoutWorker } from './graph-layout-worker.factory';
 import { GraphLegendComponent } from './graph-legend.component';
 
@@ -184,6 +184,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly highlightLabel = $localize`Highlight a task`;
 
   readonly debugEnabled = signal<boolean>(false);
+  /** Offered in the debug options, to compare the layout of our own with ELK. */
+  readonly layoutAlgorithm = signal<LayoutAlgorithm>('layered');
   readonly debug = signal<GraphDebug | null>(null);
   private readonly createdAt = Date.now();
   private readonly eventCounts = { structure: 0, status: 0 };
@@ -515,6 +517,12 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     this.graph?.linkDirectionalParticles(checked ? 1 : 0);
   }
 
+  /** Lays the graph out again with the chosen algorithm. */
+  setLayoutAlgorithm(algorithm: LayoutAlgorithm): void {
+    this.layoutAlgorithm.set(algorithm);
+    this.runLayout();
+  }
+
   toggleDebug(checked: boolean): void {
     this.storageService.setItem('graph-debug', checked);
     this.setDebug(checked);
@@ -750,6 +758,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private layoutInput(): LayoutInput {
     return {
+      algorithm: this.layoutAlgorithm(),
       nodes: this.nodes.map(node => node.id),
       types: this.nodes.map(node => node.type),
       links: this.links.map(link => ({ source: endId(link.source), target: endId(link.target), type: link.type })),

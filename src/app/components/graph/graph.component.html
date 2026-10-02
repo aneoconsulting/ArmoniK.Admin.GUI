@@ -49,6 +49,11 @@
     <mat-checkbox (change)="toggleDebug($event.checked)" [checked]="debugEnabled()" i18n>
       Debug
     </mat-checkbox>
+    @if (debugEnabled()) {
+      <mat-checkbox (change)="setLayoutAlgorithm($event.checked ? 'elk' : 'layered')" [checked]="layoutAlgorithm() === 'elk'" [disabled]="layingOut()" i18n="@@graphLayoutWithElk">
+        Layout with ELK
+      </mat-checkbox>
+    }
   </mat-card-actions>
 </mat-card>
 <app-graph-legend [links]="colorMap" />

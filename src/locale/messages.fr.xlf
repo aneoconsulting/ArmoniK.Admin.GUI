@@ -3057,5 +3057,14 @@
         <target>Ce champ n&apos;est pas renseigné par le serveur.</target>
       </segment>
     </unit>
+    <unit id="graphLayoutWithElk">
+      <notes>
+        <note category="location">src/app/components/graph/graph.component.html:53,55</note>
+      </notes>
+      <segment state="initial">
+        <source> Layout with ELK </source>
+        <target> Placer avec ELK </target>
+      </segment>
+    </unit>
   </file>
 </xliff>

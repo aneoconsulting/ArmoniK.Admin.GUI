@@ -197,6 +197,23 @@ describe('GraphComponent', () => {
       expect(mockWorker.postMessage).toHaveBeenCalledTimes(1);
     });
 
+    it('should lay the graph out with the layout of our own by default', () => {
+      component['apply']([structure()]);
+      jest.advanceTimersByTime(1000);
+
+      expect(mockWorker.postMessage).toHaveBeenCalledWith(expect.objectContaining({ algorithm: 'layered' }));
+    });
+
+    it('should lay the graph out again with ELK once chosen, to compare them', () => {
+      component['apply']([structure()]);
+      jest.advanceTimersByTime(1000);
+      mockWorker.onmessage!({ data: { positions: new Float64Array(8) } } as MessageEvent);
+
+      component.setLayoutAlgorithm('elk');
+
+      expect(mockWorker.postMessage).toHaveBeenLastCalledWith(expect.objectContaining({ algorithm: 'elk' }));
+    });
+
     it('should keep the worker from one layout to the next', () => {
       component['apply']([structure()]);
       jest.advanceTimersByTime(1000);
