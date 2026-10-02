@@ -1,21 +1,25 @@
 /**
- * Placement of a session graph, by layers as ELK's layered algorithm does it, but knowing what a
- * session graph is: tasks fed by data, mostly a tree of subtasks, close to planar. The worker runs
- * it, and the page shares its types.
+ * Placement of a session graph, knowing what a session graph is: tasks fed by data, and mostly a
+ * tree of subtasks, where a task submits subtasks and the one that gathers their results. The
+ * worker runs it, and the page shares its types.
  *
  * 1. Boxes: each task is a box holding its rows of data, a payload above it and its outputs below.
  *    A data shared by several tasks the client uploaded gets a box of its own.
- * 2. Layers: each task goes one layer below its deepest predecessor, each shared data one layer
- *    above its shallowest consumer.
- * 3. Order in the layers: the subtasks tree walked depth first gives an order without crossing for
- *    the tree, then barycenter sweeps move each box towards its neighbours, the consumers of a same
- *    data kept side by side, or not. The order with the fewest crossings is kept.
- * 4. Coordinates: each box as close as can be to its neighbours without overlapping the others,
- *    each parent centred over its children.
+ * 2. Families: each task goes with its parent task, a shared data with the closest family holding
+ *    all its consumers, the rest with the session.
+ * 3. Layers among siblings: a task goes below the siblings whose subtrees produce what it reads.
+ *    An aggregation lands under the subtasks it gathers, a consumer under the data it reads.
+ * 4. Blocks: each task on top of its subtree, the layers of its children below it, a wide layer
+ *    wrapped to about the proportions of a screen. The first layer is centred under the task, each
+ *    next one under what it reads, in the order of what it reads: an aggregation centred under what
+ *    it gathers, the consumers of a data together under it.
  *
- * Every step is linear in the size of the graph, or nearly, and nothing recurses: a graph of
- * hundreds of thousands of tasks must fit. Lists live in flat typed arrays, as offsets into one
- * array of values: an array per node is what made the garbage collector the slowest step.
+ * Unlike a layout by global layers, as ELK's, a subtree stays under its parent: an aggregation
+ * deep in a family does not go to the bottom of the whole graph, among unrelated ones. A link
+ * between families, rarer, may cross others. Every step is linear in the size of the graph, or
+ * nearly, and nothing recurses: a graph of hundreds of thousands of tasks must fit. Lists live in
+ * flat typed arrays, as offsets into one array of values: an array per node is what made the
+ * garbage collector the slowest step.
  */
 
 export const NODE_SIZE = 50;
@@ -29,10 +33,10 @@ const SLOT = NODE_SIZE + NODE_GAP;
 /** A task, a row of data above it and one below. */
 const BOX_HEIGHT = NODE_SIZE + 2 * DATA_ROW_OFFSET;
 const LAYER_STEP = BOX_HEIGHT + LAYER_GAP;
-/** Down and up sweeps of the crossing reduction: the first ones do most of the work. */
-const ORDERING_SWEEPS = 4;
-/** Down and up sweeps of the coordinates. */
-const PLACEMENT_SWEEPS = 8;
+/** A layer of more children than this is wrapped on several rows, when wide… */
+const WRAP_FROM = 20;
+/** …to about the proportions of a screen. */
+const ASPECT = 16 / 9;
 
 export type LayoutLink = {
   source: string;
@@ -113,12 +117,8 @@ type Boxes = {
   width: Float64Array;
   /** The box of the parent task, -1 for a root. */
   parent: Int32Array;
-  children: Lists;
   predecessors: Lists;
   successors: Lists;
-  /** The tasks consuming a same data, as many lists: kept side by side. */
-  groups: Lists;
-  groupCount: number;
   /** For each node in a row of data: its box (-1 for none), its side (-1 above, 1 below) and its rank in the row. */
   rowBox: Int32Array;
   rowSide: Int8Array;
@@ -130,10 +130,10 @@ type Boxes = {
 /** The x and y of each node, interleaved, in the order of the input. */
 export function layOut(input: LayoutInput): Float64Array {
   const boxes = buildBoxes(input);
-  const layer = assignLayers(boxes);
-  const layers = orderLayers(boxes, layer);
-  const x = placeBoxes(boxes, layers);
-  return positionsOf(input, boxes, layer, x);
+  const families = familiesOf(boxes);
+  const { layer, before } = localLayers(boxes, families);
+  const { x, row } = placeBlocks(boxes, families, layer, before);
+  return positionsOf(input, boxes, row, x);
 }
 
 function buildBoxes(input: LayoutInput): Boxes {
@@ -246,31 +246,14 @@ function buildBoxes(input: LayoutInput): Boxes {
     }
   };
   const parent = new Int32Array(count).fill(-1);
-  const childOf = new Numbers();
-  const child = new Numbers();
-  const grouped = new Numbers();
-  const member = new Numbers();
-  let groupCount = 0;
   for (let i = 0; i < nodeCount; i++) {
     if (isTask[i]) {
       continue;
     }
     // A data links what produces it, or its own box, to what consumes it.
     const source = owner[i] !== -1 ? boxOf[owner[i]] : boxOf[i];
-    const group = groupCount;
-    const distinct = distinctConsumers(i, 1, task => {
-      if (source !== -1) {
-        link(source, boxOf[task]);
-      }
-      grouped.push(group);
-      member.push(boxOf[task]);
-    });
-    if (distinct > 1) {
-      groupCount++;
-    } else {
-      // Not a group: the member just pushed is taken back.
-      grouped.length -= distinct;
-      member.length -= distinct;
+    if (source !== -1) {
+      distinctConsumers(i, 1, task => link(source, boxOf[task]));
     }
     // The subtask goes below its parent, in the subtasks tree.
     if (fed[i] !== -1 && parentOf[i] !== -1) {
@@ -279,8 +262,6 @@ function buildBoxes(input: LayoutInput): Boxes {
       link(parentBox, subtask);
       if (parent[subtask] === -1 && parentBox !== subtask) {
         parent[subtask] = parentBox;
-        childOf.push(parentBox);
-        child.push(subtask);
       }
     }
   }
@@ -291,48 +272,181 @@ function buildBoxes(input: LayoutInput): Boxes {
     node: node.values.slice(0, count),
     width,
     parent,
-    children: lists(count, childOf.values, child.values, childOf.length),
     predecessors: lists(count, to.values, from.values, to.length),
     successors: lists(count, from.values, to.values, from.length),
-    groups: lists(groupCount, grouped.values, member.values, grouped.length),
-    groupCount,
     rowBox, rowSide, rowRank, aboveCount, belowCount,
   };
 }
 
 /**
- * Each task one layer below its deepest predecessor, in topological order. A cycle, which a
- * session cannot have, would leave tasks out: they go below what is placed of their predecessors.
- * A shared data goes one layer above its shallowest consumer: the whole graph moves down a layer
- * when that is above the first one.
+ * The families the blocks follow: each task under its parent task; a shared data under the closest
+ * family holding all its consumers, above them; the rest under the session, a virtual root whose
+ * index is the number of boxes. Walked depth first from the root, in arrival order: a family's
+ * children have consecutive `pre` indices, and a box's subtree spans `pre` to `post`.
  */
-function assignLayers(boxes: Boxes): Int32Array {
-  const { count, kind, predecessors, successors } = boxes;
+type Families = {
+  root: number;
+  parent: Int32Array;
+  depth: Int32Array;
+  children: Lists;
+  pre: Int32Array;
+  post: Int32Array;
+  /** The boxes by `pre` index. */
+  order: Int32Array;
+};
+
+function familiesOf(boxes: Boxes): Families {
+  const { count, kind, successors } = boxes;
+  const root = count;
+  const parent = new Int32Array(count + 1).fill(-1);
+  for (let box = 0; box < count; box++) {
+    parent[box] = kind[box] === TASK_BOX && boxes.parent[box] !== -1 ? boxes.parent[box] : root;
+  }
+  // The depths of the tasks, for the closest common family of the consumers of a shared data.
+  const depth = new Int32Array(count + 1).fill(-1);
+  depth[root] = 0;
+  // A cycle of parents, which a session cannot have, is cut: its first box goes under the root.
+  const inChain = new Int32Array(count + 1).fill(-1);
+  const depthOf = (box: number): number => {
+    const chain = new Numbers();
+    let current = box;
+    while (depth[current] === -1) {
+      if (inChain[current] === box) {
+        parent[chain.values[chain.length - 1]] = root;
+        break;
+      }
+      inChain[current] = box;
+      chain.push(current);
+      current = parent[current];
+    }
+    for (let k = chain.length - 1; k >= 0; k--) {
+      depth[chain.values[k]] = depth[parent[chain.values[k]]] + 1;
+    }
+    return depth[box];
+  };
+  for (let box = 0; box < count; box++) {
+    if (kind[box] === TASK_BOX) {
+      depthOf(box);
+    }
+  }
+  const common = (a: number, b: number): number => {
+    while (depth[a] > depth[b]) {
+      a = parent[a];
+    }
+    while (depth[b] > depth[a]) {
+      b = parent[b];
+    }
+    while (a !== b) {
+      a = parent[a];
+      b = parent[b];
+    }
+    return a;
+  };
+  for (let box = 0; box < count; box++) {
+    if (kind[box] !== SHARED_BOX) {
+      continue;
+    }
+    let family = -1;
+    let consumer = false;
+    for (let k = successors.start[box]; k < successors.start[box + 1]; k++) {
+      family = family === -1 ? successors.values[k] : common(family, successors.values[k]);
+    }
+    for (let k = successors.start[box]; k < successors.start[box + 1]; k++) {
+      consumer ||= successors.values[k] === family;
+    }
+    // Above all its consumers: in the family of the one that holds the others.
+    parent[box] = consumer ? parent[family] : family;
+    depth[box] = depth[parent[box]] + 1;
+  }
+
+  const owners = new Int32Array(count);
+  const members = new Int32Array(count);
+  for (let box = 0; box < count; box++) {
+    owners[box] = parent[box];
+    members[box] = box;
+  }
+  const children = lists(count + 1, owners, members);
+  const pre = new Int32Array(count + 1);
+  const post = new Int32Array(count + 1);
+  const order = new Int32Array(count + 1);
+  const stack = new Numbers();
+  const next = new Int32Array(count + 1);
+  let visited = 0;
+  stack.push(root);
+  pre[root] = visited;
+  order[visited++] = root;
+  next[root] = children.start[root];
+  while (stack.length !== 0) {
+    const box = stack.values[stack.length - 1];
+    if (next[box] < children.start[box + 1]) {
+      const child = children.values[next[box]++];
+      pre[child] = visited;
+      order[visited++] = child;
+      next[child] = children.start[child];
+      stack.push(child);
+    } else {
+      post[box] = visited;
+      stack.length--;
+    }
+  }
+  return { root, parent, depth, children, pre, post, order };
+}
+
+/**
+ * The layer of each box among its siblings: below the siblings whose subtrees produce what it
+ * reads. An aggregation goes below the subtasks it gathers, wherever in their subtrees the data
+ * was produced. A link within a subtree, or from a box to its own subtree, orders nothing here.
+ */
+function localLayers(boxes: Boxes, families: Families): { layer: Int32Array, before: Lists } {
+  const { count, predecessors } = boxes;
+  const { parent, depth } = families;
+  const from = new Numbers();
+  const to = new Numbers();
+  for (let box = 0; box < count; box++) {
+    for (let k = predecessors.start[box]; k < predecessors.start[box + 1]; k++) {
+      // The siblings under which the two ends diverge, none when one holds the other.
+      let a = predecessors.values[k];
+      let b = box;
+      while (depth[a] > depth[b]) {
+        a = parent[a];
+      }
+      while (depth[b] > depth[a]) {
+        b = parent[b];
+      }
+      if (a === b) {
+        continue;
+      }
+      while (parent[a] !== parent[b]) {
+        a = parent[a];
+        b = parent[b];
+      }
+      from.push(a);
+      to.push(b);
+    }
+  }
+  const before = lists(count, to.values, from.values, to.length);
+  const after = lists(count, from.values, to.values, from.length);
+  // Longest path among siblings, in topological order. A cycle, which a session cannot have,
+  // leaves boxes out: they go below what is placed of their siblings.
   const layer = new Int32Array(count);
   const pending = new Int32Array(count);
   const queue = new Int32Array(count);
   let queued = 0;
   const done = new Uint8Array(count);
   for (let box = 0; box < count; box++) {
-    if (kind[box] === TASK_BOX) {
-      for (let k = predecessors.start[box]; k < predecessors.start[box + 1]; k++) {
-        if (kind[predecessors.values[k]] === TASK_BOX) {
-          pending[box]++;
-        }
-      }
-      if (pending[box] === 0) {
-        queue[queued++] = box;
-      }
+    pending[box] = before.start[box + 1] - before.start[box];
+    if (pending[box] === 0) {
+      queue[queued++] = box;
     }
   }
   const settle = (box: number) => {
     done[box] = 1;
-    for (let k = successors.start[box]; k < successors.start[box + 1]; k++) {
-      const successor = successors.values[k];
-      if (kind[successor] === TASK_BOX && !done[successor]) {
-        layer[successor] = Math.max(layer[successor], layer[box] + 1);
-        if (--pending[successor] === 0) {
-          queue[queued++] = successor;
+    for (let k = after.start[box]; k < after.start[box + 1]; k++) {
+      const next = after.values[k];
+      if (!done[next]) {
+        layer[next] = Math.max(layer[next], layer[box] + 1);
+        if (--pending[next] === 0) {
+          queue[queued++] = next;
         }
       }
     }
@@ -341,326 +455,151 @@ function assignLayers(boxes: Boxes): Int32Array {
     settle(queue[head]);
   }
   for (let box = 0; box < count; box++) {
-    if (kind[box] === TASK_BOX && !done[box]) {
+    if (!done[box]) {
       settle(box);
     }
   }
-
-  let top = 0;
-  for (let box = 0; box < count; box++) {
-    if (kind[box] === SHARED_BOX) {
-      let shallowest = Infinity;
-      for (let k = successors.start[box]; k < successors.start[box + 1]; k++) {
-        shallowest = Math.min(shallowest, layer[successors.values[k]]);
-      }
-      layer[box] = shallowest - 1;
-      top = Math.min(top, layer[box]);
-    }
-  }
-  if (top < 0) {
-    for (let box = 0; box < count; box++) {
-      if (kind[box] !== ALONE_BOX) {
-        layer[box] -= top;
-      }
-    }
-  }
-  return layer;
+  return { layer, before };
 }
 
-/** The boxes of each layer, from left to right. */
-function orderLayers(boxes: Boxes, layer: Int32Array): Int32Array[] {
-  const { count, kind, children, parent, successors, predecessors, groups, groupCount, width } = boxes;
-  let depth = 0;
-  for (let box = 0; box < count; box++) {
-    depth = Math.max(depth, layer[box] + 1);
-  }
+/**
+ * Each box and its subtree as a block: the box on top, then the layers of its children, each a row
+ * of their blocks, a wide row wrapped on several. The first layer is centred in the block, each
+ * next one under what it reads; its children go in the order of what they read, or of their
+ * arrival: an aggregation under the subtasks it gathers, the consumers of a data together under
+ * it. Returns the centre and the row of each box.
+ */
+function placeBlocks(boxes: Boxes, families: Families, layer: Int32Array, before: Lists): { x: Float64Array, row: Int32Array } {
+  const { count, width } = boxes;
+  const { root, children, pre, order } = families;
+  const blockWidth = new Float64Array(count + 1);
+  const blockRows = new Int32Array(count + 1);
+  // Where each block goes in its parent's, from its left and its top.
+  const left = new Float64Array(count + 1);
+  const top = new Int32Array(count + 1);
+  const place = new Float64Array(count);
+  const shelfOf = new Int32Array(count);
 
-  // The subtasks tree, depth first from its roots in arrival order: its order has no crossing.
-  const rank = new Float64Array(count).fill(-1);
-  let next = 0;
-  const stack = new Numbers();
-  for (let root = 0; root < count; root++) {
-    if (kind[root] !== TASK_BOX || parent[root] !== -1) {
+  // Children before their parents: the blocks of a family are sized before it is.
+  for (let visit = count; visit >= 0; visit--) {
+    const box = order[visit];
+    const start = children.start[box];
+    const end = children.start[box + 1];
+    const own = box === root ? 0 : 1;
+    if (start === end) {
+      blockWidth[box] = width[box];
+      blockRows[box] = own;
       continue;
     }
-    stack.push(root);
-    while (stack.length !== 0) {
-      const box = stack.values[--stack.length];
-      if (rank[box] !== -1) {
-        continue;
+    // The children by layer, each layer in the order of what it reads.
+    const family = Array.from(children.values.subarray(start, end));
+    family.sort((a, b) => layer[a] - layer[b] || pre[a] - pre[b]);
+    let rows = own;
+    const shelves: { start: number, end: number, width: number, first: boolean }[] = [];
+    let blockW = box === root ? 0 : width[box];
+    for (let first = 0; first < family.length;) {
+      let last = first;
+      while (last < family.length && layer[family[last]] === layer[family[first]]) {
+        last++;
       }
-      rank[box] = next++;
-      for (let k = children.start[box + 1] - 1; k >= children.start[box]; k--) {
-        stack.push(children.values[k]);
+      const row = family.slice(first, last);
+      if (first !== 0) {
+        for (const child of row) {
+          let sum = 0;
+          let reads = 0;
+          for (let k = before.start[child]; k < before.start[child + 1]; k++) {
+            sum += place[before.values[k]];
+            reads++;
+          }
+          place[child] = reads === 0 ? Infinity : sum / reads;
+        }
+        row.sort((a, b) => place[a] - place[b] || pre[a] - pre[b]);
       }
-    }
-  }
-  for (let box = 0; box < count; box++) {
-    if (kind[box] === TASK_BOX && rank[box] === -1) {
-      rank[box] = next++;
-    }
-  }
-  // A shared data right before its first consumer, a data alone after everything.
-  for (let box = 0; box < count; box++) {
-    if (kind[box] === SHARED_BOX) {
-      let first = Infinity;
-      for (let k = successors.start[box]; k < successors.start[box + 1]; k++) {
-        first = Math.min(first, rank[successors.values[k]]);
+      // Wrapped when wide: about as wide as the screen is to its height.
+      let area = 0;
+      let widest = 0;
+      for (const child of row) {
+        area += (blockWidth[child] + NODE_GAP) * blockRows[child] * LAYER_STEP;
+        widest = Math.max(widest, blockWidth[child]);
       }
-      rank[box] = first - 0.5;
-    } else if (kind[box] === ALONE_BOX) {
-      rank[box] = next++;
-    }
-  }
-
-  const sizes = new Int32Array(depth);
-  for (let box = 0; box < count; box++) {
-    sizes[layer[box]]++;
-  }
-  const layers = Array.from(sizes, size => new Int32Array(size));
-  sizes.fill(0);
-  for (let box = 0; box < count; box++) {
-    layers[layer[box]][sizes[layer[box]]++] = box;
-  }
-  for (const boxesOfLayer of layers) {
-    boxesOfLayer.sort((a, b) => rank[a] - rank[b]);
-  }
-
-  // The consumers of a same data, layer by layer, as one block: a union-find, whose root stands
-  // for the block.
-  const block = new Int32Array(count);
-  for (let box = 0; box < count; box++) {
-    block[box] = box;
-  }
-  const rootOf = (box: number): number => {
-    let root = box;
-    while (block[root] !== root) {
-      root = block[root];
-    }
-    while (block[box] !== root) {
-      const up = block[box];
-      block[box] = root;
-      box = up;
-    }
-    return root;
-  };
-  const firstOfLayer = new Int32Array(depth).fill(-1);
-  for (let group = 0; group < groupCount; group++) {
-    for (let k = groups.start[group]; k < groups.start[group + 1]; k++) {
-      const memberBox = groups.values[k];
-      const first = firstOfLayer[layer[memberBox]];
-      if (first === -1) {
-        firstOfLayer[layer[memberBox]] = memberBox;
-      } else {
-        block[rootOf(memberBox)] = rootOf(first);
+      const target = row.length > WRAP_FROM ? Math.max(widest, Math.sqrt(ASPECT * area)) : Infinity;
+      let cursor = 0;
+      let shelfRows = 0;
+      let shelfStart = 0;
+      const closeShelf = (endIndex: number) => {
+        shelves.push({ start: first + shelfStart, end: first + endIndex, width: cursor - NODE_GAP, first: first === 0 });
+        blockW = Math.max(blockW, cursor - NODE_GAP);
+        rows += shelfRows;
+      };
+      row.forEach((child, index) => {
+        if (cursor !== 0 && cursor + blockWidth[child] > target) {
+          closeShelf(index);
+          cursor = 0;
+          shelfRows = 0;
+          shelfStart = index;
+        }
+        left[child] = cursor;
+        top[child] = rows;
+        shelfOf[child] = shelves.length;
+        cursor += blockWidth[child] + NODE_GAP;
+        shelfRows = Math.max(shelfRows, blockRows[child]);
+      });
+      closeShelf(row.length);
+      // Where the next layer reads them from: their centres in the block, before the shelves are
+      // centred, which does not change their order.
+      for (let k = 0; k < row.length; k++) {
+        family[first + k] = row[k];
+        place[row[k]] = left[row[k]] + blockWidth[row[k]] / 2;
       }
+      first = last;
     }
-    for (let k = groups.start[group]; k < groups.start[group + 1]; k++) {
-      firstOfLayer[layer[groups.values[k]]] = -1;
-    }
-  }
-  const blocks = new Int32Array(count);
-  const alone = new Int32Array(count);
-  for (let box = 0; box < count; box++) {
-    blocks[box] = rootOf(box);
-    alone[box] = box;
-  }
-  let blockOf = blocks;
-
-  const x = new Float64Array(count);
-  const position = new Int32Array(count);
-  const pack = (boxesOfLayer: Int32Array) => packLayer(boxesOfLayer, width, x, position);
-
-  const value = new Float64Array(count);
-  const blockSum = new Float64Array(count);
-  const blockSize = new Int32Array(count);
-  const key = new Float64Array(count);
-  const reorder = (boxesOfLayer: Int32Array, neighbours: Lists) => {
-    for (const box of boxesOfLayer) {
-      let sum = 0;
-      for (let k = neighbours.start[box]; k < neighbours.start[box + 1]; k++) {
-        sum += x[neighbours.values[k]];
-      }
-      const degree = neighbours.start[box + 1] - neighbours.start[box];
-      value[box] = degree === 0 ? x[box] : sum / degree;
-      blockSum[blockOf[box]] = 0;
-      blockSize[blockOf[box]] = 0;
-    }
-    for (const box of boxesOfLayer) {
-      blockSum[blockOf[box]] += value[box];
-      blockSize[blockOf[box]]++;
-    }
-    for (const box of boxesOfLayer) {
-      key[box] = blockSum[blockOf[box]] / blockSize[blockOf[box]];
-    }
-    // Ties keep the current order: siblings with the same parent stay as the tree put them.
-    boxesOfLayer.sort((a, b) => key[a] - key[b] || blockOf[a] - blockOf[b] || value[a] - value[b] || position[a] - position[b]);
-    pack(boxesOfLayer);
-  };
-
-  // The consumers of a data kept together cannot always go with their siblings too: when a data is
-  // shared across families of subtasks, one of the two has to give. The sweeps run with the
-  // blocks, then from the tree order again without them, and the order with the fewest crossings
-  // wins, the blocks on a tie. In a planar graph, both agree.
-  const initial = layers.map(boxesOfLayer => boxesOfLayer.slice());
-  let best = initial;
-  let fewest = Infinity;
-  for (const grouping of [blocks, alone]) {
-    blockOf = grouping;
-    initial.forEach((boxesOfLayer, current) => layers[current].set(boxesOfLayer));
-    layers.forEach(pack);
-    let crossings = countCrossings(layers, successors, layer, position);
-    for (let sweep = 0; sweep <= ORDERING_SWEEPS; sweep++) {
-      if (crossings < fewest) {
-        fewest = crossings;
-        best = layers.map(boxesOfLayer => boxesOfLayer.slice());
-      }
-      if (sweep === ORDERING_SWEEPS || fewest === 0) {
-        break;
-      }
-      for (let current = 1; current < depth; current++) {
-        reorder(layers[current], predecessors);
-      }
-      for (let current = depth - 2; current >= 0; current--) {
-        reorder(layers[current], successors);
-      }
-      crossings = countCrossings(layers, successors, layer, position);
-    }
-    if (fewest === 0) {
-      break;
-    }
-  }
-  return best;
-}
-
-/** Side by side from left to right, the layer centred on 0. */
-function packLayer(boxesOfLayer: Int32Array, width: Float64Array, x: Float64Array, position: Int32Array) {
-  let total = -NODE_GAP;
-  for (const box of boxesOfLayer) {
-    total += width[box] + NODE_GAP;
-  }
-  let left = -total / 2;
-  for (let i = 0; i < boxesOfLayer.length; i++) {
-    const box = boxesOfLayer[i];
-    x[box] = left + width[box] / 2;
-    left += width[box] + NODE_GAP;
-    position[box] = i;
-  }
-}
-
-/**
- * Crossings of the links between consecutive layers, counted as inversions: sorted by their upper
- * end, a link crosses each earlier one whose lower end is to its right. A Fenwick tree over the
- * lower layer counts them.
- */
-function countCrossings(layers: Int32Array[], successors: Lists, layer: Int32Array, position: Int32Array): number {
-  let crossings = 0;
-  const ends = new Numbers();
-  for (let current = 0; current + 1 < layers.length; current++) {
-    ends.length = 0;
-    for (const box of layers[current]) {
-      const start = ends.length;
-      for (let k = successors.start[box]; k < successors.start[box + 1]; k++) {
-        const successor = successors.values[k];
-        if (layer[successor] === current + 1) {
-          ends.push(position[successor]);
+    // The first layer centred in the block, each next one under what it reads, within the block.
+    for (const shelf of shelves) {
+      let shift = (blockW - shelf.width) / 2;
+      if (!shelf.first) {
+        let sum = 0;
+        let reads = 0;
+        for (let k = shelf.start; k < shelf.end; k++) {
+          const child = family[k];
+          for (let read = before.start[child]; read < before.start[child + 1]; read++) {
+            sum += left[before.values[read]] + blockWidth[before.values[read]] / 2;
+            reads++;
+          }
+        }
+        if (reads !== 0) {
+          shift = Math.min(blockW - shelf.width, Math.max(0, sum / reads - shelf.width / 2));
         }
       }
-      ends.values.subarray(start, ends.length).sort();
-    }
-    const size = layers[current + 1].length;
-    const tree = new Int32Array(size + 1);
-    for (let seen = 0; seen < ends.length; seen++) {
-      const end = ends.values[seen];
-      let notRightOf = 0;
-      for (let i = end + 1; i > 0; i -= i & -i) {
-        notRightOf += tree[i];
-      }
-      crossings += seen - notRightOf;
-      for (let i = end + 1; i <= size; i += i & -i) {
-        tree[i]++;
+      for (let k = shelf.start; k < shelf.end; k++) {
+        left[family[k]] += shift;
       }
     }
+    blockWidth[box] = blockW;
+    blockRows[box] = rows;
   }
-  return crossings;
-}
 
-/**
- * Each box moved towards its neighbours above, then below, a few times over, ending upwards: each
- * parent centred over its children, as a tree is best read. In a layer, the boxes keep their order
- * and their spacing: of the positions that do, the one closest to where the neighbours pull them.
- */
-function placeBoxes(boxes: Boxes, layers: Int32Array[]): Float64Array {
-  const { count, width, predecessors, successors } = boxes;
+  // Parents before their children: from the root down, block offsets become positions.
   const x = new Float64Array(count);
-  const position = new Int32Array(count);
-  layers.forEach(boxesOfLayer => packLayer(boxesOfLayer, width, x, position));
-  const desired = new Float64Array(count);
-  const pull = (boxesOfLayer: Int32Array, neighbours: Lists) => {
-    for (const box of boxesOfLayer) {
-      const degree = neighbours.start[box + 1] - neighbours.start[box];
-      let sum = 0;
-      for (let k = neighbours.start[box]; k < neighbours.start[box + 1]; k++) {
-        sum += x[neighbours.values[k]];
-      }
-      desired[box] = degree === 0 ? x[box] : sum / degree;
-    }
-    placeLayer(boxesOfLayer, width, x, desired);
-  };
-  for (let sweep = 0; sweep < PLACEMENT_SWEEPS; sweep++) {
-    for (let current = 1; current < layers.length; current++) {
-      pull(layers[current], predecessors);
-    }
-    for (let current = layers.length - 2; current >= 0; current--) {
-      pull(layers[current], successors);
-    }
+  const row = new Int32Array(count);
+  const blockLeft = new Float64Array(count + 1);
+  const blockTop = new Int32Array(count + 1);
+  for (let visit = 1; visit <= count; visit++) {
+    const box = order[visit];
+    const parentBox = families.parent[box];
+    blockLeft[box] = blockLeft[parentBox] + left[box];
+    blockTop[box] = blockTop[parentBox] + top[box];
+    x[box] = blockLeft[box] + blockWidth[box] / 2;
+    row[box] = blockTop[box];
   }
-  return x;
+  return { x, row };
 }
 
-/**
- * Isotonic regression, by pooling adjacent violators: the x closest to `desired`, Σ (x - desired)²
- * least, under x[i+1] - x[i] at least their half widths and a gap. Offsets take the spacing out:
- * what is left only has to be in order.
- */
-function placeLayer(boxesOfLayer: Int32Array, width: Float64Array, x: Float64Array, desired: Float64Array) {
-  const size = boxesOfLayer.length;
-  if (size === 0) {
-    return;
-  }
-  const offset = new Float64Array(size);
-  for (let i = 1; i < size; i++) {
-    offset[i] = offset[i - 1] + (width[boxesOfLayer[i - 1]] + width[boxesOfLayer[i]]) / 2 + NODE_GAP;
-  }
-  const blockMean = new Float64Array(size);
-  const blockCount = new Int32Array(size);
-  let blocks = 0;
-  for (let i = 0; i < size; i++) {
-    let mean = desired[boxesOfLayer[i]] - offset[i];
-    let members = 1;
-    while (blocks !== 0 && blockMean[blocks - 1] > mean) {
-      blocks--;
-      mean = (blockMean[blocks] * blockCount[blocks] + mean * members) / (blockCount[blocks] + members);
-      members += blockCount[blocks];
-    }
-    blockMean[blocks] = mean;
-    blockCount[blocks] = members;
-    blocks++;
-  }
-  let i = 0;
-  for (let block = 0; block < blocks; block++) {
-    for (let member = 0; member < blockCount[block]; member++, i++) {
-      x[boxesOfLayer[i]] = blockMean[block] + offset[i];
-    }
-  }
-}
-
-function positionsOf(input: LayoutInput, boxes: Boxes, layer: Int32Array, x: Float64Array): Float64Array {
+function positionsOf(input: LayoutInput, boxes: Boxes, row: Int32Array, x: Float64Array): Float64Array {
   const { kind, node, rowBox, rowSide, rowRank, aboveCount, belowCount } = boxes;
   const positions = new Float64Array(input.nodes.length * 2);
   for (let box = 0; box < boxes.count; box++) {
     // A shared data on the row of outputs, the closest to its consumers below.
-    const y = layer[box] * LAYER_STEP + (kind[box] === SHARED_BOX ? DATA_ROW_OFFSET : 0);
+    const y = row[box] * LAYER_STEP + (kind[box] === SHARED_BOX ? DATA_ROW_OFFSET : 0);
     positions[node[box] * 2] = x[box];
     positions[node[box] * 2 + 1] = y;
   }
@@ -671,7 +610,7 @@ function positionsOf(input: LayoutInput, boxes: Boxes, layer: Int32Array, x: Flo
     }
     const inRow = rowSide[data] < 0 ? aboveCount[box] : belowCount[box];
     positions[data * 2] = x[box] + (rowRank[data] - (inRow - 1) / 2) * SLOT;
-    positions[data * 2 + 1] = layer[box] * LAYER_STEP + rowSide[data] * DATA_ROW_OFFSET;
+    positions[data * 2 + 1] = row[box] * LAYER_STEP + rowSide[data] * DATA_ROW_OFFSET;
   }
   return positions;
 }

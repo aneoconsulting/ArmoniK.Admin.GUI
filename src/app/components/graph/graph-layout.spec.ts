@@ -75,12 +75,12 @@ describe('layOut', () => {
     expect(coordinates.get('task-out1')![1]).toEqual(coordinates.get('task-out0')![1]);
   });
 
-  it('should put each task one layer below its deepest predecessor', () => {
+  it('should put a task below the subtrees of the siblings it reads', () => {
     const session = new Session()
       .task('root')
       .task('child', { parent: 'root' })
       .task('grandchild', { parent: 'child' })
-      // Depends on the root and on the grandchild: below the grandchild.
+      // Reads the root and the grandchild: below the whole subtree of the root.
       .task('reduce', { inputs: ['root-out0', 'grandchild-out0'] });
     const coordinates = layOut(session.input());
     const y = (id: string) => coordinates.get(id)![1];
@@ -89,6 +89,33 @@ describe('layOut', () => {
     expect(y('grandchild')).toBeGreaterThan(y('child'));
     expect(y('reduce')).toBeGreaterThan(y('grandchild'));
     expect(y('reduce') - y('grandchild')).toEqual(y('grandchild') - y('child'));
+  });
+
+  it('should keep each aggregation under the subtasks it gathers, in their family', () => {
+    // A recursive map-reduce: root submits m0 to m3 and r, which gathers their outputs; m0 submits
+    // m00, m01 and r0, which gathers theirs and takes over the output of m0.
+    const session = new Session().task('root');
+    session.task('m0', { parent: 'root', outputs: 0 }).data('m0-out0');
+    for (let index = 1; index < 4; index++) {
+      session.task(`m${index}`, { parent: 'root' });
+    }
+    session.task('m00', { parent: 'm0' }).task('m01', { parent: 'm0' });
+    session.task('r0', { parent: 'm0', inputs: ['m00-out0', 'm01-out0'], outputs: 0 });
+    session.links.push({ source: 'r0', target: 'm0-out0', type: 'output' });
+    session.task('r', { parent: 'root', inputs: ['m0-out0', 'm1-out0', 'm2-out0', 'm3-out0'] });
+    const coordinates = layOut(session.input());
+    const x = (id: string) => coordinates.get(id)![0];
+    const y = (id: string) => coordinates.get(id)![1];
+
+    expect(y('r0')).toBeGreaterThan(y('m00'));
+    expect(y('r')).toBeGreaterThan(y('r0'));
+    // r0 under m00 and m01, close to m0; r under m0 to m3.
+    expect(x('r0')).toBeGreaterThanOrEqual(Math.min(x('m00'), x('m01')));
+    expect(x('r0')).toBeLessThanOrEqual(Math.max(x('m00'), x('m01')));
+    expect(Math.abs(x('r0') - x('m0'))).toBeLessThan(2 * (NODE_SIZE + NODE_GAP));
+    expect(x('r')).toBeGreaterThan(Math.min(x('m0'), x('m3')));
+    expect(x('r')).toBeLessThan(Math.max(x('m0'), x('m3')));
+    expect(overlaps(coordinates)).toEqual([]);
   });
 
   it('should lay a tree of subtasks out without crossing, each parent above its children', () => {
@@ -128,37 +155,59 @@ describe('layOut', () => {
     }
   });
 
-  it('should keep side by side the tasks consuming a data the client uploaded, below it', () => {
-    // Two families of subtasks; the shared data is consumed by one subtask of each.
-    const session = new Session().data('shared').task('a').task('b');
-    for (const parent of ['a', 'b']) {
-      for (let child = 0; child < 4; child++) {
-        session.task(`${parent}${child}`, { parent, inputs: child === 0 && parent === 'b' || child === 3 && parent === 'a' ? ['shared'] : [] });
-      }
+  it('should keep side by side, below it, the subtasks reading a data the client uploaded', () => {
+    const session = new Session().data('shared').task('parent');
+    for (let child = 0; child < 6; child++) {
+      session.task(`child${child}`, { parent: 'parent', inputs: child % 2 === 1 ? ['shared'] : [] });
     }
-    // And a task consuming it apart, in the same layer.
-    session.task('c').task('c0', { parent: 'c', inputs: ['shared'] });
     const coordinates = layOut(session.input());
-    const consumers = ['a3', 'b0', 'c0'];
-    const row = layer(coordinates, session.nodes.filter((_, index) => session.types[index] === 'task'), coordinates.get('a3')![1]);
+    const consumers = ['child1', 'child3', 'child5'];
+    const row = layer(coordinates, session.nodes.filter((_, index) => session.types[index] === 'task'), coordinates.get('child1')![1]);
     const ranks = consumers.map(id => row.indexOf(id)).sort((a, b) => a - b);
 
     expect(ranks[2] - ranks[0]).toEqual(consumers.length - 1);
-    expect(coordinates.get('shared')![1]).toBeLessThan(coordinates.get('a3')![1]);
+    expect(coordinates.get('shared')![1]).toBeLessThan(coordinates.get('child1')![1]);
     const xs = consumers.map(id => coordinates.get(id)![0]);
     expect(coordinates.get('shared')![0]).toBeGreaterThanOrEqual(Math.min(...xs));
     expect(coordinates.get('shared')![0]).toBeLessThanOrEqual(Math.max(...xs));
     expect(overlaps(coordinates)).toEqual([]);
   });
 
-  it('should keep side by side the tasks consuming a same output', () => {
-    const session = new Session().task('producer').task('x').task('y');
-    session.task('x0', { parent: 'x', inputs: ['producer-out0'] }).task('x1', { parent: 'x' });
-    session.task('y0', { parent: 'y' }).task('y1', { parent: 'y', inputs: ['producer-out0'] });
+  it('should keep side by side, below it, the siblings reading a same output', () => {
+    const session = new Session().task('parent').task('producer', { parent: 'parent' }).task('other', { parent: 'parent' });
+    session.task('first', { parent: 'parent', inputs: ['producer-out0'] }).task('second', { parent: 'parent', inputs: ['producer-out0'] });
     const coordinates = layOut(session.input());
-    const row = layer(coordinates, session.nodes.filter((_, index) => session.types[index] === 'task'), coordinates.get('x0')![1]);
+    const row = layer(coordinates, session.nodes.filter((_, index) => session.types[index] === 'task'), coordinates.get('first')![1]);
 
-    expect(Math.abs(row.indexOf('x0') - row.indexOf('y1'))).toEqual(1);
+    expect(coordinates.get('first')![1]).toBeGreaterThan(coordinates.get('producer')![1]);
+    expect(Math.abs(row.indexOf('first') - row.indexOf('second'))).toEqual(1);
+  });
+
+  it('should wrap a family of thousands of subtasks to about the proportions of a screen', () => {
+    const session = new Session().task('parent');
+    for (let child = 0; child < 2000; child++) {
+      session.task(`child${child}`, { parent: 'parent' });
+    }
+    const coordinates = layOut(session.input());
+    const children = [...coordinates].filter(([id]) => /^child\d+$/.test(id)).map(([, position]) => position);
+    const width = Math.max(...children.map(([x]) => x)) - Math.min(...children.map(([x]) => x));
+    const height = Math.max(...children.map(([, y]) => y)) - Math.min(...children.map(([, y]) => y));
+
+    expect(width / height).toBeGreaterThan(0.5);
+    expect(width / height).toBeLessThan(4);
+    expect(overlaps(coordinates)).toEqual([]);
+  });
+
+  it('should lay independent tasks out in a grid', () => {
+    const session = new Session();
+    for (let task = 0; task < 1000; task++) {
+      session.task(`task${task}`);
+    }
+    const coordinates = layOut(session.input());
+    const rows = new Set(Array.from({ length: 1000 }, (_, task) => coordinates.get(`task${task}`)![1]));
+
+    expect(rows.size).toBeGreaterThan(5);
+    expect(overlaps(coordinates)).toEqual([]);
   });
 
   it('should make a task as wide as its widest row of data', () => {
