@@ -502,13 +502,25 @@ function placeBlocks(boxes: Boxes, families: Families, layer: Int32Array, before
     // each other. A family stays on one row under its parent, however wide: wrapped, the links to
     // its subtasks and from them to what gathers them would cross the rows between.
     const independent = box === root && layer[family[family.length - 1]] === 0;
+    const gathered = layer[family[family.length - 1]] > 0;
     for (let first = 0; first < family.length;) {
       let last = first;
       while (last < family.length && layer[family[last]] === layer[family[first]]) {
         last++;
       }
-      const row = family.slice(first, last);
-      if (first !== 0) {
+      let row = family.slice(first, last);
+      if (first === 0 && gathered) {
+        // Read by an aggregation below: the shallowest subtrees in the middle, right above it, their
+        // links to it straight; the deepest on the sides, their outputs already low. In arrival
+        // order otherwise.
+        const byDepth = [...row].sort((a, b) => blockRows[a] - blockRows[b] || pre[a] - pre[b]);
+        const middleOut = new Array<number>(row.length);
+        const middle = (row.length - 1) >> 1;
+        byDepth.forEach((child, rank) => {
+          middleOut[rank % 2 === 0 ? middle - rank / 2 : middle + (rank + 1) / 2] = child;
+        });
+        row = middleOut;
+      } else if (first !== 0) {
         for (const child of row) {
           let sum = 0;
           let reads = 0;

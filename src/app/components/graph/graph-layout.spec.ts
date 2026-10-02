@@ -155,6 +155,26 @@ describe('layOut', () => {
     }
   });
 
+  it('should put the shallowest subtasks right above the aggregation that gathers them', () => {
+    // Arriving first, the subtasks without subtasks would otherwise all go to the left, far from it.
+    const session = new Session().task('parent');
+    for (let leaf = 0; leaf < 4; leaf++) {
+      session.task(`leaf${leaf}`, { parent: 'parent' });
+    }
+    for (let deep = 0; deep < 2; deep++) {
+      session.task(`deep${deep}`, { parent: 'parent' }).task(`deep${deep}.0`, { parent: `deep${deep}` }).task(`deep${deep}.0.0`, { parent: `deep${deep}.0` });
+    }
+    const outputs = ['leaf0', 'leaf1', 'leaf2', 'leaf3', 'deep0', 'deep1'].map(id => `${id}-out0`);
+    session.task('gather', { parent: 'parent', inputs: outputs });
+    const coordinates = layOut(session.input());
+    const distance = (id: string) => Math.abs(coordinates.get(id)![0] - coordinates.get('gather')![0]);
+
+    for (const leaf of ['leaf0', 'leaf1', 'leaf2', 'leaf3']) {
+      expect(distance(leaf)).toBeLessThan(Math.min(distance('deep0'), distance('deep1')));
+    }
+    expect(overlaps(coordinates)).toEqual([]);
+  });
+
   it('should keep side by side, below it, the subtasks reading a data the client uploaded', () => {
     const session = new Session().data('shared').task('parent');
     for (let child = 0; child < 6; child++) {
