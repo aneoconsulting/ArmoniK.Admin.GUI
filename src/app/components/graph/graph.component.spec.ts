@@ -10,7 +10,27 @@ import { StorageService } from '@services/storage.service';
 import { Subject, defer } from 'rxjs';
 import { NODE_SIZE } from './graph-layout';
 import { createLayoutWorker } from './graph-layout-worker.factory';
+import { GraphRenderer } from './graph-renderer';
 import { GraphComponent } from './graph.component';
+
+// jsdom has no WebGL: a renderer that records what it is given.
+const mockRenderer = {
+  setNodes: jest.fn(),
+  setNodeColor: jest.fn(),
+  setPositions: jest.fn(),
+  setFocus: jest.fn(),
+  setLinks: jest.fn(),
+  setLinkColors: jest.fn(),
+  setHighlights: jest.fn(),
+  resize: jest.fn(),
+  render: jest.fn(),
+  destroy: jest.fn(),
+};
+jest.mock('./graph-renderer', () => ({
+  GraphRenderer: jest.fn(() => mockRenderer),
+  TASK_SHAPE: 0,
+  RESULT_SHAPE: 1,
+}));
 
 describe('GraphComponent', () => {
   let component: GraphComponent;
@@ -51,6 +71,8 @@ describe('GraphComponent', () => {
 
   beforeEach(() => {
     jest.useFakeTimers();
+    // jsdom has no canvas either: the icons are drawn on nothing.
+    jest.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
     (createLayoutWorker as jest.Mock).mockReturnValue(mockWorker);
     component = TestBed.configureTestingModule({
       providers: [
@@ -243,7 +265,7 @@ describe('GraphComponent', () => {
       fonts(() => Promise.reject(new Error('blocked')));
       await component.ngAfterViewInit();
 
-      expect(component['graph']).not.toBeNull();
+      expect(GraphRenderer).toHaveBeenCalled();
       expect(component['subscription'].closed).toBe(false);
     });
 
@@ -255,65 +277,145 @@ describe('GraphComponent', () => {
       loaded();
       await init;
 
-      expect(component['graph']).toBeNull();
+      expect(GraphRenderer).not.toHaveBeenCalled();
+    });
+
+    it('should say why the graph cannot be drawn, and keep following the session', async () => {
+      jest.spyOn(console, 'error').mockImplementation(() => undefined);
+      (GraphRenderer as unknown as jest.Mock).mockImplementationOnce(() => {
+        throw new Error('WebGL2 is not available.');
+      });
+      await component.ngAfterViewInit();
+
+      expect(component.rendererError()).toEqual('WebGL2 is not available.');
+      expect(component['subscription'].closed).toBe(false);
     });
   });
 
   describe('view', () => {
-    // A renderer of 1080 × 680, 40 of padding left: 1000 × 600 for a graph of the given size.
-    const renderer = (width: number, height: number, zoom: number) => {
-      const graph = {
-        _destructor: jest.fn(),
-        zoomToFit: jest.fn(),
-        zoom: jest.fn((value?: number): unknown => (value === undefined ? zoom : graph)),
-        width: () => 1080,
-        height: () => 680,
-        minZoom: jest.fn((value?: number): unknown => (value === undefined ? 0.01 : graph)),
-        getGraphBbox: () => ({ x: [0, width], y: [0, height] }),
-      };
-      component['graph'] = graph as never;
-      return graph;
+    const element = () => {
+      const div = document.createElement('div');
+      Object.defineProperty(div, 'clientWidth', { value: 1080 });
+      Object.defineProperty(div, 'clientHeight', { value: 680 });
+      return div;
+    };
+    const pointer = (offsetX: number, offsetY: number) => ({ offsetX, offsetY, pointerId: 1 }) as PointerEvent;
+    // parent at the top, child 250 below it: drawn once laid out.
+    const drawn = async (positions = [0, 0, 0, 180, 0, 250, 0, 320]) => {
+      component['graphRef'] = { nativeElement: element() };
+      component.updates = new Subject<GraphUpdate>();
+      await component.ngAfterViewInit();
+      component['apply']([structure()]);
+      jest.advanceTimersByTime(1000);
+      mockWorker.onmessage!({ data: { positions: new Float64Array(positions) } } as MessageEvent);
+      jest.advanceTimersByTime(100);
     };
 
-    it('should fit the graph without zooming in past its natural size', () => {
-      const graph = renderer(100, 100, 16);
+    it('should fit the graph without zooming in past its natural size', async () => {
+      await drawn();
 
-      component['fitView']();
-
-      expect(graph.zoomToFit).toHaveBeenCalled();
-      // Not 1: force-graph would take the view as never zoomed, and zoom it its own way.
-      expect(graph.zoom).toHaveBeenLastCalledWith(0.99);
+      expect(component['camera'].scale).toEqual(1);
+      expect([component['camera'].x, component['camera'].y]).toEqual([0, 160]);
     });
 
-    it('should zoom out further than force-graph allows by default to fit a very wide graph', () => {
-      const graph = renderer(250000, 600, 0.004);
+    it('should zoom out as far as a very wide graph needs', async () => {
+      await drawn([0, 0, 250000, 0, 0, 250, 0, 320]);
 
-      component['fitView']();
-
-      expect(graph.minZoom).toHaveBeenCalledWith(0.004);
-      expect(graph.zoomToFit).toHaveBeenCalled();
+      // 1000 pixels for the graph and half a node on each side.
+      expect(component['camera'].scale).toBeCloseTo(1000 / (250000 + NODE_SIZE));
     });
 
-    it('should keep the default limit for a graph that fits within it', () => {
-      const graph = renderer(5000, 600, 0.2);
+    it('should size the canvas as its container, not as the window', async () => {
+      await drawn();
 
-      component['fitView']();
-
-      expect(graph.minZoom).not.toHaveBeenCalledWith(expect.any(Number));
+      expect(mockRenderer.resize).toHaveBeenCalledWith(1080, 680);
+      expect(component['camera'].width).toEqual(1080);
     });
 
-    it('should size the canvas as its container, not as the window', () => {
-      const element = document.createElement('div');
-      Object.defineProperty(element, 'clientWidth', { value: 1200 });
-      Object.defineProperty(element, 'clientHeight', { value: 700 });
-      const graph = { _destructor: jest.fn(), width: jest.fn((): unknown => graph), height: jest.fn((): unknown => graph) };
-      component['graphRef'] = { nativeElement: element };
-      component['graph'] = graph as never;
+    it('should hand the renderer the nodes, their links and their places', async () => {
+      await drawn();
 
-      component.onResize();
+      expect(mockRenderer.setNodes).toHaveBeenLastCalledWith(4, Uint8Array.from([0, 1, 0, 1]), expect.any(Uint8Array));
+      expect(mockRenderer.setLinks).toHaveBeenLastCalledWith(3, Uint32Array.from([0, 1, 2]), Uint32Array.from([1, 2, 3]), expect.any(Uint8Array));
+      expect(mockRenderer.setPositions).toHaveBeenLastCalledWith(Float32Array.from([0, 0, 0, 180, 0, 250, 0, 320]));
+      expect(mockRenderer.render).toHaveBeenCalled();
+    });
 
-      expect(graph.width).toHaveBeenCalledWith(1200);
-      expect(graph.height).toHaveBeenCalledWith(700);
+    it('should only write the colors of the nodes whose status changed', async () => {
+      await drawn();
+      mockRenderer.setNodeColor.mockClear();
+      const update = structure();
+      update.nodes[2].status = TaskStatus.TASK_STATUS_COMPLETED;
+
+      component['apply']([{ ...update, kind: 'status' }]);
+
+      expect(mockRenderer.setNodeColor).toHaveBeenCalledTimes(1);
+      expect(mockRenderer.setNodeColor).toHaveBeenCalledWith(2, expect.any(Uint8Array));
+    });
+
+    it('should move the view with a drag, without taking it for a click', async () => {
+      await drawn();
+      const { x, y } = component['camera'];
+
+      component['onPointerDown'](pointer(500, 300));
+      component['onPointerMove']({ ...pointer(560, 280), buttons: 1 } as PointerEvent);
+      component['onPointerUp'](pointer(560, 280));
+
+      expect([component['camera'].x, component['camera'].y]).toEqual([x - 60, y + 20]);
+    });
+
+    it('should zoom towards the pointer with the wheel', async () => {
+      await drawn();
+      const preventDefault = jest.fn();
+
+      component['onWheel']({ offsetX: 540, offsetY: 340, deltaY: -100, preventDefault } as unknown as WheelEvent);
+
+      expect(component['camera'].scale).toBeGreaterThan(1);
+      expect(preventDefault).toHaveBeenCalled();
+    });
+
+    it('should zoom on a clicked node', async () => {
+      await drawn();
+      // The child, at 0, 250: on screen, the centre of the view is at 0, 160.
+      const [x, y] = component['camera'].toScreen(0, 250);
+
+      component['onPointerDown'](pointer(x, y));
+      component['onPointerUp'](pointer(x, y));
+      jest.advanceTimersByTime(2000);
+
+      expect([component['camera'].x, component['camera'].y]).toEqual([0, 250]);
+      expect(component['camera'].scale).toEqual(4);
+    });
+
+    it('should fade what is not around the hovered node, and tell its id', async () => {
+      await drawn();
+      const [x, y] = component['camera'].toScreen(0, 0);
+
+      component['onPointerMove'](pointer(x, y));
+
+      expect(mockRenderer.setFocus).toHaveBeenLastCalledWith(Uint8Array.from([1, 1, 1, 0]));
+      expect(component.tooltip()).toEqual(expect.objectContaining({ id: 'parent' }));
+      component['onPointerLeave']();
+      expect(mockRenderer.setFocus).toHaveBeenLastCalledWith(null);
+      expect(component.tooltip()).toBeNull();
+    });
+
+    it('should mark the highlighted nodes with the complementary color of theirs', async () => {
+      await drawn();
+      component.highlightParentNodes = false;
+      component.highlightChildrenNodes = false;
+
+      component.highlightNodes('output');
+
+      expect(mockRenderer.setHighlights).toHaveBeenLastCalledWith(Uint32Array.from([3]), Uint8Array.from([255, 0, 255, 255]));
+    });
+
+    it('should let the renderer go when left', async () => {
+      await drawn();
+
+      component.ngOnDestroy();
+
+      expect(mockRenderer.destroy).toHaveBeenCalled();
     });
   });
 
@@ -349,15 +451,7 @@ describe('GraphComponent', () => {
     });
 
     it('should fit the view on the first graph to come to a session shown empty', () => {
-      const graph: Record<string, jest.Mock> = {};
-      for (const method of ['graphData', 'nodeCanvasObject', 'zoomToFit', 'zoom', '_destructor']) {
-        graph[method] = jest.fn(() => graph);
-      }
-      graph['getGraphBbox'] = jest.fn(() => ({ x: [0, 100], y: [0, 400] }));
-      graph['width'] = jest.fn(() => 1000);
-      graph['height'] = jest.fn(() => 800);
-      graph['minZoom'] = jest.fn(() => 0.01);
-      component['graph'] = graph as unknown as typeof component['graph'];
+      const fitView = jest.spyOn(component as unknown as { fitView: () => void }, 'fitView');
       jest.advanceTimersByTime(5000);
 
       streams[0].next(structure());
@@ -365,7 +459,7 @@ describe('GraphComponent', () => {
       jest.advanceTimersByTime(1500);
       mockWorker.onmessage!({ data: { positions: new Float64Array([0, 0, 0, 180, 0, 250, 0, 320]) } } as MessageEvent);
 
-      expect(graph['zoomToFit']).toHaveBeenCalled();
+      expect(fitView).toHaveBeenCalled();
     });
 
     it('should keep loading a session whose graph is arriving', () => {
@@ -594,25 +688,17 @@ describe('GraphComponent', () => {
 
   describe('highlight before the first layout', () => {
     it('should wait for the layout to centre on a single match and highlight its ancestors', () => {
-      const graph: Record<string, jest.Mock> = {};
-      for (const method of ['centerAt', 'graphData', 'nodeCanvasObject', 'zoomToFit', 'zoom', '_destructor']) {
-        graph[method] = jest.fn(() => graph);
-      }
-      graph['getGraphBbox'] = jest.fn(() => ({ x: [0, 100], y: [0, 400] }));
-      graph['width'] = jest.fn(() => 1000);
-      graph['height'] = jest.fn(() => 800);
-      graph['minZoom'] = jest.fn(() => 0.01);
-      component['graph'] = graph as unknown as typeof component['graph'];
+      const moveCamera = jest.spyOn(component as unknown as { moveCamera: () => void }, 'moveCamera');
       component.highlightParentNodes = true;
       component['apply']([structure()]);
 
       expect(() => component.highlightNodes('output')).not.toThrow();
-      expect(graph['centerAt']).not.toHaveBeenCalled();
+      expect(moveCamera).not.toHaveBeenCalled();
 
       jest.advanceTimersByTime(1000);
       mockWorker.onmessage!({ data: { positions: new Float64Array([0, 0, 0, 180, 0, 250, 0, 320]) } } as MessageEvent);
 
-      expect(graph['centerAt']).toHaveBeenCalledWith(0, 320, 500);
+      expect(moveCamera).toHaveBeenCalledWith(0, 320, expect.any(Number), 500);
       expect(component['nodesToHighlight']).toEqual(new Set(['output', 'child', 'payload-child', 'parent']));
     });
   });
@@ -636,38 +722,6 @@ describe('GraphComponent', () => {
       component.highlightNodes('output');
 
       expect(component['nodesToHighlight']).toEqual(new Set(['output', 'child', 'payload-child', 'parent']));
-    });
-
-    it('should mark the highlighted nodes on top of the frame when zoomed out', () => {
-      const ctx = { fillRect: jest.fn(), fillStyle: '' } as unknown as CanvasRenderingContext2D;
-      component['nodes'].forEach((node, index) => component['setPosition'](node, index * 100, 0));
-      component.highlightChildrenNodes = false;
-      component.highlightParentNodes = false;
-      component.highlightNodes('output');
-
-      component['drawHighlights'](ctx, 0.01);
-
-      // 12 px on screen at a zoom of 0.01: 1200 units, then its centre.
-      expect(ctx.fillRect).toHaveBeenCalledWith(300 - 600, -600, 1200, 1200);
-      expect(ctx.fillRect).toHaveBeenCalledTimes(2);
-    });
-
-    it('should not paint a pointer area for a node force-graph gave no pick color', () => {
-      const ctx = { fillRect: jest.fn(), fillStyle: '#000001' } as unknown as CanvasRenderingContext2D;
-
-      component['paintPointerArea'](component['nodes'][0], null, ctx);
-
-      expect(ctx.fillRect).not.toHaveBeenCalled();
-      expect(ctx.fillStyle).toEqual('#000001');
-    });
-
-    it('should leave the highlights to the icons when zoomed in', () => {
-      const ctx = { fillRect: jest.fn() } as unknown as CanvasRenderingContext2D;
-      component.highlightNodes('output');
-
-      component['drawHighlights'](ctx, 1);
-
-      expect(ctx.fillRect).not.toHaveBeenCalled();
     });
 
     it('should store the parents highlight setting', () => {
@@ -712,19 +766,6 @@ describe('GraphComponent', () => {
       jest.advanceTimersByTime(1000);
 
       expect(component.debug()).toBeNull();
-    });
-  });
-
-  describe('colors', () => {
-    it('should fade the links as it zooms out', () => {
-      const link: GraphLink<ArmoniKGraphNode> = { source: 'a', target: 'b', type: 'output' };
-      component['scale'] = 10;
-      const zoomedIn = component['getLinkColor'](link);
-      component['scale'] = 0.01;
-      const zoomedOut = component['getLinkColor'](link);
-
-      expect(zoomedIn).not.toEqual(zoomedOut);
-      expect(component['getLinkColor'](link)).toBe(zoomedOut);
     });
   });
 

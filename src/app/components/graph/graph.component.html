@@ -43,9 +43,6 @@
     <mat-checkbox (change)="toggleHighlightChildrenNodes($event.checked)" [checked]="highlightChildrenNodes" i18n>
       Highlight children nodes
     </mat-checkbox>
-    <mat-checkbox (change)="setParticles($event.checked)" i18n>
-      Display Particles
-    </mat-checkbox>
     <mat-checkbox (change)="toggleDebug($event.checked)" [checked]="debugEnabled()" i18n>
       Debug
     </mat-checkbox>
@@ -137,4 +134,11 @@
     </mat-card-content>
   </mat-card>
 }
-<div class="graph" #graph></div>
+<div class="graph" #graph>
+  @if (tooltip(); as tip) {
+    <span class="node-tooltip" [style.left.px]="tip.x + 12" [style.top.px]="tip.y + 12">{{ tip.id }}</span>
+  }
+  @if (rendererError(); as error) {
+    <span class="warning renderer-error" i18n="@@graphRendererError">The graph cannot be drawn: {{ error }}</span>
+  }
+</div>

@@ -3066,5 +3066,14 @@
         <target> Placer avec ELK </target>
       </segment>
     </unit>
+    <unit id="graphRendererError">
+      <notes>
+        <note category="location">src/app/components/graph/graph.component.html:144</note>
+      </notes>
+      <segment state="initial">
+        <source>The graph cannot be drawn: <ph id="0" equiv="INTERPOLATION" disp="{{ error }}"/></source>
+        <target>Le graphe ne peut pas être dessiné : <ph id="0" equiv="INTERPOLATION" disp="{{ error }}"/></target>
+      </segment>
+    </unit>
   </file>
 </xliff>

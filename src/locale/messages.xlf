@@ -2755,5 +2755,13 @@
         <source> Layout with ELK </source>
       </segment>
     </unit>
+    <unit id="graphRendererError">
+      <notes>
+        <note category="location">src/app/components/graph/graph.component.html:144</note>
+      </notes>
+      <segment>
+        <source>The graph cannot be drawn: <ph id="0" equiv="INTERPOLATION" disp="{{ error }}"/></source>
+      </segment>
+    </unit>
   </file>
 </xliff>
