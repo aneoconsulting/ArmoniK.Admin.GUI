@@ -2747,14 +2747,6 @@
         <source>This field is not reported by the server.</source>
       </segment>
     </unit>
-    <unit id="graphLayoutWithElk">
-      <notes>
-        <note category="location">src/app/components/graph/graph.component.html:53,55</note>
-      </notes>
-      <segment>
-        <source> Layout with ELK </source>
-      </segment>
-    </unit>
     <unit id="graphRendererError">
       <notes>
         <note category="location">src/app/components/graph/graph.component.html:144</note>

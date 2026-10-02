@@ -47,12 +47,7 @@ export type LayoutLink = {
   type: string;
 };
 
-/** ELK is kept to compare it with the layout of our own, the default. */
-export type LayoutAlgorithm = 'layered' | 'elk';
-
 export type LayoutInput = {
-  /** The layered layout of this file when left out. */
-  algorithm?: LayoutAlgorithm;
   /** Node ids, in arrival order. */
   nodes: string[];
   /** Type of each node, in the same order. */
