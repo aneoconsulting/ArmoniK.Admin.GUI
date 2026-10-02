@@ -20,6 +20,28 @@ npm run build
 
 The fake control plane also needs the app's dependencies, so run `pnpm install` at the root first.
 
+## Without a display
+
+`run.mjs` starts the server, runs the benchmark in a headless Chrome and prints a Markdown table.
+Headless Chrome still uses the GPU when the machine has one: check the GPU line, where SwiftShader
+or llvmpipe mean software rendering.
+
+```sh
+node run.mjs all 10000 20                              # renderers, tasks, new tasks per tick
+node run.mjs pixi,webgl 30000 20 'antialias=0'         # an extra query for the renderers' knobs
+CHROME=/usr/bin/chromium CHROME_FLAGS=--no-sandbox node run.mjs
+```
+
+From WSL, the Windows Chrome renders with the Windows GPU:
+
+```sh
+CHROME='/mnt/c/Program Files/Google/Chrome/Application/chrome.exe' \
+CHROME_PROFILE='C:\Users\<user>\AppData\Local\Temp\graph-bench' node run.mjs all 30000 20
+```
+
+`run.mjs` cannot stop a Windows Chrome. Stop it from PowerShell, or with
+`powershell.exe -Command "Get-CimInstance Win32_Process -Filter \"Name = 'chrome.exe'\" | Where-Object { $_.CommandLine -like '*graph-bench*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }"`.
+
 ## Renderers benchmark
 
 ```sh
@@ -56,6 +78,13 @@ The renderers:
 
 Only what costs is drawn: shapes and links, no icons, hover or highlight. Those would come with
 the real engine.
+
+The `webgl` prototype has two knobs, as query parameters:
+- `antialias=0` turns off multisampling.
+- `minLinkWidth=0` lets links thin out under a pixel instead of fading at 1 pixel.
+
+Nodes never get smaller than 2 pixels. Zoomed out on a large graph, these minimum sizes are what
+the GPU pays for while panning.
 
 Try larger sessions too (`Tasks` 30000, 50000), and `New tasks per tick` 0 to measure statuses
 alone.

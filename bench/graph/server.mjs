@@ -1,6 +1,7 @@
 // A fake ArmoniK control plane for the session graph, and a static server for the benchmark and the app.
 //
-// - /bench/            the renderers benchmark (build it first: npm run build)
+// - /bench/            the renderers benchmark (build it first: npm run build); with ?run=all, it
+//                      runs the three renderers and posts each result here, printed as RESULT {…}
 // - /en/...            the app, built by `pnpm build` at the root of the repository
 // - GetEvents          the events of one session, `session`, as grpc-web-text: its whole graph, then
 //                      status updates and, with GROW=1, new tasks, forever
@@ -108,6 +109,17 @@ function file(res, root, relative) {
 
 http.createServer((req, res) => {
   const url = req.url.split('?')[0];
+  if (req.method === 'POST' && url === '/bench/results') {
+    // What a benchmark run with ?run=all reports, one JSON line per renderer.
+    let body = '';
+    req.on('data', chunk => (body += chunk));
+    req.on('end', () => {
+      console.log(`RESULT ${body}`);
+      res.writeHead(204);
+      res.end();
+    });
+    return;
+  }
   if (req.method === 'POST') {
     if (url.endsWith('/GetEvents')) {
       req.resume();

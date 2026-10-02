@@ -188,8 +188,24 @@ document.getElementById('clear').addEventListener('click', () => {
   showResults();
 });
 
+// ?run=all&tasks=…&grow=… runs the three renderers without a click, for a browser driven from a
+// script: each result is also posted to the server, which prints it.
+const query = new URLSearchParams(location.search);
+// ?run=pixi,webgl runs only those. The other parameters are kept for the renderers' own knobs.
+const starting = query.has('run');
+if (starting) {
+  const tasks = Number(query.get('tasks') ?? 10000);
+  const grow = Number(query.get('grow') ?? 20);
+  const renderers = query.get('run') === 'all' ? Object.keys(RENDERERS) : query.get('run').split(',');
+  save(STORAGE_KEY, []);
+  save(QUEUE_KEY, renderers.map(renderer => ({ renderer, tasks, grow, report: true })));
+  query.delete('run');
+  location.replace(`${location.pathname}?${query}`);
+}
+
 showResults();
-const [next, ...rest] = load(QUEUE_KEY);
+// Not while starting: the page is being replaced, and would lose the run it took.
+const [next, ...rest] = starting ? [] : load(QUEUE_KEY);
 if (next) {
   save(QUEUE_KEY, rest);
   form.renderer.value = next.renderer;
@@ -198,6 +214,10 @@ if (next) {
   run(next.renderer, next.tasks, next.grow).then(result => {
     save(STORAGE_KEY, [...load(STORAGE_KEY), result]);
     window.benchResult = result;
+    if (next.report) {
+      return fetch('results', { method: 'POST', body: JSON.stringify({ ...result, tasks: next.tasks, grow: next.grow, last: rest.length === 0 }) }).then(() => result);
+    }
+  }).then(() => {
     if (rest.length) {
       location.reload();
     } else {
@@ -207,6 +227,9 @@ if (next) {
   }, error => {
     console.error(error);
     status.textContent = `${next.renderer} failed: ${error.message}`;
+    if (next.report) {
+      fetch('results', { method: 'POST', body: JSON.stringify({ renderer: next.renderer, error: String(error?.stack ?? error), last: true }) });
+    }
     save(QUEUE_KEY, []);
   });
 }

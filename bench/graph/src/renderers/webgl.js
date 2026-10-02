@@ -50,6 +50,7 @@ uniform vec2 u_center;
 uniform float u_scale;
 uniform vec2 u_viewport;
 uniform float u_width;
+uniform float u_minWidth;
 out vec4 v_color;
 void main() {
   vec2 source = (a_source - u_center) * u_scale;
@@ -61,9 +62,9 @@ void main() {
   float side = float(gl_VertexID >> 1) * 2.0 - 1.0;
   // Thinner as the view zooms out, but never under a pixel: fainter instead.
   float width = u_width * u_scale;
-  vec2 pixel = mix(source, target, along) + normal * side * max(width, 1.0) * 0.5;
+  vec2 pixel = mix(source, target, along) + normal * side * max(width, u_minWidth) * 0.5;
   gl_Position = vec4(pixel * 2.0 / u_viewport * vec2(1.0, -1.0), 0.0, 1.0);
-  v_color = a_color * min(1.0, width);
+  v_color = a_color * (u_minWidth > 0.0 ? min(1.0, width / u_minWidth) : 1.0);
 }`;
 
 const LINK_FRAGMENT = `#version 300 es
@@ -147,8 +148,10 @@ class Instances {
 }
 
 export class GraphEngine {
-  constructor(canvas) {
-    const gl = canvas.getContext('webgl2', { antialias: true, alpha: false, premultipliedAlpha: true });
+  /** `minLinkWidth`: in pixels, the width a link keeps once the zoom makes it thinner, fainter instead; 0 lets it thin out. */
+  constructor(canvas, { antialias = true, minLinkWidth = 1 } = {}) {
+    this.minLinkWidth = minLinkWidth;
+    const gl = canvas.getContext('webgl2', { antialias, alpha: false, premultipliedAlpha: true });
     if (!gl) {
       throw new Error('WebGL2 is not available.');
     }
@@ -206,7 +209,10 @@ export class GraphEngine {
     gl.clearColor(1, 1, 1, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
     for (const [instances, { program: used, uniforms }, setUniforms] of [
-      [this.links, this.linkProgram, u => gl.uniform1f(u.u_width, NODE_SIZE / 12 * devicePixelRatio)],
+      [this.links, this.linkProgram, u => {
+        gl.uniform1f(u.u_width, NODE_SIZE / 12);
+        gl.uniform1f(u.u_minWidth, this.minLinkWidth * devicePixelRatio);
+      }],
       [this.nodes, this.nodeProgram, u => gl.uniform1f(u.u_size, NODE_SIZE)],
     ]) {
       if (instances.count === 0) {
@@ -231,7 +237,12 @@ export function webglRenderer(container, scene, width, height) {
   canvas.width = Math.round(width * devicePixelRatio);
   canvas.height = Math.round(height * devicePixelRatio);
   container.appendChild(canvas);
-  const engine = new GraphEngine(canvas);
+  // Knobs of the benchmark: ?antialias=0, ?minLinkWidth=0.
+  const query = new URLSearchParams(location.search);
+  const engine = new GraphEngine(canvas, {
+    antialias: query.get('antialias') !== '0',
+    minLinkWidth: Number(query.get('minLinkWidth') ?? 1),
+  });
   const statusColors = STATUS_COLORS.map(color => new Uint8Array(rgba(color)));
   const linkColor = rgba(LINK_COLOR, 0.3);
 
