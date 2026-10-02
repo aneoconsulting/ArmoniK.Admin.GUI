@@ -29,11 +29,13 @@ export const NODE_GAP = 30;
 /** Vertical space left between two layers of tasks and the rows of data around them. */
 const LAYER_GAP = 60;
 /** Distance from a task to the rows of data drawn above and below it. */
-const DATA_ROW_OFFSET = NODE_SIZE + 20;
-const SLOT = NODE_SIZE + NODE_GAP;
+export const DATA_ROW_OFFSET = NODE_SIZE + 20;
+/** From a node to the next in a row. */
+export const SLOT = NODE_SIZE + NODE_GAP;
 /** A task, a row of data above it and one below. */
 const BOX_HEIGHT = NODE_SIZE + 2 * DATA_ROW_OFFSET;
-const LAYER_STEP = BOX_HEIGHT + LAYER_GAP;
+/** From a row of tasks to the next. */
+export const LAYER_STEP = BOX_HEIGHT + LAYER_GAP;
 /** A session of more independent parts than this is wrapped on several rows… */
 const WRAP_FROM = 20;
 /** …to about the proportions of a screen. */

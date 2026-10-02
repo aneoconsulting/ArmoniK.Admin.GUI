@@ -145,8 +145,8 @@ describe('GraphComponent', () => {
     });
 
     it('should lay the graph out even when the structure never stops changing', () => {
-      // The initial graph ends with the second batch, the first one telling nothing: 10 s after.
-      for (let elapsed = 0; elapsed < 11000; elapsed += 500) {
+      // The initial graph ends with the second batch, the first one telling nothing: a minute after.
+      for (let elapsed = 0; elapsed < 61000; elapsed += 500) {
         component['apply']([structure()]);
         jest.advanceTimersByTime(500);
       }
@@ -533,18 +533,28 @@ describe('GraphComponent', () => {
       }
     };
 
-    it('should put new subtasks and their data on their parent, for the next layout to spread them', () => {
+    it('should put new subtasks at the end of the first row of their family, their data around them', () => {
       const update = laidOut();
       addTask(update, 'sibling-1', 'parent');
       addTask(update, 'sibling-2', 'parent');
       component['apply']([update]);
 
-      for (const id of ['sibling-1', 'sibling-1-payload', 'sibling-1-output', 'sibling-2', 'sibling-2-payload', 'sibling-2-output']) {
-        expect(place(update, id)).toEqual([0, 0]);
-      }
+      // child is at 0, 250: its siblings go on to its right.
+      expect(place(update, 'sibling-1')).toEqual([80, 250]);
+      expect(place(update, 'sibling-1-payload')).toEqual([80, 180]);
+      expect(place(update, 'sibling-1-output')).toEqual([80, 320]);
+      expect(place(update, 'sibling-2')).toEqual([160, 250]);
     });
 
-    it('should put a chain of thousands of new subtasks on its placed end', () => {
+    it('should put the first subtask of a task below it', () => {
+      const update = laidOut();
+      addTask(update, 'grandchild', 'child');
+      component['apply']([update]);
+
+      expect(place(update, 'grandchild')).toEqual([0, 500]);
+    });
+
+    it('should put a chain of thousands of new subtasks from its placed end, without recursion', () => {
       const update = laidOut();
       addTask(update, 'chain-0', 'child');
       for (let index = 1; index < 10000; index++) {
@@ -552,28 +562,30 @@ describe('GraphComponent', () => {
       }
       component['apply']([update]);
 
-      expect(place(update, 'chain-9999')).toEqual([0, 250]);
+      expect(place(update, 'chain-9999')).toEqual([0, 250 + 10000 * 250]);
     });
 
-    it('should put a task the client submitted on the deepest producer of its data', () => {
+    it('should put an aggregation below what it gathers, centred on it', () => {
       const update = laidOut();
-      addTask(update, 'reduce');
+      addTask(update, 'sibling', 'parent');
+      addTask(update, 'gather', 'parent');
       update.links.push(
-        { source: 'parent-output', target: 'reduce', type: 'dependency' },
-        { source: 'output', target: 'reduce', type: 'dependency' },
+        { source: 'output', target: 'gather', type: 'dependency' },
+        { source: 'sibling-output', target: 'gather', type: 'dependency' },
       );
       component['apply']([update]);
 
-      expect(place(update, 'reduce')).toEqual([0, 250]);
+      // child at 0 and sibling at 80, on the row at 250.
+      expect(place(update, 'gather')).toEqual([40, 500]);
     });
 
-    it('should put a task the client submitted on the data it uploaded, which has no producer', () => {
+    it('should put a task the client submitted below the data it uploaded, which has no producer', () => {
       const update = laidOut();
       addTask(update, 'consumer');
       update.links.push({ source: 'payload-child', target: 'consumer', type: 'dependency' });
       component['apply']([update]);
 
-      expect(place(update, 'consumer')).toEqual([0, 180]);
+      expect(place(update, 'consumer')).toEqual([0, 180 + 250]);
     });
 
     it('should move a task that arrived before its links to its parent once they come', () => {
@@ -595,9 +607,10 @@ describe('GraphComponent', () => {
       );
       component['apply']([update]);
 
-      for (const id of ['early', 'early-output', 'early-payload']) {
-        expect(place(update, id)).toEqual([0, 250]);
-      }
+      // child had no subtask: the first one goes below it.
+      expect(place(update, 'early')).toEqual([0, 500]);
+      expect(place(update, 'early-payload')).toEqual([0, 430]);
+      expect(place(update, 'early-output')).toEqual([0, 570]);
     });
 
     it('should put a new root to the right of the graph, on its top row', () => {
@@ -608,7 +621,8 @@ describe('GraphComponent', () => {
       const [x, y] = place(update, 'root');
       expect(x).toBeGreaterThan(100 + NODE_SIZE);
       expect(y).toEqual(0);
-      expect(place(update, 'root-output')).toEqual([x, y]);
+      expect(place(update, 'root-payload')).toEqual([x, y! - 70]);
+      expect(place(update, 'root-output')).toEqual([x, y! + 70]);
     });
   });
 
@@ -635,8 +649,9 @@ describe('GraphComponent', () => {
       mockWorker.onmessage!({ data: { positions: new Float64Array([5000, 0, 5000, 180, 5000, 250, 5000, 320]) } } as MessageEvent);
       jest.advanceTimersByTime(1000);
 
+      // To the right of child, the other subtask of parent.
       const late = update.nodes.find(node => node.id === 'late')!;
-      expect([late.x, late.y]).toEqual([5000, 0]);
+      expect([late.x, late.y]).toEqual([5080, 250]);
     });
 
     it('should put one arriving while the nodes move where its parent goes', () => {
@@ -662,7 +677,7 @@ describe('GraphComponent', () => {
 
       const late = update.nodes.find(node => node.id === 'late')!;
       const parent = update.nodes.find(node => node.id === 'parent')!;
-      expect([late.x, late.y]).toEqual([5000, 0]);
+      expect([late.x, late.y]).toEqual([5080, 250]);
       expect([parent.x, parent.y]).toEqual([5000, 0]);
     });
   });

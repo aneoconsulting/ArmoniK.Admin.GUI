@@ -19,7 +19,7 @@ import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { StorageService } from '@services/storage.service';
 import { Observable, Subscription, bufferTime, filter, retry, tap, timer } from 'rxjs';
-import { Coordinates, LayoutAlgorithm, LayoutInput, LayoutResponse, NODE_GAP, NODE_SIZE, push } from './graph-layout';
+import { Coordinates, DATA_ROW_OFFSET, LAYER_STEP, LayoutAlgorithm, LayoutInput, LayoutResponse, NODE_GAP, NODE_SIZE, SLOT, push } from './graph-layout';
 import { createLayoutWorker } from './graph-layout-worker.factory';
 import { GraphLegendComponent } from './graph-legend.component';
 import { GraphRenderer, RESULT_SHAPE, TASK_SHAPE } from './graph-renderer';
@@ -61,8 +61,11 @@ export type GraphDebug = {
 const BATCH_MS = 250;
 /** The layout runs once the structure has stopped changing for this long… */
 const QUIET_MS = 1000;
-/** …or this long after the first change, for a running session never stops changing. */
-const MAX_WAIT_MS = 10000;
+/**
+ * …or this long after the first change, for a running session never stops changing. New nodes
+ * are put in their families meanwhile, close to where the layout would put them: it can wait.
+ */
+const MAX_WAIT_MS = 60000;
 /**
  * The same cap while the initial graph arrives, wider: laying it out before its end means laying
  * it out twice, but a session never quiet enough to end it must still show up.
@@ -116,9 +119,9 @@ const SEARCH_DELAY_MS = 300;
 const HOVER_DEPTH = 2;
 
 /**
- * Draws the graph of a session. Nodes are placed by a layered layout in a worker, not by a
- * simulation. Nothing is drawn until its first layout, which shows the whole graph at once; the
- * nodes added since are put on their parent until it runs again, and spreads them from there.
+ * Draws the graph of a session. Nodes are placed by a layout in a worker, not by a simulation.
+ * Nothing is drawn until its first layout, which shows the whole graph at once; the nodes added
+ * since are put in their families, as the layout would put them, until it runs again.
  */
 @Component({
   selector: 'app-graph',
@@ -786,16 +789,18 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Nodes added since the last layout, put on a node already placed until it runs again, which
-   * spreads them from there: a task on its parent, or for one the client submitted, on the
-   * deepest producer of its data, else on the deepest of its data; a data on the task it belongs
-   * to. The others go to the right of the graph, on its top row, and are kept in `unanchored`.
-   * `positionOf` gives the nodes already placed, undefined for the others.
+   * Nodes added since the last layout, put in their families until it runs again, as it would
+   * place them: a subtask at the end of the first row of its family, or the first one below its
+   * parent; an aggregation, or a task the client submitted, below what it reads; a payload above
+   * its task, outputs below it. Nodes with nothing placed to go with go to the right of the graph,
+   * on its top row, and are kept in `unanchored`. `positionOf` gives the nodes already placed,
+   * undefined for the others. They may overlap other families until the next layout.
    */
   private incrementalCoordinates(positionOf: (id: string) => [number, number] | undefined): Coordinates {
     const payloads = new Map<string, string>();
     const parents = new Map<string, string>();
     const owners = new Map<string, string>();
+    const outputs = new Map<string, string[]>();
     const fed = new Map<string, string>();
     const inputs = new Map<string, string[]>();
     for (const link of this.links) {
@@ -808,6 +813,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         parents.set(target, source);
       } else if (link.type === 'output') {
         owners.set(target, source);
+        push(outputs, source, target);
       } else {
         push(inputs, target, source);
         if (!fed.has(source)) {
@@ -815,30 +821,45 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
     }
+    const parentOf = (task: string) => {
+      const payload = payloads.get(task);
+      return payload === undefined ? undefined : parents.get(payload);
+    };
 
     const coordinates: Coordinates = new Map();
     let top = Infinity;
     let right = -Infinity;
+    // The first row of each family, as placed: its height and its right end, which the new
+    // subtasks extend.
+    const rows = new Map<string, { y: number, right: number }>();
     for (const node of this.nodes) {
       const position = positionOf(node.id);
       if (position) {
         coordinates.set(node.id, position);
         top = Math.min(top, position[1]);
         right = Math.max(right, position[0] + NODE_SIZE / 2);
+        const parent = node.type === 'task' ? parentOf(node.id) : undefined;
+        if (parent !== undefined) {
+          const row = rows.get(parent);
+          if (!row || position[1] < row.y) {
+            rows.set(parent, { y: position[1], right: position[0] });
+          } else if (position[1] === row.y) {
+            row.right = Math.max(row.right, position[0]);
+          }
+        }
       }
     }
     top = Number.isFinite(top) ? top : 0;
     right = Number.isFinite(right) ? right : 0;
 
-    // The node a new one is put on, undefined for a new root.
+    const placedProducers = (task: string) => (inputs.get(task) ?? [])
+      .map(input => owners.get(input))
+      .filter((producer): producer is string => producer !== undefined && coordinates.has(producer));
+
+    // The node a new one goes with, undefined for a new root.
     const anchor = (node: Node): string | undefined => {
       if (node.type !== 'task') {
         return owners.get(node.id) ?? fed.get(node.id);
-      }
-      const payload = payloads.get(node.id);
-      const parent = payload === undefined ? undefined : parents.get(payload);
-      if (parent !== undefined) {
-        return parent;
       }
       const deeper = (candidate: string | undefined, than: string | undefined) => {
         const position = candidate === undefined ? undefined : coordinates.get(candidate);
@@ -858,8 +879,31 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         other ??= producer;
       }
-      // Else a producer not placed yet: the task goes with it.
-      return deepestProducer ?? deepestInput ?? other;
+      // What it reads first, an aggregation below the subtasks it gathers; else its parent.
+      return deepestProducer ?? parentOf(node.id) ?? deepestInput ?? other;
+    };
+
+    // Where a new node goes, `anchor` placed at `at`.
+    const place = (node: Node, anchorId: string, at: [number, number]): [number, number] => {
+      if (node.type !== 'task') {
+        if (owners.get(node.id) === anchorId) {
+          const rank = outputs.get(anchorId)?.indexOf(node.id) ?? 0;
+          return [at[0] + Math.max(0, rank) * SLOT, at[1] + DATA_ROW_OFFSET];
+        }
+        // A payload, or an input of its only consumer: above it.
+        return [at[0], at[1] - DATA_ROW_OFFSET];
+      }
+      const parent = parentOf(node.id);
+      if (parent === anchorId) {
+        const row = rows.get(parent);
+        const position: [number, number] = row ? [row.right + SLOT, row.y] : [at[0], at[1] + LAYER_STEP];
+        rows.set(parent, { y: position[1], right: position[0] });
+        return position;
+      }
+      // Below what it reads, centred on what of it is placed.
+      const producers = placedProducers(node.id);
+      const x = producers.length === 0 ? at[0] : producers.reduce((sum, producer) => sum + coordinates.get(producer)![0], 0) / producers.length;
+      return [x, at[1] + LAYER_STEP];
     };
 
     // A chain of new nodes is placed from its placed end, without recursion: a new chain of
@@ -868,23 +912,29 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       if (coordinates.has(node.id)) {
         continue;
       }
-      const chain: string[] = [];
+      const chain: Node[] = [];
       const seen = new Set<string>();
       let current: Node | undefined = node;
-      let position: [number, number] | undefined;
-      while (current && !(position = coordinates.get(current.id)) && !seen.has(current.id)) {
-        chain.push(current.id);
+      let end: string | undefined;
+      while (current && !coordinates.has(current.id) && !seen.has(current.id)) {
+        chain.push(current);
         seen.add(current.id);
-        const next = anchor(current);
-        current = next === undefined ? undefined : this.nodesById.get(next);
+        end = anchor(current);
+        current = end === undefined ? undefined : this.nodesById.get(end);
       }
-      if (!position) {
+      let first = chain.length - 1;
+      if (!current || !coordinates.has(current.id)) {
+        // Nothing placed to go with: its end goes to the right of the graph, on its top row.
         right += NODE_GAP + NODE_SIZE;
-        position = [right - NODE_SIZE / 2, top];
-        chain.forEach(id => this.unanchored.add(id));
+        coordinates.set(chain[first].id, [right - NODE_SIZE / 2, top]);
+        chain.forEach(chained => this.unanchored.add(chained.id));
+        current = chain[first--];
       }
-      for (const id of chain) {
-        coordinates.set(id, position!);
+      // From the placed end back to the new node, each placed next to the one it goes with.
+      let anchorId = current.id;
+      for (let k = first; k >= 0; k--) {
+        coordinates.set(chain[k].id, place(chain[k], anchorId, coordinates.get(anchorId)!));
+        anchorId = chain[k].id;
       }
     }
     return coordinates;
