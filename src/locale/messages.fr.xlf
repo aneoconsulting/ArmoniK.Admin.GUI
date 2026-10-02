@@ -3075,5 +3075,32 @@
         <target>Le graphe ne peut pas être dessiné : <ph id="0" equiv="INTERPOLATION" disp="{{ error }}"/></target>
       </segment>
     </unit>
+    <unit id="graphPreviousMatch">
+      <notes>
+        <note category="location">src/app/components/graph/graph.component.html</note>
+      </notes>
+      <segment state="initial">
+        <source>Previous match</source>
+        <target>Correspondance précédente</target>
+      </segment>
+    </unit>
+    <unit id="graphNextMatch">
+      <notes>
+        <note category="location">src/app/components/graph/graph.component.html</note>
+      </notes>
+      <segment state="initial">
+        <source>Next match</source>
+        <target>Correspondance suivante</target>
+      </segment>
+    </unit>
+    <unit id="graphNoMatch">
+      <notes>
+        <note category="location">src/app/components/graph/graph.component.html</note>
+      </notes>
+      <segment state="initial">
+        <source>No match</source>
+        <target>Aucune correspondance</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

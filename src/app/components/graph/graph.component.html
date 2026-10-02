@@ -36,7 +36,21 @@
     </section>
   </mat-card-content>
   <mat-card-actions>
-    <app-autocomplete [options]="nodesIds()" [label]="highlightLabel" (valueChange)="highlightNodes($event)" />
+    <mat-form-field class="search" subscriptSizing="dynamic">
+      <mat-label>{{ highlightLabel }}</mat-label>
+      <input matInput #search (input)="searchChanged(search.value)" (keydown.enter)="searchNow(search.value)" />
+    </mat-form-field>
+    @if (matches().length > 1) {
+      <span class="matches">{{ matchIndex() + 1 }} / {{ matches().length }}</span>
+      <button mat-icon-button (click)="previousMatch()" i18n-matTooltip="@@graphPreviousMatch" matTooltip="Previous match">
+        <mat-icon [fontIcon]="getIcon('arrow-up')" />
+      </button>
+      <button mat-icon-button (click)="nextMatch()" i18n-matTooltip="@@graphNextMatch" matTooltip="Next match">
+        <mat-icon [fontIcon]="getIcon('arrow-down')" />
+      </button>
+    } @else if (searched() !== '' && matches().length === 0) {
+      <span class="warning" i18n="@@graphNoMatch">No match</span>
+    }
     <mat-checkbox (change)="toggleHighlightParentNodes($event.checked)" [checked]="highlightParentNodes" i18n>
       Highlight parent nodes
     </mat-checkbox>

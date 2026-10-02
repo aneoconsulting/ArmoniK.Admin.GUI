@@ -19,7 +19,6 @@ import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { StorageService } from '@services/storage.service';
 import { Observable, Subscription, bufferTime, filter, retry, tap, timer } from 'rxjs';
-import { AutoCompleteComponent } from '../auto-complete.component';
 import { Coordinates, LayoutAlgorithm, LayoutInput, LayoutResponse, NODE_GAP, NODE_SIZE, push } from './graph-layout';
 import { createLayoutWorker } from './graph-layout-worker.factory';
 import { GraphLegendComponent } from './graph-legend.component';
@@ -108,6 +107,11 @@ const FIT_PADDING = 40;
 const HIGHLIGHT_SCREEN_SIZE = 12;
 /** Opacity of what is not around the hovered node. */
 const FADED_ALPHA = 0.08;
+/**
+ * The search runs once typing pauses for this long, or on Enter: going through hundreds of
+ * thousands of ids on every key would not keep up.
+ */
+const SEARCH_DELAY_MS = 300;
 /** How far the hovered node's neighbourhood reaches: task → data → task. */
 const HOVER_DEPTH = 2;
 
@@ -131,7 +135,6 @@ const HOVER_DEPTH = 2;
     RouterModule,
     GraphLegendComponent,
     MatTooltipModule,
-    AutoCompleteComponent,
     KeyValuePipe,
     PrettyPipe,
     SpinnerComponent,
@@ -181,7 +184,11 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   private successors = new Map<string, string[]>();
   private nodesById = new Map<string, Node>();
 
-  readonly nodesIds = signal<string[]>([]);
+  /** What the search matches, the one shown, and what was searched. */
+  readonly matches = signal<string[]>([]);
+  readonly matchIndex = signal<number>(0);
+  readonly searched = signal<string>('');
+  private searchTimer: ReturnType<typeof setTimeout> | undefined;
   readonly nodeCount = signal<number>(0);
   readonly layingOut = signal<boolean>(false);
   /** Why the events stream was lost, null while it is up. */
@@ -351,6 +358,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscription.unsubscribe();
     clearTimeout(this.layoutTimer);
     clearTimeout(this.emptyTimer);
+    clearTimeout(this.searchTimer);
     cancelAnimationFrame(this.animationFrame);
     cancelAnimationFrame(this.renderFrame);
     cancelAnimationFrame(this.cameraFrame);
@@ -430,25 +438,53 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     return '#' + complementaryHex;
   }
 
+  /** A search once typing pauses. */
+  searchChanged(value: string): void {
+    clearTimeout(this.searchTimer);
+    this.searchTimer = setTimeout(() => this.highlightNodes(value), SEARCH_DELAY_MS);
+  }
+
+  /** A search now, on Enter. */
+  searchNow(value: string): void {
+    clearTimeout(this.searchTimer);
+    this.highlightNodes(value);
+  }
+
+  nextMatch(): void {
+    this.showMatch((this.matchIndex() + 1) % this.matches().length);
+  }
+
+  previousMatch(): void {
+    this.showMatch((this.matchIndex() - 1 + this.matches().length) % this.matches().length);
+  }
+
   /**
-   * Highlights the nodes whose id contains the searched value. When a single one does, centres on
-   * it and, as configured, highlights its ancestors and descendants too.
+   * Highlights the nodes whose id contains the searched value, and centres on the first of them.
+   * A pasted id is found at once; a part of one, by going through them all. When a single node
+   * matches, its ancestors and descendants are highlighted too, as configured.
    */
   highlightNodes(searchedValue: string) {
     this.nodesToHighlight.clear();
     this.nodeToHighlight = searchedValue;
+    this.searched.set(searchedValue);
+    const found: string[] = [];
     if (searchedValue !== '') {
-      for (const node of this.nodes) {
-        if (node.id.includes(searchedValue)) {
-          this.nodesToHighlight.add(node.id);
+      // Indexed once laid out; before, the nodes are only counted.
+      if (this.nodesById.has(searchedValue) || (!this.laidOut && this.nodes.some(node => node.id === searchedValue))) {
+        found.push(searchedValue);
+      } else {
+        for (const node of this.nodes) {
+          if (node.id.includes(searchedValue)) {
+            found.push(node.id);
+          }
         }
       }
     }
+    this.matches.set(found);
+    found.forEach(id => this.nodesToHighlight.add(id));
     // Before the first layout nothing is indexed nor placed: the search is applied again after it.
-    if (this.nodesToHighlight.size === 1 && this.laidOut) {
-      const [nodeId] = this.nodesToHighlight;
-      const node = this.nodesById.get(nodeId)!;
-      this.moveCamera(node.x!, node.y!, this.camera.scale, 500);
+    if (found.length === 1 && this.laidOut) {
+      const [nodeId] = found;
       if (this.highlightParentNodes) {
         this.reach(nodeId, this.predecessors, Infinity).forEach(id => this.nodesToHighlight.add(id));
       }
@@ -457,6 +493,16 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     this.syncHighlights();
+    this.showMatch(0);
+  }
+
+  /** Centres the view on a match. */
+  private showMatch(index: number): void {
+    this.matchIndex.set(index);
+    const node = this.laidOut ? this.nodesById.get(this.matches()[index]) : undefined;
+    if (node?.x !== undefined && node.y !== undefined) {
+      this.moveCamera(node.x, node.y, this.camera.scale, 500);
+    }
     this.requestRender();
   }
 
@@ -612,7 +658,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       return this.animationTargets?.get(id) ?? (this.placed.has(id) ? [node.x!, node.y!] : undefined);
     }), unanchored);
     this.syncGraph();
-    this.nodesIds.set(this.nodes.map(node => node.id));
   }
 
   private refreshLoading(): void {

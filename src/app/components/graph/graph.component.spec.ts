@@ -690,11 +690,61 @@ describe('GraphComponent', () => {
       component['apply']([structure()]);
     });
 
-    it('should highlight the nodes matching the search', () => {
+    it('should highlight the nodes whose id holds the search', () => {
+      component.highlightChildrenNodes = false;
+      component.highlightNodes('chil');
+
+      expect([...component['nodesToHighlight']]).toEqual(['payload-child', 'child']);
+      expect(component.matches()).toEqual(['payload-child', 'child']);
+    });
+
+    it('should find a pasted id alone, not the ids that hold it', () => {
+      component.highlightParentNodes = false;
       component.highlightChildrenNodes = false;
       component.highlightNodes('child');
 
-      expect([...component['nodesToHighlight']]).toEqual(['payload-child', 'child']);
+      expect(component.matches()).toEqual(['child']);
+    });
+
+    it('should search once typing pauses, not on every key', () => {
+      component.searchChanged('chi');
+      component.searchChanged('chil');
+      expect(component.matches()).toEqual([]);
+
+      jest.advanceTimersByTime(300);
+      expect(component.matches()).toEqual(['payload-child', 'child']);
+    });
+
+    it('should search at once on Enter', () => {
+      component.searchChanged('chil');
+      component.searchNow('output');
+
+      expect(component.matches()).toEqual(['output']);
+      jest.advanceTimersByTime(300);
+      expect(component.matches()).toEqual(['output']);
+    });
+
+    it('should go from a match to the next and back, centring on each', () => {
+      component['nodes'].forEach((node, index) => component['setPosition'](node, index * 100, 0));
+      const moveCamera = jest.spyOn(component as unknown as { moveCamera: () => void }, 'moveCamera');
+      component.highlightNodes('chil');
+      expect(moveCamera).toHaveBeenLastCalledWith(100, 0, expect.any(Number), 500);
+
+      component.nextMatch();
+      expect(component.matchIndex()).toEqual(1);
+      expect(moveCamera).toHaveBeenLastCalledWith(200, 0, expect.any(Number), 500);
+
+      component.nextMatch();
+      expect(component.matchIndex()).toEqual(0);
+      component.previousMatch();
+      expect(component.matchIndex()).toEqual(1);
+    });
+
+    it('should tell a search that matches nothing', () => {
+      component.highlightNodes('nothing');
+
+      expect(component.matches()).toEqual([]);
+      expect(component.searched()).toEqual('nothing');
     });
 
     it('should highlight the ancestors and descendants of a single match', () => {
