@@ -9,10 +9,11 @@
  *    all its consumers, the rest with the session.
  * 3. Layers among siblings: a task goes below the siblings whose subtrees produce what it reads.
  *    An aggregation lands under the subtasks it gathers, a consumer under the data it reads.
- * 4. Blocks: each task on top of its subtree, the layers of its children below it, a wide layer
- *    wrapped to about the proportions of a screen. The first layer is centred under the task, each
- *    next one under what it reads, in the order of what it reads: an aggregation centred under what
- *    it gathers, the consumers of a data together under it.
+ * 4. Blocks: each task on top of its subtree, the layers of its children below it, each on one
+ *    row however wide. The first layer is centred under the task, each next one under what it
+ *    reads, in the order of what it reads: an aggregation centred under what it gathers, the
+ *    consumers of a data together under it. Only the independent parts of a session, which no
+ *    link joins, are wrapped to about the proportions of a screen.
  *
  * Unlike a layout by global layers, as ELK's, a subtree stays under its parent: an aggregation
  * deep in a family does not go to the bottom of the whole graph, among unrelated ones. A link
@@ -33,7 +34,7 @@ const SLOT = NODE_SIZE + NODE_GAP;
 /** A task, a row of data above it and one below. */
 const BOX_HEIGHT = NODE_SIZE + 2 * DATA_ROW_OFFSET;
 const LAYER_STEP = BOX_HEIGHT + LAYER_GAP;
-/** A layer of more children than this is wrapped on several rows, when wide… */
+/** A session of more independent parts than this is wrapped on several rows… */
 const WRAP_FROM = 20;
 /** …to about the proportions of a screen. */
 const ASPECT = 16 / 9;
@@ -464,10 +465,10 @@ function localLayers(boxes: Boxes, families: Families): { layer: Int32Array, bef
 
 /**
  * Each box and its subtree as a block: the box on top, then the layers of its children, each a row
- * of their blocks, a wide row wrapped on several. The first layer is centred in the block, each
- * next one under what it reads; its children go in the order of what they read, or of their
- * arrival: an aggregation under the subtasks it gathers, the consumers of a data together under
- * it. Returns the centre and the row of each box.
+ * of their blocks, only the independent parts of the session wrapped on several. The first layer
+ * is centred in the block, each next one under what it reads; its children go in the order of
+ * what they read, or of their arrival: an aggregation under the subtasks it gathers, the consumers
+ * of a data together under it. Returns the centre and the row of each box.
  */
 function placeBlocks(boxes: Boxes, families: Families, layer: Int32Array, before: Lists): { x: Float64Array, row: Int32Array } {
   const { count, width } = boxes;
@@ -497,6 +498,10 @@ function placeBlocks(boxes: Boxes, families: Families, layer: Int32Array, before
     let rows = own;
     const shelves: { start: number, end: number, width: number, first: boolean }[] = [];
     let blockW = box === root ? 0 : width[box];
+    // Wrapped only where no link crosses the rows: the parts of the session that read nothing of
+    // each other. A family stays on one row under its parent, however wide: wrapped, the links to
+    // its subtasks and from them to what gathers them would cross the rows between.
+    const independent = box === root && layer[family[family.length - 1]] === 0;
     for (let first = 0; first < family.length;) {
       let last = first;
       while (last < family.length && layer[family[last]] === layer[family[first]]) {
@@ -515,14 +520,14 @@ function placeBlocks(boxes: Boxes, families: Families, layer: Int32Array, before
         }
         row.sort((a, b) => place[a] - place[b] || pre[a] - pre[b]);
       }
-      // Wrapped when wide: about as wide as the screen is to its height.
+      // About as wide as the screen is to its height.
       let area = 0;
       let widest = 0;
       for (const child of row) {
         area += (blockWidth[child] + NODE_GAP) * blockRows[child] * LAYER_STEP;
         widest = Math.max(widest, blockWidth[child]);
       }
-      const target = row.length > WRAP_FROM ? Math.max(widest, Math.sqrt(ASPECT * area)) : Infinity;
+      const target = independent && row.length > WRAP_FROM ? Math.max(widest, Math.sqrt(ASPECT * area)) : Infinity;
       let cursor = 0;
       let shelfRows = 0;
       let shelfStart = 0;

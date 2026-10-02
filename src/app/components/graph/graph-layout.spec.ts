@@ -183,18 +183,18 @@ describe('layOut', () => {
     expect(Math.abs(row.indexOf('first') - row.indexOf('second'))).toEqual(1);
   });
 
-  it('should wrap a family of thousands of subtasks to about the proportions of a screen', () => {
+  it('should keep a family of thousands of subtasks on one row, under its parent', () => {
+    // Wrapped, the links to the subtasks and from them to what gathers them would cross the rows.
     const session = new Session().task('parent');
     for (let child = 0; child < 2000; child++) {
       session.task(`child${child}`, { parent: 'parent' });
     }
+    session.task('gather', { parent: 'parent', inputs: Array.from({ length: 2000 }, (_, child) => `child${child}-out0`) });
     const coordinates = layOut(session.input());
-    const children = [...coordinates].filter(([id]) => /^child\d+$/.test(id)).map(([, position]) => position);
-    const width = Math.max(...children.map(([x]) => x)) - Math.min(...children.map(([x]) => x));
-    const height = Math.max(...children.map(([, y]) => y)) - Math.min(...children.map(([, y]) => y));
+    const rows = new Set(Array.from({ length: 2000 }, (_, child) => coordinates.get(`child${child}`)![1]));
 
-    expect(width / height).toBeGreaterThan(0.5);
-    expect(width / height).toBeLessThan(4);
+    expect(rows.size).toEqual(1);
+    expect(coordinates.get('gather')![1]).toBeGreaterThan(coordinates.get('child0')![1]);
     expect(overlaps(coordinates)).toEqual([]);
   });
 
