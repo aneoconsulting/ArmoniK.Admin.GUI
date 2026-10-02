@@ -65,9 +65,6 @@ importers:
       chart.js:
         specifier: ^4.5.1
         version: 4.5.1
-      elkjs:
-        specifier: ^0.12.0
-        version: 0.12.0
       force-graph:
         specifier: ^1.49.6
         version: 1.49.6
@@ -3932,9 +3929,6 @@ packages:
 
   electron-to-chromium@1.5.167:
     resolution: {integrity: sha512-LxcRvnYO5ez2bMOFpbuuVuAI5QNeY1ncVytE/KXaL6ZNfzX1yPlAO0nSOyIHx2fVAuUprMqPs/TdVhUFZy7SIQ==}
-
-  elkjs@0.12.0:
-    resolution: {integrity: sha512-YZcKynxVxYoKIOEpywEPwCFdg+BTbxQRNf3pbwdDCvc8O3kQD8bmIwSxKU1eOTVc4Xo+VG9Te+575mlfvOrhEQ==}
 
   emittery@0.13.1:
     resolution: {integrity: sha512-DeWwawk6r5yR9jFgnDKYt4sLS0LmHJJi3ZOnb5/JdbYwj3nW+FxQnHIjhBKz8YLC7oRNPVM9NQ47I3CVx34eqQ==}
@@ -11044,8 +11038,6 @@ snapshots:
       jake: 10.9.2
 
   electron-to-chromium@1.5.167: {}
-
-  elkjs@0.12.0: {}
 
   emittery@0.13.1: {}
 

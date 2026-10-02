@@ -1,81 +1,15 @@
 /// <reference lib="webworker" />
 
-import { Coordinates, LayoutInput, LayoutResponse, NODE_GAP, NODE_SIZE, TaskGraph, prepareLayout } from './graph-layout';
+import { LayoutInput, LayoutResponse, layOut } from './graph-layout';
 
 /**
- * Lays a session graph out with ELK, off the main thread: several seconds for thousands of tasks.
+ * Lays a session graph out off the main thread: seconds for hundreds of thousands of tasks.
  */
-addEventListener('message', async ({ data }: MessageEvent<LayoutInput>) => {
+addEventListener('message', ({ data }: MessageEvent<LayoutInput>) => {
   try {
-    const prepared = prepareLayout(data);
-    const coordinates = prepared.placeData(await elkLayout(prepared.graph));
-    const positions = new Float64Array(data.nodes.length * 2);
-    data.nodes.forEach((id, index) => {
-      const [x, y] = coordinates.get(id)!;
-      positions[index * 2] = x;
-      positions[index * 2 + 1] = y;
-    });
+    const positions = layOut(data);
     postMessage({ positions } satisfies LayoutResponse, [positions.buffer]);
   } catch (error) {
     postMessage({ error: String(error) } satisfies LayoutResponse);
   }
 });
-
-/** Loaded once for the life of the worker, which the page keeps from one layout to the next. */
-let elk: ReturnType<typeof createElk> | undefined;
-
-/** ELK layered: layers and crossing minimisation. */
-async function elkLayout(graph: TaskGraph): Promise<Coordinates> {
-  // Forgotten when it fails to load, or every later layout would fail with it.
-  elk ??= createElk().catch(error => {
-    elk = undefined;
-    throw error;
-  });
-  const result = await (await elk).layout({
-    id: 'root',
-    layoutOptions: {
-      'elk.algorithm': 'layered',
-      'elk.direction': 'DOWN',
-      'elk.spacing.nodeNode': String(NODE_GAP),
-      'elk.layered.spacing.nodeNodeBetweenLayers': String(graph.layerGap),
-      // Links are drawn as straight lines: routing them any smarter is wasted time.
-      'elk.edgeRouting': 'POLYLINE',
-      // Chrome gives a worker a small stack, and ELK recurses once per task in the components
-      // search and in the default layering (network simplex): a connected graph of a few thousand
-      // tasks overflowed it. With neither, chains of several thousand tasks fit. Each task still
-      // goes one layer below its deepest predecessor.
-      'elk.separateConnectedComponents': 'false',
-      'elk.layered.layering.strategy': 'LONGEST_PATH_SOURCE',
-    },
-    children: graph.ids.map(id => ({ id, width: graph.widths.get(id) ?? NODE_SIZE, height: graph.height })),
-    edges: graph.links.map((link, index) => ({ id: `e${index}`, sources: [link.source], targets: [link.target] })),
-  });
-
-  // ELK spaces two layers by the slope of the links between them, as routed: a task depending on a
-  // whole wide layer ended thousands of pixels below it. The links are drawn straight, so every
-  // layer goes a fixed step below the previous one.
-  const children = result.children ?? [];
-  const layers = [...new Set(children.map(child => Math.round(child.y!)))].sort((a, b) => a - b);
-  const layerOf = new Map(layers.map((y, index) => [y, index]));
-  const step = graph.height + graph.layerGap;
-
-  // ELK gives the top left corner, the graph expects the centre.
-  return new Map(children.map(child => [child.id, [child.x! + child.width! / 2, layerOf.get(Math.round(child.y!))! * step + graph.height / 2]]));
-}
-
-/**
- * ELK's engine checks `typeof document` when it loads, which happens in the ELK constructor:
- * without one, it believes it is ELK's own worker, takes over `self.onmessage` and exports
- * nothing. A stub document for the time of the construction makes it export its in-thread worker
- * instead, which is what running here needs.
- */
-async function createElk() {
-  const { default: ELK } = await import('elkjs/lib/elk.bundled.js');
-  const scope = globalThis as { document?: unknown };
-  scope.document = {};
-  try {
-    return new ELK();
-  } finally {
-    delete scope.document;
-  }
-}

@@ -108,9 +108,9 @@ const FADED_ALPHA = 0.08;
 const HOVER_DEPTH = 2;
 
 /**
- * Draws the graph of a session. Nodes are placed by ELK in a worker, not by a simulation. Nothing
- * is drawn until its first layout, which shows the whole graph at once; the nodes added since are
- * put on their parent until it runs again, and spreads them from there.
+ * Draws the graph of a session. Nodes are placed by a layered layout in a worker, not by a
+ * simulation. Nothing is drawn until its first layout, which shows the whole graph at once; the
+ * nodes added since are put on their parent until it runs again, and spreads them from there.
  */
 @Component({
   selector: 'app-graph',
@@ -200,7 +200,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   private debugInterval: ReturnType<typeof setInterval> | undefined;
   private debugFrame = 0;
 
-  /** Whether ELK has placed the graph once: until then, nothing is drawn. */
+  /** Whether the layout has placed the graph once: until then, nothing is drawn. */
   private laidOut = false;
   private layoutTimer: ReturnType<typeof setTimeout> | undefined;
   /** When the first change not laid out yet happened. */
@@ -220,10 +220,10 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
    * on each change, until they can go with the node they belong to.
    */
   private unanchored = new Set<string>();
-  /** Kept from one layout to the next: a new one would load ELK again, hundreds of kB of it. */
+  /** Kept from one layout to the next: a new one would load its script again. */
   private worker: Worker | null = null;
   private layoutRunning = false;
-  /** The structure changed while ELK was running: its result is already out of date. */
+  /** The structure changed while the layout was running: its result is already out of date. */
   private layoutPending = false;
   private animationFrame = 0;
   /** Where the nodes being moved go: a node arriving meanwhile is put where its parent goes. */
@@ -657,7 +657,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     }, delay);
   }
 
-  /** Runs ELK in a worker, then moves the nodes to the places it gave them. */
+  /** Runs the layout in a worker, then moves the nodes to the places it gave them. */
   private runLayout(): void {
     if (this.layoutRunning) {
       this.layoutPending = true;

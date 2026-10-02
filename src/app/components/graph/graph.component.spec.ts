@@ -377,9 +377,9 @@ describe('GraphComponent', () => {
     });
 
     it('should show why the layout failed and allow a retry', () => {
-      mockWorker.onmessage!({ data: { error: 'ELK exploded' } } as MessageEvent);
+      mockWorker.onmessage!({ data: { error: 'The layout exploded' } } as MessageEvent);
 
-      expect(component.layoutError()).toEqual('ELK exploded');
+      expect(component.layoutError()).toEqual('The layout exploded');
       expect(component.layingOut()).toBe(false);
       component.redraw();
       expect(mockWorker.postMessage).toHaveBeenCalledTimes(2);
@@ -387,7 +387,7 @@ describe('GraphComponent', () => {
 
     it('should lay out a change that came in during the failed run', () => {
       component.redraw();
-      mockWorker.onmessage!({ data: { error: 'ELK exploded' } } as MessageEvent);
+      mockWorker.onmessage!({ data: { error: 'The layout exploded' } } as MessageEvent);
       jest.advanceTimersByTime(1000);
 
       expect(mockWorker.postMessage).toHaveBeenCalledTimes(2);
