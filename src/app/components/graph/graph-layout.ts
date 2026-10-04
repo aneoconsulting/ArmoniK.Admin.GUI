@@ -313,8 +313,10 @@ function familiesOf(boxes: Boxes): Families {
   depth[root] = 0;
   // A cycle of parents, which a session cannot have, is cut: its first box goes under the root.
   const inChain = new Int32Array(count + 1).fill(-1);
+  // One chain for all: one each, of a few kilobytes, is hundreds of megabytes to collect.
+  const chain = new Numbers();
   const depthOf = (box: number): number => {
-    const chain = new Numbers();
+    chain.length = 0;
     let current = box;
     while (depth[current] === -1) {
       if (inChain[current] === box) {
