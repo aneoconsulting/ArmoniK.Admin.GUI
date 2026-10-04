@@ -538,7 +538,11 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     if (element) {
       this.camera.resize(element.clientWidth, element.clientHeight);
       this.renderer?.resize(element.clientWidth, element.clientHeight);
-      this.requestRender();
+      // Resizing the canvas clears it. Called after this frame's animation callbacks, before it is
+      // shown: drawn now, or the frame would show it blank, each frame of a transition.
+      cancelAnimationFrame(this.renderFrame);
+      this.renderFrame = 0;
+      this.render();
     }
   }
 
@@ -1054,13 +1058,17 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.renderFrame = requestAnimationFrame(() => {
       this.renderFrame = 0;
-      const start = performance.now();
-      // Translucent while zoomed out, where links pile up, opaque once they can be told apart.
-      this.renderer?.render(this.camera, Math.min(1, Math.max(0.15, NODE_SIZE * this.camera.scale / 40)));
-      if (this.debugEnabled()) {
-        this.drawDurations.push(performance.now() - start);
-      }
+      this.render();
     });
+  }
+
+  private render(): void {
+    const start = performance.now();
+    // Translucent while zoomed out, where links pile up, opaque once they can be told apart.
+    this.renderer?.render(this.camera, Math.min(1, Math.max(0.15, NODE_SIZE * this.camera.scale / 40)));
+    if (this.debugEnabled()) {
+      this.drawDurations.push(performance.now() - start);
+    }
   }
 
   /**

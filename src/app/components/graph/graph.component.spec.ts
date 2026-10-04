@@ -324,6 +324,16 @@ describe('GraphComponent', () => {
       expect(component['camera'].width).toEqual(1080);
     });
 
+    it('should draw again as soon as the canvas is resized, which clears it, before the frame is shown', async () => {
+      await drawn();
+      mockRenderer.render.mockClear();
+
+      component.onResize();
+
+      expect(mockRenderer.resize).toHaveBeenLastCalledWith(1080, 680);
+      expect(mockRenderer.render).toHaveBeenCalledTimes(1);
+    });
+
     it('should hand the renderer the nodes, their links and their places', async () => {
       await drawn();
 
