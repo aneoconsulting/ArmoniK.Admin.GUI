@@ -66,6 +66,8 @@ const QUIET_MS = 1000;
  * are put in their families meanwhile, close to where the layout would put them: it can wait.
  */
 const MAX_WAIT_MS = 60000;
+/** The same cap before the first layout, shorter: nothing is drawn until it. */
+const FIRST_MAX_WAIT_MS = 10000;
 /**
  * The same cap while the initial graph arrives, wider: laying it out before its end means laying
  * it out twice, but a session never quiet enough to end it must still show up.
@@ -673,7 +675,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   private scheduleLayout(): void {
     const now = Date.now();
     this.firstChangeAt ??= now;
-    const cap = this.initialGraph ? INITIAL_MAX_WAIT_MS : MAX_WAIT_MS;
+    const cap = this.initialGraph ? INITIAL_MAX_WAIT_MS : this.laidOut ? MAX_WAIT_MS : FIRST_MAX_WAIT_MS;
     const delay = Math.min(QUIET_MS, this.firstChangeAt + cap - now);
     clearTimeout(this.layoutTimer);
     this.layoutTimer = setTimeout(() => {

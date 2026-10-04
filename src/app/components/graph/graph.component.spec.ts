@@ -145,12 +145,31 @@ describe('GraphComponent', () => {
     });
 
     it('should lay the graph out even when the structure never stops changing', () => {
-      // The initial graph ends with the second batch, the first one telling nothing: a minute after.
-      for (let elapsed = 0; elapsed < 61000; elapsed += 500) {
+      // The initial graph ends with the second batch, the first one telling nothing: 10 s after.
+      for (let elapsed = 0; elapsed < 11000; elapsed += 500) {
         component['apply']([structure()]);
         jest.advanceTimersByTime(500);
       }
 
+      expect(mockWorker.postMessage).toHaveBeenCalled();
+    });
+
+    it('should wait longer for the next layouts, the new nodes being placed meanwhile', () => {
+      component['apply']([structure()]);
+      jest.advanceTimersByTime(1000);
+      mockWorker.onmessage!({ data: { positions: new Float64Array(8) } } as MessageEvent);
+      mockWorker.postMessage.mockClear();
+
+      for (let elapsed = 0; elapsed < 30000; elapsed += 500) {
+        component['apply']([structure()]);
+        jest.advanceTimersByTime(500);
+      }
+      expect(mockWorker.postMessage).not.toHaveBeenCalled();
+
+      for (let elapsed = 30000; elapsed < 61000; elapsed += 500) {
+        component['apply']([structure()]);
+        jest.advanceTimersByTime(500);
+      }
       expect(mockWorker.postMessage).toHaveBeenCalled();
     });
 
