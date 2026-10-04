@@ -346,6 +346,24 @@ describe('layOut', () => {
     expect(reading.elapsed).toBeLessThan(3 * alone.elapsed + 200);
   });
 
+  it('should put the readers of siblings whose subtrees read from each other below them all', () => {
+    // a1 under A feeds b1 under B, which feeds a2 under A: neither A nor B goes below the other.
+    // C reads B, and arrived before it.
+    const session = new Session()
+      .task('A')
+      .task('C', { inputs: ['B-out0'] })
+      .task('B')
+      .task('a1', { parent: 'A' })
+      .task('b1', { parent: 'B', inputs: ['a1-out0'] })
+      .task('a2', { parent: 'A', inputs: ['b1-out0'] });
+    const coordinates = layOut(session.input());
+    const y = (id: string) => coordinates.get(id)![1];
+
+    expect(y('C')).toBeGreaterThan(y('A-out0'));
+    expect(y('C')).toBeGreaterThan(y('B-out0'));
+    expect(overlaps(coordinates)).toEqual([]);
+  });
+
   it('should still place tasks caught in a cycle', () => {
     const coordinates = layOut({
       nodes: ['a', 'b', 'a-out', 'b-out'],

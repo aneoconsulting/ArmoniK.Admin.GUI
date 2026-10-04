@@ -502,12 +502,73 @@ function localLayers(boxes: Boxes, families: Families): { layer: Int32Array, bef
   }
   const before = lists(count, to.values, from.values, to.length);
   const after = lists(count, from.values, to.values, from.length);
-  // Longest path among siblings, in topological order. A cycle, which a session cannot have,
-  // leaves boxes out: they go below what is placed of their siblings.
+  // Longest path among siblings, in topological order. Siblings whose subtrees read from each other,
+  // a1 under A feeding b1 under B feeding a2 under A, are a cycle that a session can have: once
+  // nothing else can be placed, the first of them to arrive goes below what is placed of its
+  // siblings, then what it feeds, and so on. Only from the cycles that nothing left to place feeds:
+  // a reader of a cycle, if taken first, would go above it. The strongly connected components of
+  // the siblings, by Tarjan's algorithm, come out readers first.
+  const component = new Int32Array(count).fill(-1);
+  const index = new Int32Array(count).fill(-1);
+  const low = new Int32Array(count);
+  const next = new Int32Array(count);
+  const onStack = new Uint8Array(count);
+  const stack = new Int32Array(count);
+  const calls = new Int32Array(count);
+  let stackLength = 0;
+  let callsLength = 0;
+  let indices = 0;
+  let components = 0;
+  for (let start = 0; start < count; start++) {
+    if (index[start] !== -1) {
+      continue;
+    }
+    const enter = (box: number) => {
+      index[box] = low[box] = indices++;
+      next[box] = after.start[box];
+      stack[stackLength++] = box;
+      onStack[box] = 1;
+      calls[callsLength++] = box;
+    };
+    enter(start);
+    while (callsLength !== 0) {
+      const box = calls[callsLength - 1];
+      if (next[box] < after.start[box + 1]) {
+        const successor = after.values[next[box]++];
+        if (index[successor] === -1) {
+          enter(successor);
+        } else if (onStack[successor]) {
+          low[box] = Math.min(low[box], index[successor]);
+        }
+        continue;
+      }
+      callsLength--;
+      if (callsLength !== 0) {
+        const caller = calls[callsLength - 1];
+        low[caller] = Math.min(low[caller], low[box]);
+      }
+      if (low[box] === index[box]) {
+        let member;
+        do {
+          member = stack[--stackLength];
+          onStack[member] = 0;
+          component[member] = components;
+        } while (member !== box);
+        components++;
+      }
+    }
+  }
+  const all = new Int32Array(count);
+  for (let box = 0; box < count; box++) {
+    all[box] = box;
+  }
+  const members = lists(components, component, all);
+
   const layer = new Int32Array(count);
   const pending = new Int32Array(count);
   const queue = new Int32Array(count);
   let queued = 0;
+  let head = 0;
   const done = new Uint8Array(count);
   for (let box = 0; box < count; box++) {
     pending[box] = before.start[box + 1] - before.start[box];
@@ -527,12 +588,18 @@ function localLayers(boxes: Boxes, families: Families): { layer: Int32Array, bef
       }
     }
   };
-  for (let head = 0; head < queued; head++) {
-    settle(queue[head]);
-  }
-  for (let box = 0; box < count; box++) {
-    if (!done[box]) {
-      settle(box);
+  const settleQueued = () => {
+    for (; head < queued; head++) {
+      settle(queue[head]);
+    }
+  };
+  settleQueued();
+  for (let current = components - 1; current >= 0; current--) {
+    for (let k = members.start[current]; k < members.start[current + 1]; k++) {
+      if (!done[members.values[k]]) {
+        queue[queued++] = members.values[k];
+        settleQueued();
+      }
     }
   }
   return { layer, before };
