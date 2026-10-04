@@ -115,12 +115,18 @@ void main() {
 
 const HIGHLIGHT_FRAGMENT = `#version 300 es
 precision mediump float;
+uniform float u_hole;
 in vec2 v_offset;
 in float v_pixels;
 in vec4 v_color;
 out vec4 color;
 void main() {
-  float alpha = clamp(0.5 - (length(v_offset) - v_pixels * 0.5), 0.0, 1.0);
+  // A disc, or a ring around the node when it is drawn over it.
+  float distance = length(v_offset);
+  float alpha = clamp(0.5 - (distance - v_pixels * 0.5), 0.0, 1.0);
+  if (u_hole > 0.0) {
+    alpha *= clamp(distance - u_hole + 0.5, 0.0, 1.0);
+  }
   if (alpha <= 0.0) {
     discard;
   }
@@ -404,7 +410,7 @@ export class GraphRenderer {
     colors.forEach((color, type) => this.linkColors.set(color, type * 4));
   }
 
-  /** The highlighted nodes, each marked with a disc of its own color behind it. */
+  /** The highlighted nodes, each marked with a disc of its own color: behind it, or zoomed out a ring over it. */
   setHighlights(nodes: Uint32Array, colors: Uint8Array): void {
     this.highlightCount = nodes.length;
     this.highlightNodes = nodes.slice();
@@ -471,18 +477,30 @@ export class GraphRenderer {
       gl.bindVertexArray(this.linkVao);
       gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, this.linkCount);
     }
-    if (this.highlightCount !== 0) {
+    // Zoomed in, a highlight is a disc behind its node. Zoomed out, where the nodes are a few pixels
+    // apart and would cover it, it is a ring drawn over them, around its own node.
+    const highlightSize = options.nodeSize * 1.4;
+    const nodePixels = Math.max(options.nodeSize * scale, options.minNodePixels * ratio);
+    const over = highlightSize * scale < options.minHighlightPixels * ratio;
+    const highlight = () => {
       const uniforms = view(this.highlightProgram);
-      gl.uniform1f(uniforms['u_size'], options.nodeSize * 1.4);
+      gl.uniform1f(uniforms['u_size'], highlightSize);
       gl.uniform1f(uniforms['u_minSize'], options.minHighlightPixels * ratio);
+      gl.uniform1f(uniforms['u_hole'], over ? nodePixels * 0.5 + 1 : 0);
       gl.bindVertexArray(this.highlightVao);
       gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, this.highlightCount);
+    };
+    if (this.highlightCount !== 0 && !over) {
+      highlight();
     }
     const uniforms = view(this.nodeProgram);
     gl.uniform1f(uniforms['u_size'], options.nodeSize);
     gl.uniform1f(uniforms['u_minSize'], options.minNodePixels * ratio);
     gl.bindVertexArray(this.nodeVao);
     gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, this.nodeCount);
+    if (this.highlightCount !== 0 && over) {
+      highlight();
+    }
     gl.bindVertexArray(null);
   }
 
