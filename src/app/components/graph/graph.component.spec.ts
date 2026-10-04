@@ -234,7 +234,15 @@ describe('GraphComponent', () => {
   describe('view initialisation', () => {
     beforeEach(() => {
       component['graphRef'] = { nativeElement: document.createElement('div') };
+      component['canvasRef'] = { nativeElement: document.createElement('canvas') };
       component.updates = new Subject<GraphUpdate>();
+    });
+
+    it('should draw on the canvas of its template, which its styles size', () => {
+      component.ngAfterViewInit();
+
+      expect(GraphRenderer).toHaveBeenLastCalledWith(component['canvasRef']!.nativeElement, expect.anything());
+      expect(component['graphRef']!.nativeElement.childElementCount).toEqual(0);
     });
 
     it('should create the renderer and follow the session', () => {
@@ -267,6 +275,7 @@ describe('GraphComponent', () => {
     // parent at the top, child 250 below it: drawn once laid out.
     const drawn = async (positions = [0, 0, 0, 180, 0, 250, 0, 320]) => {
       component['graphRef'] = { nativeElement: element() };
+      component['canvasRef'] = { nativeElement: document.createElement('canvas') };
       component.updates = new Subject<GraphUpdate>();
       component.ngAfterViewInit();
       component['apply']([structure()]);

@@ -153,6 +153,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input({ required: true }) sessionId: string;
 
   @ViewChild('graph', { static: false }) private graphRef: ElementRef<HTMLDivElement> | null = null;
+  // In the template, not created here: the encapsulated styles only reach the template's elements,
+  // and without its CSS size the canvas is drawn at its backing size, devicePixelRatio times too big.
+  @ViewChild('canvas', { static: false }) private canvasRef: ElementRef<HTMLCanvasElement> | null = null;
 
   private renderer: GraphRenderer | null = null;
   private canvas: HTMLCanvasElement | null = null;
@@ -280,13 +283,12 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    if (!this.graphRef) {
+    if (!this.graphRef || !this.canvasRef) {
       return;
     }
 
     const element = this.graphRef.nativeElement;
-    this.canvas = document.createElement('canvas');
-    element.appendChild(this.canvas);
+    this.canvas = this.canvasRef.nativeElement;
     try {
       this.renderer = new GraphRenderer(this.canvas, {
         nodeSize: NODE_SIZE,
