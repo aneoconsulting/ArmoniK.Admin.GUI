@@ -489,6 +489,27 @@ describe('GraphComponent', () => {
       mockStatuses.statusToLabel.mockReturnValue({ label: 'Completed', color: '#00ff00' });
     });
 
+    it('should draw again once the browser gives a lost WebGL context back', async () => {
+      await drawn();
+      const { restored } = (GraphRenderer as unknown as jest.Mock).mock.lastCall[1];
+      mockRenderer.render.mockClear();
+
+      restored(null);
+      jest.advanceTimersByTime(100);
+
+      expect(mockRenderer.render).toHaveBeenCalled();
+    });
+
+    it('should say why the graph cannot be drawn once a lost WebGL context cannot be set up again', async () => {
+      jest.spyOn(console, 'error').mockImplementation(() => undefined);
+      await drawn();
+      const { restored } = (GraphRenderer as unknown as jest.Mock).mock.lastCall[1];
+
+      restored(new Error('The shaders do not compile.'));
+
+      expect(component.rendererError()).toEqual('The shaders do not compile.');
+    });
+
     it('should let the renderer go when left', async () => {
       await drawn();
 

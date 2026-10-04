@@ -309,10 +309,10 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         minNodePixels: MIN_NODE_SCREEN_SIZE,
         minHighlightPixels: HIGHLIGHT_SCREEN_SIZE,
         fadedAlpha: FADED_ALPHA,
+        restored: error => (error === null ? this.requestRender() : this.rendererFailed(error)),
       });
     } catch (error) {
-      console.error(error);
-      this.rendererError.set(String((error as Error)?.message ?? error));
+      this.rendererFailed(error);
     }
     this.setLinkColors();
     this.onResize();
@@ -385,6 +385,11 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   redraw(): void {
     this.runLayout();
+  }
+
+  private rendererFailed(error: unknown): void {
+    console.error(error);
+    this.rendererError.set(String((error as Error)?.message ?? error));
   }
 
   /** Brings the whole graph back into the view, once lost by moving it away. */

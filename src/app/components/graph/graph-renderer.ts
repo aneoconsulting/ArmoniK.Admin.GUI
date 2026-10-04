@@ -31,6 +31,11 @@ export type RendererOptions = {
   minHighlightPixels: number;
   /** Opacity of what is not around the hovered node. */
   fadedAlpha: number;
+  /**
+   * Called once the browser gave a lost context back, nothing drawn yet, with the error when it
+   * could not be set up again.
+   */
+  restored: (error: unknown) => void;
 };
 
 /** Positions and fading textures are this wide, and as high as the nodes need. */
@@ -232,13 +237,19 @@ export class GraphRenderer {
   };
 
   private readonly onRestored = () => {
+    try {
+      this.setUp();
+      this.uploadNodes();
+      this.uploadPositions();
+      this.uploadFocus();
+      this.uploadLinks();
+      this.uploadHighlights();
+    } catch (error) {
+      this.options.restored(error);
+      return;
+    }
     this.lost = false;
-    this.setUp();
-    this.uploadNodes();
-    this.uploadPositions();
-    this.uploadFocus();
-    this.uploadLinks();
-    this.uploadHighlights();
+    this.options.restored(null);
   };
 
   private setUp(): void {
