@@ -326,6 +326,26 @@ describe('layOut', () => {
     expect(coordinates.get('task-49999')![1]).toBeGreaterThan(coordinates.get('task-0')![1]);
   });
 
+  it('should lay out a chain of subtasks all reading a data the client uploaded about as fast as without it', () => {
+    // Every link from the data climbs the whole chain, if it is climbed one task after the other:
+    // over a billion steps.
+    const timed = (inputs: string[]) => {
+      const session = new Session().data('upload').task('task-0', { inputs });
+      for (let index = 1; index < 50000; index++) {
+        session.task(`task-${index}`, { parent: `task-${index - 1}`, inputs });
+      }
+      const start = performance.now();
+      const coordinates = layOut(session.input());
+      return { coordinates, elapsed: performance.now() - start };
+    };
+    const alone = timed([]);
+    const reading = timed(['upload']);
+
+    expect(reading.coordinates.get('upload')![1]).toBeLessThan(reading.coordinates.get('task-0')![1]);
+    expect(reading.coordinates.get('task-49999')![1]).toBeGreaterThan(reading.coordinates.get('task-0')![1]);
+    expect(reading.elapsed).toBeLessThan(3 * alone.elapsed + 200);
+  });
+
   it('should still place tasks caught in a cycle', () => {
     const coordinates = layOut({
       nodes: ['a', 'b', 'a-out', 'b-out'],

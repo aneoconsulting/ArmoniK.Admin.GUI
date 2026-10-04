@@ -294,7 +294,6 @@ function buildBoxes(input: LayoutInput): Boxes {
 type Families = {
   root: number;
   parent: Int32Array;
-  depth: Int32Array;
   children: Lists;
   pre: Int32Array;
   post: Int32Array;
@@ -309,7 +308,7 @@ function familiesOf(boxes: Boxes): Families {
   for (let box = 0; box < count; box++) {
     parent[box] = kind[box] === TASK_BOX && boxes.parent[box] !== -1 ? boxes.parent[box] : root;
   }
-  // The depths of the tasks, for the closest common family of the consumers of a shared data.
+  // The depths of the tasks, to find the cycles.
   const depth = new Int32Array(count + 1).fill(-1);
   depth[root] = 0;
   // A cycle of parents, which a session cannot have, is cut: its first box goes under the root.
@@ -336,48 +335,57 @@ function familiesOf(boxes: Boxes): Families {
       depthOf(box);
     }
   }
-  const common = (a: number, b: number): number => {
-    while (depth[a] > depth[b]) {
-      a = parent[a];
-    }
-    while (depth[b] > depth[a]) {
-      b = parent[b];
-    }
-    while (a !== b) {
-      a = parent[a];
-      b = parent[b];
-    }
-    return a;
-  };
+  // The closest family holding all the consumers of a shared data: that of the first and the last
+  // of them in a walk of the tasks.
+  const tasks = walk(parent, root);
+  const shared = new Numbers();
+  const first = new Numbers();
+  const last = new Numbers();
   for (let box = 0; box < count; box++) {
     if (kind[box] !== SHARED_BOX) {
       continue;
     }
-    let family = -1;
-    let consumer = false;
+    let low = -1;
+    let high = -1;
     for (let k = successors.start[box]; k < successors.start[box + 1]; k++) {
-      family = family === -1 ? successors.values[k] : common(family, successors.values[k]);
+      const consumer = successors.values[k];
+      low = low === -1 || tasks.pre[consumer] < tasks.pre[low] ? consumer : low;
+      high = high === -1 || tasks.pre[consumer] > tasks.pre[high] ? consumer : high;
     }
-    for (let k = successors.start[box]; k < successors.start[box + 1]; k++) {
-      consumer ||= successors.values[k] === family;
-    }
-    // Above all its consumers: in the family of the one that holds the others.
-    parent[box] = consumer ? parent[family] : family;
-    depth[box] = depth[parent[box]] + 1;
+    shared.push(box);
+    first.push(low);
+    last.push(high);
+  }
+  const { left } = diverging(parent, tasks.children, tasks.order, first.values, last.values, shared.length);
+  for (let k = 0; k < shared.length; k++) {
+    // Above all its consumers: in the family of the one that holds the others, if one does.
+    const holder = left[k] === -1;
+    parent[shared.values[k]] = holder ? parent[first.values[k]] : parent[left[k]];
   }
 
-  const owners = new Int32Array(count);
-  const members = new Int32Array(count);
-  for (let box = 0; box < count; box++) {
-    owners[box] = parent[box];
-    members[box] = box;
+  return { root, parent, ...walk(parent, root) };
+}
+
+/**
+ * The tree of `parent`, walked depth first from `root`, the children of a box in their order: a
+ * family's children have consecutive `pre` indices, and a box's subtree spans `pre` to `post`.
+ */
+function walk(parent: Int32Array, root: number): { children: Lists, pre: Int32Array, post: Int32Array, order: Int32Array } {
+  const size = parent.length;
+  const owners = new Int32Array(size - 1);
+  const members = new Int32Array(size - 1);
+  for (let box = 0, k = 0; box < size; box++) {
+    if (box !== root) {
+      owners[k] = parent[box];
+      members[k++] = box;
+    }
   }
-  const children = lists(count + 1, owners, members);
-  const pre = new Int32Array(count + 1);
-  const post = new Int32Array(count + 1);
-  const order = new Int32Array(count + 1);
+  const children = lists(size, owners, members);
+  const pre = new Int32Array(size);
+  const post = new Int32Array(size);
+  const order = new Int32Array(size);
   const stack = new Numbers();
-  const next = new Int32Array(count + 1);
+  const next = new Int32Array(size);
   let visited = 0;
   stack.push(root);
   pre[root] = visited;
@@ -396,7 +404,76 @@ function familiesOf(boxes: Boxes): Families {
       stack.length--;
     }
   }
-  return { root, parent, depth, children, pre, post, order };
+  return { children, pre, post, order };
+}
+
+/**
+ * For each pair of boxes, the two siblings under which they diverge, `left` above `from[k]` and
+ * `right` above `to[k]`, both -1 when one holds the other. Climbing from both ends costs the depth
+ * of the tree for each pair, quadratic on a long chain of subtasks; this is Tarjan's algorithm for
+ * the lowest common ancestors instead, in one walk of the tree. Each pair is answered at its second
+ * end walked: the first, done with, is in the subtree of a sibling of the path to the second, still
+ * walked. The subtrees done with are sets of a union-find, each whole under its top until its
+ * parent is done with too: the set of the first end tells that sibling.
+ */
+function diverging(parent: Int32Array, children: Lists, order: Int32Array, from: ArrayLike<number>, to: ArrayLike<number>, length: number): { left: Int32Array, right: Int32Array } {
+  const size = order.length;
+  const left = new Int32Array(length).fill(-1);
+  const right = new Int32Array(length).fill(-1);
+  const ends = new Int32Array(2 * length);
+  const pairs = new Int32Array(2 * length);
+  for (let k = 0; k < length; k++) {
+    ends[2 * k] = from[k];
+    ends[2 * k + 1] = to[k];
+    pairs[2 * k] = k;
+    pairs[2 * k + 1] = k;
+  }
+  const pairsOf = lists(size, ends, pairs);
+  const set = new Int32Array(size);
+  for (let box = 0; box < size; box++) {
+    set[box] = box;
+  }
+  const find = (box: number) => {
+    while (set[box] !== box) {
+      set[box] = set[set[box]];
+      box = set[box];
+    }
+    return box;
+  };
+  const walked = new Uint8Array(size);
+  const onPath = new Uint8Array(size);
+  const path = new Int32Array(size);
+  const pathIndex = new Int32Array(size);
+  let pathLength = 0;
+  const doneWith = () => {
+    const box = path[--pathLength];
+    onPath[box] = 0;
+    for (let k = children.start[box]; k < children.start[box + 1]; k++) {
+      set[children.values[k]] = box;
+    }
+  };
+  for (let visit = 0; visit < size; visit++) {
+    const box = order[visit];
+    while (pathLength !== 0 && path[pathLength - 1] !== parent[box]) {
+      doneWith();
+    }
+    pathIndex[box] = pathLength;
+    path[pathLength++] = box;
+    walked[box] = 1;
+    onPath[box] = 1;
+    for (let k = pairsOf.start[box]; k < pairsOf.start[box + 1]; k++) {
+      const pair = pairsOf.values[k];
+      const other = from[pair] === box ? to[pair] : from[pair];
+      if (!walked[other] || onPath[other]) {
+        continue;
+      }
+      const otherSide = find(other);
+      const ownSide = path[pathIndex[parent[otherSide]] + 1];
+      left[pair] = from[pair] === box ? ownSide : otherSide;
+      right[pair] = from[pair] === box ? otherSide : ownSide;
+    }
+  }
+  return { left, right };
 }
 
 /**
@@ -406,29 +483,19 @@ function familiesOf(boxes: Boxes): Families {
  */
 function localLayers(boxes: Boxes, families: Families): { layer: Int32Array, before: Lists } {
   const { count, predecessors } = boxes;
-  const { parent, depth } = families;
+  const { parent, children, order } = families;
+  const reader = new Int32Array(predecessors.values.length);
+  for (let box = 0; box < count; box++) {
+    reader.fill(box, predecessors.start[box], predecessors.start[box + 1]);
+  }
+  // The siblings under which the two ends diverge, none when one holds the other.
+  const diverged = diverging(parent, children, order, predecessors.values, reader, reader.length);
   const from = new Numbers();
   const to = new Numbers();
-  for (let box = 0; box < count; box++) {
-    for (let k = predecessors.start[box]; k < predecessors.start[box + 1]; k++) {
-      // The siblings under which the two ends diverge, none when one holds the other.
-      let a = predecessors.values[k];
-      let b = box;
-      while (depth[a] > depth[b]) {
-        a = parent[a];
-      }
-      while (depth[b] > depth[a]) {
-        b = parent[b];
-      }
-      if (a === b) {
-        continue;
-      }
-      while (parent[a] !== parent[b]) {
-        a = parent[a];
-        b = parent[b];
-      }
-      from.push(a);
-      to.push(b);
+  for (let k = 0; k < reader.length; k++) {
+    if (diverged.left[k] !== -1) {
+      from.push(diverged.left[k]);
+      to.push(diverged.right[k]);
     }
   }
   const before = lists(count, to.values, from.values, to.length);
