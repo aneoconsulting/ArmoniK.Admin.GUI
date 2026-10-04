@@ -290,7 +290,7 @@ describe('GraphComponent', () => {
       Object.defineProperty(div, 'clientHeight', { value: 680 });
       return div;
     };
-    const pointer = (offsetX: number, offsetY: number) => ({ offsetX, offsetY, pointerId: 1 }) as PointerEvent;
+    const pointer = (offsetX: number, offsetY: number, pointerId = 1, button = 0) => ({ offsetX, offsetY, pointerId, button }) as PointerEvent;
     // parent at the top, child 250 below it: drawn once laid out.
     const drawn = async (positions = [0, 0, 0, 180, 0, 250, 0, 320]) => {
       component['graphRef'] = { nativeElement: element() };
@@ -354,6 +354,52 @@ describe('GraphComponent', () => {
       component['onPointerUp'](pointer(560, 280));
 
       expect([component['camera'].x, component['camera'].y]).toEqual([x - 60, y + 20]);
+    });
+
+    it('should leave the other buttons to the browser, its menu included', async () => {
+      await drawn();
+      const { x, y, scale } = component['camera'];
+      const [nodeX, nodeY] = component['camera'].toScreen(0, 250);
+
+      component['onPointerDown'](pointer(nodeX, nodeY, 1, 2));
+      component['onPointerUp'](pointer(nodeX, nodeY, 1, 2));
+      jest.advanceTimersByTime(2000);
+      // The menu opened on the press: no release comes, the pointer moves on with no button.
+      component['onPointerDown'](pointer(500, 300, 1, 2));
+      component['onPointerMove'](pointer(nodeX, nodeY));
+
+      expect([component['camera'].x, component['camera'].y, component['camera'].scale]).toEqual([x, y, scale]);
+      expect(component.tooltip()).toEqual(expect.objectContaining({ id: 'child' }));
+    });
+
+    it('should stop moving the view when the browser takes the pointer back', async () => {
+      await drawn();
+      const { x, y } = component['camera'];
+
+      component['onPointerDown'](pointer(500, 300));
+      component['onPointerCancel'](pointer(500, 300));
+      component['onPointerMove'](pointer(560, 280));
+
+      expect([component['camera'].x, component['camera'].y]).toEqual([x, y]);
+    });
+
+    it('should zoom with two fingers, between them, without taking it for a click', async () => {
+      await drawn();
+      const { scale } = component['camera'];
+
+      component['onPointerDown'](pointer(440, 340, 1));
+      component['onPointerDown'](pointer(640, 340, 2));
+      const between = component['camera'].toGraph(540, 340);
+      component['onPointerMove'](pointer(740, 340, 2));
+      component['onPointerUp'](pointer(740, 340, 2));
+      component['onPointerUp'](pointer(440, 340, 1));
+      jest.advanceTimersByTime(2000);
+
+      // 200 pixels apart, then 300: what was between the fingers stays between them.
+      expect(component['camera'].scale).toBeCloseTo(scale * 1.5);
+      const [x, y] = component['camera'].toScreen(...between);
+      expect(x).toBeCloseTo(590);
+      expect(y).toBeCloseTo(340);
     });
 
     it('should zoom towards the pointer with the wheel', async () => {

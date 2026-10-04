@@ -265,7 +265,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   private grid: NodeGrid | null = null;
   /** Colors as bytes, by CSS color. */
   private readonly rgbaCache = new Map<string, Uint8Array>();
-  private readonly pointer = { down: false, moved: false, x: 0, y: 0, startX: 0, startY: 0 };
+  private readonly pointer = { moved: false, startX: 0, startY: 0 };
+  /** Where each pressed pointer is: a mouse, or a finger of a pinch. */
+  private readonly pressed = new Map<number, [number, number]>();
 
   ngOnInit(): void {
     const storedColorMap = this.storageService.getItem<Record<LinkType, string>>('graph-links-colors', true) as Record<LinkType, string> | null;
@@ -312,6 +314,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     this.canvas.addEventListener('pointerdown', this.onPointerDown);
     this.canvas.addEventListener('pointermove', this.onPointerMove);
     this.canvas.addEventListener('pointerup', this.onPointerUp);
+    this.canvas.addEventListener('pointercancel', this.onPointerCancel);
     this.canvas.addEventListener('pointerleave', this.onPointerLeave);
     this.canvas.addEventListener('wheel', this.onWheel, { passive: false });
 
@@ -1134,37 +1137,67 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     }));
   }
 
+  /**
+   * Only the main button, a finger or a pen: the other buttons are the browser's, and the release
+   * of the one opening its menu never comes.
+   */
   private readonly onPointerDown = (event: PointerEvent) => {
-    this.canvas?.setPointerCapture?.(event.pointerId);
-    Object.assign(this.pointer, { down: true, moved: false, x: event.offsetX, y: event.offsetY, startX: event.offsetX, startY: event.offsetY });
-  };
-
-  /** A drag moves the view; otherwise the node under the pointer is hovered. */
-  private readonly onPointerMove = (event: PointerEvent) => {
-    const pointer = this.pointer;
-    if (pointer.down) {
-      pointer.moved ||= Math.hypot(event.offsetX - pointer.startX, event.offsetY - pointer.startY) > CLICK_TOLERANCE;
-      if (pointer.moved) {
-        cancelAnimationFrame(this.cameraFrame);
-        this.camera.pan(event.offsetX - pointer.x, event.offsetY - pointer.y);
-        this.requestRender();
-      }
-      pointer.x = event.offsetX;
-      pointer.y = event.offsetY;
+    if (event.button !== 0) {
       return;
     }
-    const node = this.pick(event.offsetX, event.offsetY);
+    this.canvas?.setPointerCapture?.(event.pointerId);
+    this.pressed.set(event.pointerId, [event.offsetX, event.offsetY]);
+    if (this.pressed.size === 1) {
+      Object.assign(this.pointer, { moved: false, startX: event.offsetX, startY: event.offsetY });
+    } else {
+      // A second finger: a pinch, not a click.
+      this.pointer.moved = true;
+    }
+  };
+
+  /**
+   * A drag moves the view, two fingers move and zoom it, what was between them staying between
+   * them; otherwise the node under the pointer is hovered.
+   */
+  private readonly onPointerMove = (event: PointerEvent) => {
+    if (!this.pressed.has(event.pointerId)) {
+      if (this.pressed.size === 0) {
+        this.hoverAt(event.offsetX, event.offsetY);
+      }
+      return;
+    }
+    const pointer = this.pointer;
+    const before = this.pinch();
+    this.pressed.set(event.pointerId, [event.offsetX, event.offsetY]);
+    pointer.moved ||= Math.hypot(event.offsetX - pointer.startX, event.offsetY - pointer.startY) > CLICK_TOLERANCE;
+    if (pointer.moved) {
+      const after = this.pinch();
+      cancelAnimationFrame(this.cameraFrame);
+      this.camera.pan(after.x - before.x, after.y - before.y);
+      if (before.distance > 0 && after.distance > 0) {
+        this.camera.zoomAt(after.x, after.y, after.distance / before.distance);
+      }
+      this.requestRender();
+    }
+  };
+
+  /** The middle of the first two pressed pointers and their distance, 0 for a single one. */
+  private pinch(): { x: number, y: number, distance: number } {
+    const [[x1, y1], [x2, y2] = [x1, y1]] = this.pressed.values();
+    return { x: (x1 + x2) / 2, y: (y1 + y2) / 2, distance: Math.hypot(x2 - x1, y2 - y1) };
+  }
+
+  private hoverAt(x: number, y: number): void {
+    const node = this.pick(x, y);
     if (node !== this.hoveredNode) {
       this.hover(node);
     }
-    this.tooltip.set(node ? { id: node.id, x: event.offsetX, y: event.offsetY } : null);
-  };
+    this.tooltip.set(node ? { id: node.id, x, y } : null);
+  }
 
   /** A press that did not move is a click: it zooms on the node under the pointer. */
   private readonly onPointerUp = (event: PointerEvent) => {
-    const clicked = this.pointer.down && !this.pointer.moved;
-    this.pointer.down = false;
-    if (clicked) {
+    if (this.pressed.delete(event.pointerId) && this.pressed.size === 0 && !this.pointer.moved) {
       const node = this.pick(event.offsetX, event.offsetY);
       if (node) {
         this.moveCamera(node.x!, node.y!, CLICK_ZOOM, CLICK_ZOOM_MS);
@@ -1172,8 +1205,12 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   };
 
+  /** The browser took the pointer back, to scroll or zoom the page itself. */
+  private readonly onPointerCancel = (event: PointerEvent) => {
+    this.pressed.delete(event.pointerId);
+  };
+
   private readonly onPointerLeave = () => {
-    this.pointer.down = false;
     this.tooltip.set(null);
     if (this.hoveredNode) {
       this.hover(null);
