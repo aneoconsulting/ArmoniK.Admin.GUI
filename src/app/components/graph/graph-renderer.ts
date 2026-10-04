@@ -218,6 +218,10 @@ export class GraphRenderer {
   private highlightCount = 0;
   private highlightNodes = new Uint32Array(0);
   private highlightColors = new Uint8Array(0);
+  // The box of the canvas on screen, and the device pixels in a pixel of it, when last sized.
+  private width = 1;
+  private height = 1;
+  private ratio = 1;
 
   constructor(private readonly canvas: HTMLCanvasElement, private readonly options: RendererOptions) {
     const gl = canvas.getContext('webgl2', { antialias: true, premultipliedAlpha: true, alpha: true });
@@ -439,9 +443,11 @@ export class GraphRenderer {
 
   /** Sizes the canvas as its box on screen, in device pixels. */
   resize(width: number, height: number): void {
-    const ratio = globalThis.devicePixelRatio ?? 1;
-    this.canvas.width = Math.max(1, Math.round(width * ratio));
-    this.canvas.height = Math.max(1, Math.round(height * ratio));
+    this.width = width;
+    this.height = height;
+    this.ratio = globalThis.devicePixelRatio ?? 1;
+    this.canvas.width = Math.max(1, Math.round(width * this.ratio));
+    this.canvas.height = Math.max(1, Math.round(height * this.ratio));
   }
 
   /** Draws the graph as `camera` sees it. Opaque links are those `linkAlpha` does not fade. */
@@ -450,7 +456,11 @@ export class GraphRenderer {
     if (this.lost || gl.isContextLost()) {
       return;
     }
-    const ratio = globalThis.devicePixelRatio ?? 1;
+    // The window moved to a screen of another density: its box is the same, not its pixels.
+    if ((globalThis.devicePixelRatio ?? 1) !== this.ratio) {
+      this.resize(this.width, this.height);
+    }
+    const ratio = this.ratio;
     const { options } = this;
     gl.viewport(0, 0, this.canvas.width, this.canvas.height);
     gl.clearColor(0, 0, 0, 0);
