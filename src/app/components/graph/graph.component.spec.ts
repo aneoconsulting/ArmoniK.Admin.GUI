@@ -448,6 +448,21 @@ describe('GraphComponent', () => {
       expect(mockRenderer.setHighlights).toHaveBeenLastCalledWith(Uint32Array.from([3]), Uint8Array.from([255, 0, 255, 255]));
     });
 
+    it('should change the mark of a highlighted node with its status', async () => {
+      await drawn();
+      component.highlightParentNodes = false;
+      component.highlightChildrenNodes = false;
+      component.highlightNodes('child');
+      mockStatuses.statusToLabel.mockReturnValue({ label: 'Completed', color: '#0000ff' });
+      const update = structure();
+      update.nodes[2].status = TaskStatus.TASK_STATUS_COMPLETED;
+
+      component['apply']([{ ...update, kind: 'status' }]);
+
+      expect(mockRenderer.setHighlights).toHaveBeenLastCalledWith(Uint32Array.from([2]), Uint8Array.from([255, 255, 0, 255]));
+      mockStatuses.statusToLabel.mockReturnValue({ label: 'Completed', color: '#00ff00' });
+    });
+
     it('should let the renderer go when left', async () => {
       await drawn();
 

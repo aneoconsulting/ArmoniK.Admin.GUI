@@ -1107,12 +1107,18 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!renderer) {
       return;
     }
+    let highlightChanged = false;
     for (let index = 0; index < this.drawnStatuses.length; index++) {
       const node = this.nodes[index];
       if (node.status !== this.drawnStatuses[index]) {
         this.drawnStatuses[index] = node.status;
         renderer.setNodeColor(index, this.rgba(this.getNodeColor(node)));
+        highlightChanged ||= this.nodesToHighlight.has(node.id);
       }
+    }
+    // A highlight has the complementary color of its node's.
+    if (highlightChanged) {
+      this.syncHighlights();
     }
   }
 
