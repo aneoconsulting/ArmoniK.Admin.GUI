@@ -382,6 +382,12 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     this.runLayout();
   }
 
+  /** Brings the whole graph back into the view, once lost by moving it away. */
+  center(): void {
+    cancelAnimationFrame(this.cameraFrame);
+    this.fitView();
+  }
+
   /**
    * A layout can take minutes on a large graph, and a worker in a layout cannot be interrupted,
    * only replaced.

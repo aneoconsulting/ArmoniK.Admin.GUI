@@ -402,6 +402,19 @@ describe('GraphComponent', () => {
       expect(y).toBeCloseTo(340);
     });
 
+    it('should bring the whole graph back into the view', async () => {
+      await drawn();
+      const { x, y, scale } = component['camera'];
+      component['onPointerDown'](pointer(500, 300));
+      component['onPointerMove'](pointer(5000, 3000));
+      component['onPointerUp'](pointer(5000, 3000));
+      component['onWheel']({ offsetX: 540, offsetY: 340, deltaY: 1000, preventDefault: jest.fn() } as unknown as WheelEvent);
+
+      component.center();
+
+      expect([component['camera'].x, component['camera'].y, component['camera'].scale]).toEqual([x, y, scale]);
+    });
+
     it('should zoom towards the pointer with the wheel', async () => {
       await drawn();
       const preventDefault = jest.fn();

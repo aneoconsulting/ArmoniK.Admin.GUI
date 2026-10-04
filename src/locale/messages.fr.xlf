@@ -3084,6 +3084,24 @@
         <target>Correspondance suivante</target>
       </segment>
     </unit>
+    <unit id="graphCenter">
+      <notes>
+        <note category="location">src/app/components/graph/graph.component.html</note>
+      </notes>
+      <segment state="initial">
+        <source>Center</source>
+        <target>Centrer</target>
+      </segment>
+    </unit>
+    <unit id="graphCenterTooltip">
+      <notes>
+        <note category="location">src/app/components/graph/graph.component.html</note>
+      </notes>
+      <segment state="initial">
+        <source>Show the whole graph</source>
+        <target>Afficher tout le graphe</target>
+      </segment>
+    </unit>
     <unit id="graphNoMatch">
       <notes>
         <note category="location">src/app/components/graph/graph.component.html</note>

@@ -30,6 +30,7 @@ export class IconsService {
     'help': 'help_outline',
     'update': 'update',
     'tune': 'tune',
+    'center': 'center_focus_strong',
     'arrow-down': 'arrow_drop_down',
     'arrow-up': 'arrow_drop_up',
     'arrow-left': 'arrow_left',

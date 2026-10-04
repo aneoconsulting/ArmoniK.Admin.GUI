@@ -20,6 +20,10 @@
         <mat-icon>{{ getIcon('refresh') }}</mat-icon>
         <span i18n-matTooltip matTooltip="Place every node again" i18n>Redraw</span>
       </button>
+      <button mat-flat-button color="accent" (click)="center()" i18n-matTooltip="@@graphCenterTooltip" matTooltip="Show the whole graph">
+        <mat-icon [fontIcon]="getIcon('center')" />
+        <span i18n="@@graphCenter">Center</span>
+      </button>
     </section>
     <section>
       <span i18n>{{ nodeCount() }} nodes</span>

@@ -2771,6 +2771,22 @@
         <source>Next match</source>
       </segment>
     </unit>
+    <unit id="graphCenter">
+      <notes>
+        <note category="location">src/app/components/graph/graph.component.html</note>
+      </notes>
+      <segment>
+        <source>Center</source>
+      </segment>
+    </unit>
+    <unit id="graphCenterTooltip">
+      <notes>
+        <note category="location">src/app/components/graph/graph.component.html</note>
+      </notes>
+      <segment>
+        <source>Show the whole graph</source>
+      </segment>
+    </unit>
     <unit id="graphNoMatch">
       <notes>
         <note category="location">src/app/components/graph/graph.component.html</note>
