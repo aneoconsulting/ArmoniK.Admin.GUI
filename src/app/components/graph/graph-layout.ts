@@ -12,8 +12,9 @@
  * 4. Blocks: each task on top of its subtree, the layers of its children below it, each on one
  *    row however wide. The first layer is centred under the task, each next one under what it
  *    reads, in the order of what it reads: an aggregation centred under what it gathers, the
- *    consumers of a data together under it. Only the independent parts of a session, which no
- *    link joins, are wrapped to about the proportions of a screen.
+ *    consumers of a data together under it. The first layer goes in groups, one per aggregation
+ *    reading it, in their order, so that their links do not cross. Only the independent parts of
+ *    a session, which no link joins, are wrapped to about the proportions of a screen.
  *
  * Unlike a layout by global layers, as ELK's, a subtree stays under its parent: an aggregation
  * deep in a family does not go to the bottom of the whole graph, among unrelated ones. A link
@@ -485,6 +486,7 @@ function placeBlocks(boxes: Boxes, families: Families, layer: Int32Array, before
   const top = new Int32Array(count + 1);
   const place = new Float64Array(count);
   const shelfOf = new Int32Array(count);
+  const readerOf = new Int32Array(count).fill(-1);
 
   // Children before their parents: the blocks of a family are sized before it is.
   for (let visit = count; visit >= 0; visit--) {
@@ -515,16 +517,7 @@ function placeBlocks(boxes: Boxes, families: Families, layer: Int32Array, before
       }
       let row = family.slice(first, last);
       if (first === 0 && gathered) {
-        // Read by an aggregation below: the shallowest subtrees in the middle, right above it, their
-        // links to it straight; the deepest on the sides, their outputs already low. In arrival
-        // order otherwise.
-        const byDepth = [...row].sort((a, b) => blockRows[a] - blockRows[b] || pre[a] - pre[b]);
-        const middleOut = new Array<number>(row.length);
-        const middle = (row.length - 1) >> 1;
-        byDepth.forEach((child, rank) => {
-          middleOut[rank % 2 === 0 ? middle - rank / 2 : middle + (rank + 1) / 2] = child;
-        });
-        row = middleOut;
+        row = gatheredOrder(row, family, last, layer, before, blockRows, pre, readerOf);
       } else if (first !== 0) {
         for (const child of row) {
           let sum = 0;
@@ -614,6 +607,70 @@ function placeBlocks(boxes: Boxes, families: Families, layer: Int32Array, before
     row[box] = blockTop[box];
   }
   return { x, row };
+}
+
+/**
+ * The first layer of a family read by aggregations below it. Each subtask goes with the first
+ * sibling reading it, its aggregation, and the groups in the order of their aggregations: the links
+ * of one cross none of another's. In a group, the shallowest subtrees in the middle, right above the
+ * aggregation, their links to it straight, in arrival order; the deeper ones on the sides, away from
+ * the middle of the row, where the aggregations are and their links gather. `readerOf` is filled
+ * here, `family[from]` on being the layers below.
+ */
+function gatheredOrder(row: number[], family: number[], from: number, layer: Int32Array, before: Lists, blockRows: Int32Array, pre: Int32Array, readerOf: Int32Array): number[] {
+  for (let k = from; k < family.length; k++) {
+    const reader = family[k];
+    for (let read = before.start[reader]; read < before.start[reader + 1]; read++) {
+      const child = before.values[read];
+      if (layer[child] === 0 && readerOf[child] === -1) {
+        readerOf[child] = k;
+      }
+    }
+  }
+  // Read by no aggregation, last.
+  const group = (child: number) => (readerOf[child] === -1 ? family.length : readerOf[child]);
+  row.sort((a, b) => group(a) - group(b) || blockRows[a] - blockRows[b] || pre[a] - pre[b]);
+  let groups = 0;
+  for (let k = 0; k < row.length; k++) {
+    if (k === 0 || group(row[k]) !== group(row[k - 1])) {
+      groups++;
+    }
+  }
+
+  const ordered: number[] = [];
+  for (let start = 0, index = 0; start < row.length; index++) {
+    let end = start;
+    while (end < row.length && group(row[end]) === group(row[start])) {
+      end++;
+    }
+    // The deeper subtrees go to the side away from the middle of the row, both for the middle group.
+    const side = 2 * index + 1 === groups ? 0 : 2 * index + 1 < groups ? -1 : 1;
+    // Each depth after the shallowest: its part to the left, deeper ones further out, the rest to the right.
+    const lefts: [number, number][] = [];
+    const rights: number[] = [];
+    for (let depthStart = start; depthStart < end;) {
+      let depthEnd = depthStart;
+      while (depthEnd < end && blockRows[row[depthEnd]] === blockRows[row[depthStart]]) {
+        depthEnd++;
+      }
+      const split = depthStart === start || side > 0 ? depthStart : side < 0 ? depthEnd : depthStart + ((depthEnd - depthStart) >> 1);
+      lefts.push([depthStart, split]);
+      for (let k = split; k < depthEnd; k++) {
+        rights.push(row[k]);
+      }
+      depthStart = depthEnd;
+    }
+    for (let l = lefts.length - 1; l >= 0; l--) {
+      for (let k = lefts[l][0]; k < lefts[l][1]; k++) {
+        ordered.push(row[k]);
+      }
+    }
+    for (const child of rights) {
+      ordered.push(child);
+    }
+    start = end;
+  }
+  return ordered;
 }
 
 function positionsOf(input: LayoutInput, boxes: Boxes, row: Int32Array, x: Float64Array): Float64Array {

@@ -113,8 +113,9 @@ describe('layOut', () => {
     expect(x('r0')).toBeGreaterThanOrEqual(Math.min(x('m00'), x('m01')));
     expect(x('r0')).toBeLessThanOrEqual(Math.max(x('m00'), x('m01')));
     expect(Math.abs(x('r0') - x('m0'))).toBeLessThan(2 * (NODE_SIZE + NODE_GAP));
-    expect(x('r')).toBeGreaterThan(Math.min(x('m0'), x('m3')));
-    expect(x('r')).toBeLessThan(Math.max(x('m0'), x('m3')));
+    const gathered = ['m0', 'm1', 'm2', 'm3'].map(x);
+    expect(x('r')).toBeGreaterThan(Math.min(...gathered));
+    expect(x('r')).toBeLessThan(Math.max(...gathered));
     expect(overlaps(coordinates)).toEqual([]);
   });
 
@@ -172,6 +173,46 @@ describe('layOut', () => {
     for (const leaf of ['leaf0', 'leaf1', 'leaf2', 'leaf3']) {
       expect(distance(leaf)).toBeLessThan(Math.min(distance('deep0'), distance('deep1')));
     }
+    expect(overlaps(coordinates)).toEqual([]);
+  });
+
+  it('should keep the subtasks of each aggregation together, in the order of the aggregations', () => {
+    // Four batches of maps, each gathered by its reducer, arriving in turn or interleaved.
+    for (const batchOf of [(map: number) => Math.floor(map / 5), (map: number) => map % 4]) {
+      const session = new Session().task('parent');
+      const maps = Array.from({ length: 20 }, (_, map) => `m${map}`);
+      maps.forEach(map => session.task(map, { parent: 'parent' }));
+      const reducers = ['r0', 'r1', 'r2', 'r3'];
+      reducers.forEach((reducer, batch) => {
+        session.task(reducer, { parent: 'parent', inputs: maps.filter((_, map) => batchOf(map) === batch).map(map => `${map}-out0`) });
+      });
+      const coordinates = layOut(session.input());
+
+      // Their links cross no other: the batches from left to right as their reducers are.
+      const reducerOrder = layer(coordinates, reducers, coordinates.get('r0')![1]);
+      const batches = layer(coordinates, maps, coordinates.get('m0')![1]).map(map => reducerOrder.indexOf(`r${batchOf(Number(map.slice(1)))}`));
+      expect(batches).toEqual([...batches].sort((a, b) => a - b));
+      expect(overlaps(coordinates)).toEqual([]);
+    }
+  });
+
+  it('should put the deep subtasks of several aggregations away from where their links gather', () => {
+    // m0 and m4 are read by r1, m8 by r2: the three on the outer sides of the row.
+    const session = new Session().task('parent');
+    for (let map = 0; map < 12; map++) {
+      session.task(`m${map}`, { parent: 'parent' });
+      if (map % 4 === 0) {
+        session.task(`m${map}.0`, { parent: `m${map}` }).task(`m${map}.0.0`, { parent: `m${map}.0` });
+      }
+    }
+    session.task('r1', { parent: 'parent', inputs: Array.from({ length: 6 }, (_, map) => `m${map}-out0`) });
+    session.task('r2', { parent: 'parent', inputs: Array.from({ length: 6 }, (_, map) => `m${map + 6}-out0`) });
+    const coordinates = layOut(session.input());
+    const row = layer(coordinates, Array.from({ length: 12 }, (_, map) => `m${map}`), coordinates.get('m0')![1]);
+
+    expect(row.slice(0, 2).sort()).toEqual(['m0', 'm4']);
+    expect(row[row.length - 1]).toEqual('m8');
+    expect(row.slice(0, 6).sort()).toEqual(['m0', 'm1', 'm2', 'm3', 'm4', 'm5']);
     expect(overlaps(coordinates)).toEqual([]);
   });
 
