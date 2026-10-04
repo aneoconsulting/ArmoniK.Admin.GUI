@@ -425,6 +425,19 @@ describe('GraphComponent', () => {
       expect(preventDefault).toHaveBeenCalled();
     });
 
+    it('should follow the fingers pinching a trackpad', async () => {
+      await drawn();
+      const { scale } = component['camera'];
+
+      // Fingers twice as far apart: the browser sends wheel events with the Ctrl key, their deltas
+      // adding up to -100 ln 2.
+      for (let event = 0; event < 16; event++) {
+        component['onWheel']({ offsetX: 540, offsetY: 340, deltaY: -100 * Math.LN2 / 16, ctrlKey: true, preventDefault: jest.fn() } as unknown as WheelEvent);
+      }
+
+      expect(component['camera'].scale).toBeCloseTo(scale * 2);
+    });
+
     it('should zoom on a clicked node', async () => {
       await drawn();
       // The child, at 0, 250: on screen, the centre of the view is at 0, 160.

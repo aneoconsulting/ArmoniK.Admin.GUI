@@ -104,6 +104,11 @@ const CLICK_ZOOM_MS = 1000;
 const CLICK_TOLERANCE = 4;
 /** How much a notch of the wheel zooms. */
 const WHEEL_ZOOM = 0.0015;
+/**
+ * How much a pinch on a trackpad zooms, which the browser sends as wheel events with the Ctrl key
+ * and small deltas: the fingers twice as far apart add up to -100 ln 2, and zoom twice as close.
+ */
+const PINCH_ZOOM = 0.01;
 /** The pointer picks a node this close, in pixels, when the node is smaller on screen. */
 const PICK_RADIUS = 6;
 /** Space left around the graph when it is fitted to the view. */
@@ -1233,7 +1238,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly onWheel = (event: WheelEvent) => {
     event.preventDefault();
     cancelAnimationFrame(this.cameraFrame);
-    this.camera.zoomAt(event.offsetX, event.offsetY, Math.exp(-event.deltaY * WHEEL_ZOOM));
+    this.camera.zoomAt(event.offsetX, event.offsetY, Math.exp(-event.deltaY * (event.ctrlKey ? PINCH_ZOOM : WHEEL_ZOOM)));
     this.tooltip.set(null);
     this.requestRender();
   };
