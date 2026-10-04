@@ -141,9 +141,12 @@ function buildBoxes(input: LayoutInput): Boxes {
   const isTask = new Uint8Array(nodeCount);
   input.types.forEach((type, position) => (isTask[position] = type === 'task' ? 1 : 0));
 
-  // Per data: the task its payload feeds, its owner, the parent task of the subtask it feeds, and
-  // the tasks it is an input of.
+  // Per data: the task its payload feeds, drawn under it, and all the tasks it feeds, as a retry
+  // reuses the payload of the task it retries; its owner, the parent task of the subtasks it feeds,
+  // and the tasks it is an input of.
   const fed = new Int32Array(nodeCount).fill(-1);
+  const feeding = new Numbers();
+  const fedTask = new Numbers();
   const owner = new Int32Array(nodeCount).fill(-1);
   const parentOf = new Int32Array(nodeCount).fill(-1);
   const consumed = new Numbers();
@@ -157,6 +160,8 @@ function buildBoxes(input: LayoutInput): Boxes {
     if ((link.type === 'payload' || link.type === 'dependency') && isTask[target]) {
       if (link.type === 'payload') {
         fed[source] = target;
+        feeding.push(source);
+        fedTask.push(target);
       }
       consumed.push(source);
       consumer.push(target);
@@ -167,6 +172,7 @@ function buildBoxes(input: LayoutInput): Boxes {
     }
   }
   const consumers = lists(nodeCount, consumed.values, consumer.values, consumed.length);
+  const fedTasks = lists(nodeCount, feeding.values, fedTask.values, feeding.length);
   // Counts the distinct consumers of a data: a task may name an input twice. Each pass over the
   // data marks the tasks it saw with a stamp of its own.
   const seenBy = new Float64Array(nodeCount).fill(-1);
@@ -253,13 +259,15 @@ function buildBoxes(input: LayoutInput): Boxes {
     if (source !== -1) {
       distinctConsumers(i, 1, task => link(source, boxOf[task]));
     }
-    // The subtask goes below its parent, in the subtasks tree.
-    if (fed[i] !== -1 && parentOf[i] !== -1) {
-      const subtask = boxOf[fed[i]];
+    // The subtasks go below their parent, in the subtasks tree.
+    if (parentOf[i] !== -1) {
       const parentBox = boxOf[parentOf[i]];
-      link(parentBox, subtask);
-      if (parent[subtask] === -1 && parentBox !== subtask) {
-        parent[subtask] = parentBox;
+      for (let k = fedTasks.start[i]; k < fedTasks.start[i + 1]; k++) {
+        const subtask = boxOf[fedTasks.values[k]];
+        link(parentBox, subtask);
+        if (parent[subtask] === -1 && parentBox !== subtask) {
+          parent[subtask] = parentBox;
+        }
       }
     }
   }

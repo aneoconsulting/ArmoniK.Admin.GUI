@@ -236,6 +236,27 @@ describe('layOut', () => {
     expect(overlaps(coordinates)).toEqual([]);
   });
 
+  it('should keep every attempt of a retried subtask under its parent', () => {
+    // A retry is fed by the payload of the task it retries, and reads its inputs.
+    const session = new Session()
+      .data('upload')
+      .task('root')
+      .task('a', { parent: 'root' })
+      .task('b', { parent: 'root', inputs: ['upload'] });
+    session.nodes.push('b###2');
+    session.types.push('task');
+    session.links.push(
+      { source: 'b-payload', target: 'b###2', type: 'payload' },
+      { source: 'upload', target: 'b###2', type: 'dependency' },
+    );
+    const coordinates = layOut(session.input());
+    const [, y] = coordinates.get('b')!;
+
+    expect(coordinates.get('root')![1]).toEqual(0);
+    expect(y).toBeGreaterThan(coordinates.get('a')![1]);
+    expect(layer(coordinates, ['b', 'b###2'], y)).toEqual(['b', 'b###2']);
+  });
+
   it('should keep a data linked to no task', () => {
     const coordinates = layOut({ nodes: ['alone'], types: ['result'], links: [] });
 
