@@ -939,6 +939,20 @@ describe('GraphComponent', () => {
       expect(component.matchIndex()).toEqual(1);
     });
 
+    it('should stay on the current match when what is highlighted around it changes', () => {
+      component['nodes'].forEach((node, index) => component['setPosition'](node, index * 100, 0));
+      const moveCamera = jest.spyOn(component as unknown as { moveCamera: () => void }, 'moveCamera');
+      component.highlightNodes('chil');
+      component.nextMatch();
+      moveCamera.mockClear();
+
+      component.toggleHighlightParentNodes(false);
+      component.toggleHighlightChildrenNodes(false);
+
+      expect(component.matchIndex()).toEqual(1);
+      expect(moveCamera).not.toHaveBeenCalled();
+    });
+
     it('should tell a search that matches nothing', () => {
       component.highlightNodes('nothing');
 

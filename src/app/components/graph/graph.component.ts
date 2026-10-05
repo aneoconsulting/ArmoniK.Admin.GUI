@@ -431,9 +431,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   toggleHighlightParentNodes(checked: boolean) {
     this.highlightParentNodes = checked;
     this.storageService.setItem('graph-highlight-parents', checked);
-    if (this.nodeToHighlight !== null) {
-      this.highlightNodes(this.nodeToHighlight);
-    }
+    this.markMatches();
   }
 
   /**
@@ -443,9 +441,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   toggleHighlightChildrenNodes(checked: boolean) {
     this.highlightChildrenNodes = checked;
     this.storageService.setItem('graph-highlight-children', checked);
-    if (this.nodeToHighlight !== null) {
-      this.highlightNodes(this.nodeToHighlight);
-    }
+    this.markMatches();
   }
 
   /**
@@ -486,11 +482,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Highlights the nodes whose id contains the searched value, and centres on the first of them.
-   * A pasted id is found at once; a part of one, by going through them all. When a single node
-   * matches, its ancestors and descendants are highlighted too, as configured.
+   * A pasted id is found at once; a part of one, by going through them all.
    */
   highlightNodes(searchedValue: string) {
-    this.nodesToHighlight.clear();
     this.nodeToHighlight = searchedValue;
     this.searched.set(searchedValue);
     const found: string[] = [];
@@ -507,6 +501,17 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     this.matches.set(found);
+    this.markMatches();
+    this.showMatch(0);
+  }
+
+  /**
+   * The matches highlighted. When a single node matches, its ancestors and descendants too, as
+   * configured: changing that leaves the match shown as it is.
+   */
+  private markMatches(): void {
+    this.nodesToHighlight.clear();
+    const found = this.matches();
     found.forEach(id => this.nodesToHighlight.add(id));
     // Before the first layout nothing is indexed nor placed: the search is applied again after it.
     if (found.length === 1 && this.laidOut) {
@@ -519,7 +524,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     this.syncHighlights();
-    this.showMatch(0);
   }
 
   /** Centres the view on a match. */
