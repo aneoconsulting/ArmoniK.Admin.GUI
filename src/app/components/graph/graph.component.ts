@@ -273,6 +273,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly pointer = { moved: false, startX: 0, startY: 0 };
   /** Where each pressed pointer is: a mouse, or a finger of a pinch. */
   private readonly pressed = new Map<number, [number, number]>();
+  /** Where the pointer is over the canvas, for what is under it once the view moved. */
+  private pointerAt: [number, number] | null = null;
 
   ngOnInit(): void {
     const storedColorMap = this.storageService.getItem<Record<LinkType, string>>('graph-links-colors', true) as Record<LinkType, string> | null;
@@ -562,6 +564,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     const margin = NODE_SIZE / 2;
     this.camera.fit(minX - margin, maxX + margin, minY - margin, maxY + margin, FIT_PADDING, MAX_FIT_ZOOM);
+    this.hoverAgain();
     this.requestRender();
   }
 
@@ -1008,6 +1011,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         this.animationFrame = requestAnimationFrame(step);
       } else {
         this.animationTargets = null;
+        this.hoverAgain();
       }
     };
     this.animationFrame = requestAnimationFrame(step);
@@ -1201,6 +1205,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
    * them; otherwise the node under the pointer is hovered.
    */
   private readonly onPointerMove = (event: PointerEvent) => {
+    this.pointerAt = [event.offsetX, event.offsetY];
     if (!this.pressed.has(event.pointerId)) {
       if (this.pressed.size === 0) {
         this.hoverAt(event.offsetX, event.offsetY);
@@ -1252,6 +1257,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   };
 
   private readonly onPointerLeave = () => {
+    this.pointerAt = null;
     this.tooltip.set(null);
     if (this.hoveredNode) {
       this.hover(null);
@@ -1263,7 +1269,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     event.preventDefault();
     cancelAnimationFrame(this.cameraFrame);
     this.camera.zoomAt(event.offsetX, event.offsetY, Math.exp(-event.deltaY * (event.ctrlKey ? PINCH_ZOOM : WHEEL_ZOOM)));
-    this.tooltip.set(null);
+    this.pointerAt = [event.offsetX, event.offsetY];
+    this.hoverAgain();
     this.requestRender();
   };
 
@@ -1294,9 +1301,18 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       this.requestRender();
       if (t < 1) {
         this.cameraFrame = requestAnimationFrame(step);
+      } else {
+        this.hoverAgain();
       }
     };
     this.cameraFrame = requestAnimationFrame(step);
+  }
+
+  /** What is under a still pointer once the view or the nodes moved under it. */
+  private hoverAgain(): void {
+    if (this.pointerAt && this.pressed.size === 0) {
+      this.hoverAt(...this.pointerAt);
+    }
   }
 
   private getNodeColor(node: Node): string {

@@ -488,6 +488,21 @@ describe('GraphComponent', () => {
       expect(component.tooltip()).toEqual(expect.objectContaining({ id: 'parent' }));
     });
 
+    it('should hover what comes under the pointer once the view moved under it', async () => {
+      await drawn();
+      // Zoomed in elsewhere, then the parent hovered where it is now.
+      component['onWheel']({ offsetX: 700, offsetY: 300, deltaY: -200, preventDefault: jest.fn() } as unknown as WheelEvent);
+      const [x, y] = component['camera'].toScreen(0, 0);
+      component['onPointerMove'](pointer(x, y));
+      expect(component.tooltip()).toEqual(expect.objectContaining({ id: 'parent' }));
+
+      component.center();
+
+      expect(component['pick'](x, y)).toBeNull();
+      expect(component.tooltip()).toBeNull();
+      expect(mockRenderer.setFocus).toHaveBeenLastCalledWith(null);
+    });
+
     it('should not move the view with a layout when no node is hovered', async () => {
       await drawn();
       const { x, y } = component['camera'];
