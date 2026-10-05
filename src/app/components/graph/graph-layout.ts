@@ -289,14 +289,13 @@ function buildBoxes(input: LayoutInput): Boxes {
  * The families the blocks follow: each task under its parent task; a shared data under the closest
  * family holding all its consumers, above them; the rest under the session, a virtual root whose
  * index is the number of boxes. Walked depth first from the root, in arrival order: a family's
- * children have consecutive `pre` indices, and a box's subtree spans `pre` to `post`.
+ * children have consecutive `pre` indices.
  */
 type Families = {
   root: number;
   parent: Int32Array;
   children: Lists;
   pre: Int32Array;
-  post: Int32Array;
   /** The boxes by `pre` index. */
   order: Int32Array;
 };
@@ -370,9 +369,9 @@ function familiesOf(boxes: Boxes): Families {
 
 /**
  * The tree of `parent`, walked depth first from `root`, the children of a box in their order: a
- * family's children have consecutive `pre` indices, and a box's subtree spans `pre` to `post`.
+ * family's children have consecutive `pre` indices.
  */
-function walk(parent: Int32Array, root: number): { children: Lists, pre: Int32Array, post: Int32Array, order: Int32Array } {
+function walk(parent: Int32Array, root: number): { children: Lists, pre: Int32Array, order: Int32Array } {
   const size = parent.length;
   const owners = new Int32Array(size - 1);
   const members = new Int32Array(size - 1);
@@ -384,7 +383,6 @@ function walk(parent: Int32Array, root: number): { children: Lists, pre: Int32Ar
   }
   const children = lists(size, owners, members);
   const pre = new Int32Array(size);
-  const post = new Int32Array(size);
   const order = new Int32Array(size);
   const stack = new Numbers();
   const next = new Int32Array(size);
@@ -402,11 +400,10 @@ function walk(parent: Int32Array, root: number): { children: Lists, pre: Int32Ar
       next[child] = children.start[child];
       stack.push(child);
     } else {
-      post[box] = visited;
       stack.length--;
     }
   }
-  return { children, pre, post, order };
+  return { children, pre, order };
 }
 
 /**
@@ -621,7 +618,6 @@ function placeBlocks(boxes: Boxes, families: Families, layer: Int32Array, before
   const left = new Float64Array(count + 1);
   const top = new Int32Array(count + 1);
   const place = new Float64Array(count);
-  const shelfOf = new Int32Array(count);
   const readerOf = new Int32Array(count).fill(-1);
 
   // Children before their parents: the blocks of a family are sized before it is.
@@ -691,7 +687,6 @@ function placeBlocks(boxes: Boxes, families: Families, layer: Int32Array, before
         }
         left[child] = cursor;
         top[child] = rows;
-        shelfOf[child] = shelves.length;
         cursor += blockWidth[child] + NODE_GAP;
         shelfRows = Math.max(shelfRows, blockRows[child]);
       });

@@ -241,8 +241,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Batches received so far: the first one tells nothing, see applyBatch. */
   private batches = 0;
   /**
-   * Nodes given a position by this component. Not `x !== undefined`: the renderer gives a position
-   * of its own, on a spiral around the origin, to any node that reaches it without one.
+   * Nodes placed against the current places. Not `x !== undefined`: a node placed while a layout
+   * ran is placed again against the places it gives, though it has a position.
    */
   private readonly placed = new Set<string>();
   /**
@@ -1340,7 +1340,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
 /** The order of the link colors the renderer is given. */
 const LINK_TYPES: LinkType[] = ['parent', 'dependency', 'output', 'payload'];
 
-/** The renderer replaces the ends of a link, given as ids, with the node objects. */
+/** The id of an end of a link, which its type allows to be the node itself. */
 function endId(end: Link['source']): string {
   return typeof end === 'object' ? (end as Node).id : String(end);
 }

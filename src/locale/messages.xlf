@@ -2787,6 +2787,14 @@
         <source>Show the whole graph</source>
       </segment>
     </unit>
+    <unit id="graphNoWebGL2">
+      <notes>
+        <note category="location">src/app/components/graph/graph-renderer.ts</note>
+      </notes>
+      <segment>
+        <source>WebGL2 is not available.</source>
+      </segment>
+    </unit>
     <unit id="graphNoMatch">
       <notes>
         <note category="location">src/app/components/graph/graph.component.html</note>

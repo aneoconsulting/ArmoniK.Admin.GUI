@@ -3102,6 +3102,15 @@
         <target>Afficher tout le graphe</target>
       </segment>
     </unit>
+    <unit id="graphNoWebGL2">
+      <notes>
+        <note category="location">src/app/components/graph/graph-renderer.ts</note>
+      </notes>
+      <segment state="initial">
+        <source>WebGL2 is not available.</source>
+        <target>WebGL2 n&apos;est pas disponible.</target>
+      </segment>
+    </unit>
     <unit id="graphNoMatch">
       <notes>
         <note category="location">src/app/components/graph/graph.component.html</note>

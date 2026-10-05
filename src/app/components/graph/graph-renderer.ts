@@ -226,7 +226,7 @@ export class GraphRenderer {
   constructor(private readonly canvas: HTMLCanvasElement, private readonly options: RendererOptions) {
     const gl = canvas.getContext('webgl2', { antialias: true, premultipliedAlpha: true, alpha: true });
     if (!gl) {
-      throw new Error('WebGL2 is not available.');
+      throw new Error($localize`:@@graphNoWebGL2:WebGL2 is not available.`);
     }
     this.gl = gl;
     canvas.addEventListener('webglcontextlost', this.onLost);
