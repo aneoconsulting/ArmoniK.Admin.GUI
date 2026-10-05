@@ -743,7 +743,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         this.indexGraph();
         this.unanchored = new Set();
-        this.animateTo(this.incrementalCoordinates(id => targets.get(id)));
+        this.animateTo(this.incrementalCoordinates(id => targets.get(id)), !shownEmpty);
         if (shownEmpty) {
           this.fitView();
         }
@@ -975,7 +975,11 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /** Moves the nodes to their targets over ANIMATION_MS, so that the eye can follow them. */
-  private animateTo(targets: Coordinates): void {
+  /**
+   * Moves the nodes to `targets` over ANIMATION_MS. With `anchored`, the view follows the hovered
+   * node, which stays under the pointer: what is looked at is not taken away.
+   */
+  private animateTo(targets: Coordinates, anchored: boolean): void {
     cancelAnimationFrame(this.animationFrame);
     const moves = this.nodes
       .filter(node => targets.has(node.id))
@@ -988,8 +992,15 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     const step = () => {
       const t = Math.min(1, (performance.now() - start) / ANIMATION_MS);
       const eased = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+      // Not while the view is dragged: it is the user's to move.
+      const anchor = anchored && this.pressed.size === 0 ? this.hoveredNode : null;
+      const [anchorX, anchorY] = anchor ? [anchor.x!, anchor.y!] : [0, 0];
       for (const move of moves) {
         this.setPosition(move.node, move.fromX + (move.x - move.fromX) * eased, move.fromY + (move.y - move.fromY) * eased);
+      }
+      if (anchor) {
+        this.camera.x += anchor.x! - anchorX;
+        this.camera.y += anchor.y! - anchorY;
       }
       this.syncPositions();
       this.requestRender();

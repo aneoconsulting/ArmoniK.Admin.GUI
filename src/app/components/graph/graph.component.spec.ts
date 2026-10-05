@@ -474,6 +474,31 @@ describe('GraphComponent', () => {
       expect(component.tooltip()).toBeNull();
     });
 
+    it('should keep the hovered node under the pointer while a layout moves it', async () => {
+      await drawn();
+      const [x, y] = component['camera'].toScreen(0, 0);
+      component['onPointerMove'](pointer(x, y));
+
+      component.redraw();
+      mockWorker.onmessage!({ data: { positions: new Float64Array([400, 0, 400, 180, 400, 250, 400, 320]) } } as MessageEvent);
+      jest.advanceTimersByTime(1000);
+
+      expect(component['nodesById'].get('parent')!.x).toEqual(400);
+      expect(component['camera'].toScreen(400, 0)).toEqual([x, y]);
+      expect(component.tooltip()).toEqual(expect.objectContaining({ id: 'parent' }));
+    });
+
+    it('should not move the view with a layout when no node is hovered', async () => {
+      await drawn();
+      const { x, y } = component['camera'];
+
+      component.redraw();
+      mockWorker.onmessage!({ data: { positions: new Float64Array([400, 0, 400, 180, 400, 250, 400, 320]) } } as MessageEvent);
+      jest.advanceTimersByTime(1000);
+
+      expect([component['camera'].x, component['camera'].y]).toEqual([x, y]);
+    });
+
     it('should mark the highlighted nodes with the complementary color of theirs', async () => {
       await drawn();
       component.highlightParentNodes = false;
