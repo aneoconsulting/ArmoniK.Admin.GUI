@@ -303,6 +303,21 @@ describe('GraphComponent', () => {
       jest.advanceTimersByTime(100);
     };
 
+    it('should fit the view on where the first graph of a session shown empty goes, not where it comes from', () => {
+      component['graphRef'] = { nativeElement: element() };
+      component['canvasRef'] = { nativeElement: document.createElement('canvas') };
+      component.updates = new Subject<GraphUpdate>();
+      component.ngAfterViewInit();
+      jest.advanceTimersByTime(5000);
+
+      component['apply']([structure()]);
+      jest.advanceTimersByTime(1000);
+      mockWorker.onmessage!({ data: { positions: new Float64Array([0, 0, 0, 180, 0, 2500, 0, 2570]) } } as MessageEvent);
+
+      // Centred on the layout's places, which the nodes are only starting to move to.
+      expect([component['camera'].x, component['camera'].y]).toEqual([0, 1285]);
+    });
+
     it('should fit the graph without zooming in past its natural size', async () => {
       await drawn();
 

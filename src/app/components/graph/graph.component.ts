@@ -548,15 +548,19 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  /** The graph in the view, its nodes whole, zoomed in no further than MAX_FIT_ZOOM. */
+  /**
+   * The graph in the view, its nodes whole, zoomed in no further than MAX_FIT_ZOOM. Where the nodes
+   * go when they are moving there.
+   */
   private fitView(): void {
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
     for (const node of this.nodes) {
-      if (node.x !== undefined && node.y !== undefined) {
-        minX = Math.min(minX, node.x);
-        maxX = Math.max(maxX, node.x);
-        minY = Math.min(minY, node.y);
-        maxY = Math.max(maxY, node.y);
+      const [x, y] = this.animationTargets?.get(node.id) ?? [node.x, node.y];
+      if (x !== undefined && y !== undefined) {
+        minX = Math.min(minX, x);
+        maxX = Math.max(maxX, x);
+        minY = Math.min(minY, y);
+        maxY = Math.max(maxY, y);
       }
     }
     if (!Number.isFinite(minX)) {
