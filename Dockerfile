@@ -18,6 +18,11 @@ RUN pnpm build --base-href=/admin/
 
 FROM nginxinc/nginx-unprivileged:mainline-alpine-slim AS production
 
+# Upgrade the base image
+USER root
+RUN apk update && apk upgrade --no-cache
+USER 101
+
 WORKDIR /usr/share/nginx/html
 
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
