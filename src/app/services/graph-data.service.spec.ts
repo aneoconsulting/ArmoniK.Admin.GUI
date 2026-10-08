@@ -199,8 +199,8 @@ describe('GraphDataService', () => {
     it('should find the previous link once the renderer replaced its ends with nodes', () => {
       events.next(newResult('output', 'previous'));
       const [link] = service.links;
-      link.source = service.nodes.find(node => node.id === 'previous');
-      link.target = service.nodes.find(node => node.id === 'output');
+      link.source = service.nodes.find(node => node.id === 'previous')!;
+      link.target = service.nodes.find(node => node.id === 'output')!;
       events.next({
         update: EventSubscriptionResponse.UpdateCase.resultOwnerUpdate,
         resultOwnerUpdate: { resultId: 'output', previousOwnerId: 'previous', currentOwnerId: 'current' },

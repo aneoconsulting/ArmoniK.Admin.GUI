@@ -1,8 +1,7 @@
 import { EventSubscriptionResponse, ResultStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { ArmoniKGraphNode, GraphLink, GraphUpdate, LinkType, NodeEventType } from '@app/types/graph.types';
-import { GraphData } from 'force-graph';
-import { Observable, Subject, map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { GrpcEventsService } from './grpc-events.service';
 import { Status } from '../types/status';
 
@@ -18,8 +17,6 @@ export class GraphDataService {
 
   readonly nodes: ArmoniKGraphNode[] = [];
   readonly links: GraphLink<ArmoniKGraphNode>[] = [];
-
-  readonly updateGraphSubject = new Subject<GraphData>();
 
   private readonly nodesById = new Map<string, ArmoniKGraphNode>();
   private readonly linksByEnds = new Map<string, GraphLink<ArmoniKGraphNode>>();
@@ -149,10 +146,7 @@ export class GraphDataService {
     }
   }
 
-  /**
-   * Links are indexed by their ends as ids: the renderer replaces `source` and `target` with the
-   * node objects, so comparing them would miss.
-   */
+  /** Links are indexed by the ids of their ends. */
   private addLink(source: string, target: string, type: LinkType) {
     const key = `${source}|${target}`;
     if (!this.linksByEnds.has(key)) {

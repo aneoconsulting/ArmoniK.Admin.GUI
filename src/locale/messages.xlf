@@ -2747,5 +2747,61 @@
         <source>This field is not reported by the server.</source>
       </segment>
     </unit>
+    <unit id="graphRendererError">
+      <notes>
+        <note category="location">src/app/components/graph/graph.component.html:144</note>
+      </notes>
+      <segment>
+        <source>The graph cannot be drawn: <ph id="0" equiv="INTERPOLATION" disp="{{ error }}"/></source>
+      </segment>
+    </unit>
+    <unit id="graphPreviousMatch">
+      <notes>
+        <note category="location">src/app/components/graph/graph.component.html</note>
+      </notes>
+      <segment>
+        <source>Previous match</source>
+      </segment>
+    </unit>
+    <unit id="graphNextMatch">
+      <notes>
+        <note category="location">src/app/components/graph/graph.component.html</note>
+      </notes>
+      <segment>
+        <source>Next match</source>
+      </segment>
+    </unit>
+    <unit id="graphCenter">
+      <notes>
+        <note category="location">src/app/components/graph/graph.component.html</note>
+      </notes>
+      <segment>
+        <source>Center</source>
+      </segment>
+    </unit>
+    <unit id="graphCenterTooltip">
+      <notes>
+        <note category="location">src/app/components/graph/graph.component.html</note>
+      </notes>
+      <segment>
+        <source>Show the whole graph</source>
+      </segment>
+    </unit>
+    <unit id="graphNoWebGL2">
+      <notes>
+        <note category="location">src/app/components/graph/graph-renderer.ts</note>
+      </notes>
+      <segment>
+        <source>WebGL2 is not available.</source>
+      </segment>
+    </unit>
+    <unit id="graphNoMatch">
+      <notes>
+        <note category="location">src/app/components/graph/graph.component.html</note>
+      </notes>
+      <segment>
+        <source>No match</source>
+      </segment>
+    </unit>
   </file>
 </xliff>

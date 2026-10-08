@@ -18,12 +18,12 @@ import { PrettyPipe } from '@pipes/pretty.pipe';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { StorageService } from '@services/storage.service';
-import ForceGraph from 'force-graph';
 import { Observable, Subscription, bufferTime, filter, retry, tap, timer } from 'rxjs';
-import { AutoCompleteComponent } from '../auto-complete.component';
-import { Coordinates, LayoutInput, LayoutResponse, NODE_GAP, NODE_SIZE, push } from './graph-layout';
+import { Coordinates, DATA_ROW_OFFSET, LAYER_STEP, LayoutInput, LayoutResponse, NODE_GAP, NODE_SIZE, SLOT, push } from './graph-layout';
 import { createLayoutWorker } from './graph-layout-worker.factory';
 import { GraphLegendComponent } from './graph-legend.component';
+import { GraphRenderer, RESULT_SHAPE, TASK_SHAPE } from './graph-renderer';
+import { Camera, NodeGrid } from './graph-view';
 
 type Node = ArmoniKGraphNode;
 type Link = GraphLink<Node>;
@@ -61,8 +61,13 @@ export type GraphDebug = {
 const BATCH_MS = 250;
 /** The layout runs once the structure has stopped changing for this long… */
 const QUIET_MS = 1000;
-/** …or this long after the first change, for a running session never stops changing. */
-const MAX_WAIT_MS = 10000;
+/**
+ * …or this long after the first change, for a running session never stops changing. New nodes
+ * are put in their families meanwhile, close to where the layout would put them: it can wait.
+ */
+const MAX_WAIT_MS = 60000;
+/** The same cap before the first layout, shorter: nothing is drawn until it. */
+const FIRST_MAX_WAIT_MS = 10000;
 /**
  * The same cap while the initial graph arrives, wider: laying it out before its end means laying
  * it out twice, but a session never quiet enough to end it must still show up.
@@ -88,29 +93,42 @@ const INITIAL_BATCH_SIZE = 200;
 const DEBUG_REFRESH_MS = 1000;
 /** Duration of the move of the nodes to the places the layout gave them. */
 const ANIMATION_MS = 600;
-/** Resolution the icons are rasterised at, so that they stay sharp once zoomed in. */
-const SPRITE_SIZE = 128;
-/** Under this size on screen, a node is drawn as a plain square: an icon would not be readable. */
-const MIN_ICON_SCREEN_SIZE = 8;
+/** However far zoomed out, a node stays this wide on screen. */
+const MIN_NODE_SCREEN_SIZE = 2;
+/** Fitting a small graph to the view stops at this zoom: a single task would fill the screen. */
+const MAX_FIT_ZOOM = 1;
+/** The zoom a click on a node goes to, and how long it takes. */
+const CLICK_ZOOM = 4;
+const CLICK_ZOOM_MS = 1000;
+/** A press that moves less than this, in pixels, is a click, not a drag. */
+const CLICK_TOLERANCE = 4;
+/** How much a notch of the wheel zooms. */
+const WHEEL_ZOOM = 0.0015;
 /**
- * Fitting a small graph to the view stops at this zoom: a single task would fill the screen. Not
- * 1, the zoom force-graph starts at: left there, it believes the user never zoomed, and zooms to a
- * size of its own after each change of the graph.
+ * How much a pinch on a trackpad zooms, which the browser sends as wheel events with the Ctrl key
+ * and small deltas: the fingers twice as far apart add up to -100 ln 2, and zoom twice as close.
  */
-const MAX_FIT_ZOOM = 0.99;
+const PINCH_ZOOM = 0.01;
+/** The pointer picks a node this close, in pixels, when the node is smaller on screen. */
+const PICK_RADIUS = 6;
 /** Space left around the graph when it is fitted to the view. */
 const FIT_PADDING = 40;
 /** Smallest size on screen of the mark of a highlighted node, however far zoomed out. */
 const HIGHLIGHT_SCREEN_SIZE = 12;
 /** Opacity of what is not around the hovered node. */
 const FADED_ALPHA = 0.08;
+/**
+ * The search runs once typing pauses for this long, or on Enter: going through hundreds of
+ * thousands of ids on every key would not keep up.
+ */
+const SEARCH_DELAY_MS = 300;
 /** How far the hovered node's neighbourhood reaches: task → data → task. */
 const HOVER_DEPTH = 2;
 
 /**
- * Draws the graph of a session. Nodes are placed by ELK in a worker, not by a simulation. Nothing
- * is drawn until its first layout, which shows the whole graph at once; the nodes added since are
- * put on their parent until it runs again, and spreads them from there.
+ * Draws the graph of a session. Nodes are placed by a layout in a worker, not by a simulation.
+ * Nothing is drawn until its first layout, which shows the whole graph at once; the nodes added
+ * since are put in their families, as the layout would put them, until it runs again.
  */
 @Component({
   selector: 'app-graph',
@@ -127,7 +145,6 @@ const HOVER_DEPTH = 2;
     RouterModule,
     GraphLegendComponent,
     MatTooltipModule,
-    AutoCompleteComponent,
     KeyValuePipe,
     PrettyPipe,
     SpinnerComponent,
@@ -143,8 +160,19 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input({ required: true }) sessionId: string;
 
   @ViewChild('graph', { static: false }) private graphRef: ElementRef<HTMLDivElement> | null = null;
+  // In the template, not created here: the encapsulated styles only reach the template's elements,
+  // and without its CSS size the canvas is drawn at its backing size, devicePixelRatio times too big.
+  @ViewChild('canvas', { static: false }) private canvasRef: ElementRef<HTMLCanvasElement> | null = null;
 
-  private graph: ForceGraph<Node, Link> | null = null;
+  private renderer: GraphRenderer | null = null;
+  private canvas: HTMLCanvasElement | null = null;
+  private readonly camera = new Camera();
+  private renderFrame = 0;
+  private cameraFrame = 0;
+  /** Why the graph cannot be drawn, null while it can. */
+  readonly rendererError = signal<string | null>(null);
+  /** The id of the node under the pointer, and where to show it. */
+  readonly tooltip = signal<{ id: string, x: number, y: number } | null>(null);
 
   highlightParentNodes = false;
   highlightChildrenNodes = false;
@@ -161,7 +189,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly clipboard = inject(Clipboard);
 
   private readonly subscription = new Subscription();
-  private destroyed = false;
   private resizeObserver: ResizeObserver | null = null;
 
   private nodes: Node[] = [];
@@ -170,7 +197,11 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   private successors = new Map<string, string[]>();
   private nodesById = new Map<string, Node>();
 
-  readonly nodesIds = signal<string[]>([]);
+  /** What the search matches, the one shown, and what was searched. */
+  readonly matches = signal<string[]>([]);
+  readonly matchIndex = signal<number>(0);
+  readonly searched = signal<string>('');
+  private searchTimer: ReturnType<typeof setTimeout> | undefined;
   readonly nodeCount = signal<number>(0);
   readonly layingOut = signal<boolean>(false);
   /** Why the events stream was lost, null while it is up. */
@@ -200,7 +231,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   private debugInterval: ReturnType<typeof setInterval> | undefined;
   private debugFrame = 0;
 
-  /** Whether ELK has placed the graph once: until then, nothing is drawn. */
+  /** Whether the layout has placed the graph once: until then, nothing is drawn. */
   private laidOut = false;
   private layoutTimer: ReturnType<typeof setTimeout> | undefined;
   /** When the first change not laid out yet happened. */
@@ -210,8 +241,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Batches received so far: the first one tells nothing, see applyBatch. */
   private batches = 0;
   /**
-   * Nodes given a position by this component. Not `x !== undefined`: the renderer gives a position
-   * of its own, on a spiral around the origin, to any node that reaches it without one.
+   * Nodes placed against the current places. Not `x !== undefined`: a node placed while a layout
+   * ran is placed again against the places it gives, though it has a position.
    */
   private readonly placed = new Set<string>();
   /**
@@ -220,36 +251,30 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
    * on each change, until they can go with the node they belong to.
    */
   private unanchored = new Set<string>();
-  /** Kept from one layout to the next: a new one would load ELK again, hundreds of kB of it. */
+  /** Kept from one layout to the next: a new one would load its script again. */
   private worker: Worker | null = null;
   private layoutRunning = false;
-  /** The structure changed while ELK was running: its result is already out of date. */
+  /** The structure changed while the layout was running: its result is already out of date. */
   private layoutPending = false;
   private animationFrame = 0;
   /** Where the nodes being moved go: a node arriving meanwhile is put where its parent goes. */
   private animationTargets: Coordinates | null = null;
 
-  /** Zoom of the frame being drawn, read by the link accessors. */
-  private scale = 1;
   private hovered: Set<string> | null = null;
-  // Looked up for every node and link of every frame: keyed without building a string each time.
-  /** Icons by node type, then color. */
-  private readonly sprites = new Map<Node['type'], Map<string, HTMLCanvasElement>>();
-  /** Link colors by link type, then opacity in twentieths. */
-  private readonly linkColorCache = new Map<LinkType, string[]>();
-  private readonly paintNode = (node: Node, ctx: CanvasRenderingContext2D, scale: number) => this.drawNode(node, ctx, scale);
-
-  /**
-   * Once its registry of pick colors is full, force-graph gives the new nodes none: painting them
-   * would keep the color of the previous one, and hovering them would pick it instead.
-   */
-  private readonly paintPointerArea = (node: Node, color: string | null, ctx: CanvasRenderingContext2D) => {
-    if (!color) {
-      return;
-    }
-    ctx.fillStyle = color;
-    ctx.fillRect(node.x! - NODE_SIZE / 2, node.y! - NODE_SIZE / 2, NODE_SIZE, NODE_SIZE);
-  };
+  private hoveredNode: Node | null = null;
+  /** What the renderer was given: the index of each node is its index in `nodes`. */
+  private readonly nodeIndex = new Map<string, number>();
+  private drawnStatuses: Node['status'][] = [];
+  private positions = new Float32Array(0);
+  /** The nodes by place, for the pointer; built again once the nodes have moved. */
+  private grid: NodeGrid | null = null;
+  /** Colors as bytes, by CSS color. */
+  private readonly rgbaCache = new Map<string, Uint8Array>();
+  private readonly pointer = { moved: false, startX: 0, startY: 0 };
+  /** Where each pressed pointer is: a mouse, or a finger of a pinch. */
+  private readonly pressed = new Map<number, [number, number]>();
+  /** Where the pointer is over the canvas, for what is under it once the view moved. */
+  private pointerAt: [number, number] | null = null;
 
   ngOnInit(): void {
     const storedColorMap = this.storageService.getItem<Record<LinkType, string>>('graph-links-colors', true) as Record<LinkType, string> | null;
@@ -268,56 +293,37 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loadingInterval = setInterval(() => this.refreshLoading(), LOADING_REFRESH_MS);
   }
 
-  async ngAfterViewInit(): Promise<void> {
-    if (!this.graphRef) {
-      return;
-    }
-    // The icons are rasterised once: the font has to be there, or they would hold the ligature
-    // text instead of the glyph. A font that fails to load is no reason not to draw the graph.
-    try {
-      await document.fonts?.load(`${SPRITE_SIZE}px "Material Icons"`);
-    } catch (error) {
-      console.warn('The icon font did not load, the graph is drawn without it.', error);
-    }
-    // Left while the font was loading: a renderer created now would never be destroyed.
-    if (this.destroyed) {
+  ngAfterViewInit(): void {
+    if (!this.graphRef || !this.canvasRef) {
       return;
     }
 
     const element = this.graphRef.nativeElement;
-    this.graph = new ForceGraph<Node, Link>(element)
-      .width(element.clientWidth)
-      .height(element.clientHeight)
-      // Positions come from the layout: no simulation runs.
-      .d3Force('charge', null)
-      .d3Force('link', null)
-      .d3Force('center', null)
-      .cooldownTicks(0)
-      // Only used for the box zoomToFit fits: the nodes are painted by drawNode, as big as this.
-      .nodeRelSize(NODE_SIZE / 2)
-      .nodeLabel('id')
-      .nodeCanvasObject(this.paintNode)
-      .nodePointerAreaPaint(this.paintPointerArea)
-      .linkColor(link => this.getLinkColor(link))
-      // In screen pixels whatever the zoom: thick lines over thousands of links cover the whole
-      // overview, so they get thinner as it zooms out.
-      .linkWidth(() => Math.min(4, Math.max(0.5, NODE_SIZE * this.scale / 12)))
-      .linkDirectionalParticleWidth(4)
-      .onRenderFramePre((_, scale) => {
-        this.scale = scale;
-        this.drawStart = performance.now();
-      })
-      .onRenderFramePost((ctx, scale) => {
-        this.drawHighlights(ctx, scale);
-        if (this.debugEnabled()) {
-          this.drawDurations.push(performance.now() - this.drawStart);
-        }
-      })
-      .onNodeHover(node => this.hover(node))
-      .onNodeClick(node => {
-        this.graph?.centerAt(node.x, node.y);
-        this.graph?.zoom(4, 2000);
+    this.canvas = this.canvasRef.nativeElement;
+    try {
+      this.renderer = new GraphRenderer(this.canvas, {
+        nodeSize: NODE_SIZE,
+        // In screen pixels whatever the zoom: thick lines over thousands of links cover the whole
+        // overview, so they get thinner as it zooms out.
+        linkWidth: NODE_SIZE / 12,
+        minLinkPixels: 1,
+        maxLinkPixels: 4,
+        minNodePixels: MIN_NODE_SCREEN_SIZE,
+        minHighlightPixels: HIGHLIGHT_SCREEN_SIZE,
+        fadedAlpha: FADED_ALPHA,
+        restored: error => (error === null ? this.requestRender() : this.rendererFailed(error)),
       });
+    } catch (error) {
+      this.rendererFailed(error);
+    }
+    this.setLinkColors();
+    this.onResize();
+    this.canvas.addEventListener('pointerdown', this.onPointerDown);
+    this.canvas.addEventListener('pointermove', this.onPointerMove);
+    this.canvas.addEventListener('pointerup', this.onPointerUp);
+    this.canvas.addEventListener('pointercancel', this.onPointerCancel);
+    this.canvas.addEventListener('pointerleave', this.onPointerLeave);
+    this.canvas.addEventListener('wheel', this.onWheel, { passive: false });
 
     // The canvas follows its container, which the window does not always move: the sidebar folds.
     if (typeof ResizeObserver !== 'undefined') {
@@ -361,17 +367,19 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroyed = true;
     this.resizeObserver?.disconnect();
     this.setDebug(false);
     clearInterval(this.loadingInterval);
     this.subscription.unsubscribe();
     clearTimeout(this.layoutTimer);
     clearTimeout(this.emptyTimer);
+    clearTimeout(this.searchTimer);
     cancelAnimationFrame(this.animationFrame);
+    cancelAnimationFrame(this.renderFrame);
+    cancelAnimationFrame(this.cameraFrame);
     this.worker?.terminate();
-    this.graph?._destructor();
-    this.graph = null;
+    this.renderer?.destroy();
+    this.renderer = null;
   }
 
   /**
@@ -379,6 +387,17 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   redraw(): void {
     this.runLayout();
+  }
+
+  private rendererFailed(error: unknown): void {
+    console.error(error);
+    this.rendererError.set(String((error as Error)?.message ?? error));
+  }
+
+  /** Brings the whole graph back into the view, once lost by moving it away. */
+  center(): void {
+    cancelAnimationFrame(this.cameraFrame);
+    this.fitView();
   }
 
   /**
@@ -412,9 +431,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   toggleHighlightParentNodes(checked: boolean) {
     this.highlightParentNodes = checked;
     this.storageService.setItem('graph-highlight-parents', checked);
-    if (this.nodeToHighlight !== null) {
-      this.highlightNodes(this.nodeToHighlight);
-    }
+    this.markMatches();
   }
 
   /**
@@ -424,9 +441,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   toggleHighlightChildrenNodes(checked: boolean) {
     this.highlightChildrenNodes = checked;
     this.storageService.setItem('graph-highlight-children', checked);
-    if (this.nodeToHighlight !== null) {
-      this.highlightNodes(this.nodeToHighlight);
-    }
+    this.markMatches();
   }
 
   /**
@@ -445,25 +460,62 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     return '#' + complementaryHex;
   }
 
+  /** A search once typing pauses. */
+  searchChanged(value: string): void {
+    clearTimeout(this.searchTimer);
+    this.searchTimer = setTimeout(() => this.highlightNodes(value), SEARCH_DELAY_MS);
+  }
+
+  /** A search now, on Enter. */
+  searchNow(value: string): void {
+    clearTimeout(this.searchTimer);
+    this.highlightNodes(value);
+  }
+
+  nextMatch(): void {
+    this.showMatch((this.matchIndex() + 1) % this.matches().length);
+  }
+
+  previousMatch(): void {
+    this.showMatch((this.matchIndex() - 1 + this.matches().length) % this.matches().length);
+  }
+
   /**
-   * Highlights the nodes whose id contains the searched value. When a single one does, centres on
-   * it and, as configured, highlights its ancestors and descendants too.
+   * Highlights the nodes whose id contains the searched value, and centres on the first of them.
+   * A pasted id is found at once; a part of one, by going through them all.
    */
   highlightNodes(searchedValue: string) {
-    this.nodesToHighlight.clear();
     this.nodeToHighlight = searchedValue;
+    this.searched.set(searchedValue);
+    const found: string[] = [];
     if (searchedValue !== '') {
-      for (const node of this.nodes) {
-        if (node.id.includes(searchedValue)) {
-          this.nodesToHighlight.add(node.id);
+      // Indexed once laid out; before, the nodes are only counted.
+      if (this.nodesById.has(searchedValue) || (!this.laidOut && this.nodes.some(node => node.id === searchedValue))) {
+        found.push(searchedValue);
+      } else {
+        for (const node of this.nodes) {
+          if (node.id.includes(searchedValue)) {
+            found.push(node.id);
+          }
         }
       }
     }
+    this.matches.set(found);
+    this.markMatches();
+    this.showMatch(0);
+  }
+
+  /**
+   * The matches highlighted. When a single node matches, its ancestors and descendants too, as
+   * configured: changing that leaves the match shown as it is.
+   */
+  private markMatches(): void {
+    this.nodesToHighlight.clear();
+    const found = this.matches();
+    found.forEach(id => this.nodesToHighlight.add(id));
     // Before the first layout nothing is indexed nor placed: the search is applied again after it.
-    if (this.nodesToHighlight.size === 1 && this.laidOut) {
-      const [nodeId] = this.nodesToHighlight;
-      const node = this.nodesById.get(nodeId)!;
-      this.graph?.centerAt(node.x, node.y, 500);
+    if (found.length === 1 && this.laidOut) {
+      const [nodeId] = found;
       if (this.highlightParentNodes) {
         this.reach(nodeId, this.predecessors, Infinity).forEach(id => this.nodesToHighlight.add(id));
       }
@@ -471,7 +523,17 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         this.reach(nodeId, this.successors, Infinity).forEach(id => this.nodesToHighlight.add(id));
       }
     }
-    this.requestRedraw();
+    this.syncHighlights();
+  }
+
+  /** Centres the view on a match. */
+  private showMatch(index: number): void {
+    this.matchIndex.set(index);
+    const node = this.laidOut ? this.nodesById.get(this.matches()[index]) : undefined;
+    if (node?.x !== undefined && node.y !== undefined) {
+      this.moveCamera(node.x, node.y, this.camera.scale, 500);
+    }
+    this.requestRender();
   }
 
   /**
@@ -480,39 +542,38 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   onResize(): void {
     const element = this.graphRef?.nativeElement;
     if (element) {
-      this.graph?.width(element.clientWidth).height(element.clientHeight);
+      this.camera.resize(element.clientWidth, element.clientHeight);
+      this.renderer?.resize(element.clientWidth, element.clientHeight);
+      // Resizing the canvas clears it. Called after this frame's animation callbacks, before it is
+      // shown: drawn now, or the frame would show it blank, each frame of a transition.
+      cancelAnimationFrame(this.renderFrame);
+      this.renderFrame = 0;
+      this.render();
     }
   }
 
   /**
-   * The graph in the view, zoomed in no further than MAX_FIT_ZOOM. A layer of thousands of tasks
-   * needs to zoom out further than force-graph allows by default: the limit follows the graph.
+   * The graph in the view, its nodes whole, zoomed in no further than MAX_FIT_ZOOM. Where the nodes
+   * go when they are moving there.
    */
   private fitView(): void {
-    const graph = this.graph;
-    const box = graph?.getGraphBbox();
-    if (!graph || !box) {
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (const node of this.nodes) {
+      const [x, y] = this.animationTargets?.get(node.id) ?? [node.x, node.y];
+      if (x !== undefined && y !== undefined) {
+        minX = Math.min(minX, x);
+        maxX = Math.max(maxX, x);
+        minY = Math.min(minY, y);
+        maxY = Math.max(maxY, y);
+      }
+    }
+    if (!Number.isFinite(minX)) {
       return;
     }
-    const zoom = Math.min(
-      (graph.width() - 2 * FIT_PADDING) / (box.x[1] - box.x[0]),
-      (graph.height() - 2 * FIT_PADDING) / (box.y[1] - box.y[0]),
-    );
-    if (zoom < graph.minZoom()) {
-      graph.minZoom(zoom);
-    }
-    graph.zoomToFit(0, FIT_PADDING);
-    if (graph.zoom() > MAX_FIT_ZOOM) {
-      graph.zoom(MAX_FIT_ZOOM);
-    }
-  }
-
-  /**
-   * Displays particles on the graph
-   * @param checked boolean
-   */
-  setParticles(checked: boolean): void {
-    this.graph?.linkDirectionalParticles(checked ? 1 : 0);
+    const margin = NODE_SIZE / 2;
+    this.camera.fit(minX - margin, maxX + margin, minY - margin, maxY + margin, FIT_PADDING, MAX_FIT_ZOOM);
+    this.hoverAgain();
+    this.requestRender();
   }
 
   toggleDebug(checked: boolean): void {
@@ -603,7 +664,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       this.firstChangeAt = null;
     }
     if (structural === 0) {
-      this.requestRedraw();
+      this.syncStatuses();
+      this.requestRender();
       return;
     }
 
@@ -628,8 +690,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       const node = this.nodesById.get(id)!;
       return this.animationTargets?.get(id) ?? (this.placed.has(id) ? [node.x!, node.y!] : undefined);
     }), unanchored);
-    this.graph?.graphData({ nodes: this.nodes, links: this.links });
-    this.nodesIds.set(this.nodes.map(node => node.id));
+    this.syncGraph();
   }
 
   private refreshLoading(): void {
@@ -648,7 +709,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   private scheduleLayout(): void {
     const now = Date.now();
     this.firstChangeAt ??= now;
-    const cap = this.initialGraph ? INITIAL_MAX_WAIT_MS : MAX_WAIT_MS;
+    const cap = this.initialGraph ? INITIAL_MAX_WAIT_MS : this.laidOut ? MAX_WAIT_MS : FIRST_MAX_WAIT_MS;
     const delay = Math.min(QUIET_MS, this.firstChangeAt + cap - now);
     clearTimeout(this.layoutTimer);
     this.layoutTimer = setTimeout(() => {
@@ -657,7 +718,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     }, delay);
   }
 
-  /** Runs ELK in a worker, then moves the nodes to the places it gave them. */
+  /** Runs the layout in a worker, then moves the nodes to the places it gave them. */
   private runLayout(): void {
     if (this.layoutRunning) {
       this.layoutPending = true;
@@ -693,7 +754,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         this.indexGraph();
         this.unanchored = new Set();
-        this.animateTo(this.incrementalCoordinates(id => targets.get(id)));
+        this.animateTo(this.incrementalCoordinates(id => targets.get(id)), !shownEmpty);
         if (shownEmpty) {
           this.fitView();
         }
@@ -757,16 +818,18 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Nodes added since the last layout, put on a node already placed until it runs again, which
-   * spreads them from there: a task on its parent, or for one the client submitted, on the
-   * deepest producer of its data, else on the deepest of its data; a data on the task it belongs
-   * to. The others go to the right of the graph, on its top row, and are kept in `unanchored`.
-   * `positionOf` gives the nodes already placed, undefined for the others.
+   * Nodes added since the last layout, put in their families until it runs again, as it would
+   * place them: a subtask at the end of the first row of its family, or the first one below its
+   * parent; an aggregation, or a task the client submitted, below what it reads; a payload above
+   * its task, outputs below it. Nodes with nothing placed to go with go to the right of the graph,
+   * on its top row, and are kept in `unanchored`. `positionOf` gives the nodes already placed,
+   * undefined for the others. They may overlap other families until the next layout.
    */
   private incrementalCoordinates(positionOf: (id: string) => [number, number] | undefined): Coordinates {
     const payloads = new Map<string, string>();
     const parents = new Map<string, string>();
     const owners = new Map<string, string>();
+    const outputs = new Map<string, string[]>();
     const fed = new Map<string, string>();
     const inputs = new Map<string, string[]>();
     for (const link of this.links) {
@@ -779,6 +842,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         parents.set(target, source);
       } else if (link.type === 'output') {
         owners.set(target, source);
+        push(outputs, source, target);
       } else {
         push(inputs, target, source);
         if (!fed.has(source)) {
@@ -786,30 +850,45 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
     }
+    const parentOf = (task: string) => {
+      const payload = payloads.get(task);
+      return payload === undefined ? undefined : parents.get(payload);
+    };
 
     const coordinates: Coordinates = new Map();
     let top = Infinity;
     let right = -Infinity;
+    // The first row of each family, as placed: its height and its right end, which the new
+    // subtasks extend.
+    const rows = new Map<string, { y: number, right: number }>();
     for (const node of this.nodes) {
       const position = positionOf(node.id);
       if (position) {
         coordinates.set(node.id, position);
         top = Math.min(top, position[1]);
         right = Math.max(right, position[0] + NODE_SIZE / 2);
+        const parent = node.type === 'task' ? parentOf(node.id) : undefined;
+        if (parent !== undefined) {
+          const row = rows.get(parent);
+          if (!row || position[1] < row.y) {
+            rows.set(parent, { y: position[1], right: position[0] });
+          } else if (position[1] === row.y) {
+            row.right = Math.max(row.right, position[0]);
+          }
+        }
       }
     }
     top = Number.isFinite(top) ? top : 0;
     right = Number.isFinite(right) ? right : 0;
 
-    // The node a new one is put on, undefined for a new root.
+    const placedProducers = (task: string) => (inputs.get(task) ?? [])
+      .map(input => owners.get(input))
+      .filter((producer): producer is string => producer !== undefined && coordinates.has(producer));
+
+    // The node a new one goes with, undefined for a new root.
     const anchor = (node: Node): string | undefined => {
       if (node.type !== 'task') {
         return owners.get(node.id) ?? fed.get(node.id);
-      }
-      const payload = payloads.get(node.id);
-      const parent = payload === undefined ? undefined : parents.get(payload);
-      if (parent !== undefined) {
-        return parent;
       }
       const deeper = (candidate: string | undefined, than: string | undefined) => {
         const position = candidate === undefined ? undefined : coordinates.get(candidate);
@@ -829,8 +908,31 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         other ??= producer;
       }
-      // Else a producer not placed yet: the task goes with it.
-      return deepestProducer ?? deepestInput ?? other;
+      // What it reads first, an aggregation below the subtasks it gathers; else its parent.
+      return deepestProducer ?? parentOf(node.id) ?? deepestInput ?? other;
+    };
+
+    // Where a new node goes, `anchor` placed at `at`.
+    const place = (node: Node, anchorId: string, at: [number, number]): [number, number] => {
+      if (node.type !== 'task') {
+        if (owners.get(node.id) === anchorId) {
+          const rank = outputs.get(anchorId)?.indexOf(node.id) ?? 0;
+          return [at[0] + Math.max(0, rank) * SLOT, at[1] + DATA_ROW_OFFSET];
+        }
+        // A payload, or an input of its only consumer: above it.
+        return [at[0], at[1] - DATA_ROW_OFFSET];
+      }
+      const parent = parentOf(node.id);
+      if (parent === anchorId) {
+        const row = rows.get(parent);
+        const position: [number, number] = row ? [row.right + SLOT, row.y] : [at[0], at[1] + LAYER_STEP];
+        rows.set(parent, { y: position[1], right: position[0] });
+        return position;
+      }
+      // Below what it reads, centred on what of it is placed.
+      const producers = placedProducers(node.id);
+      const x = producers.length === 0 ? at[0] : producers.reduce((sum, producer) => sum + coordinates.get(producer)![0], 0) / producers.length;
+      return [x, at[1] + LAYER_STEP];
     };
 
     // A chain of new nodes is placed from its placed end, without recursion: a new chain of
@@ -839,23 +941,29 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
       if (coordinates.has(node.id)) {
         continue;
       }
-      const chain: string[] = [];
+      const chain: Node[] = [];
       const seen = new Set<string>();
       let current: Node | undefined = node;
-      let position: [number, number] | undefined;
-      while (current && !(position = coordinates.get(current.id)) && !seen.has(current.id)) {
-        chain.push(current.id);
+      let end: string | undefined;
+      while (current && !coordinates.has(current.id) && !seen.has(current.id)) {
+        chain.push(current);
         seen.add(current.id);
-        const next = anchor(current);
-        current = next === undefined ? undefined : this.nodesById.get(next);
+        end = anchor(current);
+        current = end === undefined ? undefined : this.nodesById.get(end);
       }
-      if (!position) {
+      let first = chain.length - 1;
+      if (!current || !coordinates.has(current.id)) {
+        // Nothing placed to go with: its end goes to the right of the graph, on its top row.
         right += NODE_GAP + NODE_SIZE;
-        position = [right - NODE_SIZE / 2, top];
-        chain.forEach(id => this.unanchored.add(id));
+        coordinates.set(chain[first].id, [right - NODE_SIZE / 2, top]);
+        chain.forEach(chained => this.unanchored.add(chained.id));
+        current = chain[first--];
       }
-      for (const id of chain) {
-        coordinates.set(id, position!);
+      // From the placed end back to the new node, each placed next to the one it goes with.
+      let anchorId = current.id;
+      for (let k = first; k >= 0; k--) {
+        coordinates.set(chain[k].id, place(chain[k], anchorId, coordinates.get(anchorId)!));
+        anchorId = chain[k].id;
       }
     }
     return coordinates;
@@ -872,13 +980,17 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private setPosition(node: Node, x: number, y: number): void {
-    node.x = node.fx = x;
-    node.y = node.fy = y;
+    node.x = x;
+    node.y = y;
     this.placed.add(node.id);
   }
 
   /** Moves the nodes to their targets over ANIMATION_MS, so that the eye can follow them. */
-  private animateTo(targets: Coordinates): void {
+  /**
+   * Moves the nodes to `targets` over ANIMATION_MS. With `anchored`, the view follows the hovered
+   * node, which stays under the pointer: what is looked at is not taken away.
+   */
+  private animateTo(targets: Coordinates, anchored: boolean): void {
     cancelAnimationFrame(this.animationFrame);
     const moves = this.nodes
       .filter(node => targets.has(node.id))
@@ -891,14 +1003,23 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     const step = () => {
       const t = Math.min(1, (performance.now() - start) / ANIMATION_MS);
       const eased = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+      // Not while the view is dragged: it is the user's to move.
+      const anchor = anchored && this.pressed.size === 0 ? this.hoveredNode : null;
+      const [anchorX, anchorY] = anchor ? [anchor.x!, anchor.y!] : [0, 0];
       for (const move of moves) {
         this.setPosition(move.node, move.fromX + (move.x - move.fromX) * eased, move.fromY + (move.y - move.fromY) * eased);
       }
-      this.requestRedraw();
+      if (anchor) {
+        this.camera.x += anchor.x! - anchorX;
+        this.camera.y += anchor.y! - anchorY;
+      }
+      this.syncPositions();
+      this.requestRender();
       if (t < 1) {
         this.animationFrame = requestAnimationFrame(step);
       } else {
         this.animationTargets = null;
+        this.hoverAgain();
       }
     };
     this.animationFrame = requestAnimationFrame(step);
@@ -934,72 +1055,271 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private hover(node: Node | null): void {
+    this.hoveredNode = node;
     this.hovered = node === null
       ? null
       : new Set([node.id, ...this.reach(node.id, this.predecessors, HOVER_DEPTH), ...this.reach(node.id, this.successors, HOVER_DEPTH)]);
-    this.requestRedraw();
-  }
-
-  /**
-   * Nothing force-graph watches changes when a status or a highlight does, so it would not redraw:
-   * setting the painter again makes it.
-   */
-  private requestRedraw(): void {
-    this.graph?.nodeCanvasObject(this.paintNode);
-  }
-
-  private drawNode(node: Node, ctx: CanvasRenderingContext2D, scale: number): void {
-    if (node.x === undefined || node.y === undefined) {
-      return;
-    }
-    const color = this.getNodeColor(node);
-    const faded = this.hovered !== null && !this.hovered.has(node.id);
-    if (faded) {
-      ctx.globalAlpha = FADED_ALPHA;
-    }
-
-    if (NODE_SIZE * scale < MIN_ICON_SCREEN_SIZE) {
-      // The shape of the icon, as the legend shows it: a circle for a task, a rectangle for a data.
-      ctx.fillStyle = color;
-      if (node.type === 'task') {
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, NODE_SIZE / 2, 0, 2 * Math.PI);
-        ctx.fill();
-      } else {
-        ctx.fillRect(node.x - NODE_SIZE / 2, node.y - NODE_SIZE / 3, NODE_SIZE, NODE_SIZE * 2 / 3);
-      }
+    if (this.hovered === null) {
+      this.renderer?.setFocus(null);
     } else {
-      if (this.nodesToHighlight.has(node.id)) {
-        const size = NODE_SIZE * 1.4;
-        ctx.drawImage(this.sprite(node.type, this.getComplementaryColor(color)), node.x - size / 2, node.y - size / 2, size, size);
+      const focused = new Uint8Array(this.nodes.length);
+      for (const id of this.hovered) {
+        const index = this.nodeIndex.get(id);
+        if (index !== undefined) {
+          focused[index] = 1;
+        }
       }
-      ctx.drawImage(this.sprite(node.type, color), node.x - NODE_SIZE / 2, node.y - NODE_SIZE / 2, NODE_SIZE, NODE_SIZE);
+      this.renderer?.setFocus(focused);
     }
+    this.requestRender();
+  }
 
-    if (faded) {
-      ctx.globalAlpha = 1;
+  /** Draws the graph once, at the next frame, however many changes asked for it. */
+  private requestRender(): void {
+    if (!this.renderer || this.renderFrame) {
+      return;
+    }
+    this.renderFrame = requestAnimationFrame(() => {
+      this.renderFrame = 0;
+      this.render();
+    });
+  }
+
+  private render(): void {
+    const start = performance.now();
+    // Translucent while zoomed out, where links pile up, opaque once they can be told apart.
+    this.renderer?.render(this.camera, Math.min(1, Math.max(0.15, NODE_SIZE * this.camera.scale / 40)));
+    if (this.debugEnabled()) {
+      this.drawDurations.push(performance.now() - start);
     }
   }
 
   /**
-   * Zoomed out, a highlighted node is a square of a few pixels among thousands: it is marked on top
-   * of the whole frame, big enough to be seen. Zoomed in, drawNode draws it behind its icon.
+   * Hands what changed to the renderer: the nodes added, all the links, the positions, the
+   * statuses. A batch adds to the nodes, never removes any: a node keeps its index.
    */
-  private drawHighlights(ctx: CanvasRenderingContext2D, scale: number): void {
-    if (this.nodesToHighlight.size === 0 || NODE_SIZE * scale >= MIN_ICON_SCREEN_SIZE) {
+  private syncGraph(): void {
+    const renderer = this.renderer;
+    if (!renderer) {
       return;
     }
-    const size = Math.max(NODE_SIZE, HIGHLIGHT_SCREEN_SIZE / scale);
-    for (const id of this.nodesToHighlight) {
-      const node = this.nodesById.get(id);
-      if (node?.x === undefined || node.y === undefined) {
-        continue;
+    const count = this.nodes.length;
+    if (count !== this.drawnStatuses.length) {
+      const shapes = new Uint8Array(count);
+      const colors = new Uint8Array(count * 4);
+      this.nodes.forEach((node, index) => {
+        this.nodeIndex.set(node.id, index);
+        shapes[index] = node.type === 'task' ? TASK_SHAPE : RESULT_SHAPE;
+        colors.set(this.rgba(this.getNodeColor(node)), index * 4);
+      });
+      renderer.setNodes(count, shapes, colors);
+      this.drawnStatuses = this.nodes.map(node => node.status);
+    }
+    const sources = new Uint32Array(this.links.length);
+    const targets = new Uint32Array(this.links.length);
+    const types = new Uint8Array(this.links.length);
+    let linkCount = 0;
+    for (const link of this.links) {
+      const source = this.nodeIndex.get(endId(link.source));
+      const target = this.nodeIndex.get(endId(link.target));
+      if (source !== undefined && target !== undefined) {
+        sources[linkCount] = source;
+        targets[linkCount] = target;
+        types[linkCount++] = LINK_TYPES.indexOf(link.type);
       }
-      const color = this.getNodeColor(node);
-      ctx.fillStyle = this.getComplementaryColor(color);
-      ctx.fillRect(node.x - size / 2, node.y - size / 2, size, size);
-      ctx.fillStyle = color;
-      ctx.fillRect(node.x - size / 4, node.y - size / 4, size / 2, size / 2);
+    }
+    renderer.setLinks(linkCount, sources, targets, types);
+    this.syncPositions();
+    this.syncStatuses();
+    this.syncHighlights();
+    this.requestRender();
+  }
+
+  private syncPositions(): void {
+    const count = this.nodes.length;
+    if (this.positions.length !== count * 2) {
+      this.positions = new Float32Array(count * 2);
+    }
+    this.nodes.forEach((node, index) => {
+      this.positions[index * 2] = node.x ?? 0;
+      this.positions[index * 2 + 1] = node.y ?? 0;
+    });
+    this.renderer?.setPositions(this.positions);
+    this.grid = null;
+  }
+
+  /** Only the colors of the nodes whose status changed: 4 bytes each. */
+  private syncStatuses(): void {
+    const renderer = this.renderer;
+    if (!renderer) {
+      return;
+    }
+    let highlightChanged = false;
+    for (let index = 0; index < this.drawnStatuses.length; index++) {
+      const node = this.nodes[index];
+      if (node.status !== this.drawnStatuses[index]) {
+        this.drawnStatuses[index] = node.status;
+        renderer.setNodeColor(index, this.rgba(this.getNodeColor(node)));
+        highlightChanged ||= this.nodesToHighlight.has(node.id);
+      }
+    }
+    // A highlight has the complementary color of its node's.
+    if (highlightChanged) {
+      this.syncHighlights();
+    }
+  }
+
+  /** Each highlighted node marked with the complementary color of its own. */
+  private syncHighlights(): void {
+    const indices: number[] = [];
+    const colors: number[] = [];
+    for (const id of this.nodesToHighlight) {
+      const index = this.nodeIndex.get(id);
+      if (index !== undefined) {
+        indices.push(index);
+        colors.push(...this.rgba(this.getComplementaryColor(this.getNodeColor(this.nodes[index]))));
+      }
+    }
+    this.renderer?.setHighlights(Uint32Array.from(indices), Uint8Array.from(colors));
+  }
+
+  private setLinkColors(): void {
+    this.renderer?.setLinkColors(LINK_TYPES.map(type => {
+      const [r, g, b, a] = this.rgba(this.colorMap[type]);
+      return [r / 255, g / 255, b / 255, a / 255];
+    }));
+  }
+
+  /**
+   * Only the main button, a finger or a pen: the other buttons are the browser's, and the release
+   * of the one opening its menu never comes.
+   */
+  private readonly onPointerDown = (event: PointerEvent) => {
+    if (event.button !== 0) {
+      return;
+    }
+    this.canvas?.setPointerCapture?.(event.pointerId);
+    this.pressed.set(event.pointerId, [event.offsetX, event.offsetY]);
+    if (this.pressed.size === 1) {
+      Object.assign(this.pointer, { moved: false, startX: event.offsetX, startY: event.offsetY });
+    } else {
+      // A second finger: a pinch, not a click.
+      this.pointer.moved = true;
+    }
+  };
+
+  /**
+   * A drag moves the view, two fingers move and zoom it, what was between them staying between
+   * them; otherwise the node under the pointer is hovered.
+   */
+  private readonly onPointerMove = (event: PointerEvent) => {
+    this.pointerAt = [event.offsetX, event.offsetY];
+    if (!this.pressed.has(event.pointerId)) {
+      if (this.pressed.size === 0) {
+        this.hoverAt(event.offsetX, event.offsetY);
+      }
+      return;
+    }
+    const pointer = this.pointer;
+    const before = this.pinch();
+    this.pressed.set(event.pointerId, [event.offsetX, event.offsetY]);
+    pointer.moved ||= Math.hypot(event.offsetX - pointer.startX, event.offsetY - pointer.startY) > CLICK_TOLERANCE;
+    if (pointer.moved) {
+      const after = this.pinch();
+      cancelAnimationFrame(this.cameraFrame);
+      this.camera.pan(after.x - before.x, after.y - before.y);
+      if (before.distance > 0 && after.distance > 0) {
+        this.camera.zoomAt(after.x, after.y, after.distance / before.distance);
+      }
+      this.requestRender();
+    }
+  };
+
+  /** The middle of the first two pressed pointers and their distance, 0 for a single one. */
+  private pinch(): { x: number, y: number, distance: number } {
+    const [[x1, y1], [x2, y2] = [x1, y1]] = this.pressed.values();
+    return { x: (x1 + x2) / 2, y: (y1 + y2) / 2, distance: Math.hypot(x2 - x1, y2 - y1) };
+  }
+
+  private hoverAt(x: number, y: number): void {
+    const node = this.pick(x, y);
+    if (node !== this.hoveredNode) {
+      this.hover(node);
+    }
+    this.tooltip.set(node ? { id: node.id, x, y } : null);
+  }
+
+  /** A press that did not move is a click: it zooms on the node under the pointer. */
+  private readonly onPointerUp = (event: PointerEvent) => {
+    if (this.pressed.delete(event.pointerId) && this.pressed.size === 0 && !this.pointer.moved) {
+      const node = this.pick(event.offsetX, event.offsetY);
+      if (node) {
+        this.moveCamera(node.x!, node.y!, CLICK_ZOOM, CLICK_ZOOM_MS);
+      }
+    }
+  };
+
+  /** The browser took the pointer back, to scroll or zoom the page itself. */
+  private readonly onPointerCancel = (event: PointerEvent) => {
+    this.pressed.delete(event.pointerId);
+  };
+
+  private readonly onPointerLeave = () => {
+    this.pointerAt = null;
+    this.tooltip.set(null);
+    if (this.hoveredNode) {
+      this.hover(null);
+    }
+  };
+
+  /** Zooms towards the pointer. */
+  private readonly onWheel = (event: WheelEvent) => {
+    event.preventDefault();
+    cancelAnimationFrame(this.cameraFrame);
+    this.camera.zoomAt(event.offsetX, event.offsetY, Math.exp(-event.deltaY * (event.ctrlKey ? PINCH_ZOOM : WHEEL_ZOOM)));
+    this.pointerAt = [event.offsetX, event.offsetY];
+    this.hoverAgain();
+    this.requestRender();
+  };
+
+  /** The node under the pointer, if any: within its size, or a few pixels when it is smaller. */
+  private pick(screenX: number, screenY: number): Node | null {
+    if (!this.laidOut || this.nodes.length === 0) {
+      return null;
+    }
+    this.grid ??= new NodeGrid(this.positions, this.nodes.length, NODE_SIZE);
+    const [x, y] = this.camera.toGraph(screenX, screenY);
+    const index = this.grid.nearest(x, y, Math.max(NODE_SIZE / 2, PICK_RADIUS / this.camera.scale));
+    return index === -1 ? null : this.nodes[index];
+  }
+
+  /** Moves the view to `x`, `y` at `scale` over `duration`, so that the eye can follow. */
+  private moveCamera(x: number, y: number, scale: number, duration: number): void {
+    cancelAnimationFrame(this.cameraFrame);
+    const camera = this.camera;
+    const from = { x: camera.x, y: camera.y, scale: camera.scale };
+    const start = performance.now();
+    const step = () => {
+      const t = Math.min(1, (performance.now() - start) / duration);
+      const eased = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+      camera.x = from.x + (x - from.x) * eased;
+      camera.y = from.y + (y - from.y) * eased;
+      // Zooming at a constant rate: an interpolated scale would rush through the far views.
+      camera.scale = from.scale * (scale / from.scale) ** eased;
+      this.requestRender();
+      if (t < 1) {
+        this.cameraFrame = requestAnimationFrame(step);
+      } else {
+        this.hoverAgain();
+      }
+    };
+    this.cameraFrame = requestAnimationFrame(step);
+  }
+
+  /** What is under a still pointer once the view or the nodes moved under it. */
+  private hoverAgain(): void {
+    if (this.pointerAt && this.pressed.size === 0) {
+      this.hoverAt(...this.pointerAt);
     }
   }
 
@@ -1010,65 +1330,48 @@ export class GraphComponent implements OnInit, AfterViewInit, OnDestroy {
     return status?.color ?? 'grey';
   }
 
-  /** The icon of a node type in a given color, drawn once and reused by every node sharing them. */
-  private sprite(type: Node['type'], color: string): HTMLCanvasElement {
-    let byColor = this.sprites.get(type);
-    if (!byColor) {
-      byColor = new Map();
-      this.sprites.set(type, byColor);
+  /** A CSS color as 4 bytes, through the canvas for a color that is not hexadecimal. */
+  private rgba(color: string): Uint8Array {
+    let bytes = this.rgbaCache.get(color);
+    if (!bytes) {
+      bytes = hexToRgba(color) ?? hexToRgba(canvasColor(color)) ?? Uint8Array.of(128, 128, 128, 255);
+      this.rgbaCache.set(color, bytes);
     }
-    let sprite = byColor.get(color);
-    if (!sprite) {
-      sprite = document.createElement('canvas');
-      sprite.width = sprite.height = SPRITE_SIZE;
-      const ctx = sprite.getContext('2d')!;
-      ctx.font = `${SPRITE_SIZE}px "Material Icons"`;
-      ctx.fillStyle = color;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(this.iconsService.getIcon(`${type}-graph-icon`), SPRITE_SIZE / 2, SPRITE_SIZE / 2);
-      byColor.set(color, sprite);
-    }
-    return sprite;
-  }
-
-  /**
-   * Translucent while zoomed out, where links pile up, opaque once they can be told apart. Faded
-   * when they do not belong to the hovered neighbourhood.
-   */
-  private getLinkColor(link: Link): string {
-    const inHovered = this.hovered === null || (this.hovered.has(endId(link.source)) && this.hovered.has(endId(link.target)));
-    const alpha = !inHovered
-      ? FADED_ALPHA
-      : this.hovered !== null ? 1 : Math.min(1, Math.max(0.15, NODE_SIZE * this.scale / 40));
-    // Rounded so that the cache stays small and the canvas batches links of the same color.
-    const twentieths = Math.round(alpha * 20);
-    let byAlpha = this.linkColorCache.get(link.type);
-    if (!byAlpha) {
-      byAlpha = [];
-      this.linkColorCache.set(link.type, byAlpha);
-    }
-    return byAlpha[twentieths] ??= withAlpha(this.colorMap[link.type], twentieths / 20);
+    return bytes;
   }
 }
 
-/** The renderer replaces the ends of a link, given as ids, with the node objects. */
+/** The order of the link colors the renderer is given. */
+const LINK_TYPES: LinkType[] = ['parent', 'dependency', 'output', 'payload'];
+
+/** The id of an end of a link, which its type allows to be the node itself. */
 function endId(end: Link['source']): string {
   return typeof end === 'object' ? (end as Node).id : String(end);
 }
 
-/** `#rgb`, `#rrggbb` or `#rrggbbaa`, its own alpha multiplied by `alpha`. Other colors are kept. */
-function withAlpha(color: string, alpha: number): string {
+/** `#rgb`, `#rrggbb` or `#rrggbbaa` as 4 bytes, null for another color. */
+function hexToRgba(color: string): Uint8Array | null {
   if (!/^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(color)) {
-    return color;
+    return null;
   }
   let value = color.slice(1);
   if (value.length === 3) {
     value = value.split('').map(char => char + char).join('');
   }
-  const r = Number.parseInt(value.slice(0, 2), 16);
-  const g = Number.parseInt(value.slice(2, 4), 16);
-  const b = Number.parseInt(value.slice(4, 6), 16);
-  const a = value.length === 8 ? Number.parseInt(value.slice(6, 8), 16) / 255 : 1;
-  return `rgba(${r}, ${g}, ${b}, ${a * alpha})`;
+  return Uint8Array.of(
+    Number.parseInt(value.slice(0, 2), 16),
+    Number.parseInt(value.slice(2, 4), 16),
+    Number.parseInt(value.slice(4, 6), 16),
+    value.length === 8 ? Number.parseInt(value.slice(6, 8), 16) : 255,
+  );
+}
+
+/** A CSS color as the canvas writes it back, `#rrggbb` when opaque, kept as it is without a canvas. */
+function canvasColor(color: string): string {
+  const ctx = document.createElement('canvas').getContext('2d');
+  if (!ctx) {
+    return color;
+  }
+  ctx.fillStyle = color;
+  return ctx.fillStyle;
 }

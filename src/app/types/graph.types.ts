@@ -1,17 +1,21 @@
-import { LinkObject, NodeObject } from 'force-graph';
 import { Status } from '../types/status';
 
 export type NodeEventType = 'task' | 'result';
 export type LinkType = 'parent' | 'dependency' | 'output' | 'payload';
 
 
-export interface ArmoniKGraphNode extends NodeObject {
+export interface ArmoniKGraphNode {
   id: string;
   status: Status;
   type: NodeEventType;
+  /** Where the layout placed it, undefined until it did. */
+  x?: number;
+  y?: number;
 }
 
-export interface GraphLink<N extends ArmoniKGraphNode> extends LinkObject<N> {
+export interface GraphLink<N extends ArmoniKGraphNode> {
+  source: string | N;
+  target: string | N;
   type: LinkType;
 }
 

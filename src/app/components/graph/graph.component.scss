@@ -36,8 +36,35 @@ app-graph-legend {
 }
 
 .graph {
+  position: relative;
   overflow: hidden;
   height: 90vh;
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+}
+
+.node-tooltip {
+  position: absolute;
+  z-index: 3;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--mat-sys-inverse-surface, #333);
+  color: var(--mat-sys-inverse-on-surface, #fff);
+  font-size: 12px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.renderer-error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .debug {
   position: absolute;

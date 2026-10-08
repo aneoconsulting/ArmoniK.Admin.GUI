@@ -20,6 +20,10 @@
         <mat-icon>{{ getIcon('refresh') }}</mat-icon>
         <span i18n-matTooltip matTooltip="Place every node again" i18n>Redraw</span>
       </button>
+      <button mat-flat-button color="accent" (click)="center()" i18n-matTooltip="@@graphCenterTooltip" matTooltip="Show the whole graph">
+        <mat-icon [fontIcon]="getIcon('center')" />
+        <span i18n="@@graphCenter">Center</span>
+      </button>
     </section>
     <section>
       <span i18n>{{ nodeCount() }} nodes</span>
@@ -36,15 +40,26 @@
     </section>
   </mat-card-content>
   <mat-card-actions>
-    <app-autocomplete [options]="nodesIds()" [label]="highlightLabel" (valueChange)="highlightNodes($event)" />
+    <mat-form-field class="search" subscriptSizing="dynamic">
+      <mat-label>{{ highlightLabel }}</mat-label>
+      <input matInput #search (input)="searchChanged(search.value)" (keydown.enter)="searchNow(search.value)" />
+    </mat-form-field>
+    @if (matches().length > 1) {
+      <span class="matches">{{ matchIndex() + 1 }} / {{ matches().length }}</span>
+      <button mat-icon-button (click)="previousMatch()" i18n-matTooltip="@@graphPreviousMatch" matTooltip="Previous match">
+        <mat-icon [fontIcon]="getIcon('arrow-up')" />
+      </button>
+      <button mat-icon-button (click)="nextMatch()" i18n-matTooltip="@@graphNextMatch" matTooltip="Next match">
+        <mat-icon [fontIcon]="getIcon('arrow-down')" />
+      </button>
+    } @else if (searched() !== '' && matches().length === 0) {
+      <span class="warning" i18n="@@graphNoMatch">No match</span>
+    }
     <mat-checkbox (change)="toggleHighlightParentNodes($event.checked)" [checked]="highlightParentNodes" i18n>
       Highlight parent nodes
     </mat-checkbox>
     <mat-checkbox (change)="toggleHighlightChildrenNodes($event.checked)" [checked]="highlightChildrenNodes" i18n>
       Highlight children nodes
-    </mat-checkbox>
-    <mat-checkbox (change)="setParticles($event.checked)" i18n>
-      Display Particles
     </mat-checkbox>
     <mat-checkbox (change)="toggleDebug($event.checked)" [checked]="debugEnabled()" i18n>
       Debug
@@ -132,4 +147,12 @@
     </mat-card-content>
   </mat-card>
 }
-<div class="graph" #graph></div>
+<div class="graph" #graph>
+  <canvas #canvas></canvas>
+  @if (tooltip(); as tip) {
+    <span class="node-tooltip" [style.left.px]="tip.x + 12" [style.top.px]="tip.y + 12">{{ tip.id }}</span>
+  }
+  @if (rendererError(); as error) {
+    <span class="warning renderer-error" i18n="@@graphRendererError">The graph cannot be drawn: {{ error }}</span>
+  }
+</div>
