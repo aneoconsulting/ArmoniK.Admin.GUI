@@ -1,0 +1,10 @@
+{
+    "/armonik.api.grpc.v1": {
+        "target": "http://armonik_url:armonik_control_plane_port",
+        "secure": false
+    },
+    "/static": {
+        "target": "http://armonik_url:armonik_control_plane_port",
+        "secure": false
+    }
+}
