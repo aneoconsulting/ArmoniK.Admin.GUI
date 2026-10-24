@@ -93,7 +93,7 @@ jobs:
 
       - name: Coverage
         if: always()
-        uses: MishaKav/jest-coverage-comment@main
+        uses: MishaKav/jest-coverage-comment@7032bf8e71aa2b267b6b143be3c4480b625c2b12 # main
         with:
           junitxml-title: JUnit
           junitxml-path: ./junit.xml
