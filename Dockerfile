@@ -16,7 +16,7 @@ COPY angular.json ./
 
 RUN pnpm build --base-href=/admin/
 
-FROM nginxinc/nginx-unprivileged:mainline-alpine-slim AS production
+FROM nginx/nginx-unprivileged:mainline-alpine-slim AS production
 
 # Upgrade the base image
 USER root
